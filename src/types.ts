@@ -1,0 +1,16 @@
+export type AgentStatus='idle'|'understanding'|'ready'|'error';
+export type WorkflowStatus='Waiting for ideas'|'Understanding edits'|'Building'|'Updated'|'Error';
+export type ChangeKind='insert'|'delete'|'modify';
+export type Requirement={id:string;participantId:string;participantName:string;goals:string[];features:string[];design:string[];constraints:string[];questions:string[];additions:string[];modifications:string[];withdrawals:string[];revision:number;createdAt:string};
+export type Participant={id:string;name:string;color:string;active:boolean;lastSeen:string;agentStatus:AgentStatus;latest?:Requirement};
+export type ProductSource={app:string;css:string;summary:string;decisions:string[];conflicts:string[]};
+export type Version={id:number;createdAt:string;summary:string;fileCount?:number;conflicts?:string[]};
+export type AIProvider='openai'|'anthropic'|'gemini'|'openrouter'|'deepseek'|'custom'|'ollama';
+export type AIFormat='responses'|'chat-completions';
+export type CapabilityCheck={status:'unverified'|'passed'|'failed';reason?:string};
+export type ModelChecks={reachable:CapabilityCheck;text:CapabilityCheck;personal:CapabilityCheck;builder:CapabilityCheck;checkedAt?:string};
+export type AIModel={id:string;name:string;contextLength?:number;textOutput?:boolean|'unknown'};
+export type SafeAIConnection={id:string;name:string;provider:AIProvider;baseUrl:string;apiFormat?:AIFormat;hasCredential:boolean;status:'saved'|'reachable'|'error';models:AIModel[];checks:Record<string,ModelChecks>;lastError?:string};
+export type AgentAssignment={connectionId:string;model:string};
+export type AIConnection={status:'disconnected'|'connected';connections:SafeAIConnection[];personal?:AgentAssignment;builder?:AgentAssignment;participantOverrides?:Record<string,AgentAssignment>;participants?:Participant[];provider?:AIProvider;baseUrl?:string;apiFormat?:AIFormat;personalModel?:string;builderModel?:string};
+export type RoomView={roomId:string;ownerId:string|null;ai:AIConnection;status:WorkflowStatus;participants:Participant[];latestVersion:number|null;versions:Version[];lastError?:string;debounceMs:number;savedAt?:string;persistRevision:number;requirementsRevision:number};
