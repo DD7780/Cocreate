@@ -81,6 +81,11 @@ export class CoCreateContainer extends Container {
 
 export default {
   async fetch(request, env) {
+    const url = new URL(request.url);
+    if (url.pathname === "/__cocreate/health") {
+      return Response.json({ status: "ok", service: "cocreate-worker" });
+    }
+
     try {
       return await getContainer(env.COCREATE_CONTAINER, "primary").fetch(
         request,
@@ -91,7 +96,7 @@ export default {
         JSON.stringify({
           message: "CoCreate Worker routing failed",
           error: message,
-          path: new URL(request.url).pathname,
+          path: url.pathname,
         }),
       );
       return Response.json(
