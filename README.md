@@ -41,6 +41,19 @@ pnpm build
 pnpm start
 ```
 
+## Deploy on Cloudflare
+
+CoCreate deploys as a Cloudflare Worker backed by one Cloudflare Container because the application includes a Node.js server, WebSockets, build tooling, and local project files. Cloudflare Containers require a Workers Paid plan.
+
+For a Git-connected production Worker:
+
+1. Keep the Worker name as `cocreate`, matching `wrangler.jsonc`.
+2. Set the production branch to `main`.
+3. Use `pnpm build` as the build command and `pnpm deploy:cloudflare` as the deploy command.
+4. Push to `main` and allow several minutes for the first container image to build and provision.
+
+The Worker generates stable high-entropy session and credential-encryption secrets in its Durable Object storage on first startup. To manage those values yourself, add `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` as encrypted Worker secrets in the Cloudflare dashboard; configured values override the generated ones. Never add secret values to `wrangler.jsonc` or the repository.
+
 Tests cover signed participant attribution, character-level Yjs edits across three WebSocket clients, evolving requirements, owner-only provider setup, mixed-provider role assignment, secret redaction, serialized builds, failed-build retention, restart persistence, validated multi-file operations, runnable downloads, and preview compilation. Adapter contract fixtures cover all seven adapters, model discovery/manual IDs, authentication errors, successful text and structured output, schema failures, empty/truncated output, rate-limit retries, and cancellation. They do not spend or require a real API key.
 
 ## Architecture

@@ -1,0 +1,15 @@
+.git
+.env
+.env.*
+.wrangler
+node_modules
+dist
+data
+generated
+.browser-preview-profile
+.browser-smoke-profile
+.connections-smoke-profile-*
+.pnpm-store
+.runtime
+.tmp-test-build
+*.log
