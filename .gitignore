@@ -46,3 +46,10 @@ next-env.d.ts
 /work/
 .runtime/
 .connections-smoke-profile*/
+
+# Graphify local cache and machine-specific build state
+/graphify-out/cache/
+/graphify-out/.graphify_*
+/graphify-out/.run_ast.py
+/graphify-out/favicon-preview.png
+/graphify-out/20??-??-??/
