@@ -444,16 +444,16 @@
     "semantic_hash": "5f595a2eb17d16c30801d91d3d05e7e9"
   },
   "server/generator.ts": {
-    "mtime": 1789491353.3048823,
-    "seen": 1789492626.6613934,
-    "ast_hash": "47c9ef929d04c8c74ae03a8179168e47",
-    "semantic_hash": "47c9ef929d04c8c74ae03a8179168e47"
+    "mtime": 1789495426.6550584,
+    "seen": 1789498406.0718658,
+    "ast_hash": "31b5f2a94c5260d086a07588b56ce96c",
+    "semantic_hash": ""
   },
   "server/index.ts": {
-    "mtime": 1789491353.3068871,
-    "seen": 1789492626.6613934,
-    "ast_hash": "ffd809a601f81ff30540095472253f1b",
-    "semantic_hash": "ffd809a601f81ff30540095472253f1b"
+    "mtime": 1789495668.9690096,
+    "seen": 1789498406.0718658,
+    "ast_hash": "1296cbf0e8112967017a594b188add53",
+    "semantic_hash": ""
   },
   "server/orchestration.ts": {
     "mtime": 1789491353.3078842,
@@ -474,16 +474,16 @@
     "semantic_hash": "2b2b4e549388ff6d7911475a724ad394"
   },
   "server/providers.ts": {
-    "mtime": 1789491353.310882,
-    "seen": 1789492626.6613934,
-    "ast_hash": "799a2c395d4ac0e8c619090300278f78",
-    "semantic_hash": "799a2c395d4ac0e8c619090300278f78"
+    "mtime": 1789495460.6266582,
+    "seen": 1789498406.0718658,
+    "ast_hash": "b4eba2a7efa3968df3c28c940ab8e902",
+    "semantic_hash": ""
   },
   "server/rooms.ts": {
-    "mtime": 1789491353.311881,
-    "seen": 1789492626.6613934,
-    "ast_hash": "7b056e8759f6fdffc51c44ea53f60353",
-    "semantic_hash": "7b056e8759f6fdffc51c44ea53f60353"
+    "mtime": 1789495836.9293866,
+    "seen": 1789498406.0718658,
+    "ast_hash": "ed986682a030495e72c6baac64357894",
+    "semantic_hash": ""
   },
   "server/zip.ts": {
     "mtime": 1789491353.312884,
@@ -510,10 +510,10 @@
     "semantic_hash": "ca870ea28b692a1596c7762cb5e6d43c"
   },
   "src/types.ts": {
-    "mtime": 1789491353.319042,
-    "seen": 1789492626.6613934,
-    "ast_hash": "8a02e84e769662957bd33eea15d43e2d",
-    "semantic_hash": "8a02e84e769662957bd33eea15d43e2d"
+    "mtime": 1789495444.6426055,
+    "seen": 1789498406.0718658,
+    "ast_hash": "99e5bd6e5f2fd1e46ec15e8e482c6446",
+    "semantic_hash": ""
   },
   "tests/assignments.test.ts": {
     "mtime": 1789491353.3200462,
@@ -546,10 +546,10 @@
     "semantic_hash": "dea408ad8e04767151bbd9c41ac85970"
   },
   "tests/integration.test.ts": {
-    "mtime": 1789491353.3265736,
-    "seen": 1789492626.6613934,
-    "ast_hash": "6e90ad51cc9b6d8204d45c200fd2c7ea",
-    "semantic_hash": "6e90ad51cc9b6d8204d45c200fd2c7ea"
+    "mtime": 1789495720.016788,
+    "seen": 1789498406.0718658,
+    "ast_hash": "2bdfde1b2fc8a3100b1a8030fad59dd6",
+    "semantic_hash": ""
   },
   "tests/preview-smoke.mjs": {
     "mtime": 1789491353.3275704,
@@ -642,10 +642,10 @@
     "semantic_hash": "21ceb6533048be51308e69e7b74a35cf"
   },
   "README.md": {
-    "mtime": 1789491353.2118971,
-    "seen": 1789492626.6613934,
-    "ast_hash": "617b670025d78b7f01ac26de45281983",
-    "semantic_hash": "617b670025d78b7f01ac26de45281983"
+    "mtime": 1789495681.6015813,
+    "seen": 1789498406.0728724,
+    "ast_hash": "3b7728215d4e2534626614a096bc1c28",
+    "semantic_hash": ""
   },
   "index.html": {
     "mtime": 1789491353.290739,
@@ -675,6 +675,30 @@
     "mtime": 1789492331.6739576,
     "seen": 1789492690.0381534,
     "ast_hash": "e2d1500ff31764e4e9422d1a7fc2d2be",
+    "semantic_hash": ""
+  },
+  "tests/auto-build-budget.test.ts": {
+    "mtime": 1789498304.4792717,
+    "seen": 1789498406.0718658,
+    "ast_hash": "f8cfb13e078ab6553e8d573f40637f58",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md": {
+    "mtime": 1789493516.2411642,
+    "seen": 1789498406.0728724,
+    "ast_hash": "95157528bd8e470752dcbc7b30c38208",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md": {
+    "mtime": 1789494223.4428833,
+    "seen": 1789498406.0728724,
+    "ast_hash": "8bdcd9f67b09dd88d2f39e577da7d9c0",
+    "semantic_hash": ""
+  },
+  "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md": {
+    "mtime": 1789494742.8870127,
+    "seen": 1789498406.0728724,
+    "ast_hash": "eda89eada15a83911ea44ef8676180a0",
     "semantic_hash": ""
   }
 }

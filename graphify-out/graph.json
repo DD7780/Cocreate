@@ -44,7 +44,7 @@
       "file_type": "code",
       "norm_label": "roommanager",
       "source_file": "server/rooms.ts",
-      "source_location": "L9"
+      "source_location": "L12"
     },
     {
       "id": "src_types_aiformat",
@@ -149,6 +149,19 @@
       "norm_label": "projectspec",
       "source_file": "server/project.ts",
       "source_location": "L10"
+    },
+    {
+      "id": "server_rooms_room",
+      "label": "Room",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "index.ts",
+      "file_type": "code",
+      "norm_label": "room",
+      "source_file": "server/rooms.ts",
+      "source_location": "L4"
     },
     {
       "id": "components_ui_drawer_drawercontextprops",
@@ -281,13 +294,26 @@
       "source_location": "L13"
     },
     {
+      "id": "server_generator_modelresult",
+      "label": "ModelResult",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "modelresult",
+      "source_file": "server/generator.ts",
+      "source_location": "L9"
+    },
+    {
       "id": "server_providers_providerconfig",
       "label": "ProviderConfig",
       "_callable": true,
       "_callable_class": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "providerconfig",
       "source_file": "server/providers.ts",
@@ -343,20 +369,7 @@
       "file_type": "code",
       "norm_label": "roomview",
       "source_file": "src/types.ts",
-      "source_location": "L16"
-    },
-    {
-      "id": "src_types_workflowstatus",
-      "label": "WorkflowStatus",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "App.tsx",
-      "file_type": "code",
-      "norm_label": "workflowstatus",
-      "source_file": "src/types.ts",
-      "source_location": "L2"
+      "source_location": "L17"
     },
     {
       "id": "worker_container_cocreatecontainer",
@@ -411,6 +424,19 @@
       "source_location": "L2"
     },
     {
+      "id": "server_generator_aiconfig",
+      "label": "AIConfig",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rooms.ts",
+      "file_type": "code",
+      "norm_label": "aiconfig",
+      "source_file": "server/generator.ts",
+      "source_location": "L2"
+    },
+    {
       "id": "server_rooms_aisettings",
       "label": "AISettings",
       "_callable": true,
@@ -448,19 +474,6 @@
       "norm_label": "editrecord",
       "source_file": "server/rooms.ts",
       "source_location": "L3"
-    },
-    {
-      "id": "server_rooms_room",
-      "label": "Room",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 5,
-      "community_name": "rooms.ts",
-      "file_type": "code",
-      "norm_label": "room",
-      "source_file": "server/rooms.ts",
-      "source_location": "L4"
     },
     {
       "id": "server_rooms_storedconnection",
@@ -541,6 +554,19 @@
       "source_location": "L12"
     },
     {
+      "id": "src_types_aiusage",
+      "label": "AIUsage",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rooms.ts",
+      "file_type": "code",
+      "norm_label": "aiusage",
+      "source_file": "src/types.ts",
+      "source_location": "L16"
+    },
+    {
       "id": "src_types_capabilitycheck",
       "label": "CapabilityCheck",
       "_callable": true,
@@ -617,6 +643,19 @@
       "norm_label": "version",
       "source_file": "src/types.ts",
       "source_location": "L7"
+    },
+    {
+      "id": "src_types_workflowstatus",
+      "label": "WorkflowStatus",
+      "_callable": true,
+      "_callable_class": true,
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rooms.ts",
+      "file_type": "code",
+      "norm_label": "workflowstatus",
+      "source_file": "src/types.ts",
+      "source_location": "L2"
     },
     {
       "id": "components_ui_native_select_nativeselectprops",
@@ -716,22 +755,9 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "agentchange",
-      "source_file": "server/generator.ts",
-      "source_location": "L2"
-    },
-    {
-      "id": "server_generator_aiconfig",
-      "label": "AIConfig",
-      "_callable": true,
-      "_callable_class": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "aiconfig",
       "source_file": "server/generator.ts",
       "source_location": "L2"
     },
@@ -742,7 +768,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "productsource",
       "source_file": "src/types.ts",
@@ -755,7 +781,7 @@
       "_callable_class": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "requirement",
       "source_file": "src/types.ts",
@@ -771,7 +797,7 @@
       "file_type": "code",
       "norm_label": "createcocreateserver()",
       "source_file": "server/index.ts",
-      "source_location": "L3"
+      "source_location": "L4"
     },
     {
       "id": "server_project_loadproject",
@@ -798,6 +824,18 @@
       "source_location": "L33"
     },
     {
+      "id": "server_rooms_buildfingerprint",
+      "label": "buildFingerprint()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": "buildfingerprint()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L10"
+    },
+    {
       "id": "server_rooms_documenttext",
       "label": "documentText()",
       "_callable": true,
@@ -808,6 +846,18 @@
       "norm_label": "documenttext()",
       "source_file": "server/rooms.ts",
       "source_location": "L6"
+    },
+    {
+      "id": "server_rooms_emptyusage",
+      "label": "emptyUsage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": "emptyusage()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L8"
     },
     {
       "id": "server_rooms_now",
@@ -822,6 +872,18 @@
       "source_location": "L5"
     },
     {
+      "id": "server_rooms_requirementfingerprint",
+      "label": "requirementFingerprint()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": "requirementfingerprint()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L9"
+    },
+    {
       "id": "server_rooms_roommanager_aiconfig",
       "label": ".aiConfig()",
       "_callable": true,
@@ -831,7 +893,7 @@
       "file_type": "code",
       "norm_label": ".aiconfig()",
       "source_file": "server/rooms.ts",
-      "source_location": "L26"
+      "source_location": "L29"
     },
     {
       "id": "server_rooms_roommanager_assignai",
@@ -843,7 +905,7 @@
       "file_type": "code",
       "norm_label": ".assignai()",
       "source_file": "server/rooms.ts",
-      "source_location": "L32"
+      "source_location": "L35"
     },
     {
       "id": "server_rooms_roommanager_broadcastbinary",
@@ -855,7 +917,7 @@
       "file_type": "code",
       "norm_label": ".broadcastbinary()",
       "source_file": "server/rooms.ts",
-      "source_location": "L22"
+      "source_location": "L25"
     },
     {
       "id": "server_rooms_roommanager_broadcaststate",
@@ -867,7 +929,31 @@
       "file_type": "code",
       "norm_label": ".broadcaststate()",
       "source_file": "server/rooms.ts",
-      "source_location": "L22"
+      "source_location": "L25"
+    },
+    {
+      "id": "server_rooms_roommanager_buildcooldownms",
+      "label": ".buildCooldownMs()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".buildcooldownms()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L39"
+    },
+    {
+      "id": "server_rooms_roommanager_builddebouncems",
+      "label": ".buildDebounceMs()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".builddebouncems()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L39"
     },
     {
       "id": "server_rooms_roommanager_buildloop",
@@ -879,7 +965,19 @@
       "file_type": "code",
       "norm_label": ".buildloop()",
       "source_file": "server/rooms.ts",
-      "source_location": "L42"
+      "source_location": "L51"
+    },
+    {
+      "id": "server_rooms_roommanager_buildmaxwaitms",
+      "label": ".buildMaxWaitMs()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".buildmaxwaitms()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L39"
     },
     {
       "id": "server_rooms_roommanager_buildnow",
@@ -891,7 +989,19 @@
       "file_type": "code",
       "norm_label": ".buildnow()",
       "source_file": "server/rooms.ts",
-      "source_location": "L41"
+      "source_location": "L50"
+    },
+    {
+      "id": "server_rooms_roommanager_cancelled",
+      "label": ".cancelled()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".cancelled()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L40"
     },
     {
       "id": "server_rooms_roommanager_checkcapabilities",
@@ -903,7 +1013,7 @@
       "file_type": "code",
       "norm_label": ".checkcapabilities()",
       "source_file": "server/rooms.ts",
-      "source_location": "L31"
+      "source_location": "L34"
     },
     {
       "id": "server_rooms_roommanager_connect",
@@ -915,7 +1025,7 @@
       "file_type": "code",
       "norm_label": ".connect()",
       "source_file": "server/rooms.ts",
-      "source_location": "L18"
+      "source_location": "L21"
     },
     {
       "id": "server_rooms_roommanager_connectai",
@@ -927,7 +1037,7 @@
       "file_type": "code",
       "norm_label": ".connectai()",
       "source_file": "server/rooms.ts",
-      "source_location": "L34"
+      "source_location": "L37"
     },
     {
       "id": "server_rooms_roommanager_connection",
@@ -939,7 +1049,7 @@
       "file_type": "code",
       "norm_label": ".connection()",
       "source_file": "server/rooms.ts",
-      "source_location": "L23"
+      "source_location": "L26"
     },
     {
       "id": "server_rooms_roommanager_constructor",
@@ -951,7 +1061,7 @@
       "file_type": "code",
       "norm_label": ".constructor()",
       "source_file": "server/rooms.ts",
-      "source_location": "L10"
+      "source_location": "L13"
     },
     {
       "id": "server_rooms_roommanager_create",
@@ -963,7 +1073,7 @@
       "file_type": "code",
       "norm_label": ".create()",
       "source_file": "server/rooms.ts",
-      "source_location": "L11"
+      "source_location": "L14"
     },
     {
       "id": "server_rooms_roommanager_disconnect",
@@ -975,7 +1085,7 @@
       "file_type": "code",
       "norm_label": ".disconnect()",
       "source_file": "server/rooms.ts",
-      "source_location": "L19"
+      "source_location": "L22"
     },
     {
       "id": "server_rooms_roommanager_disconnectai",
@@ -987,7 +1097,7 @@
       "file_type": "code",
       "norm_label": ".disconnectai()",
       "source_file": "server/rooms.ts",
-      "source_location": "L35"
+      "source_location": "L38"
     },
     {
       "id": "server_rooms_roommanager_disconnectconnection",
@@ -999,7 +1109,7 @@
       "file_type": "code",
       "norm_label": ".disconnectconnection()",
       "source_file": "server/rooms.ts",
-      "source_location": "L33"
+      "source_location": "L36"
     },
     {
       "id": "server_rooms_roommanager_discoverconnectionmodels",
@@ -1011,7 +1121,7 @@
       "file_type": "code",
       "norm_label": ".discoverconnectionmodels()",
       "source_file": "server/rooms.ts",
-      "source_location": "L30"
+      "source_location": "L33"
     },
     {
       "id": "server_rooms_roommanager_exists",
@@ -1023,7 +1133,7 @@
       "file_type": "code",
       "norm_label": ".exists()",
       "source_file": "server/rooms.ts",
-      "source_location": "L11"
+      "source_location": "L14"
     },
     {
       "id": "server_rooms_roommanager_flushagents",
@@ -1035,7 +1145,7 @@
       "file_type": "code",
       "norm_label": ".flushagents()",
       "source_file": "server/rooms.ts",
-      "source_location": "L38"
+      "source_location": "L46"
     },
     {
       "id": "server_rooms_roommanager_get",
@@ -1047,7 +1157,7 @@
       "file_type": "code",
       "norm_label": ".get()",
       "source_file": "server/rooms.ts",
-      "source_location": "L11"
+      "source_location": "L14"
     },
     {
       "id": "server_rooms_roommanager_handlemessage",
@@ -1059,7 +1169,7 @@
       "file_type": "code",
       "norm_label": ".handlemessage()",
       "source_file": "server/rooms.ts",
-      "source_location": "L20"
+      "source_location": "L23"
     },
     {
       "id": "server_rooms_roommanager_hasai",
@@ -1071,7 +1181,19 @@
       "file_type": "code",
       "norm_label": ".hasai()",
       "source_file": "server/rooms.ts",
-      "source_location": "L26"
+      "source_location": "L29"
+    },
+    {
+      "id": "server_rooms_roommanager_haspending",
+      "label": ".hasPending()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".haspending()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L41"
     },
     {
       "id": "server_rooms_roommanager_join",
@@ -1083,7 +1205,7 @@
       "file_type": "code",
       "norm_label": ".join()",
       "source_file": "server/rooms.ts",
-      "source_location": "L17"
+      "source_location": "L20"
     },
     {
       "id": "server_rooms_roommanager_load",
@@ -1095,7 +1217,7 @@
       "file_type": "code",
       "norm_label": ".load()",
       "source_file": "server/rooms.ts",
-      "source_location": "L15"
+      "source_location": "L18"
     },
     {
       "id": "server_rooms_roommanager_makeroom",
@@ -1107,7 +1229,7 @@
       "file_type": "code",
       "norm_label": ".makeroom()",
       "source_file": "server/rooms.ts",
-      "source_location": "L12"
+      "source_location": "L15"
     },
     {
       "id": "server_rooms_roommanager_models",
@@ -1119,7 +1241,7 @@
       "file_type": "code",
       "norm_label": ".models()",
       "source_file": "server/rooms.ts",
-      "source_location": "L28"
+      "source_location": "L31"
     },
     {
       "id": "server_rooms_roommanager_normalize",
@@ -1131,7 +1253,7 @@
       "file_type": "code",
       "norm_label": ".normalize()",
       "source_file": "server/rooms.ts",
-      "source_location": "L24"
+      "source_location": "L27"
     },
     {
       "id": "server_rooms_roommanager_processnow",
@@ -1143,7 +1265,7 @@
       "file_type": "code",
       "norm_label": ".processnow()",
       "source_file": "server/rooms.ts",
-      "source_location": "L43"
+      "source_location": "L52"
     },
     {
       "id": "server_rooms_roommanager_queueedit",
@@ -1155,7 +1277,19 @@
       "file_type": "code",
       "norm_label": ".queueedit()",
       "source_file": "server/rooms.ts",
-      "source_location": "L36"
+      "source_location": "L44"
+    },
+    {
+      "id": "server_rooms_roommanager_recordusage",
+      "label": ".recordUsage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".recordusage()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L42"
     },
     {
       "id": "server_rooms_roommanager_reportruntimeerror",
@@ -1167,7 +1301,7 @@
       "file_type": "code",
       "norm_label": ".reportruntimeerror()",
       "source_file": "server/rooms.ts",
-      "source_location": "L44"
+      "source_location": "L53"
     },
     {
       "id": "server_rooms_roommanager_requestbuild",
@@ -1179,7 +1313,7 @@
       "file_type": "code",
       "norm_label": ".requestbuild()",
       "source_file": "server/rooms.ts",
-      "source_location": "L40"
+      "source_location": "L49"
     },
     {
       "id": "server_rooms_roommanager_runagent",
@@ -1191,7 +1325,7 @@
       "file_type": "code",
       "norm_label": ".runagent()",
       "source_file": "server/rooms.ts",
-      "source_location": "L37"
+      "source_location": "L45"
     },
     {
       "id": "server_rooms_roommanager_save",
@@ -1203,7 +1337,7 @@
       "file_type": "code",
       "norm_label": ".save()",
       "source_file": "server/rooms.ts",
-      "source_location": "L16"
+      "source_location": "L19"
     },
     {
       "id": "server_rooms_roommanager_saveconnection",
@@ -1215,7 +1349,19 @@
       "file_type": "code",
       "norm_label": ".saveconnection()",
       "source_file": "server/rooms.ts",
-      "source_location": "L29"
+      "source_location": "L32"
+    },
+    {
+      "id": "server_rooms_roommanager_scheduleagent",
+      "label": ".scheduleAgent()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".scheduleagent()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L43"
     },
     {
       "id": "server_rooms_roommanager_schedulebuild",
@@ -1227,7 +1373,7 @@
       "file_type": "code",
       "norm_label": ".schedulebuild()",
       "source_file": "server/rooms.ts",
-      "source_location": "L39"
+      "source_location": "L47"
     },
     {
       "id": "server_rooms_roommanager_sendjson",
@@ -1239,7 +1385,7 @@
       "file_type": "code",
       "norm_label": ".sendjson()",
       "source_file": "server/rooms.ts",
-      "source_location": "L22"
+      "source_location": "L25"
     },
     {
       "id": "server_rooms_roommanager_sendsync",
@@ -1251,7 +1397,7 @@
       "file_type": "code",
       "norm_label": ".sendsync()",
       "source_file": "server/rooms.ts",
-      "source_location": "L21"
+      "source_location": "L24"
     },
     {
       "id": "server_rooms_roommanager_shutdown",
@@ -1263,7 +1409,7 @@
       "file_type": "code",
       "norm_label": ".shutdown()",
       "source_file": "server/rooms.ts",
-      "source_location": "L47"
+      "source_location": "L56"
     },
     {
       "id": "server_rooms_roommanager_storedconfig",
@@ -1275,7 +1421,7 @@
       "file_type": "code",
       "norm_label": ".storedconfig()",
       "source_file": "server/rooms.ts",
-      "source_location": "L25"
+      "source_location": "L28"
     },
     {
       "id": "server_rooms_roommanager_testconnection",
@@ -1287,7 +1433,19 @@
       "file_type": "code",
       "norm_label": ".testconnection()",
       "source_file": "server/rooms.ts",
-      "source_location": "L27"
+      "source_location": "L30"
+    },
+    {
+      "id": "server_rooms_roommanager_tryscheduledbuild",
+      "label": ".tryScheduledBuild()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 0,
+      "community_name": "RoomManager",
+      "file_type": "code",
+      "norm_label": ".tryscheduledbuild()",
+      "source_file": "server/rooms.ts",
+      "source_location": "L48"
     },
     {
       "id": "server_rooms_roommanager_version",
@@ -1299,7 +1457,7 @@
       "file_type": "code",
       "norm_label": ".version()",
       "source_file": "server/rooms.ts",
-      "source_location": "L46"
+      "source_location": "L55"
     },
     {
       "id": "server_rooms_roommanager_view",
@@ -1311,7 +1469,7 @@
       "file_type": "code",
       "norm_label": ".view()",
       "source_file": "server/rooms.ts",
-      "source_location": "L45"
+      "source_location": "L54"
     },
     {
       "id": "server_auth_b64",
@@ -1372,6 +1530,18 @@
       "norm_label": "verifysession()",
       "source_file": "server/auth.ts",
       "source_location": "L13"
+    },
+    {
+      "id": "server_index_duration",
+      "label": "duration()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 1,
+      "community_name": "index.ts",
+      "file_type": "code",
+      "norm_label": "duration()",
+      "source_file": "server/index.ts",
+      "source_location": "L3"
     },
     {
       "id": "server_orchestration_keeplastsuccess",
@@ -2982,16 +3152,52 @@
       "source_location": "L27"
     },
     {
+      "id": "server_generator_boundedinput",
+      "label": "boundedInput()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "boundedinput()",
+      "source_file": "server/generator.ts",
+      "source_location": "L6"
+    },
+    {
+      "id": "server_generator_callopenai",
+      "label": "callOpenAI()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "callopenai()",
+      "source_file": "server/generator.ts",
+      "source_location": "L10"
+    },
+    {
       "id": "server_generator_listprovidermodels",
       "label": "listProviderModels()",
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "listprovidermodels()",
       "source_file": "server/generator.ts",
-      "source_location": "L11"
+      "source_location": "L12"
+    },
+    {
+      "id": "server_generator_previewhtml",
+      "label": "previewHtml()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "previewhtml()",
+      "source_file": "server/generator.ts",
+      "source_location": "L19"
     },
     {
       "id": "server_generator_providerconfig",
@@ -2999,11 +3205,23 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "providerconfig()",
       "source_file": "server/generator.ts",
       "source_location": "L8"
+    },
+    {
+      "id": "server_generator_strings",
+      "label": "strings()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "strings()",
+      "source_file": "server/generator.ts",
+      "source_location": "L13"
     },
     {
       "id": "server_generator_testopenaiconnection",
@@ -3011,11 +3229,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "testopenaiconnection()",
       "source_file": "server/generator.ts",
-      "source_location": "L10"
+      "source_location": "L11"
     },
     {
       "id": "server_generator_validatebaseurl",
@@ -3023,7 +3241,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "validatebaseurl()",
       "source_file": "server/generator.ts",
@@ -3035,11 +3253,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "adapterfor()",
       "source_file": "server/providers.ts",
-      "source_location": "L32"
+      "source_location": "L33"
     },
     {
       "id": "server_providers_discovermodels",
@@ -3047,11 +3265,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "discovermodels()",
       "source_file": "server/providers.ts",
-      "source_location": "L33"
+      "source_location": "L34"
     },
     {
       "id": "server_providers_generatestructured",
@@ -3059,11 +3277,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "generatestructured()",
       "source_file": "server/providers.ts",
-      "source_location": "L37"
+      "source_location": "L38"
     },
     {
       "id": "server_providers_generatetext",
@@ -3071,11 +3289,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "generatetext()",
       "source_file": "server/providers.ts",
-      "source_location": "L38"
+      "source_location": "L39"
     },
     {
       "id": "server_providers_validateproviderurl",
@@ -3083,7 +3301,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "validateproviderurl()",
       "source_file": "server/providers.ts",
@@ -3095,7 +3313,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "json()",
       "source_file": "tests/providers.test.ts",
@@ -3328,6 +3546,30 @@
       "norm_label": "fieldtitle()",
       "source_file": "components/ui/field.tsx",
       "source_location": "L118"
+    },
+    {
+      "id": "components_ui_calendar_calendar",
+      "label": "Calendar()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "react",
+      "file_type": "code",
+      "norm_label": "calendar()",
+      "source_file": "components/ui/calendar.tsx",
+      "source_location": "L19"
+    },
+    {
+      "id": "components_ui_calendar_calendardaybutton",
+      "label": "CalendarDayButton()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "react",
+      "file_type": "code",
+      "norm_label": "calendardaybutton()",
+      "source_file": "components/ui/calendar.tsx",
+      "source_location": "L193"
     },
     {
       "id": "components_ui_input_input",
@@ -3954,6 +4196,42 @@
       "source_location": "L34"
     },
     {
+      "id": "tests_auto_build_budget_test_response",
+      "label": "response()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "response()",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L16"
+    },
+    {
+      "id": "tests_auto_build_budget_test_send",
+      "label": "send()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "send()",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L94"
+    },
+    {
+      "id": "tests_auto_build_budget_test_waitfor",
+      "label": "waitFor()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 3,
+      "community_name": "App.tsx",
+      "file_type": "code",
+      "norm_label": "waitfor()",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L7"
+    },
+    {
       "id": "components_ui_navigation_menu_navigationmenu",
       "label": "NavigationMenu()",
       "_callable": true,
@@ -4566,28 +4844,52 @@
       "source_location": "L75"
     },
     {
-      "id": "components_ui_calendar_calendar",
-      "label": "Calendar()",
+      "id": "components_ui_accordion_accordion",
+      "label": "Accordion()",
       "_callable": true,
       "_origin": "ast",
       "community": 38,
       "community_name": "lucide-react",
       "file_type": "code",
-      "norm_label": "calendar()",
-      "source_file": "components/ui/calendar.tsx",
-      "source_location": "L19"
+      "norm_label": "accordion()",
+      "source_file": "components/ui/accordion.tsx",
+      "source_location": "L6"
     },
     {
-      "id": "components_ui_calendar_calendardaybutton",
-      "label": "CalendarDayButton()",
+      "id": "components_ui_accordion_accordioncontent",
+      "label": "AccordionContent()",
       "_callable": true,
       "_origin": "ast",
       "community": 38,
       "community_name": "lucide-react",
       "file_type": "code",
-      "norm_label": "calendardaybutton()",
-      "source_file": "components/ui/calendar.tsx",
-      "source_location": "L193"
+      "norm_label": "accordioncontent()",
+      "source_file": "components/ui/accordion.tsx",
+      "source_location": "L55"
+    },
+    {
+      "id": "components_ui_accordion_accordionitem",
+      "label": "AccordionItem()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "lucide-react",
+      "file_type": "code",
+      "norm_label": "accordionitem()",
+      "source_file": "components/ui/accordion.tsx",
+      "source_location": "L16"
+    },
+    {
+      "id": "components_ui_accordion_accordiontrigger",
+      "label": "AccordionTrigger()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 38,
+      "community_name": "lucide-react",
+      "file_type": "code",
+      "norm_label": "accordiontrigger()",
+      "source_file": "components/ui/accordion.tsx",
+      "source_location": "L26"
     },
     {
       "id": "components_ui_checkbox_checkbox",
@@ -5622,52 +5924,100 @@
       "source_location": "L19"
     },
     {
-      "id": "components_ui_accordion_accordion",
-      "label": "Accordion()",
+      "id": "server_generator_bundlesource",
+      "label": "bundleSource()",
       "_callable": true,
       "_origin": "ast",
       "community": 54,
-      "community_name": "accordion.tsx",
+      "community_name": "extractRequirement",
       "file_type": "code",
-      "norm_label": "accordion()",
-      "source_file": "components/ui/accordion.tsx",
-      "source_location": "L6"
+      "norm_label": "bundlesource()",
+      "source_file": "server/generator.ts",
+      "source_location": "L5"
     },
     {
-      "id": "components_ui_accordion_accordioncontent",
-      "label": "AccordionContent()",
+      "id": "server_generator_compactrequirement",
+      "label": "compactRequirement()",
       "_callable": true,
       "_origin": "ast",
       "community": 54,
-      "community_name": "accordion.tsx",
+      "community_name": "extractRequirement",
       "file_type": "code",
-      "norm_label": "accordioncontent()",
-      "source_file": "components/ui/accordion.tsx",
-      "source_location": "L55"
+      "norm_label": "compactrequirement()",
+      "source_file": "server/generator.ts",
+      "source_location": "L15"
     },
     {
-      "id": "components_ui_accordion_accordionitem",
-      "label": "AccordionItem()",
+      "id": "server_generator_compacttext",
+      "label": "compactText()",
       "_callable": true,
       "_origin": "ast",
       "community": 54,
-      "community_name": "accordion.tsx",
+      "community_name": "extractRequirement",
       "file_type": "code",
-      "norm_label": "accordionitem()",
-      "source_file": "components/ui/accordion.tsx",
+      "norm_label": "compacttext()",
+      "source_file": "server/generator.ts",
+      "source_location": "L14"
+    },
+    {
+      "id": "server_generator_extractrequirement",
+      "label": "extractRequirement()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "extractRequirement",
+      "file_type": "code",
+      "norm_label": "extractrequirement()",
+      "source_file": "server/generator.ts",
       "source_location": "L16"
     },
     {
-      "id": "components_ui_accordion_accordiontrigger",
-      "label": "AccordionTrigger()",
+      "id": "server_generator_generateproduct",
+      "label": "generateProduct()",
       "_callable": true,
       "_origin": "ast",
       "community": 54,
-      "community_name": "accordion.tsx",
+      "community_name": "extractRequirement",
       "file_type": "code",
-      "norm_label": "accordiontrigger()",
-      "source_file": "components/ui/accordion.tsx",
-      "source_location": "L26"
+      "norm_label": "generateproduct()",
+      "source_file": "server/generator.ts",
+      "source_location": "L17"
+    },
+    {
+      "id": "server_generator_generateprojectplan",
+      "label": "generateProjectPlan()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "extractRequirement",
+      "file_type": "code",
+      "norm_label": "generateprojectplan()",
+      "source_file": "server/generator.ts",
+      "source_location": "L18"
+    },
+    {
+      "id": "server_generator_validatesource",
+      "label": "validateSource()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "extractRequirement",
+      "file_type": "code",
+      "norm_label": "validatesource()",
+      "source_file": "server/generator.ts",
+      "source_location": "L4"
+    },
+    {
+      "id": "server_project_budgetprojectfiles",
+      "label": "budgetProjectFiles()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 54,
+      "community_name": "extractRequirement",
+      "file_type": "code",
+      "norm_label": "budgetprojectfiles()",
+      "source_file": "server/project.ts",
+      "source_location": "L34"
     },
     {
       "id": "components_ui_button_group_buttongroup",
@@ -5883,7 +6233,7 @@
       "file_type": "code",
       "norm_label": "bearer()",
       "source_file": "server/providers.ts",
-      "source_location": "L23"
+      "source_location": "L24"
     },
     {
       "id": "server_providers_classify",
@@ -5907,7 +6257,7 @@
       "file_type": "code",
       "norm_label": "commonmodels()",
       "source_file": "server/providers.ts",
-      "source_location": "L22"
+      "source_location": "L23"
     },
     {
       "id": "server_providers_contenttext",
@@ -5919,7 +6269,7 @@
       "file_type": "code",
       "norm_label": "contenttext()",
       "source_file": "server/providers.ts",
-      "source_location": "L19"
+      "source_location": "L20"
     },
     {
       "id": "server_providers_ensure",
@@ -5931,7 +6281,19 @@
       "file_type": "code",
       "norm_label": "ensure()",
       "source_file": "server/providers.ts",
-      "source_location": "L21"
+      "source_location": "L22"
+    },
+    {
+      "id": "server_providers_mergeusage",
+      "label": "mergeUsage()",
+      "_callable": true,
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "providers.ts",
+      "file_type": "code",
+      "norm_label": "mergeusage()",
+      "source_file": "server/providers.ts",
+      "source_location": "L19"
     },
     {
       "id": "server_providers_nestedprovidermessage",
@@ -5955,7 +6317,7 @@
       "file_type": "code",
       "norm_label": "openaicompatible()",
       "source_file": "server/providers.ts",
-      "source_location": "L24"
+      "source_location": "L25"
     },
     {
       "id": "server_providers_openaitext",
@@ -5967,7 +6329,7 @@
       "file_type": "code",
       "norm_label": "openaitext()",
       "source_file": "server/providers.ts",
-      "source_location": "L20"
+      "source_location": "L21"
     },
     {
       "id": "server_providers_parsemessage",
@@ -5991,7 +6353,7 @@
       "file_type": "code",
       "norm_label": "parsestructured()",
       "source_file": "server/providers.ts",
-      "source_location": "L36"
+      "source_location": "L37"
     },
     {
       "id": "server_providers_providererror_constructor",
@@ -6039,7 +6401,7 @@
       "file_type": "code",
       "norm_label": "validate()",
       "source_file": "server/providers.ts",
-      "source_location": "L35"
+      "source_location": "L36"
     },
     {
       "id": "app_page_home",
@@ -6263,7 +6625,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "clean()",
       "source_file": "server/demo.ts",
@@ -6275,7 +6637,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "demoextract()",
       "source_file": "server/demo.ts",
@@ -6287,7 +6649,7 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "demoorchestrate()",
       "source_file": "server/demo.ts",
@@ -6299,143 +6661,11 @@
       "_callable": true,
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "shell()",
       "source_file": "server/demo.ts",
       "source_location": "L24"
-    },
-    {
-      "id": "server_generator_boundedinput",
-      "label": "boundedInput()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "boundedinput()",
-      "source_file": "server/generator.ts",
-      "source_location": "L6"
-    },
-    {
-      "id": "server_generator_bundlesource",
-      "label": "bundleSource()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "bundlesource()",
-      "source_file": "server/generator.ts",
-      "source_location": "L5"
-    },
-    {
-      "id": "server_generator_callopenai",
-      "label": "callOpenAI()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "callopenai()",
-      "source_file": "server/generator.ts",
-      "source_location": "L9"
-    },
-    {
-      "id": "server_generator_compactrequirement",
-      "label": "compactRequirement()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "compactrequirement()",
-      "source_file": "server/generator.ts",
-      "source_location": "L15"
-    },
-    {
-      "id": "server_generator_extractrequirement",
-      "label": "extractRequirement()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "extractrequirement()",
-      "source_file": "server/generator.ts",
-      "source_location": "L13"
-    },
-    {
-      "id": "server_generator_generateproduct",
-      "label": "generateProduct()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "generateproduct()",
-      "source_file": "server/generator.ts",
-      "source_location": "L14"
-    },
-    {
-      "id": "server_generator_generateprojectplan",
-      "label": "generateProjectPlan()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "generateprojectplan()",
-      "source_file": "server/generator.ts",
-      "source_location": "L16"
-    },
-    {
-      "id": "server_generator_previewhtml",
-      "label": "previewHtml()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "previewhtml()",
-      "source_file": "server/generator.ts",
-      "source_location": "L17"
-    },
-    {
-      "id": "server_generator_strings",
-      "label": "strings()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "strings()",
-      "source_file": "server/generator.ts",
-      "source_location": "L12"
-    },
-    {
-      "id": "server_generator_validatesource",
-      "label": "validateSource()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "validatesource()",
-      "source_file": "server/generator.ts",
-      "source_location": "L4"
-    },
-    {
-      "id": "server_project_budgetprojectfiles",
-      "label": "budgetProjectFiles()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "budgetprojectfiles()",
-      "source_file": "server/project.ts",
-      "source_location": "L34"
     },
     {
       "id": "components_ui_toggle_toggle",
@@ -7655,11 +7885,33 @@
       "source_location": "L1"
     },
     {
+      "id": "server_generator",
+      "label": "generator.ts",
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "generator.ts",
+      "source_file": "server/generator.ts",
+      "source_location": "L1"
+    },
+    {
+      "id": "server_generator_productschema",
+      "label": "productSchema",
+      "_origin": "ast",
+      "community": 23,
+      "community_name": "generator.ts",
+      "file_type": "code",
+      "norm_label": "productschema",
+      "source_file": "server/generator.ts",
+      "source_location": "L13"
+    },
+    {
       "id": "tests_providers_test",
       "label": "providers.test.ts",
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "providers.test.ts",
       "source_file": "tests/providers.test.ts",
@@ -7670,7 +7922,7 @@
       "label": "schema",
       "_origin": "ast",
       "community": 23,
-      "community_name": "providers.test.ts",
+      "community_name": "generator.ts",
       "file_type": "code",
       "norm_label": "schema",
       "source_file": "tests/providers.test.ts",
@@ -7730,6 +7982,17 @@
       "norm_label": "fieldvariants",
       "source_file": "components/ui/field.tsx",
       "source_location": "L54"
+    },
+    {
+      "id": "components_ui_calendar",
+      "label": "calendar.tsx",
+      "_origin": "ast",
+      "community": 26,
+      "community_name": "react",
+      "file_type": "code",
+      "norm_label": "calendar.tsx",
+      "source_file": "components/ui/calendar.tsx",
+      "source_location": "L1"
     },
     {
       "id": "components_ui_input",
@@ -7886,14 +8149,14 @@
       "source_location": "L1"
     },
     {
-      "id": "ref_tiptap_extension_collaboration",
-      "label": "@tiptap/extension-collaboration",
+      "id": "tests_auto_build_budget_test",
+      "label": "auto-build-budget.test.ts",
       "_origin": "ast",
       "community": 3,
       "community_name": "App.tsx",
-      "file_type": "concept",
-      "norm_label": "@tiptap/extension-collaboration",
-      "source_file": "package.json",
+      "file_type": "code",
+      "norm_label": "auto-build-budget.test.ts",
+      "source_file": "tests/auto-build-budget.test.ts",
       "source_location": "L1"
     },
     {
@@ -7915,17 +8178,6 @@
       "community_name": "App.tsx",
       "file_type": "concept",
       "norm_label": "@tiptap/react",
-      "source_file": "package.json",
-      "source_location": "L1"
-    },
-    {
-      "id": "ref_tiptap_starter_kit",
-      "label": "@tiptap/starter-kit",
-      "_origin": "ast",
-      "community": 3,
-      "community_name": "App.tsx",
-      "file_type": "concept",
-      "norm_label": "@tiptap/starter-kit",
       "source_file": "package.json",
       "source_location": "L1"
     },
@@ -8172,14 +8424,14 @@
       "source_location": "L1"
     },
     {
-      "id": "components_ui_calendar",
-      "label": "calendar.tsx",
+      "id": "components_ui_accordion",
+      "label": "accordion.tsx",
       "_origin": "ast",
       "community": 38,
       "community_name": "lucide-react",
       "file_type": "code",
-      "norm_label": "calendar.tsx",
-      "source_file": "components/ui/calendar.tsx",
+      "norm_label": "accordion.tsx",
+      "source_file": "components/ui/accordion.tsx",
       "source_location": "L1"
     },
     {
@@ -8425,6 +8677,28 @@
       "source_location": "L1"
     },
     {
+      "id": "server_generator_projectschema",
+      "label": "projectSchema",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rooms.ts",
+      "file_type": "code",
+      "norm_label": "projectschema",
+      "source_file": "server/generator.ts",
+      "source_location": "L13"
+    },
+    {
+      "id": "server_generator_reqschema",
+      "label": "reqSchema",
+      "_origin": "ast",
+      "community": 5,
+      "community_name": "rooms.ts",
+      "file_type": "code",
+      "norm_label": "reqschema",
+      "source_file": "server/generator.ts",
+      "source_location": "L13"
+    },
+    {
       "id": "server_rooms",
       "label": "rooms.ts",
       "_origin": "ast",
@@ -8656,17 +8930,6 @@
       "source_location": "L15"
     },
     {
-      "id": "components_ui_accordion",
-      "label": "accordion.tsx",
-      "_origin": "ast",
-      "community": 54,
-      "community_name": "accordion.tsx",
-      "file_type": "code",
-      "norm_label": "accordion.tsx",
-      "source_file": "components/ui/accordion.tsx",
-      "source_location": "L1"
-    },
-    {
       "id": "components_ui_button_group",
       "label": "button-group.tsx",
       "_origin": "ast",
@@ -8763,7 +9026,7 @@
       "file_type": "code",
       "norm_label": "adapters",
       "source_file": "server/providers.ts",
-      "source_location": "L30"
+      "source_location": "L31"
     },
     {
       "id": "server_providers_anthropic",
@@ -8774,7 +9037,7 @@
       "file_type": "code",
       "norm_label": "anthropic",
       "source_file": "server/providers.ts",
-      "source_location": "L26"
+      "source_location": "L27"
     },
     {
       "id": "server_providers_deepseek",
@@ -8785,7 +9048,7 @@
       "file_type": "code",
       "norm_label": "deepseek",
       "source_file": "server/providers.ts",
-      "source_location": "L29"
+      "source_location": "L30"
     },
     {
       "id": "server_providers_gemini",
@@ -8796,7 +9059,7 @@
       "file_type": "code",
       "norm_label": "gemini",
       "source_file": "server/providers.ts",
-      "source_location": "L27"
+      "source_location": "L28"
     },
     {
       "id": "server_providers_localhosts",
@@ -8818,7 +9081,18 @@
       "file_type": "code",
       "norm_label": "ollama",
       "source_file": "server/providers.ts",
-      "source_location": "L28"
+      "source_location": "L29"
+    },
+    {
+      "id": "server_providers_providerdefaults",
+      "label": "providerDefaults",
+      "_origin": "ast",
+      "community": 6,
+      "community_name": "providers.ts",
+      "file_type": "code",
+      "norm_label": "providerdefaults",
+      "source_file": "server/providers.ts",
+      "source_location": "L32"
     },
     {
       "id": "app_page",
@@ -9023,66 +9297,11 @@
       "label": "demo.ts",
       "_origin": "ast",
       "community": 7,
-      "community_name": "generator.ts",
+      "community_name": "demo.ts",
       "file_type": "code",
       "norm_label": "demo.ts",
       "source_file": "server/demo.ts",
       "source_location": "L1"
-    },
-    {
-      "id": "server_generator",
-      "label": "generator.ts",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "generator.ts",
-      "source_file": "server/generator.ts",
-      "source_location": "L1"
-    },
-    {
-      "id": "server_generator_productschema",
-      "label": "productSchema",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "productschema",
-      "source_file": "server/generator.ts",
-      "source_location": "L12"
-    },
-    {
-      "id": "server_generator_projectschema",
-      "label": "projectSchema",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "projectschema",
-      "source_file": "server/generator.ts",
-      "source_location": "L12"
-    },
-    {
-      "id": "server_generator_reqschema",
-      "label": "reqSchema",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "reqschema",
-      "source_file": "server/generator.ts",
-      "source_location": "L12"
-    },
-    {
-      "id": "server_providers_providerdefaults",
-      "label": "providerDefaults",
-      "_origin": "ast",
-      "community": 7,
-      "community_name": "generator.ts",
-      "file_type": "code",
-      "norm_label": "providerdefaults",
-      "source_file": "server/providers.ts",
-      "source_location": "L31"
     },
     {
       "id": "components_ui_toggle",
@@ -9591,6 +9810,210 @@
       "source_location": "L1"
     },
     {
+      "id": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many",
+      "label": "query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "_origin": "ast",
+      "community": 85,
+      "community_name": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "file_type": "document",
+      "frontmatter": {
+        "type": "query",
+        "date": "2026-09-15T17:31:56.240186+00:00",
+        "question": "Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+        "contributor": "graphify",
+        "outcome": "useful",
+        "source_nodes": "[&quot;CoCreateProvider&quot;, &quot;.handleMessage()&quot;, &quot;.queueEdit()&quot;, &quot;.runAgent()&quot;, &quot;.scheduleBuild()&quot;, &quot;.buildLoop()&quot;, &quot;generateProjectPlan()&quot;, &quot;callOpenAI()&quot;]"
+      },
+      "node_kind": "page",
+      "norm_label": "query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_answer",
+      "label": "Answer",
+      "_origin": "ast",
+      "community": 85,
+      "community_name": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "answer",
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L12"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_outcome",
+      "label": "Outcome",
+      "_origin": "ast",
+      "community": 85,
+      "community_name": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "outcome",
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_q_why_did_typing_letters_in_the_canvas_consume_many_tokens_possibly_more_than_building_identify_affected_modules_data_flow_dependencies_and_tests_do_not_implement",
+      "label": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "_origin": "ast",
+      "community": 85,
+      "community_name": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "q: why did typing letters in the canvas consume many tokens, possibly more than building? identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L10"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_source_nodes",
+      "label": "Source Nodes",
+      "_origin": "ast",
+      "community": 85,
+      "community_name": "Q: Why did typing letters in the canvas consume many tokens, possibly more than building? Identify affected modules, data flow, dependencies, and tests; do not implement.",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "source nodes",
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L20"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is",
+      "label": "query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "_origin": "ast",
+      "community": 86,
+      "community_name": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "file_type": "document",
+      "frontmatter": {
+        "type": "query",
+        "date": "2026-09-15T17:43:43.441882+00:00",
+        "question": "Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+        "contributor": "graphify",
+        "outcome": "useful",
+        "source_nodes": "[&quot;.buildNow()&quot;, &quot;.requestBuild()&quot;, &quot;.buildLoop()&quot;, &quot;.handleMessage()&quot;, &quot;.queueEdit()&quot;, &quot;.runAgent()&quot;, &quot;.scheduleBuild()&quot;, &quot;.flushAgents()&quot;]"
+      },
+      "node_kind": "page",
+      "norm_label": "query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_answer",
+      "label": "Answer",
+      "_origin": "ast",
+      "community": 86,
+      "community_name": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "answer",
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L12"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_outcome",
+      "label": "Outcome",
+      "_origin": "ast",
+      "community": 86,
+      "community_name": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "outcome",
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_q_is_the_build_now_feature_useless_if_the_product_is_already_built_and_api_calls_happen_whenever_i_type_in_the_canvas_what_is_its_purpose",
+      "label": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "_origin": "ast",
+      "community": 86,
+      "community_name": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "q: is the build now feature useless if the product is already built and api calls happen whenever i type in the canvas? what is its purpose?",
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L10"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_source_nodes",
+      "label": "Source Nodes",
+      "_origin": "ast",
+      "community": 86,
+      "community_name": "Q: Is the Build now feature useless if the product is already built and API calls happen whenever I type in the canvas? What is its purpose?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "source nodes",
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L20"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod",
+      "label": "query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "_origin": "ast",
+      "community": 87,
+      "community_name": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "file_type": "document",
+      "frontmatter": {
+        "type": "query",
+        "date": "2026-09-15T17:52:22.886506+00:00",
+        "question": "Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+        "contributor": "graphify",
+        "outcome": "useful",
+        "source_nodes": "[&quot;.queueEdit()&quot;, &quot;.runAgent()&quot;, &quot;.scheduleBuild()&quot;, &quot;.requestBuild()&quot;, &quot;.buildLoop()&quot;, &quot;extractRequirement()&quot;, &quot;generateProjectPlan()&quot;, &quot;budgetProjectFiles()&quot;, &quot;Usage&quot;]"
+      },
+      "node_kind": "page",
+      "norm_label": "query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L1"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_answer",
+      "label": "Answer",
+      "_origin": "ast",
+      "community": 87,
+      "community_name": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "answer",
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L12"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_outcome",
+      "label": "Outcome",
+      "_origin": "ast",
+      "community": 87,
+      "community_name": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "outcome",
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L16"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_q_keep_automatic_building_but_reduce_aggressive_model_api_calls_and_token_consumption_what_potential_solution_options_fit_this_codebase",
+      "label": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "_origin": "ast",
+      "community": 87,
+      "community_name": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "q: keep automatic building, but reduce aggressive model api calls and token consumption. what potential solution options fit this codebase?",
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L10"
+    },
+    {
+      "id": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_source_nodes",
+      "label": "Source Nodes",
+      "_origin": "ast",
+      "community": 87,
+      "community_name": "Q: Keep automatic building, but reduce aggressive model API calls and token consumption. What potential solution options fit this codebase?",
+      "file_type": "document",
+      "node_kind": "heading",
+      "norm_label": "source nodes",
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L20"
+    },
+    {
       "id": "package",
       "label": "package.json",
       "_origin": "ast",
@@ -9686,6 +10109,28 @@
       "community_name": "package.json",
       "file_type": "concept",
       "norm_label": "react-dom",
+      "source_file": "package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "ref_tiptap_extension_collaboration",
+      "label": "@tiptap/extension-collaboration",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "@tiptap/extension-collaboration",
+      "source_file": "package.json",
+      "source_location": "L1"
+    },
+    {
+      "id": "ref_tiptap_starter_kit",
+      "label": "@tiptap/starter-kit",
+      "_origin": "ast",
+      "community": 9,
+      "community_name": "package.json",
+      "file_type": "concept",
+      "norm_label": "@tiptap/starter-kit",
       "source_file": "package.json",
       "source_location": "L1"
     },
@@ -10660,7 +11105,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L9",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -10672,7 +11117,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L9",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -10684,7 +11129,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L9",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -10696,7 +11141,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L9",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator_compactrequirement",
+      "target": "server_generator_compacttext",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/generator.ts",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -10708,19 +11165,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L13",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
       "source": "server_generator_extractrequirement",
-      "target": "server_generator_callopenai",
+      "target": "server_generator_compactrequirement",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L13",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator_extractrequirement",
+      "target": "server_generator_compacttext",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/generator.ts",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -10732,19 +11201,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L14",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
       "source": "server_generator_generateproduct",
-      "target": "server_generator_callopenai",
+      "target": "server_generator_compacttext",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L14",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -10756,19 +11225,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L14",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
       "source": "server_generator_generateprojectplan",
-      "target": "server_generator_callopenai",
+      "target": "server_generator_compacttext",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L16",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -10780,7 +11249,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L16",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -10792,7 +11261,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -10804,7 +11273,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L11",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -10828,7 +11297,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -10840,7 +11309,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/generator.ts",
-      "source_location": "L10",
+      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -10864,7 +11333,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -10876,7 +11345,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -10888,24 +11357,12 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L22",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "server/index.ts",
-      "source_location": "L3",
-      "weight": 1.0
-    },
-    {
-      "source": "server_index_createcocreateserver",
-      "target": "server_auth_verifysession",
+      "target": "server_index_duration",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -10917,6 +11374,30 @@
     },
     {
       "source": "server_index_createcocreateserver",
+      "target": "server_rooms_roommanager",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/index.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "server_index_createcocreateserver",
+      "target": "server_auth_verifysession",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/index.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
+      "source": "server_index_createcocreateserver",
       "target": "server_auth_roomtoken",
       "relation": "calls",
       "_origin": "ast",
@@ -10924,7 +11405,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -10936,7 +11417,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -10948,7 +11429,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -11032,7 +11513,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -11056,7 +11537,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L33",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11068,7 +11549,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L21",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -11080,7 +11561,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L37",
+      "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "server_providers_generatestructured",
+      "target": "server_providers_mergeusage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/providers.ts",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -11092,7 +11585,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L37",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -11104,7 +11597,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L38",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -11128,7 +11621,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -11140,7 +11633,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L36",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -11212,7 +11705,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/providers.ts",
-      "source_location": "L35",
+      "source_location": "L36",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_buildfingerprint",
+      "target": "server_rooms_documenttext",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -11224,7 +11729,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -11236,7 +11741,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -11248,7 +11753,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -11260,7 +11765,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -11272,7 +11777,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -11284,7 +11789,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -11296,7 +11801,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -11308,7 +11813,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -11320,7 +11825,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -11332,7 +11837,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11344,7 +11849,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11356,7 +11861,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11368,7 +11873,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11380,7 +11885,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11392,7 +11897,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_buildloop",
+      "target": "server_providers_providererror",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_buildloop",
+      "target": "server_rooms_buildfingerprint",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11404,7 +11933,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11416,7 +11945,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11428,7 +11957,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11440,7 +11969,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_buildloop",
+      "target": "server_rooms_roommanager_cancelled",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11452,7 +11993,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_buildloop",
+      "target": "server_rooms_roommanager_haspending",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_buildloop",
+      "target": "server_rooms_roommanager_recordusage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11464,7 +12029,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L42",
+      "source_location": "L51",
       "weight": 1.0
     },
     {
@@ -11476,7 +12041,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L41",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
@@ -11488,7 +12053,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L41",
+      "source_location": "L50",
       "weight": 1.0
     },
     {
@@ -11500,7 +12065,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11512,7 +12077,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11524,7 +12089,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11536,7 +12101,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11548,7 +12113,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11560,7 +12125,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11572,7 +12137,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -11584,7 +12149,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L18",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -11596,7 +12161,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L18",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -11608,7 +12173,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L18",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -11620,7 +12185,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L18",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -11632,7 +12197,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -11644,7 +12209,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -11656,7 +12221,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -11668,7 +12233,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -11680,7 +12245,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11692,7 +12257,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11704,7 +12269,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L19",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -11716,7 +12281,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L19",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -11728,7 +12293,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L19",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -11740,7 +12305,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L19",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -11752,7 +12317,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L35",
+      "source_location": "L38",
       "weight": 1.0
     },
     {
@@ -11764,7 +12329,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -11776,7 +12341,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -11788,7 +12353,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -11800,7 +12365,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -11812,7 +12377,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11824,7 +12389,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11836,7 +12401,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11848,7 +12413,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11860,7 +12425,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -11872,7 +12437,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11884,7 +12449,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L38",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -11896,7 +12461,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L38",
+      "source_location": "L46",
       "weight": 1.0
     },
     {
@@ -11908,7 +12473,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11920,7 +12485,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11932,7 +12497,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -11944,7 +12509,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -11956,7 +12521,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -11968,7 +12533,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -11980,7 +12545,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -11992,7 +12557,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -12004,7 +12569,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -12016,7 +12581,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -12028,7 +12593,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -12040,7 +12605,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -12052,7 +12617,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -12064,12 +12629,36 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L17",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_load",
+      "target": "server_rooms_emptyusage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
       "source": "server_rooms_roommanager_load",
       "target": "server_rooms_roommanager_join",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_makeroom",
+      "target": "server_rooms_emptyusage",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -12088,7 +12677,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L13",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -12100,7 +12689,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L13",
+      "source_location": "L16",
       "weight": 1.0
     },
     {
@@ -12112,7 +12701,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -12124,7 +12713,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -12136,7 +12725,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -12148,7 +12737,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -12160,7 +12749,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -12172,7 +12761,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -12184,7 +12773,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -12196,7 +12785,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L43",
+      "source_location": "L52",
       "weight": 1.0
     },
     {
@@ -12208,7 +12797,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L36",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -12220,7 +12809,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L36",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -12232,19 +12821,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L36",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
       "source": "server_rooms_roommanager_queueedit",
-      "target": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_roommanager_scheduleagent",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L36",
+      "source_location": "L44",
       "weight": 1.0
     },
     {
@@ -12256,7 +12845,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L44",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -12268,7 +12857,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L44",
+      "source_location": "L53",
       "weight": 1.0
     },
     {
@@ -12280,7 +12869,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L44",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_requestbuild",
+      "target": "server_rooms_buildfingerprint",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_requestbuild",
+      "target": "server_rooms_roommanager_broadcaststate",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -12292,7 +12905,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L40",
+      "source_location": "L49",
       "weight": 1.0
     },
     {
@@ -12304,7 +12917,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12316,7 +12929,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_requirementfingerprint",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12328,7 +12953,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12340,7 +12965,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_roommanager_cancelled",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12352,7 +12989,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12364,7 +13001,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_roommanager_haspending",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_roommanager_recordusage",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12376,7 +13037,19 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_runagent",
+      "target": "server_rooms_roommanager_scheduleagent",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12388,7 +13061,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L37",
+      "source_location": "L45",
       "weight": 1.0
     },
     {
@@ -12400,7 +13073,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L16",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -12412,7 +13085,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L16",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -12424,7 +13097,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -12436,7 +13109,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -12448,7 +13121,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -12460,7 +13133,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -12472,19 +13145,31 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
-      "source": "server_rooms_roommanager_schedulebuild",
-      "target": "server_rooms_roommanager_requestbuild",
+      "source": "server_rooms_roommanager_scheduleagent",
+      "target": "server_rooms_roommanager_get",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L39",
+      "source_location": "L43",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_schedulebuild",
+      "target": "server_rooms_roommanager_tryscheduledbuild",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -12496,7 +13181,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -12508,7 +13193,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -12520,7 +13205,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -12532,7 +13217,43 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L27",
+      "source_location": "L30",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_tryscheduledbuild",
+      "target": "server_rooms_roommanager_haspending",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_tryscheduledbuild",
+      "target": "server_rooms_roommanager_requestbuild",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_tryscheduledbuild",
+      "target": "server_rooms_roommanager_tryscheduledbuild",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "call",
+      "source_file": "server/rooms.ts",
+      "source_location": "L48",
       "weight": 1.0
     },
     {
@@ -12544,7 +13265,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L45",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -12556,7 +13277,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/rooms.ts",
-      "source_location": "L45",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -12760,7 +13481,7 @@
       "confidence_score": 1.0,
       "context": "generic_arg",
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -13210,6 +13931,18 @@
     {
       "source": "server_generator",
       "target": "server_providers_providerdefaults",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server/generator.ts",
+      "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_providers_usage",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -13737,6 +14470,30 @@
     },
     {
       "source": "server_rooms",
+      "target": "server_providers_providererror",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server/rooms.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
+      "target": "server_providers_usage",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server/rooms.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
       "target": "server_providers_validateproviderurl",
       "relation": "imports",
       "_origin": "ast",
@@ -13798,6 +14555,18 @@
     {
       "source": "server_rooms",
       "target": "src_types_aiprovider",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "server/rooms.ts",
+      "source_location": "L2",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
+      "target": "src_types_aiusage",
       "relation": "imports",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -14033,6 +14802,18 @@
       "context": "import",
       "source_file": "tests/assignments.test.ts",
       "source_location": "L1",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_auto_build_budget_test",
+      "target": "server_rooms_roommanager",
+      "relation": "imports",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -15462,6 +16243,30 @@
       "weight": 1.0
     },
     {
+      "source": "tests_auto_build_budget_test",
+      "target": "ref_yjs",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_auto_build_budget_test",
+      "target": "server_rooms",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L5",
+      "weight": 1.0
+    },
+    {
       "source": "tests_cocreate_test",
       "target": "ref_yjs",
       "relation": "imports_from",
@@ -15651,7 +16456,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -15663,7 +16468,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -15675,7 +16480,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -15687,7 +16492,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -15699,7 +16504,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -15711,7 +16516,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -15723,7 +16528,19 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L36",
+      "source_location": "L44",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager_recordusage",
+      "target": "server_providers_usage",
+      "relation": "references",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "parameter_type",
+      "source_file": "server/rooms.ts",
+      "source_location": "L42",
       "weight": 1.0
     },
     {
@@ -15735,7 +16552,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -15747,7 +16564,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -15759,7 +16576,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -15771,7 +16588,7 @@
       "confidence_score": 1.0,
       "context": "parameter_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -15795,7 +16612,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -15807,7 +16624,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -15819,7 +16636,7 @@
       "confidence_score": 1.0,
       "context": "return_type",
       "source_file": "server/rooms.ts",
-      "source_location": "L45",
+      "source_location": "L54",
       "weight": 1.0
     },
     {
@@ -20344,6 +21161,138 @@
       "weight": 1.0
     },
     {
+      "source": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many",
+      "target": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_q_why_did_typing_letters_in_the_canvas_consume_many_tokens_possibly_more_than_building_identify_affected_modules_data_flow_dependencies_and_tests_do_not_implement",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_q_why_did_typing_letters_in_the_canvas_consume_many_tokens_possibly_more_than_building_identify_affected_modules_data_flow_dependencies_and_tests_do_not_implement",
+      "target": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_answer",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_q_why_did_typing_letters_in_the_canvas_consume_many_tokens_possibly_more_than_building_identify_affected_modules_data_flow_dependencies_and_tests_do_not_implement",
+      "target": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_outcome",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_q_why_did_typing_letters_in_the_canvas_consume_many_tokens_possibly_more_than_building_identify_affected_modules_data_flow_dependencies_and_tests_do_not_implement",
+      "target": "graphify_out_memory_query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many_source_nodes",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_173156_2ff8f3f2_why_did_typing_letters_in_the_canvas_consume_many.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is",
+      "target": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_q_is_the_build_now_feature_useless_if_the_product_is_already_built_and_api_calls_happen_whenever_i_type_in_the_canvas_what_is_its_purpose",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_q_is_the_build_now_feature_useless_if_the_product_is_already_built_and_api_calls_happen_whenever_i_type_in_the_canvas_what_is_its_purpose",
+      "target": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_answer",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_q_is_the_build_now_feature_useless_if_the_product_is_already_built_and_api_calls_happen_whenever_i_type_in_the_canvas_what_is_its_purpose",
+      "target": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_outcome",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_q_is_the_build_now_feature_useless_if_the_product_is_already_built_and_api_calls_happen_whenever_i_type_in_the_canvas_what_is_its_purpose",
+      "target": "graphify_out_memory_query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is_source_nodes",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_174343_90d8b7ee_is_the_build_now_feature_useless_if_the_product_is.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod",
+      "target": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_q_keep_automatic_building_but_reduce_aggressive_model_api_calls_and_token_consumption_what_potential_solution_options_fit_this_codebase",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_q_keep_automatic_building_but_reduce_aggressive_model_api_calls_and_token_consumption_what_potential_solution_options_fit_this_codebase",
+      "target": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_answer",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_q_keep_automatic_building_but_reduce_aggressive_model_api_calls_and_token_consumption_what_potential_solution_options_fit_this_codebase",
+      "target": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_outcome",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_q_keep_automatic_building_but_reduce_aggressive_model_api_calls_and_token_consumption_what_potential_solution_options_fit_this_codebase",
+      "target": "graphify_out_memory_query_20260915_175222_55a944c3_keep_automatic_building_but_reduce_aggressive_mod_source_nodes",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "graphify-out/memory/query_20260915_175222_55a944c3_keep_automatic_building__but_reduce_aggressive_mod.md",
+      "source_location": "L20",
+      "weight": 1.0
+    },
+    {
       "source": "hooks_use_mobile",
       "target": "hooks_use_mobile_useismobile",
       "relation": "contains",
@@ -21379,7 +22328,7 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_testopenaiconnection",
+      "target": "server_generator_callopenai",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21390,7 +22339,7 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_listprovidermodels",
+      "target": "server_generator_testopenaiconnection",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21401,51 +22350,18 @@
     },
     {
       "source": "server_generator",
+      "target": "server_generator_listprovidermodels",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L12",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
       "target": "server_generator_productschema",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/generator.ts",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "server_generator",
-      "target": "server_generator_projectschema",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/generator.ts",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "server_generator",
-      "target": "server_generator_reqschema",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/generator.ts",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "server_generator",
-      "target": "server_generator_strings",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/generator.ts",
-      "source_location": "L12",
-      "weight": 1.0
-    },
-    {
-      "source": "server_generator",
-      "target": "server_generator_extractrequirement",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21456,7 +22372,40 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_generateproduct",
+      "target": "server_generator_projectschema",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_generator_reqschema",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_generator_strings",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L13",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_generator_compacttext",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21478,7 +22427,7 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_generateprojectplan",
+      "target": "server_generator_extractrequirement",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21489,13 +22438,35 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_previewhtml",
+      "target": "server_generator_generateproduct",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/generator.ts",
       "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_generator_generateprojectplan",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "server_generator",
+      "target": "server_generator_previewhtml",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/generator.ts",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -21577,7 +22548,7 @@
     },
     {
       "source": "server_generator",
-      "target": "server_generator_callopenai",
+      "target": "server_generator_modelresult",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21599,13 +22570,24 @@
     },
     {
       "source": "server_index",
-      "target": "server_index_createcocreateserver",
+      "target": "server_index_duration",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/index.ts",
       "source_location": "L3",
+      "weight": 1.0
+    },
+    {
+      "source": "server_index",
+      "target": "server_index_createcocreateserver",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/index.ts",
+      "source_location": "L4",
       "weight": 1.0
     },
     {
@@ -21907,7 +22889,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_contenttext",
+      "target": "server_providers_mergeusage",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21918,7 +22900,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_openaitext",
+      "target": "server_providers_contenttext",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21929,7 +22911,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_ensure",
+      "target": "server_providers_openaitext",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21940,7 +22922,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_commonmodels",
+      "target": "server_providers_ensure",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21951,7 +22933,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_bearer",
+      "target": "server_providers_commonmodels",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21962,7 +22944,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_openaicompatible",
+      "target": "server_providers_bearer",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21973,18 +22955,18 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_anthropic",
+      "target": "server_providers_openaicompatible",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/providers.ts",
-      "source_location": "L26",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
       "source": "server_providers",
-      "target": "server_providers_gemini",
+      "target": "server_providers_anthropic",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -21995,7 +22977,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_ollama",
+      "target": "server_providers_gemini",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22006,7 +22988,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_deepseek",
+      "target": "server_providers_ollama",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22028,7 +23010,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_adapters",
+      "target": "server_providers_deepseek",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22039,7 +23021,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_providerdefaults",
+      "target": "server_providers_adapters",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22050,7 +23032,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_adapterfor",
+      "target": "server_providers_providerdefaults",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22061,7 +23043,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_discovermodels",
+      "target": "server_providers_adapterfor",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22072,18 +23054,18 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_validate",
+      "target": "server_providers_discovermodels",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/providers.ts",
-      "source_location": "L35",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
       "source": "server_providers",
-      "target": "server_providers_parsestructured",
+      "target": "server_providers_validate",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22094,7 +23076,7 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_generatestructured",
+      "target": "server_providers_parsestructured",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22105,13 +23087,24 @@
     },
     {
       "source": "server_providers",
-      "target": "server_providers_generatetext",
+      "target": "server_providers_generatestructured",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/providers.ts",
       "source_location": "L38",
+      "weight": 1.0
+    },
+    {
+      "source": "server_providers",
+      "target": "server_providers_generatetext",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/providers.ts",
+      "source_location": "L39",
       "weight": 1.0
     },
     {
@@ -22167,6 +23160,28 @@
       "confidence_score": 1.0,
       "source_file": "server/providers.ts",
       "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
+      "target": "server_rooms_buildfingerprint",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L10",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
+      "target": "server_rooms_roommanager",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L12",
       "weight": 1.0
     },
     {
@@ -22303,7 +23318,18 @@
     },
     {
       "source": "server_rooms",
-      "target": "server_rooms_roommanager",
+      "target": "server_rooms_emptyusage",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L8",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms",
+      "target": "server_rooms_requirementfingerprint",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -22622,13 +23648,24 @@
     },
     {
       "source": "src_types",
-      "target": "src_types_roomview",
+      "target": "src_types_aiusage",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "src/types.ts",
       "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "src_types",
+      "target": "src_types_roomview",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "src/types.ts",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -22717,6 +23754,39 @@
       "confidence_score": 1.0,
       "source_file": "src/types.ts",
       "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_auto_build_budget_test",
+      "target": "tests_auto_build_budget_test_response",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L16",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_auto_build_budget_test",
+      "target": "tests_auto_build_budget_test_waitfor",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L7",
+      "weight": 1.0
+    },
+    {
+      "source": "tests_auto_build_budget_test",
+      "target": "tests_auto_build_budget_test_send",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "tests/auto-build-budget.test.ts",
+      "source_location": "L94",
       "weight": 1.0
     },
     {
@@ -23112,7 +24182,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L10",
+      "source_location": "L13",
       "weight": 1.0
     },
     {
@@ -23123,7 +24193,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -23134,7 +24204,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -23145,7 +24215,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L11",
+      "source_location": "L14",
       "weight": 1.0
     },
     {
@@ -23156,7 +24226,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L12",
+      "source_location": "L15",
       "weight": 1.0
     },
     {
@@ -23167,7 +24237,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L15",
+      "source_location": "L18",
       "weight": 1.0
     },
     {
@@ -23178,7 +24248,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L16",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -23189,7 +24259,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L17",
+      "source_location": "L20",
       "weight": 1.0
     },
     {
@@ -23200,7 +24270,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L18",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -23211,7 +24281,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L19",
+      "source_location": "L22",
       "weight": 1.0
     },
     {
@@ -23222,7 +24292,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L20",
+      "source_location": "L23",
       "weight": 1.0
     },
     {
@@ -23233,7 +24303,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L21",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -23244,7 +24314,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -23255,7 +24325,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -23266,7 +24336,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L22",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -23277,7 +24347,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L23",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -23288,7 +24358,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L24",
+      "source_location": "L27",
       "weight": 1.0
     },
     {
@@ -23299,7 +24369,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L25",
+      "source_location": "L28",
       "weight": 1.0
     },
     {
@@ -23310,7 +24380,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -23321,7 +24391,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L26",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -23332,7 +24402,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L27",
+      "source_location": "L30",
       "weight": 1.0
     },
     {
@@ -23343,7 +24413,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L28",
+      "source_location": "L31",
       "weight": 1.0
     },
     {
@@ -23354,7 +24424,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L29",
+      "source_location": "L32",
       "weight": 1.0
     },
     {
@@ -23365,7 +24435,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L30",
+      "source_location": "L33",
       "weight": 1.0
     },
     {
@@ -23376,7 +24446,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L31",
+      "source_location": "L34",
       "weight": 1.0
     },
     {
@@ -23387,7 +24457,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L32",
+      "source_location": "L35",
       "weight": 1.0
     },
     {
@@ -23398,7 +24468,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L33",
+      "source_location": "L36",
       "weight": 1.0
     },
     {
@@ -23409,7 +24479,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L34",
+      "source_location": "L37",
       "weight": 1.0
     },
     {
@@ -23420,45 +24490,12 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
-      "source_location": "L35",
-      "weight": 1.0
-    },
-    {
-      "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_queueedit",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/rooms.ts",
-      "source_location": "L36",
-      "weight": 1.0
-    },
-    {
-      "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_runagent",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/rooms.ts",
-      "source_location": "L37",
-      "weight": 1.0
-    },
-    {
-      "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_flushagents",
-      "relation": "method",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/rooms.ts",
       "source_location": "L38",
       "weight": 1.0
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_schedulebuild",
+      "target": "server_rooms_roommanager_buildcooldownms",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23469,7 +24506,29 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_requestbuild",
+      "target": "server_rooms_roommanager_builddebouncems",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_buildmaxwaitms",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L39",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_cancelled",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23480,7 +24539,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_buildnow",
+      "target": "server_rooms_roommanager_haspending",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23491,7 +24550,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_buildloop",
+      "target": "server_rooms_roommanager_recordusage",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23502,7 +24561,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_processnow",
+      "target": "server_rooms_roommanager_scheduleagent",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23513,7 +24572,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_reportruntimeerror",
+      "target": "server_rooms_roommanager_queueedit",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23524,7 +24583,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_view",
+      "target": "server_rooms_roommanager_runagent",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23535,7 +24594,7 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_version",
+      "target": "server_rooms_roommanager_flushagents",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
@@ -23546,13 +24605,112 @@
     },
     {
       "source": "server_rooms_roommanager",
-      "target": "server_rooms_roommanager_shutdown",
+      "target": "server_rooms_roommanager_schedulebuild",
       "relation": "method",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/rooms.ts",
       "source_location": "L47",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_tryscheduledbuild",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L48",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_requestbuild",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L49",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_buildnow",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L50",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_buildloop",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L51",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_processnow",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L52",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_reportruntimeerror",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L53",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_view",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L54",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_version",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L55",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_roommanager",
+      "target": "server_rooms_roommanager_shutdown",
+      "relation": "method",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/rooms.ts",
+      "source_location": "L56",
       "weight": 1.0
     },
     {
@@ -23645,7 +24803,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_models",
+      "target": "server_rooms_roommanager_testconnection",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23657,7 +24815,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_connectai",
+      "target": "server_rooms_roommanager_models",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23669,7 +24827,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_disconnectai",
+      "target": "server_rooms_roommanager_connectai",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23681,7 +24839,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_saveconnection",
+      "target": "server_rooms_roommanager_disconnectai",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23693,7 +24851,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_discoverconnectionmodels",
+      "target": "server_rooms_roommanager_saveconnection",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23705,7 +24863,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_checkcapabilities",
+      "target": "server_rooms_roommanager_discoverconnectionmodels",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23717,7 +24875,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_disconnectconnection",
+      "target": "server_rooms_roommanager_checkcapabilities",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23729,7 +24887,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_assignai",
+      "target": "server_rooms_roommanager_disconnectconnection",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23741,7 +24899,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_buildnow",
+      "target": "server_rooms_roommanager_assignai",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23753,7 +24911,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_processnow",
+      "target": "server_rooms_roommanager_buildnow",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23765,7 +24923,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_reportruntimeerror",
+      "target": "server_rooms_roommanager_processnow",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23777,7 +24935,7 @@
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_version",
+      "target": "server_rooms_roommanager_reportruntimeerror",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23789,6 +24947,18 @@
     },
     {
       "source": "server_index_createcocreateserver",
+      "target": "server_rooms_roommanager_version",
+      "relation": "calls",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.8,
+      "context": "call",
+      "source_file": "server/index.ts",
+      "source_location": "L22",
+      "weight": 1.0
+    },
+    {
+      "source": "server_index_createcocreateserver",
       "target": "server_rooms_roommanager_connect",
       "relation": "calls",
       "_origin": "ast",
@@ -23796,7 +24966,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -23808,7 +24978,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -23820,7 +24990,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L23",
+      "source_location": "L24",
       "weight": 1.0
     },
     {
@@ -23832,7 +25002,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L25",
+      "source_location": "L26",
       "weight": 1.0
     },
     {
@@ -23844,7 +25014,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L4",
+      "source_location": "L5",
       "weight": 1.0
     },
     {
@@ -23856,7 +25026,7 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L6",
+      "source_location": "L7",
       "weight": 1.0
     },
     {
@@ -23868,24 +25038,12 @@
       "confidence_score": 0.8,
       "context": "call",
       "source_file": "server/index.ts",
-      "source_location": "L7",
-      "weight": 1.0
-    },
-    {
-      "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_view",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "INFERRED",
-      "confidence_score": 0.8,
-      "context": "call",
-      "source_file": "server/index.ts",
       "source_location": "L8",
       "weight": 1.0
     },
     {
       "source": "server_index_createcocreateserver",
-      "target": "server_rooms_roommanager_testconnection",
+      "target": "server_rooms_roommanager_view",
       "relation": "calls",
       "_origin": "ast",
       "confidence": "INFERRED",
@@ -23908,6 +25066,18 @@
       "weight": 1.0
     },
     {
+      "source": "server_generator_generateproduct",
+      "target": "server_generator_compactrequirement",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "server/generator.ts",
+      "source_location": "L17",
+      "weight": 1.0
+    },
+    {
       "source": "server_generator_generateprojectplan",
       "target": "server_generator_compactrequirement",
       "relation": "indirect_call",
@@ -23916,7 +25086,19 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "server/generator.ts",
-      "source_location": "L16",
+      "source_location": "L18",
+      "weight": 1.0
+    },
+    {
+      "source": "server_rooms_buildfingerprint",
+      "target": "server_rooms_requirementfingerprint",
+      "relation": "indirect_call",
+      "_origin": "ast",
+      "confidence": "INFERRED",
+      "confidence_score": 0.85,
+      "context": "argument",
+      "source_file": "server/rooms.ts",
+      "source_location": "L10",
       "weight": 1.0
     },
     {
@@ -24202,5 +25384,5 @@
       "source_file": "public/favicon.svg"
     }
   ],
-  "built_at_commit": "93dc39d68ba70fcdef5ab4ea87ddb91fafacad56"
+  "built_at_commit": "327bba22ae66e49bba1ee5fff69d9ca197e128cc"
 }
