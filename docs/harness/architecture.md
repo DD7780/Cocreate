@@ -14,8 +14,17 @@ Legacy `data/<room>.json` files remain compatibility backups during migration. A
 authenticated Yjs edit
   -> document.update_recorded + hashed update artifact
   -> debounced personal interpretation
-  -> requirement.interpretation_recorded + workspace snapshot
+  -> classified, source-referenced personal interpretation
+  -> stable shared-requirement reconciliation
+     - proposals/questions/ambiguities remain proposed
+     - explicit requests and decisions become accepted
+     - explicit withdrawals remove only the contributor's support
+  -> deterministic contradiction scan
+     - consequential accepted conflict -> Decision needed (build paused)
+  -> requirement.registry_reconciled + workspace snapshot
   -> builder run queued -> executing
+     - immutable specification revision and accepted requirement IDs recorded
+     - raw canvas and proposed intent excluded from builder context
   -> tool.requested -> tool.authorized -> tool.started -> tool outcome
      - project.apply_operations
      - project.bundle
@@ -27,6 +36,14 @@ authenticated Yjs edit
 ```
 
 A compile failure records the tool failure and moves the same run through `repairing` back to `executing`, with at most three attempts. A superseding revision cancels the old run before promotion. Server recovery changes nonterminal persisted runs to `interrupted`; it never invents success or automatically repeats the operation.
+
+## Shared intent registry
+
+Personal-agent output is a proposal to the shared registry, never direct builder authority. Each interpretation records a classification, affected requirement IDs, document revision, authenticated edit sequence numbers, and short source passages. Shared requirement IDs are deterministic from normalized intent and do not depend on collaborator or canvas position. Each requirement carries a revision, status, acceptance criteria, authority, and contributor sources.
+
+The current precedence rule is deliberately conservative: explicit requests and recorded decisions are accepted automatically; proposals, questions, and ambiguity are retained but never sent to the builder. Deleting canvas text is not a withdrawal. A withdrawal must be explicit, and it removes only that collaborator's source; a requirement supported by another collaborator remains accepted.
+
+The builder receives an immutable snapshot of accepted requirements only. Build fingerprints ignore attribution-only refreshes, so an unchanged interpretation or a proposal does not spend a builder request. Deterministic exact-negation conflicts between accepted requirements pause promotion and surface one focused decision question. This slice pauses the whole builder while such a conflict is open; dependency-scoped conflict pausing and an owner decision action remain future work.
 
 ## Policy boundary
 

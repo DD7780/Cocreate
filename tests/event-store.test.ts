@@ -67,7 +67,7 @@ test('room restart reconstructs the last product and interrupts an in-flight run
     first.join(room,'alice','Alice');
     const paragraph=new Y.XmlElement('paragraph'),text=new Y.XmlText();
     room.doc.transact(()=>{room.doc.getXmlFragment('default').push([paragraph]);paragraph.push([text]);text.insert(0,'Build a durable calculator.')} ,'test');
-    room.requirements=[{id:'requirement-alice',participantId:'alice',participantName:'Alice',createdAt:new Date().toISOString(),revision:1,goals:['Create a calculator'],features:['Addition'],design:[],constraints:[],questions:[],additions:['Addition'],modifications:[],withdrawals:[]}];
+    room.requirements=[{id:'requirement-alice',participantId:'alice',participantName:'Alice',createdAt:new Date().toISOString(),revision:1,goals:['Create a calculator'],features:['Addition'],design:[],constraints:[],questions:[],additions:['Addition'],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourceRevision:1,sourceEditSeqs:[1],sourcePassages:['Create a calculator']}];
     room.versions=[{id:1,createdAt:new Date().toISOString(),summary:'Calculator',fileCount:1,conflicts:[],files:[{path:'src/App.tsx',content:'export default function App(){return <main>Calculator</main>}' }],bundle:'document.body.textContent="Calculator"',css:'',decisions:[],specification:{agreed:['Calculator'],proposed:[],questions:[]}}];
     room.status='Updated';
     first.save(room,'product.promoted','builder','builder');

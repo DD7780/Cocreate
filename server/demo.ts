@@ -14,11 +14,11 @@ export function demoExtract(participantId: string, participantName: string, chan
   if (!features.length) features.push(text ? `Turn this idea into an interactive flow: ${text.slice(0, 120)}` : 'Provide a clear interactive starting point');
   const design = [/(dark|night)/.test(lower) ? 'Use a dark interface' : /(bright|colorful)/.test(lower) ? 'Use an energetic color palette' : 'Keep the interface calm and focused'];
   const constraints = /mobile|phone|responsive/.test(lower) ? ['Work well on small screens'] : ['Keep the first version frontend-only'];
-  const deleting=changes.some(change=>change.kind==='delete');
-  const withdrawals=deleting?(previous?.features||[]).filter(feature=>!context.toLowerCase().includes(feature.toLowerCase().split(' ')[0])):[];
+  const explicitWithdrawal=/\b(?:withdraw|remove the requirement|no longer want|do not build)\b/.test(lower);
+  const withdrawals=explicitWithdrawal?(previous?.features||[]):[];
   const retained=(previous?.features||[]).filter(feature=>!withdrawals.includes(feature));
   const mergedFeatures=[...new Set([...retained,...features])];
-  return { id: crypto.randomUUID(), participantId, participantName, goals: text?[text]:(previous?.goals||['Shape the team’s shared idea']), features:mergedFeatures, design, constraints, questions: [], additions:features.filter(x=>!previous?.features.includes(x)), modifications:[], withdrawals, revision, createdAt: new Date().toISOString() };
+  return { id: crypto.randomUUID(), participantId, participantName, goals: text?[text]:(previous?.goals||['Shape the team’s shared idea']), features:mergedFeatures, design, constraints, questions: [], additions:features.filter(x=>!previous?.features.includes(x)), modifications:[], withdrawals, classification:'explicit_request', affectedRequirementIds:[], sourceRevision:revision, sourceEditSeqs:changes.map(change=>change.seq), sourcePassages:text?[text.slice(0,240)]:[], revision, createdAt: new Date().toISOString() };
 }
 
 const shell = (title: string, body: string) => `export default function App(){const React=globalThis.React;${body}}`;

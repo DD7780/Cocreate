@@ -25,3 +25,9 @@ Recorded: 2026-09-17. This assessment is based on the repository, not prior prog
 ## First vertical slice selected
 
 The first slice establishes an append-only SQLite event history and derived workspace/run views; records document attribution and builder lifecycle; recovers in-flight runs as interrupted; routes candidate edits, compilation, and promotion through a typed, audited, deny-by-default tool boundary; and promotes only after compilation and the existing revision guard. It intentionally does not claim approvals, browser verification, durable distributed leases, or OS/container isolation are complete.
+
+## Second verified slice — shared intent
+
+Added an additive shared-requirement registry between personal interpretation and scheduling. It assigns stable cross-collaborator IDs, records source revisions/edit sequences/passages, distinguishes proposed from accepted intent, requires explicit withdrawal, detects exact-negation conflicts, and records the immutable accepted requirement IDs/revision on each builder run. The builder no longer receives raw canvas text or proposed requirements. Existing rooms migrate lazily from personal summaries, and the compact UI exposes accepted/proposed counts plus the current decision question.
+
+Still open: owner conflict-resolution actions, dependency-scoped conflict blocking, implemented/verified evidence per requirement, normalized SQL requirement projections, durable leases, approval UI, browser-gated acceptance, and real process/container isolation.

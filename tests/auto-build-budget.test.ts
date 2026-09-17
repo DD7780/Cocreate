@@ -41,6 +41,9 @@ test('automatic builds coalesce typing, skip unchanged intent, and expose token 
         additions: ['Keep automatic builds'],
         modifications: [],
         withdrawals: [],
+        classification: 'explicit_request',
+        affectedRequirementIds: [],
+        sourcePassages: ['Build a calm shared workspace'],
       }, 13, 3)));
       return;
     }
@@ -117,7 +120,7 @@ test('automatic builds coalesce typing, skip unchanged intent, and expose token 
     assert.equal(personalBodies[0].max_output_tokens, 1_800);
     assert.equal(builderBodies[0].max_output_tokens, 6_000);
     assert.ok(JSON.parse(personalBodies[0].input).sharedBrainstormCanvas.length <= 6_000);
-    assert.ok(JSON.parse(builderBodies[0].input).sharedCanvas.length <= 8_000);
+    assert.ok(JSON.parse(builderBodies[0].input).acceptedRequirements.length > 0);
 
     typeLetter('!');
     await waitFor(() => personalCalls === 2);
