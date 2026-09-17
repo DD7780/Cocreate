@@ -1,6 +1,6 @@
 # CoCreate
 
-CoCreate is a local-first collaborative vibe-coding canvas. Multiple collaborators brainstorm and co-write in one Google Docs–style document while private idea lenses preserve who contributed what. One serialized builder continuously synthesizes the whole canvas into a shared, sandboxed React product.
+CoCreate is a local-first collaborative vibe-coding canvas. Multiple collaborators brainstorm and co-write in one Google Docs–style document while private idea lenses preserve who contributed what. One serialized builder continuously synthesizes the whole canvas into a shared React product shown in a restricted browser preview.
 
 ## Start
 
@@ -56,7 +56,7 @@ For a Git-connected production Worker:
 
 The Worker generates stable high-entropy session and credential-encryption secrets in its Durable Object storage on first startup. To manage those values yourself, add `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` as encrypted Worker secrets in the Cloudflare dashboard; configured values override the generated ones. Never add secret values to `wrangler.jsonc` or the repository.
 
-Tests cover signed participant attribution, character-level Yjs edits across three WebSocket clients, evolving requirements, owner-only provider setup, mixed-provider role assignment, secret redaction, serialized builds, failed-build retention, restart persistence, validated multi-file operations, runnable downloads, and preview compilation. Adapter contract fixtures cover all seven adapters, model discovery/manual IDs, authentication errors, successful text and structured output, schema failures, empty/truncated output, rate-limit retries, and cancellation. They do not spend or require a real API key.
+Tests cover signed participant attribution, character-level Yjs edits across three WebSocket clients, evolving requirements, owner-only provider setup, mixed-provider role assignment, secret redaction, serialized builds, failed-build retention, append-only recovery, interrupted run states, deny-before-execution tool policy, validated multi-file operations, runnable downloads, and preview compilation. Adapter contract fixtures cover all seven adapters, model discovery/manual IDs, authentication errors, successful text and structured output, schema failures, empty/truncated output, rate-limit retries, and cancellation. They do not spend or require a real API key.
 
 ## Architecture
 
@@ -65,9 +65,12 @@ Tests cover signed participant attribution, character-level Yjs edits across thr
 - `server/providers.ts` — provider adapters, native authentication/request parsing, retries, error classification, model discovery, usage normalization, and schema validation.
 - `server/generator.ts` — provider-independent agent prompts, internal structured schemas, and deliberately budgeted whole-file context.
 - `server/project.ts` — room-scoped file operations, project persistence, dependency policy, and compile validation.
+- `server/event-store.ts` — SQLite event history, content-addressed artifacts, derived workspace/run views, migrations, and recovery.
+- `server/tool-registry.ts` — typed generated-project tools, deny-by-default policy, and audited execution outcomes.
 - `server/credentials.ts` — authenticated encryption for room provider credentials.
 - `server/preview.ts` — unique-origin CSP preview with isolated room application storage.
+- `docs/harness/` — evidence-based assessment, architecture, migration plan, and tracked acceptance checklist.
 
 ## Current boundaries
 
-This MVP uses durable local files rather than an external database and is intended for a trusted LAN or localhost. Room links are high-entropy access links; there is no account system or enterprise authorization. Public deployment would require a WebSocket-capable host, TLS, shared durable storage, rate limiting, and a configured production session secret. Generated apps are intentionally frontend-only; their state is isolated per room and browser device. A broader dependency or backend policy would require a dedicated sandboxed build/runtime service.
+This MVP uses SQLite plus local generated-project files and is intended for a trusted LAN or single server with persistent storage. Room links are high-entropy access links; there is no account system or enterprise authorization. The current Cloudflare Container configuration does not persist application data across container replacement, so production recovery there is not yet guaranteed. Generated apps are frontend-only and run in a restricted browser preview, but compilation still occurs inside the CoCreate server process; a dedicated sandboxed build/runtime service is required before treating generated build execution as a security boundary. See `docs/harness/` for the exact completed and remaining acceptance criteria.

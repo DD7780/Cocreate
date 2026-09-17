@@ -1,0 +1,99 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import os from 'node:os';
+import path from 'node:path';
+import { randomUUID } from 'node:crypto';
+import { DatabaseSync } from 'node:sqlite';
+import * as Y from 'yjs';
+import { EventStore } from '../server/event-store.js';
+import { RoomManager } from '../server/rooms.js';
+import { ToolRegistry } from '../server/tool-registry.js';
+
+const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));
+
+test('event store orders events, redacts secrets, stores artifacts, and enforces run transitions',()=>{
+  const dataDir=temporaryData(),store=new EventStore(dataDir),workspaceId='workspace-a';
+  try{
+    store.saveWorkspaceSnapshot(workspaceId,{title:'A'},'workspace.created');
+    store.append({eventType:'connection.checked',workspaceId,actorId:'owner',actorType:'user',payload:{apiKey:'top-secret',nested:{authorization:'Bearer hidden'},message:'request used Bearer abcdefghijklmnop',result:'reachable'}});
+    const update=Uint8Array.from([1,2,3,4]),documentEvent=store.recordDocumentUpdate(workspaceId,'participant-a',1,update,{kind:'insert'});
+    assert.deepEqual(store.readArtifact(documentEvent.artifactRef!),Buffer.from(update));
+
+    const runId=randomUUID();
+    store.transitionRun({workspaceId,runId,kind:'builder',state:'queued',inputRevision:1});
+    store.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1,attempt:1});
+    store.transitionRun({workspaceId,runId,kind:'builder',state:'verifying',inputRevision:1,attempt:1});
+    store.transitionRun({workspaceId,runId,kind:'builder',state:'ready',inputRevision:1,attempt:1});
+    assert.throws(()=>store.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1}),/Illegal run transition/);
+
+    const events=store.eventsForWorkspace(workspaceId);
+    assert.deepEqual(events.map((event:any)=>event.workspaceSeq),events.map((_:unknown,index:number)=>index+1));
+    assert.equal(events.find((event:any)=>event.eventType==='connection.checked').payload.apiKey,'[REDACTED]');
+    assert.doesNotMatch(JSON.stringify(events),/top-secret|Bearer hidden|abcdefghijklmnop/);
+    assert.equal(store.runsForWorkspace(workspaceId)[0].state,'ready');
+  }finally{store.close();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('tool policy denies personal agents and unknown tools before execution',async()=>{
+  const dataDir=temporaryData(),store=new EventStore(dataDir),tools=new ToolRegistry(store),workspaceId='workspace-policy',runId=randomUUID();
+  try{
+    const base={workspaceId,runId,actorId:'personal-a',actorType:'personal_agent' as const,role:'personal_agent' as const,inputRevision:1};
+    await assert.rejects(tools.execute('project.promote',{files:[]},base),/Only the shared builder/);
+    await assert.rejects((tools as any).execute('host.shell',{command:'whoami'},{...base,actorId:'builder',actorType:'builder',role:'builder'}),/Unknown tools are denied/);
+    const events=store.eventsForWorkspace(workspaceId);
+    assert.equal(events.filter((event:any)=>event.eventType==='tool.requested').length,2);
+    assert.equal(events.filter((event:any)=>event.eventType==='tool.denied').length,2);
+    assert.equal(events.filter((event:any)=>event.eventType==='tool.started').length,0);
+  }finally{store.close();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('append-only snapshot artifacts reconstruct a missing derived workspace view',()=>{
+  const dataDir=temporaryData(),workspaceId='workspace-rebuild',file=path.join(dataDir,'cocreate.sqlite');
+  const first=new EventStore(dataDir);
+  first.saveWorkspaceSnapshot(workspaceId,{document:'durable',requirements:['addition'],latestVersion:3},'workspace.created');
+  first.close();
+  const database=new DatabaseSync(file);database.prepare('DELETE FROM workspace_state WHERE workspace_id=?').run(workspaceId);database.close();
+  const recovered=new EventStore(dataDir);
+  try{assert.deepEqual(recovered.readWorkspaceSnapshot(workspaceId),{document:'durable',requirements:['addition'],latestVersion:3})}
+  finally{recovered.close();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('room restart reconstructs the last product and interrupts an in-flight run',()=>{
+  const dataDir=temporaryData(),workspaceId='workspace-restart',runId=randomUUID();
+  const first=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  try{
+    const room=first.create(workspaceId);
+    first.join(room,'alice','Alice');
+    const paragraph=new Y.XmlElement('paragraph'),text=new Y.XmlText();
+    room.doc.transact(()=>{room.doc.getXmlFragment('default').push([paragraph]);paragraph.push([text]);text.insert(0,'Build a durable calculator.')} ,'test');
+    room.requirements=[{id:'requirement-alice',participantId:'alice',participantName:'Alice',createdAt:new Date().toISOString(),revision:1,goals:['Create a calculator'],features:['Addition'],design:[],constraints:[],questions:[],additions:['Addition'],modifications:[],withdrawals:[]}];
+    room.versions=[{id:1,createdAt:new Date().toISOString(),summary:'Calculator',fileCount:1,conflicts:[],files:[{path:'src/App.tsx',content:'export default function App(){return <main>Calculator</main>}' }],bundle:'document.body.textContent="Calculator"',css:'',decisions:[],specification:{agreed:['Calculator'],proposed:[],questions:[]}}];
+    room.status='Updated';
+    first.save(room,'product.promoted','builder','builder');
+    first.eventStore.transitionRun({workspaceId,runId,kind:'builder',state:'queued',inputRevision:1});
+    first.eventStore.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1,attempt:1});
+  }finally{first.shutdown()}
+
+  const second=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  try{
+    const recovered=second.get(workspaceId)!;
+    assert.match(recovered.doc.getXmlFragment('default').toJSON(),/durable calculator/);
+    assert.equal(recovered.requirements[0].participantId,'alice');
+    assert.equal(recovered.versions.at(-1)?.summary,'Calculator');
+    assert.equal(second.eventStore.runsForWorkspace(workspaceId).find(run=>run.runId===runId)?.state,'interrupted');
+    assert.equal(second.eventStore.pendingApprovals(workspaceId).length,0);
+    assert.equal(second.eventStore.eventsForWorkspace(workspaceId).at(-1)?.eventType,'run.interrupted');
+  }finally{second.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('legacy workspace migration makes a backup before importing state',()=>{
+  const dataDir=temporaryData(),workspaceId='legacy-workspace',legacyFile=path.join(dataDir,`${workspaceId}.json`);
+  fs.writeFileSync(legacyFile,JSON.stringify({participants:[],requirements:[],versions:[],ai:{mode:'disconnected'},editHistory:[],requestedRevision:0,persistRevision:2,savedAt:new Date().toISOString()}));
+  const manager=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  try{
+    assert.ok(manager.get(workspaceId));
+    assert.ok(fs.existsSync(path.join(dataDir,'backups','pre-event-store',`${workspaceId}.json`)));
+    assert.equal(manager.eventStore.eventsForWorkspace(workspaceId)[0].eventType,'workspace.legacy_imported');
+  }finally{manager.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
