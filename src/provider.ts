@@ -7,6 +7,7 @@ export class CoCreateProvider {
   ws?: WebSocket;
   private stopped = false;
   private retry?: number;
+  private flushes = new Map<string, {resolve:()=>void; reject:(error:Error)=>void; timer:number}>();
 
   constructor(
     public doc: Y.Doc,
@@ -44,7 +45,7 @@ export class CoCreateProvider {
     };
     this.ws.onmessage=(event)=>{
       if(typeof event.data==='string'){
-        try{const message=JSON.parse(event.data);if(message.type==='room-state')this.onState(message.state);if(message.type==='saved')this.onSave('saved',message.savedAt)}catch{}
+        try{const message=JSON.parse(event.data);if(message.type==='room-state')this.onState(message.state);if(message.type==='saved')this.onSave('saved',message.savedAt);if(message.type==='flushed'){const pending=this.flushes.get(message.requestId);if(pending){clearTimeout(pending.timer);this.flushes.delete(message.requestId);pending.resolve()}}}catch{}
         return;
       }
       const data=new Uint8Array(event.data);
@@ -56,5 +57,11 @@ export class CoCreateProvider {
     this.ws.onerror=()=>this.onStatus('offline');
   }
 
-  destroy(){this.stopped=true;if(this.retry)clearTimeout(this.retry);this.ws?.close();this.awareness.destroy();}
+  flush(timeoutMs=3_000){
+    if(this.ws?.readyState!==WebSocket.OPEN)return Promise.reject(new Error('Reconnect to the shared document before submitting changes.'));
+    const requestId=crypto.randomUUID();
+    return new Promise<void>((resolve,reject)=>{const timer=window.setTimeout(()=>{this.flushes.delete(requestId);reject(new Error('The final document update was not acknowledged. Try again.'))},timeoutMs);this.flushes.set(requestId,{resolve,reject,timer});this.ws!.send(JSON.stringify({type:'flush',requestId}))});
+  }
+
+  destroy(){this.stopped=true;if(this.retry)clearTimeout(this.retry);for(const pending of this.flushes.values()){clearTimeout(pending.timer);pending.reject(new Error('The document connection closed.'))}this.flushes.clear();this.ws?.close();this.awareness.destroy();}
 }

@@ -1,6 +1,6 @@
 # CoCreate
 
-CoCreate is a local-first collaborative vibe-coding canvas. Multiple collaborators brainstorm and co-write in one Google Docs–style document while private idea lenses preserve who contributed what. One serialized builder continuously synthesizes the whole canvas into a shared React product shown in a restricted browser preview.
+CoCreate is a local-first collaborative vibe-coding canvas. Multiple collaborators brainstorm and co-write in one Google Docs–style document while private idea lenses preserve who contributed what. Participants explicitly submit their own changes, and one serialized builder synthesizes eligible submissions into a shared React product shown in a restricted browser preview.
 
 ## Start
 
@@ -29,9 +29,11 @@ Only the room owner can add, update, test, assign, or disconnect credentials. Co
 
 ## Product loop
 
-Everyone brainstorms and co-writes in the same rich canvas. Each collaborator's evolving contribution is maintained separately as additions, modifications, and withdrawals so ideas are combined without losing authorship. Edits are coalesced into stable revisions: the personal agent waits for a short idle window, and the builder waits for room-wide stability, skips semantically unchanged summaries, and enforces a cooldown between automatic builds. New edits cancel stale in-flight work where the provider supports cancellation. **Build now** bypasses those timers, incorporates every pending contribution, then runs the single builder immediately. A failed generation keeps the last successful Product visible and reports the error.
+Everyone brainstorms and co-writes in the same rich canvas. Typing, formatting, autosaving, and reconnecting do not invoke a model. **Build my changes** captures only the authenticated participant's unsubmitted edit records, acknowledges the final collaborative update, and starts a short collection window so nearby submissions can share one serialized build without losing attribution. Another participant's unsubmitted draft is not interpreted or sent to the builder. An empty submission reports **No new changes to submit** without an AI call. A failed generation keeps the last successful Product visible and reports the error.
 
-The timing defaults are configurable with `AGENT_DEBOUNCE_MS` (4 seconds), `BUILD_DEBOUNCE_MS` (10 seconds), `BUILD_COOLDOWN_MS` (30 seconds), and `BUILD_MAX_WAIT_MS` (60 seconds). Model inputs are compacted before dispatch, and provider-reported request/input/output token totals are persisted in each room's state for comparison and budgeting.
+On Windows and Linux, **Alt + X** invokes the same submission function while the shared editor has focus. The button exposes this through its tooltip and `aria-keyshortcuts`. The adjacent shortcut preference can remap it to Alt + S or Alt + Y, or disable it. macOS defaults to no shortcut so Option + X retains its normal text-input behavior; Mac users may explicitly choose a shortcut.
+
+The submission collection window defaults to three seconds and is configurable with `BUILD_DEBOUNCE_MS`; `BUILD_COOLDOWN_MS` and `BUILD_MAX_WAIT_MS` still bound shared builder scheduling. Model inputs are compacted before dispatch, and provider-reported request/input/output token totals are persisted in each room's state for comparison and budgeting.
 
 The generated scope is deliberately bounded: a real multi-file React and TypeScript frontend under `generated/rooms/<room-id>`. The builder may use approved local React dependencies, relative source modules, CSS, JSON, and isolated app storage; it cannot request networks, cookies, parent-window access, dynamic imports, or backend code. Every file operation is validated, the project is compiled before promotion, and a failed update keeps the last working Product. The Product view can refresh, open in a new tab, or download a complete runnable project ZIP.
 

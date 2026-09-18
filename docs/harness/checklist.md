@@ -91,6 +91,20 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [ ] Container-local SQLite and generated files remain ephemeral across container replacement; a proven durable application store is still required.
 - Not yet claimed: HTTP mutation contracts, browser synchronization/cards/highlights, compromise confirmation, or live-model semantic detection.
 
+## Submission shortcut slice (2026-09-19)
+
+- [x] Typing and autosaving make no provider calls; only an authenticated participant submission invokes their interpreter.
+- [x] Submissions persist request ID, participant, edit sequence IDs, document revision, immutable bounded snapshot, previous interpretation reference, lifecycle status, and timestamps.
+- [x] A WebSocket flush acknowledgement orders the final collaborative update before submission capture.
+- [x] A three-second collection window batches eligible accepted changes while one builder remains serialized; another participant's unsubmitted draft neither blocks nor enters the build.
+- [x] **Build my changes** and editor-scoped Alt+X use the same submission function. Empty and repeated submissions make no additional model call.
+- [x] Exact shortcut filtering covers repeats, composition, AltGraph, Ctrl/Shift/Meta additions, ordinary Enter/B, disable, and Alt+S/Alt+Y remapping. macOS defaults to disabled.
+- [x] Tooltip and `aria-keyshortcuts` expose the active binding; the preference is stored locally.
+- [x] Production-mode Chrome check passed for editor-only handling, dialog exclusion, focus preservation, remapping, product view, and 390px layout.
+- [x] Full controlled suite passed 45/45 and `pnpm build` passed with only the existing non-failing Vite chunk-size warning.
+- [-] Windows Chrome was exercised. Linux browser behavior is covered by shared event semantics but was not run on Linux; macOS default behavior is unit-tested but was not run on macOS hardware.
+- [ ] The broader attached workflow still needs durable cross-restart resumption of queued submissions and richer per-submission status UI.
+
 - TypeScript: `node node_modules/typescript/bin/tsc --noEmit --pretty false` passed.
 - Focused event/recovery/policy tests: 5 passed with direct Node test execution of TypeScript-emitted files.
 - Full controlled suite for the shared-intent slice: 27 passed with the repository-standard `pnpm test`, including the three-collaborator accepted-requirement-to-preview flow.

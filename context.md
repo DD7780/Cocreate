@@ -1,6 +1,6 @@
 # CoCreate context handoff
 
-As of 2026-09-18. Recheck the source and checklist before acting; this handoff records controlled tests and a production build, but no live-provider semantic evaluation.
+As of 2026-09-19. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, and a Windows Chrome interaction check, but no live-provider semantic evaluation.
 
 ## Product
 
@@ -49,7 +49,7 @@ Do not treat these as completed because a README, UI label, or earlier conversat
 
 ## Latest validation
 
-On 2026-09-18, the intent-classification fix passed its five focused tests, the full 41-test controlled suite, and `pnpm build`. The original “Create a website for my restaurant” regression was demonstrated failing before the fix. Coverage now includes a deterministic semantic matrix, mixed intents, safe ambiguity defaults, legacy normalization, authenticated targeted reinterpretation, stable shared-requirement identity, no duplicate build for unchanged accepted input, and protection of decisions/withdrawals. Earlier builder-operation and durable conflict-group coverage remains included. Browser interaction and live-model semantic evaluation were not exercised.
+On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled suite, `pnpm build`, and a production-mode Windows Chrome interaction check. Coverage includes no inference on typing, participant draft isolation, idempotent and empty submissions without extra model calls, three-person submission-driven generation, exact shortcut filtering, preferences/remapping, dialog exclusion, focus preservation, accessibility metadata, and the mobile/product regression. Linux and macOS hardware were not exercised; macOS disabled-by-default behavior is unit-tested. Live-provider semantic evaluation was not run. Earlier intent-classification, builder-operation, durable conflict-group, and Cloudflare collaboration coverage remains included.
 
 ## Local workflow
 

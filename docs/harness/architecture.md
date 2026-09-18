@@ -13,7 +13,11 @@ Legacy `data/<room>.json` files remain compatibility backups during migration. A
 ```text
 authenticated Yjs edit
   -> document.update_recorded + hashed update artifact
-  -> debounced personal interpretation
+  -> participant draft (no model call)
+  -> explicit Build my changes submission
+     - WebSocket flush acknowledgement includes the final edit
+     - authenticated edit sequence IDs + document revision + immutable snapshot
+  -> participant-scoped personal interpretation
   -> classified, source-referenced personal interpretation
   -> stable shared-requirement reconciliation
      - proposals/questions/ambiguities remain proposed

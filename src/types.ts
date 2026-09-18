@@ -1,5 +1,5 @@
 export type AgentStatus='idle'|'understanding'|'ready'|'error';
-export type WorkflowStatus='Waiting for ideas'|'Understanding edits'|'Decision needed'|'Building'|'Updated'|'Error';
+export type WorkflowStatus='Waiting for ideas'|'Collecting submissions'|'Understanding edits'|'Decision needed'|'Building'|'Updated'|'Error';
 export type ChangeKind='insert'|'delete'|'modify';
 export type InterpretationClassification='proposal'|'question'|'explicit_request'|'decision'|'ambiguity';
 export type SharedRequirementCategory='goal'|'feature'|'design'|'constraint';

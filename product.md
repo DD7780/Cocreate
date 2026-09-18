@@ -26,10 +26,10 @@ Core loop: shared document -> attributed interpretation -> accepted shared requi
 ## Required experience
 
 - One Docs-like collaborative canvas with rich text, presence, and persistent edits.
-- One logical personal interpreter per participant; invoke it on meaningful changes, not every keystroke.
+- One logical personal interpreter per participant; invoke it only when that participant explicitly submits authenticated changes.
 - One active shared coding agent per room. Agent sessions can restart; durable project state must survive.
 - Distinguish ideas, questions, explicit requests, decisions, and withdrawals.
-- Automatically batch clear accepted changes. Provide Build now without requiring a manual commit for every idea.
+- Keep writing free of model calls. Provide **Build my changes** to capture one participant's unsubmitted edits, briefly batch nearby submissions, and run one shared builder without including another participant's draft.
 - Product shows the generated interactive application, not a generic progress tracker or canned demo.
 - Keep the last successful preview when a candidate fails.
 - Dedicated API connections UI with owner-managed credentials and role/model assignments.
