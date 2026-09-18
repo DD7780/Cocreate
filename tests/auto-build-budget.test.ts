@@ -44,6 +44,7 @@ test('automatic builds coalesce typing, skip unchanged intent, and expose token 
         classification: 'explicit_request',
         affectedRequirementIds: [],
         sourcePassages: ['Build a calm shared workspace'],
+        intents: [{text:'Build a calm shared workspace',category:'goal',classification:'explicit_request',rationale:'Direct build instruction.',sourcePassage:'Build a calm shared workspace',affectedRequirementIds:[]}],
       }, 13, 3)));
       return;
     }
@@ -117,7 +118,7 @@ test('automatic builds coalesce typing, skip unchanged intent, and expose token 
     await waitFor(() => room.versions.length === 1);
     assert.equal(personalCalls, 1, 'a typing burst should produce one personal-agent call');
     assert.equal(builderCalls, 1, 'a typing burst should produce one automatic build');
-    assert.equal(personalBodies[0].max_output_tokens, 1_800);
+    assert.equal(personalBodies[0].max_output_tokens, 2_400);
     assert.equal(builderBodies[0].max_output_tokens, 6_000);
     assert.ok(JSON.parse(personalBodies[0].input).sharedBrainstormCanvas.length <= 6_000);
     assert.ok(JSON.parse(builderBodies[0].input).acceptedRequirements.length > 0);

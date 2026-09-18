@@ -1,6 +1,6 @@
 # CoCreate context handoff
 
-As of 2026-09-18. Documentation-only source inspection; no tests, live providers, or browser sessions were run for this handoff. Recheck the source and checklist before acting.
+As of 2026-09-18. Recheck the source and checklist before acting; this handoff records controlled tests and a production build, but no live-provider semantic evaluation.
 
 ## Product
 
@@ -32,7 +32,7 @@ No duplicate root architecture.md or progress.md was created because the existin
 
 ## Implemented versus unfinished
 
-The current architecture/checklist records ordered SQLite events, snapshot recovery, JSON migration backups, interrupted run handling, typed apply/build/promote tools, stable shared intent, proposal exclusion, durable multi-option conflict groups, unresolved-requirement exclusion, bounded compilation repair, and revision/fingerprint-guarded promotion.
+The current architecture/checklist records ordered SQLite events, snapshot recovery, JSON migration backups, interrupted run handling, typed apply/build/promote tools, per-intent classification with rationale/source attribution, targeted authenticated reinterpretation, stable shared intent, proposal exclusion, durable multi-option conflict groups, unresolved-requirement exclusion, bounded compilation repair, and revision/fingerprint-guarded promotion.
 
 Important limitations explicitly remain:
 - Compilation runs inside the server process; real process isolation is unfinished.
@@ -49,7 +49,7 @@ Do not treat these as completed because a README, UI label, or earlier conversat
 
 ## Latest validation
 
-On 2026-09-18, the builder-operation reliability fix passed 18 focused tests, the full 36-test controlled suite, and `pnpm build`. The regression reproduces a missing `content` field, exercises structured-response repair, then exercises current-project operation validation and a corrective generation before tool execution. The earlier durable conflict-group coverage remains included. Browser interaction and live-model semantic detection were not exercised.
+On 2026-09-18, the intent-classification fix passed its five focused tests, the full 41-test controlled suite, and `pnpm build`. The original “Create a website for my restaurant” regression was demonstrated failing before the fix. Coverage now includes a deterministic semantic matrix, mixed intents, safe ambiguity defaults, legacy normalization, authenticated targeted reinterpretation, stable shared-requirement identity, no duplicate build for unchanged accepted input, and protection of decisions/withdrawals. Earlier builder-operation and durable conflict-group coverage remains included. Browser interaction and live-model semantic evaluation were not exercised.
 
 ## Local workflow
 

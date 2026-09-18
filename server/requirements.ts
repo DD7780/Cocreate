@@ -1,23 +1,34 @@
 import{createHash}from'node:crypto';
-import type{ConflictAlternative,ConflictDecisionRecord,ConflictGroup,ConflictSelection,Contradiction,Requirement,SharedRequirement,SharedRequirementCategory,SharedRequirementSource}from'../src/types.js';
+import type{ConflictAlternative,ConflictDecisionRecord,ConflictGroup,ConflictSelection,Contradiction,InterpretationClassification,InterpretationIntent,InterpretationIntentCategory,Requirement,SharedRequirement,SharedRequirementCategory,SharedRequirementSource}from'../src/types.js';
 
 const clean=(value:string)=>value.replace(/\s+/g,' ').trim();
 const normalized=(value:string)=>clean(value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();
 const stableId=(prefix:string,value:string)=>`${prefix}_${createHash('sha256').update(value).digest('hex').slice(0,12)}`;
 const unique=(items:string[])=>[...items.reduce((map,item)=>{const value=clean(item),key=normalized(value);if(key&&!map.has(key))map.set(key,value);return map},new Map<string,string>()).values()];
 
+export const INTERPRETATION_CLASSIFIER_VERSION='intent-v2';
+const classifications=new Set<InterpretationClassification>(['proposal','question','explicit_request','decision','ambiguity']);
+const categories=new Set<InterpretationIntentCategory>(['goal','feature','design','constraint','question','withdrawal']);
+export function classifyIntentText(text:string,model?:InterpretationClassification):InterpretationClassification{
+  const value=clean(text),lower=value.toLowerCase(),quoted=/^(?:example|example:|quote|quoted|someone said|they said)\b|^[“”"']/.test(lower),proposal=/\b(maybe|perhaps|one idea|what if|we might|we could|could potentially|later)\b/.test(lower),hypothetical=/^(?:if|suppose|imagine)\b|\bif we (?:were to|did|created|built|added)\b/.test(lower),polite=/^(?:please\s+)?(?:can|could|would) you\s+(?:create|build|make|add|change|remove|implement|design|include|support|enable)\b/.test(lower),directive=/^(?:please\s+)?(?:create|build|make|add|change|remove|implement|design|include|support|enable|use|do not|don't|must|show)\b/.test(lower)||/^i (?:want|need|require|would like)\b/.test(lower),informational=/^(?:how|why|when|where|which|who|would .* be useful|can (?:this|the) .* support)\b/.test(lower)&&!polite;
+  if(quoted||hypothetical)return model==='question'?'question':'proposal';
+  if(polite||directive)return'explicit_request';
+  if(proposal)return model==='question'?'question':'proposal';
+  if(informational)return'question';
+  return model&&classifications.has(model)?model:'ambiguity';
+}
+const intentId=(participantId:string,category:string,text:string)=>stableId('intent',`${participantId}:${category}:${normalized(text)}`);
 export function normalizeInterpretation(value:any):Requirement{
-  return{...value,id:value.id||crypto.randomUUID(),participantId:value.participantId||'unknown',participantName:value.participantName||'Unknown collaborator',goals:value.goals||[],features:value.features||[],design:value.design||[],constraints:value.constraints||[],questions:value.questions||[],additions:value.additions||[],modifications:value.modifications||[],withdrawals:value.withdrawals||[],classification:value.classification||'explicit_request',affectedRequirementIds:value.affectedRequirementIds||[],sourceRevision:value.sourceRevision??value.revision??1,sourceEditSeqs:value.sourceEditSeqs||[],sourcePassages:value.sourcePassages||[],revision:value.revision||1,createdAt:value.createdAt||new Date().toISOString()};
+  const participantId=value.participantId||'unknown',participantName=value.participantName||'Unknown collaborator',sourceRevision=value.sourceRevision??value.revision??1,sourceEditSeqs=value.sourceEditSeqs||[],sourcePassages=value.sourcePassages||[],rawClassification=classifications.has(value.classification)?value.classification as InterpretationClassification:'ambiguity',legacy:Array<{category:InterpretationIntentCategory;text:string}>=[...(value.goals||[]).map((text:string)=>({category:'goal' as const,text})),...(value.features||[]).map((text:string)=>({category:'feature' as const,text})),...(value.design||[]).map((text:string)=>({category:'design' as const,text})),...(value.constraints||[]).map((text:string)=>({category:'constraint' as const,text})),...(value.questions||[]).map((text:string)=>({category:'question' as const,text}))],rawIntents=Array.isArray(value.intents)&&value.intents.length?value.intents:legacy.map(item=>({...item,classification:rawClassification,rationale:'Migrated from the contribution-level classification.',sourcePassage:sourcePassages.find((passage:string)=>normalized(passage).includes(normalized(item.text))||normalized(item.text).includes(normalized(passage)))||item.text,affectedRequirementIds:value.affectedRequirementIds||[]})),intents:InterpretationIntent[]=rawIntents.filter((item:any)=>item&&typeof item.text==='string'&&item.text.trim()).map((item:any)=>{const category=categories.has(item.category)?item.category as InterpretationIntentCategory:'feature',model=classifications.has(item.classification)?item.classification as InterpretationClassification:undefined,classification=classifyIntentText(item.sourcePassage||item.text,model);return{id:item.id||intentId(participantId,category,item.text),text:clean(item.text),category,classification,rationale:classification!==model?`The wording is a ${classification.replace('_',' ')} under CoCreate’s intent rules.`:clean(item.rationale||'Classified from the contributor’s wording and context.'),sourcePassage:clean(item.sourcePassage||item.text),affectedRequirementIds:Array.isArray(item.affectedRequirementIds)?item.affectedRequirementIds:[],participantId,participantName,sourceRevision,sourceEditSeqs}}),summary=[...new Set(intents.map(item=>item.classification))],classification:InterpretationClassification=summary.length===1?summary[0]:summary.length?'ambiguity':rawClassification;
+  return{...value,id:value.id||crypto.randomUUID(),participantId,participantName,goals:value.goals||[],features:value.features||[],design:value.design||[],constraints:value.constraints||[],questions:value.questions||[],additions:value.additions||[],modifications:value.modifications||[],withdrawals:value.withdrawals||[],classification,affectedRequirementIds:value.affectedRequirementIds||[],sourceRevision,sourceEditSeqs,sourcePassages,revision:value.revision||1,createdAt:value.createdAt||new Date().toISOString(),intents,classifierVersion:value.classifierVersion||'legacy-v1'};
 }
 
 const candidateEntries=(interpretation:Requirement)=>{
-  const entries:Array<{category:SharedRequirementCategory;description:string}>=[];
-  const add=(category:SharedRequirementCategory,items:string[])=>unique(items).forEach(description=>entries.push({category,description}));
-  add('goal',interpretation.goals);add('feature',interpretation.features);add('design',interpretation.design);add('constraint',interpretation.constraints);
+  const normalizedInterpretation=normalizeInterpretation(interpretation),entries=(normalizedInterpretation.intents||[]).filter((intent):intent is InterpretationIntent&{category:SharedRequirementCategory}=>['goal','feature','design','constraint'].includes(intent.category)).map(intent=>({category:intent.category,description:intent.text,classification:intent.classification,sourcePassage:intent.sourcePassage,affectedRequirementIds:intent.affectedRequirementIds}));
   return[...new Map(entries.map(entry=>[`${entry.category}:${normalized(entry.description)}`,entry])).values()];
 };
 
-const sourceFor=(interpretation:Requirement):SharedRequirementSource=>({participantId:interpretation.participantId,participantName:interpretation.participantName,interpretationId:interpretation.id,documentRevision:interpretation.sourceRevision,editSeqs:interpretation.sourceEditSeqs,passages:interpretation.sourcePassages});
+const sourceFor=(interpretation:Requirement,passage?:string):SharedRequirementSource=>({participantId:interpretation.participantId,participantName:interpretation.participantName,interpretationId:interpretation.id,documentRevision:interpretation.sourceRevision,editSeqs:interpretation.sourceEditSeqs,passages:passage?[passage]:interpretation.sourcePassages});
 const acceptanceFor=(category:SharedRequirementCategory,description:string)=>category==='design'?`The verified product visibly follows this design direction: ${description}`:category==='constraint'?`The verified product respects this constraint: ${description}`:`A user can verify this behavior in the product: ${description}`;
 const sameSource=(a:SharedRequirementSource,b:SharedRequirementSource)=>a.participantId===b.participantId&&a.interpretationId===b.interpretationId;
 const acceptedClassification=(value:Requirement['classification'])=>value==='explicit_request'||value==='decision';
@@ -72,9 +83,9 @@ export function submitConflictSelection(group:ConflictGroup,input:{participantId
 }
 
 export function reconcileRequirements(current:SharedRequirement[],interpretationInput:Requirement,previousConflicts:Array<ConflictGroup|Contradiction>=[],at=new Date().toISOString()){
-  const interpretation=normalizeInterpretation(interpretationInput),next=current.map(item=>({...item,sources:[...item.sources]})),source=sourceFor(interpretation),entries=candidateEntries(interpretation),affected=new Set(interpretation.affectedRequirementIds),explicitlyAccepted=acceptedClassification(interpretation.classification);
+  const interpretation=normalizeInterpretation(interpretationInput),next=current.map(item=>({...item,sources:[...item.sources]})),entries=candidateEntries(interpretation),affected=new Set(interpretation.affectedRequirementIds);
   for(const entry of entries){
-    const targetId=entries.length===1&&affected.size===1?[...affected][0]:stableId('req',`${entry.category}:${normalized(entry.description)}`);
+    const source=sourceFor(interpretation,entry.sourcePassage),entryAffected=new Set([...affected,...entry.affectedRequirementIds]),explicitlyAccepted=acceptedClassification(entry.classification),targetId=entries.length===1&&entryAffected.size===1?[...entryAffected][0]:stableId('req',`${entry.category}:${normalized(entry.description)}`);
     const index=next.findIndex(item=>item.id===targetId||`${item.category}:${normalized(item.description)}`===`${entry.category}:${normalized(entry.description)}`);
     if(index<0){next.push({id:targetId,revision:1,category:entry.category,description:entry.description,acceptanceCriteria:[acceptanceFor(entry.category,entry.description)],status:explicitlyAccepted?'accepted':'proposed',authority:explicitlyAccepted?'automatic':'unresolved',sources:[source],createdAt:at,updatedAt:at});continue}
     const item=next[index],sources=item.sources.some(existing=>sameSource(existing,source))?item.sources:item.sources.concat(source),description=entry.description,status=item.status==='accepted'||explicitlyAccepted?'accepted':item.status==='withdrawn'?'proposed':item.status;
@@ -92,6 +103,10 @@ export function reconcileRequirements(current:SharedRequirement[],interpretation
   next.sort((a,b)=>a.id.localeCompare(b.id));
   const previousGroups=previousConflicts.filter((item):item is ConflictGroup=>'alternatives'in item),legacy=previousConflicts.filter((item):item is Contradiction=>!('alternatives'in item)),baseline=previousGroups.length?previousGroups:migrateLegacyContradictions(current,legacy,at),conflictGroups=detectConflictGroups(next,baseline,at),contradictions=contradictionsFromConflictGroups(conflictGroups),before=JSON.stringify({requirements:current,conflictGroups:baseline}),after=JSON.stringify({requirements:next,conflictGroups});
   return{requirements:next,conflictGroups,contradictions,changed:before!==after,acceptedChanged:acceptedRequirementFingerprint(current,baseline)!==acceptedRequirementFingerprint(next,conflictGroups)};
+}
+
+export function supersedeInterpretationSources(requirements:SharedRequirement[],interpretationId:string,at=new Date().toISOString()){
+  return requirements.map(item=>{const sources=item.sources.filter(source=>source.interpretationId!==interpretationId);if(sources.length===item.sources.length)return item;return{...item,sources,status:sources.length?item.status:'superseded' as const,authority:sources.length?item.authority:'unresolved' as const,revision:item.revision+1,updatedAt:at}});
 }
 
 export const acceptedRequirements=(requirements:SharedRequirement[])=>requirements.filter(item=>item.status==='accepted').sort((a,b)=>a.id.localeCompare(b.id));

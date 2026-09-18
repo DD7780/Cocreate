@@ -51,7 +51,7 @@ test('different subjects and conditional scopes remain compatible',()=>{
 
 test('proposals never enter accepted conflict groups',()=>{
   const red=reconcileRequirements([],interpretation('alice','Make the header red'));
-  const proposal=reconcileRequirements(red.requirements,interpretation('bob','Make the header green','proposal'),red.conflictGroups);
+  const proposal=reconcileRequirements(red.requirements,interpretation('bob','Maybe make the header green','proposal'),red.conflictGroups);
   assert.equal(proposal.conflictGroups.length,0);
   assert.equal(acceptedRequirements(proposal.requirements).length,1);
 });

@@ -71,11 +71,14 @@ Owner-only; use the named-connection API for new UI work.
 | --- | --- | --- | --- |
 | POST /api/rooms/:id/build | Participant | Empty object | `{ok: true}` after awaited buildNow |
 | POST /api/rooms/:id/process | Participant | `{correction?: string}` | `{ok: true}` after processing the authenticated participant |
+| POST /api/rooms/:id/reinterpret | Participant | Empty object | `{ok: true}` after reprocessing that participant's latest authenticated edit batch |
 | POST /api/rooms/:id/runtime-error | Participant | `{message: string, version: number}` | `{ok: true}` |
 | GET /api/rooms/:id/download/:version | Participant | None | application/zip attachment; legacy versions without files return 404 text |
 | GET /preview/:id/:version | No explicit session check | None | text/html; missing version returns 404 text |
 
 `ok: true` is an operation response, not evidence that every requirement passed browser acceptance. Inspect room status, lastError, and latestVersion. The preview route is currently accessible by its room/version URL; do not describe it as session-protected. It sends Cache-Control: no-store and Referrer-Policy: no-referrer.
+
+Reinterpretation is deliberately targeted: it reuses the authenticated edit sequence recorded on the participant's latest interpretation, replaces only that interpretation's requirement sources, retains stable shared-requirement IDs and other contributors, and creates a new immutable snapshot/event. It does not globally reclassify a room. Settled decisions and explicit withdrawals require a new human correction; missing historical edits produce an explicit error. An unchanged accepted-requirement fingerprint does not schedule another build.
 
 No current route exposes approval decisions, owner contradiction resolution, a public run-history API, pause, or rollback. Do not invent those client contracts from target architecture documents.
 
@@ -94,6 +97,8 @@ RoomView includes:
 `AIConnection` includes safe named connections, optional default personal/builder assignments, and participant overrides. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key.
 
 `SharedRequirement` includes ID/revision/category/description/acceptanceCriteria/status/authority/sources/timestamps. Current statuses: proposed, accepted, withdrawn, superseded. Current categories: goal, feature, design, constraint. Implemented/verified evidence states are planned, not current fields.
+
+Each participant `Requirement` interpretation may include `classifierVersion` and an `intents` array. Every intent has its own text, category, classification, short rationale, exact source passage, affected requirement IDs, participant attribution, source revision, and authenticated edit sequence IDs. Current classifications are `proposal`, `question`, `explicit_request`, `decision`, and `ambiguity`. Missing or invalid classifications normalize to `ambiguity`, never silently to an accepted request. Legacy interpretation arrays remain readable and are migrated into per-intent records during normalization.
 
 `ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view during the UI/API transition. No selection mutation endpoint is implemented in this slice.
 

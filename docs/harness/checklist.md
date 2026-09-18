@@ -35,7 +35,8 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 ## Phase 3 — durable orchestration
 
 - [-] Builder lifecycle is durable and participant extraction is revision-guarded. Personal-agent run states, immutable build-input records, and durable leases remain.
-- [x] Personal outputs classify proposal/question/explicit request/decision/ambiguity; only explicit requests and decisions enter accepted builder input.
+- [x] Personal outputs classify each distinct intent as proposal/question/explicit request/decision/ambiguity; mixed contributions retain separate rationale/source attribution, and only explicit requests and decisions enter accepted builder input.
+- [x] Targeted reinterpretation reuses the latest authenticated edit batch, versions the interpretation, preserves stable requirement identity and other contributors, refuses decisions/withdrawals, and avoids duplicate builds when accepted input is unchanged.
 - [x] Accepted same-subject/scope alternatives form durable multi-option groups; pending, unanimous, disagreement, stale-revision, authorization, and idempotency rules are deterministic.
 - [-] Unresolved alternatives are excluded and independent accepted requirements remain buildable; dependency metadata is currently coarse subject/scope rather than a full dependency graph.
 - [ ] Context assembly uses explicit budgets and references to omitted material.
@@ -71,6 +72,8 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [x] Restart reconstructs document, requirements, latest product, and run state without an AI call.
 
 ## Verification evidence for this slice
+
+- Intent-classification and targeted-reprocessing fix (2026-09-18): the original restaurant assignment regression failed before the behavior change, then passed after per-intent normalization and reconciliation. The controlled matrix covers direct imperatives, polite requests, stated wants, spelling mistakes, missing details, genuine proposals, informational questions, quoted imperatives, hypotheticals, negated requirements, mixed contributions, and missing labels. A provider-backed RoomManager test proves authenticated-source reuse, immutable `interpretation.reinterpreted` history, stable IDs, no duplicate build on unchanged retry, and decision protection. Full `pnpm test` passed 41/41; `pnpm build` passed with only the existing non-failing Vite chunk-size warning. Live-provider semantic evaluation was not run.
 
 - Builder-operation reliability fix (2026-09-18): the operation schema now requires string `content` for every write/delete, model plans are validated against the current project before tool execution, one bounded corrective generation receives the exact validation failure, and terminal run records retain the last attempt number. Focused suite 18/18 passed; full `pnpm test` 36/36 passed; `pnpm build` passed with only the existing non-failing Vite chunk-size warning.
 - Durable conflict-group slice (2026-09-18): focused suite 18/18 passed; full `pnpm test` 35/35 passed; `pnpm build` passed with only the existing non-failing Vite chunk-size warning. Coverage includes completed-round immutability, idempotent retries, and legacy pairwise-record migration.
