@@ -8,6 +8,7 @@
 4. Mark persisted nonterminal runs `interrupted` when a room is reconstructed. Require explicit orchestration logic in a later phase to reconcile or resume; do not replay side effects automatically.
 5. Add typed/audited tool routing incrementally. Preserve the existing provider, collaboration, validation, preview, and generated-project formats.
 6. On room load, normalize legacy personal summaries as explicit requests and derive the initial shared registry without deleting or rewriting the compatibility snapshot. Persist the registry, contradictions, and specification revision additively on the next save.
+7. Persist `conflictGroups` additively in room snapshots. Rooms without that field convert legacy pairwise contradictions into groups using their referenced requirements and contributor sources; the derived legacy contradiction view remains during the client/API transition.
 
 ## Rollback
 

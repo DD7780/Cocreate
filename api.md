@@ -86,7 +86,7 @@ Import exact contracts from `src/types.ts`; do not maintain a second application
 RoomView includes:
 - `roomId`, `ownerId`, `participants`, `ai`.
 - `status`: Waiting for ideas | Understanding edits | Decision needed | Building | Updated | Error.
-- `requirements`, `contradictions`, `specificationRevision`, `requirementsRevision`.
+- `requirements`, authoritative `conflictGroups`, derived compatibility `contradictions`, `specificationRevision`, `requirementsRevision`.
 - `latestVersion: number | null`, `versions`, optional `lastError`.
 - `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, `usage`.
 - Optional `savedAt` and `persistRevision`.
@@ -95,7 +95,9 @@ RoomView includes:
 
 `SharedRequirement` includes ID/revision/category/description/acceptanceCriteria/status/authority/sources/timestamps. Current statuses: proposed, accepted, withdrawn, superseded. Current categories: goal, feature, design, constraint. Implemented/verified evidence states are planned, not current fields.
 
-`Contradiction` includes ID, requirement IDs, reason, question, open/resolved status, consequential flag, and timestamps. `Version` includes ID, createdAt, summary, optional fileCount/conflicts. `AIUsage` includes request counts and input/output token totals; it is not a currency-cost contract.
+`ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view during the UI/API transition. No selection mutation endpoint is implemented in this slice.
+
+`Version` includes ID, createdAt, summary, optional fileCount/conflicts. `AIUsage` includes request counts and input/output token totals; it is not a currency-cost contract.
 
 ## WebSocket collaboration
 

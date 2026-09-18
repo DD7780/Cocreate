@@ -9,6 +9,8 @@ import * as Y from 'yjs';
 import { EventStore } from '../server/event-store.js';
 import { RoomManager } from '../server/rooms.js';
 import { ToolRegistry } from '../server/tool-registry.js';
+import { reconcileRequirements } from '../server/requirements.js';
+import type { Requirement } from '../src/types.js';
 
 const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));
 
@@ -96,4 +98,12 @@ test('legacy workspace migration makes a backup before importing state',()=>{
     assert.ok(fs.existsSync(path.join(dataDir,'backups','pre-event-store',`${workspaceId}.json`)));
     assert.equal(manager.eventStore.eventsForWorkspace(workspaceId)[0].eventType,'workspace.legacy_imported');
   }finally{manager.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('restart preserves a pending multi-option conflict group and resolver membership',()=>{
+  const dataDir=temporaryData(),workspaceId='workspace-conflict-restart',make=(participantId:string,participantName:string,feature:string):Requirement=>({id:randomUUID(),participantId,participantName,goals:[],features:[feature],design:[],constraints:[],questions:[],additions:[feature],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourceRevision:1,sourceEditSeqs:[1],sourcePassages:[feature],revision:1,createdAt:new Date().toISOString()}),alice=make('alice','Alice','Make the header red'),bob=make('bob','Bob','Make the header green');
+  const first=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  try{const room=first.create(workspaceId);first.join(room,'alice','Alice');first.join(room,'bob','Bob');const one=reconcileRequirements([],alice),two=reconcileRequirements(one.requirements,bob,one.conflictGroups);room.requirements=[alice,bob];room.sharedRequirements=two.requirements;room.conflictGroups=two.conflictGroups;room.contradictions=two.contradictions;room.specificationRevision=2;first.save(room,'requirement.registry_reconciled','bob','personal_agent')}finally{first.shutdown()}
+  const second=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  try{const recovered=second.get(workspaceId)!;assert.equal(recovered.conflictGroups.length,1);assert.equal(recovered.conflictGroups[0].state,'awaiting_choices');assert.deepEqual(recovered.conflictGroups[0].requiredResolverIds,['alice','bob']);assert.equal(second.view(recovered).status,'Decision needed')}finally{second.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
 });

@@ -20,7 +20,9 @@ authenticated Yjs edit
      - explicit requests and decisions become accepted
      - explicit withdrawals remove only the contributor's support
   -> deterministic contradiction scan
-     - consequential accepted conflict -> Decision needed (build paused)
+     - same subject + scope alternatives -> one revisioned conflict group
+     - unresolved alternatives are excluded; independent accepted work stays eligible
+     - required resolvers remain pending until each submits an explicit choice
   -> requirement.registry_reconciled + workspace snapshot
   -> builder run queued -> executing
      - immutable specification revision and accepted requirement IDs recorded
@@ -43,7 +45,9 @@ Personal-agent output is a proposal to the shared registry, never direct builder
 
 The current precedence rule is deliberately conservative: explicit requests and recorded decisions are accepted automatically; proposals, questions, and ambiguity are retained but never sent to the builder. Deleting canvas text is not a withdrawal. A withdrawal must be explicit, and it removes only that collaborator's source; a requirement supported by another collaborator remains accepted.
 
-The builder receives an immutable snapshot of accepted requirements only. Build fingerprints ignore attribution-only refreshes, so an unchanged interpretation or a proposal does not spend a builder request. Deterministic exact-negation conflicts between accepted requirements pause promotion and surface one focused decision question. This slice pauses the whole builder while such a conflict is open; dependency-scoped conflict pausing and an owner decision action remain future work.
+The builder receives an immutable snapshot of eligible accepted requirements only. Build fingerprints ignore attribution-only refreshes, so an unchanged interpretation or a proposal does not spend a builder request. Unresolved alternatives are excluded while independent accepted requirements remain eligible. If nothing eligible remains, the builder defers and preserves the last working preview. Promotion rechecks the eligible-requirement fingerprint so a candidate created before a new conflict cannot publish disputed behavior.
+
+Conflict groups are stable by subject and scope and can contain two or more alternatives. Each revision records requirement IDs/revisions, faithful labels, contributor sources, required resolvers, explicit selections, resolution round/history, state, and affected build scope. A changed alternative creates a new revision/round and clears current confirmations while preserving history. Deterministic rules—not a model—keep missing responses pending, resolve unanimous selections, and classify completed differing selections as disagreement. Participant-authenticated mutation endpoints and the decision UI are the next slice.
 
 ## Policy boundary
 

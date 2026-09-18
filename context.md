@@ -32,13 +32,13 @@ No duplicate root architecture.md or progress.md was created because the existin
 
 ## Implemented versus unfinished
 
-The current architecture/checklist records ordered SQLite events, snapshot recovery, JSON migration backups, interrupted run handling, typed apply/build/promote tools, stable shared intent, proposal exclusion, bounded compilation repair, and revision-guarded promotion.
+The current architecture/checklist records ordered SQLite events, snapshot recovery, JSON migration backups, interrupted run handling, typed apply/build/promote tools, stable shared intent, proposal exclusion, durable multi-option conflict groups, unresolved-requirement exclusion, bounded compilation repair, and revision/fingerprint-guarded promotion.
 
 Important limitations explicitly remain:
 - Compilation runs inside the server process; real process isolation is unfinished.
 - Active-builder coordination is process-local, not a durable multi-instance lease.
 - Approval schemas exist, but durable approval workflows and UI are unfinished.
-- Contradiction detection is deterministic and limited; an owner decision action and dependency-scoped pausing remain.
+- Deterministic conflict grouping covers known same-subject/scope color alternatives and exact negation. Authenticated selection APIs, decision cards, document highlights, compromise/reopen actions, and bounded semantic detection remain.
 - Browser acceptance/regression evidence does not yet gate promotion.
 - Full model-aware context budgets and recoverable references to omitted material remain.
 - Automatic reconciliation of uncertain external outcomes remains.
@@ -47,9 +47,9 @@ Important limitations explicitly remain:
 
 Do not treat these as completed because a README, UI label, or earlier conversation described the target architecture.
 
-## Historical validation
+## Latest validation
 
-The existing checklist reports 27 passing controlled tests and a passing production build for the shared-intent slice, plus focused tests. These are prior recorded results, not rerun or independently certified by this documentation task. Live provider generation was not run for that slice.
+On 2026-09-18, the durable conflict-group slice passed 17 focused tests, the full 34-test controlled suite, and `pnpm build`. These results cover domain rules, restart persistence, and builder eligibility, not browser interaction or live-model semantic detection.
 
 ## Local workflow
 

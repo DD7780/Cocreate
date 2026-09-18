@@ -36,6 +36,8 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 
 - [-] Builder lifecycle is durable and participant extraction is revision-guarded. Personal-agent run states, immutable build-input records, and durable leases remain.
 - [x] Personal outputs classify proposal/question/explicit request/decision/ambiguity; only explicit requests and decisions enter accepted builder input.
+- [x] Accepted same-subject/scope alternatives form durable multi-option groups; pending, unanimous, disagreement, stale-revision, authorization, and idempotency rules are deterministic.
+- [-] Unresolved alternatives are excluded and independent accepted requirements remain buildable; dependency metadata is currently coarse subject/scope rather than a full dependency graph.
 - [ ] Context assembly uses explicit budgets and references to omitted material.
 
 ## Phase 4 — verification and bounded repair
@@ -55,7 +57,7 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [x] Simultaneous participant edits remain attributed (existing controlled integration/unit tests).
 - [-] Normal edit produces a compiled, revision-guarded product with audited tools; browser acceptance is not a promotion gate.
 - [x] Proposal is not silently accepted; focused tests prove it is visible and excluded from builder input.
-- [x] Deterministic consequential contradictions pause building and surface one focused decision question. Owner resolution and dependency-scoped pausing remain.
+- [-] Deterministic known structured contradictions form multi-option groups and preserve restart state. Authenticated selection endpoints, compromise/reopen flows, semantic detection, cards, and highlights remain.
 - [x] Edit during build cannot stale-overwrite newer input (revision-guard test).
 - [x] Forbidden tool operation is denied before execution (focused policy test).
 - [ ] Approval survives restart and cannot authorize a changed action.
@@ -69,6 +71,10 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [x] Restart reconstructs document, requirements, latest product, and run state without an AI call.
 
 ## Verification evidence for this slice
+
+- Durable conflict-group slice (2026-09-18): focused suite 18/18 passed; full `pnpm test` 35/35 passed; `pnpm build` passed with only the existing non-failing Vite chunk-size warning. Coverage includes completed-round immutability, idempotent retries, and legacy pairwise-record migration.
+- Covered: red/green and red/green/blue grouping, compatible subjects/conditions, proposal exclusion, pending/unanimous/disagreement outcomes, stale and unauthorized submissions, idempotency, restart persistence, and independent builder eligibility.
+- Not yet claimed: HTTP mutation contracts, browser synchronization/cards/highlights, compromise confirmation, or live-model semantic detection.
 
 - TypeScript: `node node_modules/typescript/bin/tsc --noEmit --pretty false` passed.
 - Focused event/recovery/policy tests: 5 passed with direct Node test execution of TypeScript-emitted files.

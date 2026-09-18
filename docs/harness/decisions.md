@@ -18,4 +18,8 @@ Status: accepted. Removing text from the collaborative document does not itself 
 
 ## D-0005 — Pause on consequential accepted contradictions
 
-Status: accepted for the current slice. Exact-negation conflicts between accepted requirements produce one deterministic question and set the room to `Decision needed`. The whole build is paused until resolution because dependency-scoped blocking and an owner resolution action are not implemented yet.
+Status: superseded by D-0006. The initial exact-negation detector paused the whole build; the current conflict-group model excludes unresolved requirement IDs while leaving independent accepted work eligible.
+
+## D-0006 — Conflict groups and explicit affected-contributor agreement
+
+Status: accepted. Conflicts are grouped by stable subject and scope with any number of faithful alternatives. The required resolver set is the unique source contributors. Missing choices remain pending; unanimous explicit choices resolve; completed differing choices become a disagreement. New or materially changed alternatives increment the revision/round and invalidate current confirmations. Unresolved requirement IDs are excluded from builder input while independent eligible requirements continue.
