@@ -14,4 +14,4 @@ ENV COCREATE_HOSTED=true
 ENV PORT=5173
 
 EXPOSE 5173
-CMD ["pnpm", "start"]
+CMD ["node", "--import", "tsx", "server/index.ts"]

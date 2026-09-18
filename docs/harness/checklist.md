@@ -78,6 +78,16 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - Builder-operation reliability fix (2026-09-18): the operation schema now requires string `content` for every write/delete, model plans are validated against the current project before tool execution, one bounded corrective generation receives the exact validation failure, and terminal run records retain the last attempt number. Focused suite 18/18 passed; full `pnpm test` 36/36 passed; `pnpm build` passed with only the existing non-failing Vite chunk-size warning.
 - Durable conflict-group slice (2026-09-18): focused suite 18/18 passed; full `pnpm test` 35/35 passed; `pnpm build` passed with only the existing non-failing Vite chunk-size warning. Coverage includes completed-round immutability, idempotent retries, and legacy pairwise-record migration.
 - Covered: red/green and red/green/blue grouping, compatible subjects/conditions, proposal exclusion, pending/unanimous/disagreement outcomes, stale and unauthorized submissions, idempotency, restart persistence, and independent builder eligibility.
+
+## Cloudflare availability and collaboration repair evidence (2026-09-18)
+
+- [x] Removed the custom container `fetch()`/`containerFetch()` path and restored Cloudflare's native WebSocket-aware container proxy.
+- [x] Added a container application-health endpoint and configured `pingEndpoint` for readiness checks.
+- [x] Replaced runtime-generated secrets with required encrypted Worker secrets; `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` were configured without storing their values in the repository.
+- [x] Focused application, Yjs collaboration, and deployment-regression tests passed: 10 tests, 0 failures.
+- [x] Production client build passed and Wrangler's Worker-only deployment dry-run validated the Worker bundle, Durable Object binding, and container declaration.
+- [-] Local container-image dry-run is unavailable because Docker Desktop is not running; the connected Cloudflare build pipeline builds the image after the verified commit is pushed.
+- [ ] Container-local SQLite and generated files remain ephemeral across container replacement; a proven durable application store is still required.
 - Not yet claimed: HTTP mutation contracts, browser synchronization/cards/highlights, compromise confirmation, or live-model semantic detection.
 
 - TypeScript: `node node_modules/typescript/bin/tsc --noEmit --pretty false` passed.

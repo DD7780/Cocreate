@@ -73,4 +73,4 @@ The MVP retains events and content-addressed artifacts indefinitely; snapshots a
 
 ## Deployment constraint
 
-This architecture is reliable only where `data/` and `generated/` reside on persistent storage. Local/server deployments meet that condition. The current Cloudflare Container image does not yet provide a persistent volume or bridge application records into Durable Object storage, so container replacement can lose state. That is a documented production blocker rather than a silent fallback.
+This architecture is reliable only where `data/` and `generated/` reside on persistent storage. Local/server deployments meet that condition. The Cloudflare Worker uses the native `Container.fetch()` proxy for both HTTP and WebSocket traffic, a container application-health endpoint, and encrypted Worker secrets passed as container environment variables. The current Cloudflare Container image still does not provide a persistent volume or bridge application records into Durable Object storage, so container replacement can lose state. That is a documented production blocker rather than a silent fallback.

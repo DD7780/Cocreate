@@ -43,7 +43,7 @@ Important limitations explicitly remain:
 - Full model-aware context budgets and recoverable references to omitted material remain.
 - Automatic reconciliation of uncertain external outcomes remains.
 - Events/artifacts are retained indefinitely; bounded retention is future work.
-- Cloudflare container replacement can lose application data with the current persistence configuration.
+- Cloudflare HTTP and WebSocket routing now use the platform-native container proxy with an application readiness endpoint and encrypted Worker secrets. Container replacement can still lose application data with the current persistence configuration.
 
 Do not treat these as completed because a README, UI label, or earlier conversation described the target architecture.
 
