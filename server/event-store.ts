@@ -118,13 +118,13 @@ export class EventStore{
     this.db.exec('BEGIN IMMEDIATE');try{const artifact=this.insertArtifact(update,'application/vnd.yjs-update'),event=this.insert({eventType:'document.update_recorded',workspaceId,actorId,actorType:'user',inputRevision,artifactRef:artifact.ref,contentHash:artifact.contentHash,payload:{...payload,byteLength:artifact.byteLength}});this.db.exec('COMMIT');return event}catch(error){this.db.exec('ROLLBACK');throw error}
   }
   transitionRun(input:{workspaceId:string;runId:string;kind:string;state:RunState;inputRevision:number;attempt?:number;actorId?:string;actorType?:ActorType;triggerEventId?:string;error?:string;payload?:unknown}){
-    const current=this.db.prepare('SELECT state,created_at AS createdAt FROM run_state WHERE run_id=?').get(input.runId) as {state:RunState;createdAt:string}|undefined;
+    const current=this.db.prepare('SELECT state,created_at AS createdAt,attempt FROM run_state WHERE run_id=?').get(input.runId) as {state:RunState;createdAt:string;attempt:number}|undefined;
     if(current&&!transitions[current.state].has(input.state))throw new Error(`Illegal run transition: ${current.state} -> ${input.state}`);
     if(!current&&input.state!=='queued')throw new Error(`Run ${input.runId} must begin in queued state.`);
-    const updatedAt=new Date().toISOString(),createdAt=current?.createdAt||updatedAt;
+    const updatedAt=new Date().toISOString(),createdAt=current?.createdAt||updatedAt,attempt=input.attempt??current?.attempt??0;
     this.db.exec('BEGIN IMMEDIATE');try{
-      const event=this.insert({eventType:`run.${input.state}`,workspaceId:input.workspaceId,actorId:input.actorId||'builder',actorType:input.actorType||'builder',runId:input.runId,correlationId:input.runId,inputRevision:input.inputRevision,payload:{kind:input.kind,attempt:input.attempt||0,error:input.error,...(input.payload&&typeof input.payload==='object'?input.payload as object:{})}});
-      this.db.prepare(`INSERT INTO run_state(run_id,workspace_id,kind,state,input_revision,attempt,trigger_event_id,last_event_id,created_at,updated_at,error) VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(run_id) DO UPDATE SET state=excluded.state,input_revision=excluded.input_revision,attempt=excluded.attempt,last_event_id=excluded.last_event_id,updated_at=excluded.updated_at,error=excluded.error`).run(input.runId,input.workspaceId,input.kind,input.state,input.inputRevision,input.attempt||0,input.triggerEventId??null,event.eventId,createdAt,updatedAt,input.error??null);
+      const event=this.insert({eventType:`run.${input.state}`,workspaceId:input.workspaceId,actorId:input.actorId||'builder',actorType:input.actorType||'builder',runId:input.runId,correlationId:input.runId,inputRevision:input.inputRevision,payload:{kind:input.kind,attempt,error:input.error,...(input.payload&&typeof input.payload==='object'?input.payload as object:{})}});
+      this.db.prepare(`INSERT INTO run_state(run_id,workspace_id,kind,state,input_revision,attempt,trigger_event_id,last_event_id,created_at,updated_at,error) VALUES(?,?,?,?,?,?,?,?,?,?,?) ON CONFLICT(run_id) DO UPDATE SET state=excluded.state,input_revision=excluded.input_revision,attempt=excluded.attempt,last_event_id=excluded.last_event_id,updated_at=excluded.updated_at,error=excluded.error`).run(input.runId,input.workspaceId,input.kind,input.state,input.inputRevision,attempt,input.triggerEventId??null,event.eventId,createdAt,updatedAt,input.error??null);
       this.db.exec('COMMIT');return event;
     }catch(error){this.db.exec('ROLLBACK');throw error}
   }

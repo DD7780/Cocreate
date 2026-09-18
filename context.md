@@ -49,7 +49,7 @@ Do not treat these as completed because a README, UI label, or earlier conversat
 
 ## Latest validation
 
-On 2026-09-18, the durable conflict-group slice passed 17 focused tests, the full 34-test controlled suite, and `pnpm build`. These results cover domain rules, restart persistence, and builder eligibility, not browser interaction or live-model semantic detection.
+On 2026-09-18, the builder-operation reliability fix passed 18 focused tests, the full 36-test controlled suite, and `pnpm build`. The regression reproduces a missing `content` field, exercises structured-response repair, then exercises current-project operation validation and a corrective generation before tool execution. The earlier durable conflict-group coverage remains included. Browser interaction and live-model semantic detection were not exercised.
 
 ## Local workflow
 

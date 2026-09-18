@@ -438,9 +438,9 @@
     "semantic_hash": ""
   },
   "server/generator.ts": {
-    "mtime": 1789674884.960748,
-    "seen": 1789675887.9259028,
-    "ast_hash": "44443a06511c733cc3ff68c28a64f759",
+    "mtime": 1789745113.1554985,
+    "seen": 1789745308.2504928,
+    "ast_hash": "7a46c5d682004aee023636dafaf4a7d3",
     "semantic_hash": ""
   },
   "server/index.ts": {
@@ -678,9 +678,9 @@
     "semantic_hash": ""
   },
   "server/event-store.ts": {
-    "mtime": 1789636568.1002488,
-    "seen": 1789675887.9259028,
-    "ast_hash": "e71d073891c8574baeac20814c6d416b",
+    "mtime": 1789745151.536873,
+    "seen": 1789745308.2504928,
+    "ast_hash": "0b5157433c17a4aa30792d7d2610f6b1",
     "semantic_hash": ""
   },
   "server/requirements.ts": {
@@ -696,9 +696,9 @@
     "semantic_hash": ""
   },
   "tests/event-store.test.ts": {
-    "mtime": 1789737831.1141212,
-    "seen": 1789738105.6945755,
-    "ast_hash": "05dba76ca933108b0b59557718b69707",
+    "mtime": 1789745151.536873,
+    "seen": 1789745308.2504928,
+    "ast_hash": "fc75e2868553fc9399435af7622ddeb1",
     "semantic_hash": ""
   },
   "tests/requirements.test.ts": {
@@ -720,9 +720,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1789738321.952314,
-    "seen": 1789738342.7822442,
-    "ast_hash": "21da2d85de02642ddce4955a0d40b45a",
+    "mtime": 1789745288.7751284,
+    "seen": 1789745308.2504928,
+    "ast_hash": "ada11fdc7cf5b80d4221e6ef8af8cd94",
     "semantic_hash": ""
   },
   "docs/harness/decisions.md": {
@@ -750,9 +750,9 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1789738041.8171303,
-    "seen": 1789738105.6945755,
-    "ast_hash": "e3e6cdf072581b32e4a19005e31f8fb7",
+    "mtime": 1789745288.7899854,
+    "seen": 1789745308.2504928,
+    "ast_hash": "e73dc67792bdcc2a09558a128510b24d",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -771,6 +771,12 @@
     "mtime": 1789724667.986626,
     "seen": 1789738105.6945755,
     "ast_hash": "8c34e5c0296c04497e7353d29e3ce3d5",
+    "semantic_hash": ""
+  },
+  "tests/builder-repair.test.ts": {
+    "mtime": 1789745190.6517608,
+    "seen": 1789745308.2504928,
+    "ast_hash": "fdd7b2fdedc2805b88c9064fa2af911f",
     "semantic_hash": ""
   }
 }

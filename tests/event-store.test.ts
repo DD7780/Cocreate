@@ -26,7 +26,7 @@ test('event store orders events, redacts secrets, stores artifacts, and enforces
     store.transitionRun({workspaceId,runId,kind:'builder',state:'queued',inputRevision:1});
     store.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1,attempt:1});
     store.transitionRun({workspaceId,runId,kind:'builder',state:'verifying',inputRevision:1,attempt:1});
-    store.transitionRun({workspaceId,runId,kind:'builder',state:'ready',inputRevision:1,attempt:1});
+    store.transitionRun({workspaceId,runId,kind:'builder',state:'ready',inputRevision:1});
     assert.throws(()=>store.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1}),/Illegal run transition/);
 
     const events=store.eventsForWorkspace(workspaceId);
@@ -34,6 +34,7 @@ test('event store orders events, redacts secrets, stores artifacts, and enforces
     assert.equal(events.find((event:any)=>event.eventType==='connection.checked').payload.apiKey,'[REDACTED]');
     assert.doesNotMatch(JSON.stringify(events),/top-secret|Bearer hidden|abcdefghijklmnop/);
     assert.equal(store.runsForWorkspace(workspaceId)[0].state,'ready');
+    assert.equal(store.runsForWorkspace(workspaceId)[0].attempt,1,'terminal events retain the latest recorded attempt when omitted');
   }finally{store.close();fs.rmSync(dataDir,{recursive:true,force:true})}
 });
 
