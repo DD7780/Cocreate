@@ -86,7 +86,8 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [x] Replaced runtime-generated secrets with required encrypted Worker secrets; `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` were configured without storing their values in the repository.
 - [x] Focused application, Yjs collaboration, and deployment-regression tests passed: 10 tests, 0 failures.
 - [x] Production client build passed and Wrangler's Worker-only deployment dry-run validated the Worker bundle, Durable Object binding, and container declaration.
-- [-] Local container-image dry-run is unavailable because Docker Desktop is not running; the connected Cloudflare build pipeline builds the image after the verified commit is pushed.
+- [x] The corrected Worker proxy was deployed as version `fc69aa28-191b-48c7-82af-7dc537acb5af`; the public homepage returned HTTP 200 and a live two-participant check confirmed authenticated WebSocket edit synchronization.
+- [-] Local container-image dry-run is unavailable because Docker Desktop is not running. The Worker repair is live against the existing image; the direct Node container startup command will take effect on the next full Cloudflare image build from `main`.
 - [ ] Container-local SQLite and generated files remain ephemeral across container replacement; a proven durable application store is still required.
 - Not yet claimed: HTTP mutation contracts, browser synchronization/cards/highlights, compromise confirmation, or live-model semantic detection.
 
