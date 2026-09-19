@@ -78,3 +78,17 @@ The MVP retains events and content-addressed artifacts indefinitely; snapshots a
 ## Deployment constraint
 
 This architecture is reliable only where `data/` and `generated/` reside on persistent storage. Local/server deployments meet that condition. The Cloudflare Worker uses the native `Container.fetch()` proxy for both HTTP and WebSocket traffic, a container application-health endpoint, and encrypted Worker secrets passed as container environment variables. The current Cloudflare Container image still does not provide a persistent volume or bridge application records into Durable Object storage, so container replacement can lose state. That is a documented production blocker rather than a silent fallback.
+
+## Submission scheduling: current implementation and required hardening
+
+Source audit, 2026-09-19: `submitChanges` persists the caller's edit sequence IDs, participant revision, document snapshot, previous interpretation reference, request ID and lifecycle status. It invokes the personal interpreter immediately; the three-second scheduling window is a builder debounce, not a durable closed-batch barrier. Submissions are retained in room state with a last-200 limit. Idempotency is therefore bounded by retained records, not permanent. Persisted submissions do not yet establish automatic safe queue resumption after restart.
+
+Two authorization/context gaps remain: the captured snapshot comes from the shared document, so another participant's draft can be present as personal-model context even though only the caller's edit records are submitted; the legacy `/build` endpoint calls `buildNow`, which flushes all participants' pending drafts. The active UI uses `/submit`, but UI behavior alone does not enforce the intended boundary. Close or explicitly restrict legacy mutation paths, validate interpreted sources against submitted edits, and use scoped reference context before claiming end-to-end draft isolation.
+
+Target hardening: persist submission-to-batch-to-run membership, freeze source/specification revisions, collect completed eligible interpretations deterministically, and queue later submissions without mixing them into an active run. Recover pending/interrupted work from records with bounded retries, stable deduplication keys and an eventual durable per-room lease. Revalidate promotion against relevant accepted input. Never manufacture success from a persisted `queued` label.
+
+## Bounded context and cost target
+
+The n personal agents are logical participant identities, not n permanently running model sessions. One logical builder reconstructs each request from durable accepted requirements, unresolved-conflict exclusions, relevant project files and concise verification evidence. Storage and context are separate: records may outlive a model session, but stored records must not all be injected into its next request.
+
+Explicit model-aware input/output budgets, relevance selection with retrievable omitted references, usage ceilings and bounded repair remain work items. Cache by source/specification/model-policy version where safe; unchanged drafts and unchanged eligible fingerprints should not create extra inference. Never silently switch models to meet a budget. Provider recommendations are planned configuration assistance based on capability checks and measured quality/cost, not a new agent or an assertion that all models are interchangeable.

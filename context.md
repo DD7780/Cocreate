@@ -4,7 +4,7 @@ As of 2026-09-19. Recheck the source and checklist before acting; this handoff r
 
 ## Product
 
-Multiple users write in one shared canvas. Event-driven personal agents interpret authenticated contributions; a shared requirement registry separates proposals from accepted intent; one builder produces a shared application preview. Priorities: intent correctness, contradictions, low hallucination, cost efficiency, responsiveness, bounded context, and recovery.
+Multiple users write in one shared canvas. Explicit participant submissions invoke personal agents to interpret authenticated contributions; typing itself makes no model call; a shared requirement registry separates proposals from accepted intent; one builder produces a shared application preview. Priorities: intent correctness, contradictions, low hallucination, cost efficiency, responsiveness, bounded context, and recovery.
 
 ## Read next
 
@@ -47,9 +47,9 @@ Important limitations explicitly remain:
 
 Do not treat these as completed because a README, UI label, or earlier conversation described the target architecture.
 
-## Latest validation
+## Historical validation (reported by the implementation slice)
 
-On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled suite, `pnpm build`, and a production-mode Windows Chrome interaction check. Coverage includes no inference on typing, participant draft isolation, idempotent and empty submissions without extra model calls, three-person submission-driven generation, exact shortcut filtering, preferences/remapping, dialog exclusion, focus preservation, accessibility metadata, and the mobile/product regression. Linux and macOS hardware were not exercised; macOS disabled-by-default behavior is unit-tested. Live-provider semantic evaluation was not run. Earlier intent-classification, builder-operation, durable conflict-group, and Cloudflare collaboration coverage remains included.
+On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled suite, `pnpm build`, and a production-mode Windows Chrome interaction check. Coverage includes no inference on typing, participant edit-record submission scoping (not complete personal-model context isolation), idempotent and empty submissions without extra model calls, three-person submission-driven generation, exact shortcut filtering, preferences/remapping, dialog exclusion, focus preservation, accessibility metadata, and the mobile/product regression. Linux and macOS hardware were not exercised; macOS disabled-by-default behavior is unit-tested. Live-provider semantic evaluation was not run. Earlier intent-classification, builder-operation, durable conflict-group, and Cloudflare collaboration coverage remains included.
 
 ## Local workflow
 
@@ -60,3 +60,9 @@ On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled sui
 Choose the next incomplete criterion from the canonical checklist after inspecting actual code. Highest-risk boundaries are real execution isolation and durable coordination; verification gates are required before calling results functionally verified. Preserve the current working vertical slice and avoid a new framework or swarm rewrite.
 
 Update this handoff after verified milestones. Record date, source revision when available, actual test evidence, blockers, and the next task; keep secrets and transient credentials out.
+
+## Steering update and next slice (2026-09-19)
+
+Documentation source audit only; application tests and live inference were not rerun for this update. Submission-first generation, one shared product, the three-second default collection window, Alt+X and multi-option affected-contributor agreement are the accepted direction. Recommended owner setup remains a target; current connections/assignments are manual. Preserve the scrollable writing surface and calm body typography.
+
+Prioritize closing the legacy `/build` all-draft flush and verifying source ownership in personal outputs: submission snapshots currently contain shared canvas context. Then implement durable submission/batch/run links and restart resumption; the current 200-record list bounds deduplication and the debounce is not a frozen batch barrier. Complete conflict mutation APIs/cards/Disagreements with revision checks. Before durable hosted launch, resolve container-replacement data loss and the execution/verification limitations listed above. See the canonical checklist for acceptance criteria.

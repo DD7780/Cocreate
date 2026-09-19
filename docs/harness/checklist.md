@@ -56,7 +56,7 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 ## Phase 6 — end-to-end hardening scenarios
 
 - [x] Simultaneous participant edits remain attributed (existing controlled integration/unit tests).
-- [-] Normal edit produces a compiled, revision-guarded product with audited tools; browser acceptance is not a promotion gate.
+- [-] Explicitly submitted accepted changes produce a compiled, revision-guarded product with audited tools; browser acceptance is not a promotion gate.
 - [x] Proposal is not silently accepted; focused tests prove it is visible and excluded from builder input.
 - [-] Deterministic known structured contradictions form multi-option groups and preserve restart state. Authenticated selection endpoints, compromise/reopen flows, semantic detection, cards, and highlights remain.
 - [x] Edit during build cannot stale-overwrite newer input (revision-guard test).
@@ -94,9 +94,9 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 ## Submission shortcut slice (2026-09-19)
 
 - [x] Typing and autosaving make no provider calls; only an authenticated participant submission invokes their interpreter.
-- [x] Submissions persist request ID, participant, edit sequence IDs, document revision, immutable bounded snapshot, previous interpretation reference, lifecycle status, and timestamps.
+- [x] Submissions persist request ID, participant, edit sequence IDs, document revision, immutable shared-document snapshot, previous interpretation reference, lifecycle status, and timestamps.
 - [x] A WebSocket flush acknowledgement orders the final collaborative update before submission capture.
-- [x] A three-second collection window batches eligible accepted changes while one builder remains serialized; another participant's unsubmitted draft neither blocks nor enters the build.
+- [-] A three-second debounce batches eligible accepted changes while one builder remains serialized. Full draft isolation is not established: personal-model context includes shared text, and the legacy build API can flush all drafts. Durable frozen batch membership remains unfinished.
 - [x] **Build my changes** and editor-scoped Alt+X use the same submission function. Empty and repeated submissions make no additional model call.
 - [x] Exact shortcut filtering covers repeats, composition, AltGraph, Ctrl/Shift/Meta additions, ordinary Enter/B, disable, and Alt+S/Alt+Y remapping. macOS defaults to disabled.
 - [x] Tooltip and `aria-keyshortcuts` expose the active binding; the preference is stored locally.
@@ -112,3 +112,17 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - Production build: `pnpm build` passed; Vite emitted the client bundle with a non-failing large-chunk warning.
 - The standard `tsx --test tests/*.test.ts` launcher completed successfully.
 - Live provider generation: not run; no credential is required or requested for this controlled slice.
+
+## Pivot source audit and acceptance gaps (2026-09-19)
+
+Documentation-only source inspection; historical test counts above are retained, not new executions.
+
+- [ ] Enforce participant-only submission on every public mutation path; remove/restrict legacy all-draft `/build` behavior and audit `/process` and reinterpretation semantics.
+- [ ] Personal output can authorize only captured participant edits; adversarial tests show another user's unsubmitted imperative in shared context cannot become accepted intent.
+- [ ] Persist immutable submission/batch/run links; test simultaneous submissions, slow interpreters, edits during a build, and next-batch isolation.
+- [ ] Resume queued/interrupted submissions safely after restart; define durable deduplication retention beyond the last-200 room list and prevent retry double spending.
+- [ ] Complete authenticated conflict-choice APIs and cards below Shared intent, document highlights, multi-option Disagreements, compromise/reopen rounds and stale-choice rejection. Silence must stay pending; dependent work must stay blocked.
+- [ ] Add Recommended owner setup with explicit confirmation and measured role recommendations while preserving Advanced connections/assignments; no unannounced model fallback.
+- [ ] Verify long-document scrolling, editor usability during generation and shortcut accessibility across supported browsers/platforms.
+- [ ] Establish model-aware context ceilings, retrieval of omitted references and per-run cost/repair budgets; do not claim unlimited context.
+- [ ] Demonstrate hosted records and generated artifacts survive container replacement before a durable hosted launch claim.

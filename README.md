@@ -29,7 +29,7 @@ Only the room owner can add, update, test, assign, or disconnect credentials. Co
 
 ## Product loop
 
-Everyone brainstorms and co-writes in the same rich canvas. Typing, formatting, autosaving, and reconnecting do not invoke a model. **Build my changes** captures only the authenticated participant's unsubmitted edit records, acknowledges the final collaborative update, and starts a short collection window so nearby submissions can share one serialized build without losing attribution. Another participant's unsubmitted draft is not interpreted or sent to the builder. An empty submission reports **No new changes to submit** without an AI call. A failed generation keeps the last successful Product visible and reports the error.
+Everyone brainstorms and co-writes in the same rich canvas. Typing, formatting, autosaving, and reconnecting do not invoke a model. **Build my changes** captures only the authenticated participant's unsubmitted edit records, acknowledges the final collaborative update, and starts a short collection window so nearby submissions can share one serialized build without losing attribution. Only the caller's edit records are submitted, and the builder receives the accepted registry. Personal-model context still includes a shared document snapshot, and the legacy build API can flush other drafts; complete source isolation and legacy-route enforcement remain hardening work. An empty submission reports **No new changes to submit** without an AI call. A failed generation keeps the last successful Product visible and reports the error.
 
 On Windows and Linux, **Alt + X** invokes the same submission function while the shared editor has focus. The button exposes this through its tooltip and `aria-keyshortcuts`. The adjacent shortcut preference can remap it to Alt + S or Alt + Y, or disable it. macOS defaults to no shortcut so Option + X retains its normal text-input behavior; Mac users may explicitly choose a shortcut.
 
@@ -76,3 +76,7 @@ Tests cover signed participant attribution, character-level Yjs edits across thr
 ## Current boundaries
 
 This MVP uses SQLite plus local generated-project files and is intended for a trusted LAN or single server with persistent storage. Room links are high-entropy access links; there is no account system or enterprise authorization. The current Cloudflare Container configuration does not persist application data across container replacement, so production recovery there is not yet guaranteed. Generated apps are frontend-only and run in a restricted browser preview, but compilation still occurs inside the CoCreate server process; a dedicated sandboxed build/runtime service is required before treating generated build execution as a security boundary. See `docs/harness/` for the exact completed and remaining acceptance criteria.
+
+## AI steering documents
+
+Start with [AGENTS.md](AGENTS.md), [context.md](context.md), [product.md](product.md), and [instructions.md](instructions.md). Canonical design and progress live in [docs/harness/architecture.md](docs/harness/architecture.md), [decisions.md](docs/harness/decisions.md), and [checklist.md](docs/harness/checklist.md); implemented contracts live in [api.md](api.md). Product requirements are not completion evidence. Update affected documents alongside changes; do not duplicate architecture or progress files at the root.

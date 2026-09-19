@@ -6,7 +6,7 @@ Created: 2026-09-18. This file defines product intent, not proof of implementati
 
 Help a small team turn a shared brainstorm into a working application without one person translating everyone's ideas into a single chat. People write together, inspect the resulting application, and refine the same product through further writing.
 
-Core loop: shared document -> attributed interpretation -> accepted shared requirements -> one builder -> checked application -> shared Product preview.
+Core loop: shared document -> explicit participant submission -> attributed interpretation -> accepted shared requirements and conflict gate -> one builder -> checked application -> shared Product preview. Writing is real-time; generation is submission-driven, not triggered by every edit.
 
 ## Users
 
@@ -68,3 +68,17 @@ Measure missed requirements, attribution mistakes, unwanted changes, false/misse
 - [API contract](api.md)
 - [AI coding instructions](instructions.md)
 - [Context handoff](context.md)
+
+## Accepted workflow pivot (2026-09-19)
+
+These are product requirements; implementation evidence and remaining gaps belong in the canonical checklist.
+
+- Keep a vertically scrollable canvas usable for long documents, keyboard navigation, and continued writing during builds.
+- **Build my changes** submits the caller's captured unsubmitted edits. Ram's submission does not authorize Sham's draft. Previously accepted shared requirements remain the baseline: everyone develops one application, not a separate product per participant.
+- Use a short, configurable collection window (initial default three seconds, not a compulsory twenty-second delay). Combine nearby eligible submissions with attribution. Freeze each build's inputs; later submissions wait for the next serialized build.
+- Invoke logical personal agents only on explicit submission or targeted reinterpretation. Typing, saving, presence, reconnect, and polling must not invoke a model. Submitting a speculative idea does not change its classification into an accepted requirement.
+- **Alt+X** is the Windows/Linux editor-focused shortcut for the same Build my changes action. No Enter binding. Ignore repeat, composition, AltGraph, and additional modifiers; support disabling/remapping and retain focus. macOS defaults to no shortcut to preserve Option text input.
+- Show accepted-requirement contradictions as highlights and multi-option decision cards below Shared intent. Only affected contributors resolve a round; silence stays pending. Unanimous explicit choices resolve; differing completed choices move the group to **Disagreements** without deleting the alternatives. Preserve the last agreed baseline and block dependent changes while safe independent work continues. A compromise or changed alternative requires fresh confirmation.
+- Target a **Recommended** setup: the owner supplies a supported connection, then confirms suggested personal/builder assignments selected using measured quality, cost, and latency. Keep Advanced configuration and the dedicated API connections entry. Collaborators reuse the room configuration. This recommendation flow is planned; existing manual assignments remain supported. Do not imply universal model compatibility, free provider access, or platform-funded usage.
+
+Launch readiness requires durable deployed records/artifacts across container replacement and honest verification/permission boundaries. A fixed launch date does not convert an unchecked criterion into a completed feature.

@@ -70,14 +70,14 @@ Owner-only; use the named-connection API for new UI work.
 | Method and path | Auth | Request | Response |
 | --- | --- | --- | --- |
 | POST /api/rooms/:id/build | Participant | Empty object | `{ok: true}` after awaited buildNow |
-| POST /api/rooms/:id/submit | Participant | `{requestId: string}` | Participant-scoped submission result; repeated request IDs are idempotent and an empty draft returns `No new changes to submit` |
+| POST /api/rooms/:id/submit | Participant | `{requestId: string}` | Participant-scoped submission result; retained repeated request IDs are idempotent and an empty draft returns `No new changes to submit` |
 | POST /api/rooms/:id/process | Participant | `{correction?: string}` | `{ok: true}` after processing the authenticated participant |
 | POST /api/rooms/:id/reinterpret | Participant | Empty object | `{ok: true}` after reprocessing that participant's latest authenticated edit batch |
 | POST /api/rooms/:id/runtime-error | Participant | `{message: string, version: number}` | `{ok: true}` |
 | GET /api/rooms/:id/download/:version | Participant | None | application/zip attachment; legacy versions without files return 404 text |
 | GET /preview/:id/:version | No explicit session check | None | text/html; missing version returns 404 text |
 
-The submission route consumes only the authenticated participant's unsubmitted edit records. It snapshots their edit sequence IDs, document revision, bounded document context, previous interpretation reference, creation time, and lifecycle status before inference. The legacy `/build` route remains for compatibility; the active UI does not use it.
+The submission route consumes only the authenticated participant's unsubmitted edit records. It snapshots their edit sequence IDs, participant revision, shared document context, previous interpretation reference, creation time, and lifecycle status before inference. The shared snapshot can include other participants' unsubmitted text as personal-model context; source scoping is not yet a complete isolation guarantee. The current room submission list retains only the last 200 entries, limiting request-ID deduplication. The legacy `/build` route remains callable and flushes all participants' pending drafts through `buildNow`; the active UI does not use it. This legacy route conflicts with the intended participant-only submission contract and requires hardening.
 
 `ok: true` is an operation response, not evidence that every requirement passed browser acceptance. Inspect room status, lastError, and latestVersion. The preview route is currently accessible by its room/version URL; do not describe it as session-protected. It sends Cache-Control: no-store and Referrer-Policy: no-referrer.
 
