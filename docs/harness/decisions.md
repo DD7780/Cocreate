@@ -43,3 +43,7 @@ Status: accepted target, recommendation UX not implemented. Prefer owner-provide
 ## D-0011 — Show conflicts without destroying ideas
 
 Status: accepted target, builds on D-0006; UI/mutation integration remains unfinished. Highlight accepted conflicts and show multi-option cards below Shared intent. Missing selections remain pending; unanimous affected-contributor agreement resolves; differing completed selections become Disagreements. Preserve alternatives, history and the last agreed baseline. Changed options and compromises start a new confirmation round. Block dependent disputed behavior; continue safe independent work without treating silence as consent.
+
+## D-0012 — Diagnose collaboration before retrying
+
+Status: implemented. A browser WebSocket failure is not labeled as an internet outage. The provider checks the authenticated room-state contract to distinguish invalid sessions, missing rooms, and permission failures from transient transport failures. Only transient failures retry, using capped exponential backoff with jitter and generation guards. Terminal states require an explicit rejoin or return-home action. In-memory Yjs edits survive recoverable reconnects, but no offline-across-reload guarantee is made. This decision does not close the separate Cloudflare durable-storage gap.

@@ -125,7 +125,9 @@ Server JSON:
 - `{type: 'saved', revision: number, savedAt: string}`.
 - `{type: 'flushed', requestId: string}`.
 
-The current browser provider retries after approximately one second and keeps the Y.Doc in memory. Do not promise persisted offline browser edits across a page reload: this client does not implement a durable browser Yjs store.
+The browser provider reports `connecting`, `connected`, bounded `reconnecting`, and terminal `error` states. Transient failures use capped exponential backoff with jitter (six attempts, capped at roughly 10 seconds before jitter). Before retrying, the client calls the existing authenticated room-state route: 401 becomes an invalid-session action, 404 becomes a missing-room action, and 403 becomes a permission error. Upgrade rejection responses and server logs contain only a safe category/correlation ID; tokens and authenticated URLs are not logged by application code.
+
+The provider keeps its Y.Doc in memory and answers the server state vector after a successful reconnect, so edits made during a recoverable disconnect are resynchronized. A disconnected or unacknowledged flush rejects before `/submit` is called. Do not promise persisted offline browser edits across a page reload: this client does not implement a durable browser Yjs store.
 
 ## Maintenance
 

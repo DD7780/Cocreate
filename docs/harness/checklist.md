@@ -126,3 +126,15 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Verify long-document scrolling, editor usability during generation and shortcut accessibility across supported browsers/platforms.
 - [ ] Establish model-aware context ceilings, retrieval of omitted references and per-run cost/repair budgets; do not claim unlimited context.
 - [ ] Demonstrate hosted records and generated artifacts survive container replacement before a durable hosted launch claim.
+
+## Collaboration reconnect repair (2026-09-19)
+
+- [x] Production diagnosis confirmed that the deployed native container proxy and fresh room path were healthy while a real browser repeatedly received failed WebSocket upgrades. The exact old room/session category was unavailable because credentials and room IDs were correctly redacted; ephemeral container replacement remains a plausible but unproven trigger.
+- [x] Connection states now distinguish connecting, connected, bounded transient reconnecting, invalid session, missing room, permission failure, and retry exhaustion. Server upgrade rejections emit safe category/correlation records without tokens or document content.
+- [x] Transient retries use capped exponential backoff with jitter; socket generations, retry timers, flush promises, Yjs listeners, and awareness listeners are cleaned up on replacement/disposal.
+- [x] Recoverable disconnected edits remain in memory and resynchronize through the existing Yjs state-vector exchange. Save UI labels disconnected pending edits as unsynced.
+- [x] Flush rejection on disconnect states that no build started; reconnect logic makes no provider request.
+- [x] Focused connection/proxy tests passed 8/8, the full controlled suite passed 51/51, and `pnpm build` passed with only the existing Vite chunk-size warning.
+- [x] Windows Chrome interaction coverage passed for existing submission/Alt+X behavior plus the new actionable invalid-session state. The in-app browser automation helper was unavailable; the repository Chrome DevTools smoke harness provided the successful browser run.
+- [ ] Post-deployment two-browser synchronization/recovery and deployed revision evidence must be recorded after publishing this change.
+- [ ] Cloudflare container-local SQLite and generated files remain ephemeral across replacement. No destructive persistence migration was attempted because replacement was not confirmed as the specific incident trigger.

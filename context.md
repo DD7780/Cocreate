@@ -1,6 +1,6 @@
 # CoCreate context handoff
 
-As of 2026-09-19. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, and a Windows Chrome interaction check, but no live-provider semantic evaluation.
+As of 2026-09-19. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, Windows Chrome interaction checks, and live collaboration diagnostics, but no live-provider semantic evaluation.
 
 ## Product
 
@@ -44,6 +44,7 @@ Important limitations explicitly remain:
 - Automatic reconciliation of uncertain external outcomes remains.
 - Events/artifacts are retained indefinitely; bounded retention is future work.
 - Cloudflare HTTP and WebSocket routing now use the platform-native container proxy with an application readiness endpoint and encrypted Worker secrets. Container replacement can still lose application data with the current persistence configuration.
+- Collaboration connection handling now has explicit connecting/connected/reconnecting/terminal states, authenticated session/room diagnosis, capped jittered retries, stale-socket/listener cleanup, and in-memory Yjs resynchronization. This improves recovery and makes unrecoverable rooms actionable; it does not provide offline-across-reload or container-replacement durability.
 
 Do not treat these as completed because a README, UI label, or earlier conversation described the target architecture.
 
@@ -60,6 +61,12 @@ On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled sui
 Choose the next incomplete criterion from the canonical checklist after inspecting actual code. Highest-risk boundaries are real execution isolation and durable coordination; verification gates are required before calling results functionally verified. Preserve the current working vertical slice and avoid a new framework or swarm rewrite.
 
 Update this handoff after verified milestones. Record date, source revision when available, actual test evidence, blockers, and the next task; keep secrets and transient credentials out.
+
+## Collaboration reconnect evidence (2026-09-19)
+
+The then-current live Worker version served both readiness endpoints and passed an isolated two-participant bidirectional Yjs/flush/reconnect probe. Simultaneous tail evidence showed a real browser repeatedly receiving failed upgrades while fresh rooms succeeded, narrowing the immediate defect to opaque terminal upgrade failures plus an unbounded client retry loop rather than the already-correct native Cloudflare proxy. The deployed image matched the local production asset hashes, but exact source-to-container provenance was unavailable.
+
+The repair adds authenticated failure diagnosis, safe server categories/correlation IDs, capped retry/backoff, lifecycle cleanup, actionable UI, unsynced labeling, and tests that reject a flush on disconnect before submission. Before publishing, the full suite passed 51/51, the production build passed, and the Windows Chrome smoke test passed including invalid-session recovery UI. Post-deployment verification and identifiers belong in the checklist after deployment.
 
 ## Steering update and next slice (2026-09-19)
 

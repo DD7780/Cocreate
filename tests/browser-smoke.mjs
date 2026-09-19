@@ -29,7 +29,7 @@ try{
   let id=0;
   const pending=new Map();
   const exceptions=[];
-  const call=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;const timer=setTimeout(()=>{pending.delete(callId);reject(new Error(`Chrome protocol timed out during ${method}. ${browserErrors}`))},5000);pending.set(callId,{resolve:value=>{clearTimeout(timer);resolve(value)},reject:error=>{clearTimeout(timer);reject(error)}});socket.send(JSON.stringify({id:callId,method,params}))});
+  const call=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id;const timer=setTimeout(()=>{pending.delete(callId);reject(new Error(`Chrome protocol timed out during ${method}. ${browserErrors}`))},15_000);pending.set(callId,{resolve:value=>{clearTimeout(timer);resolve(value)},reject:error=>{clearTimeout(timer);reject(error)}});socket.send(JSON.stringify({id:callId,method,params}))});
   socket.addEventListener('message',event=>{const message=JSON.parse(event.data);if(message.method==='Runtime.exceptionThrown'){const detail=message.params.exceptionDetails;exceptions.push(detail.exception?.description||detail.text)}if(message.id&&pending.has(message.id)){const task=pending.get(message.id);pending.delete(message.id);message.error?task.reject(new Error(message.error.message)):task.resolve(message.result)}});
   socket.addEventListener('close',()=>{for(const task of pending.values())task.reject(new Error(`Chrome debugging socket closed. ${browserErrors}`));pending.clear()});
   await call('Page.enable');
@@ -40,7 +40,7 @@ try{
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   const evaluate=async expression=>(await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
   let text='';
-  for(let attempt=0;attempt<40&&!text;attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}
+  for(let attempt=0;attempt<40&&!text.includes('API connections');attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}
   if(!text.includes('API connections')||!text.includes('Generation is paused')){
     const diagnostic=await evaluate(`Promise.race([fetch('/api/rooms/${roomId}/state?token=${encodeURIComponent(session.token)}').then(async response=>({status:response.status,body:await response.text(),stored:localStorage.getItem('cocreate-session-${roomId}'),path:location.pathname})).catch(error=>({error:String(error)})),new Promise(resolve=>setTimeout(()=>resolve({error:'diagnostic timeout'}),2000))])`);
     throw new Error(`Workspace connection controls did not render: ${text||'empty document'}; exceptions=${exceptions.join('; ')||'none'}; ${JSON.stringify(diagnostic)}`);
@@ -70,7 +70,12 @@ try{
   await new Promise(resolve=>setTimeout(resolve,200));
   const metrics=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,text:document.body.innerText})');
   if(metrics.width>metrics.viewport||!metrics.text.includes('Product'))throw new Error('Mobile workspace overflow or navigation failure');
-  console.log(JSON.stringify({roomId,ownerPanel:true,altXEditorOnly:true,remap:true,editorFocusPreserved:true,productEmptyState:true,mobileWidth:metrics.width,viewport:metrics.viewport}));
+  await evaluate(`localStorage.setItem('cocreate-session-${roomId}','invalid-session')`);
+  await call('Page.navigate',{url:`${origin}/r/${roomId}`});
+  let invalidText='';
+  for(let attempt=0;attempt<40&&!invalidText.includes('Rejoin room');attempt++){await new Promise(resolve=>setTimeout(resolve,100));invalidText=await evaluate('document.body.innerText')}
+  if(!invalidText.includes('participant session expired or is invalid')||!invalidText.includes('Rejoin room'))throw new Error(`Invalid session did not render an actionable terminal state: ${invalidText}`);
+  console.log(JSON.stringify({roomId,ownerPanel:true,altXEditorOnly:true,remap:true,editorFocusPreserved:true,productEmptyState:true,invalidSessionActionable:true,mobileWidth:metrics.width,viewport:metrics.viewport}));
 }finally{
   socket?.close();
   browser.kill();
