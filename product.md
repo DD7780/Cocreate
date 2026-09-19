@@ -33,7 +33,7 @@ Core loop: shared document -> explicit participant submission -> attributed inte
 - Product shows the generated interactive application, not a generic progress tracker or canned demo.
 - Keep the last successful preview when a candidate fails.
 - Dedicated API connections UI with owner-managed credentials and role/model assignments.
-- Preserve the existing neubrutalist UI direction: expressive brand/headings and calm, readable writing surfaces.
+- Use a clean dark editorial workspace with restrained neubrutalist accents: expressive serif brand/headings, calm high-contrast writing surfaces, compact controls, and fine structural borders. The document remains the primary surface; supporting panels must not compete with it.
 
 ## Scope and non-goals
 

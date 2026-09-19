@@ -123,7 +123,7 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Resume queued/interrupted submissions safely after restart; define durable deduplication retention beyond the last-200 room list and prevent retry double spending.
 - [ ] Complete authenticated conflict-choice APIs and cards below Shared intent, document highlights, multi-option Disagreements, compromise/reopen rounds and stale-choice rejection. Silence must stay pending; dependent work must stay blocked.
 - [ ] Add Recommended owner setup with explicit confirmation and measured role recommendations while preserving Advanced connections/assignments; no unannounced model fallback.
-- [ ] Verify long-document scrolling, editor usability during generation and shortcut accessibility across supported browsers/platforms.
+- [-] Long-document scrolling, editor usability, shortcut accessibility, and reconnect behavior are verified in Windows Chrome. Linux, macOS, Firefox, and Safari hardware/browser runs remain outstanding.
 - [ ] Establish model-aware context ceilings, retrieval of omitted references and per-run cost/repair budgets; do not claim unlimited context.
 - [ ] Demonstrate hosted records and generated artifacts survive container replacement before a durable hosted launch claim.
 
@@ -138,3 +138,18 @@ Documentation-only source inspection; historical test counts above are retained,
 - [x] Windows Chrome interaction coverage passed for existing submission/Alt+X behavior plus the new actionable invalid-session state. The in-app browser automation helper was unavailable; the repository Chrome DevTools smoke harness provided the successful browser run.
 - [ ] Post-deployment two-browser synchronization/recovery and deployed revision evidence must be recorded after publishing this change.
 - [ ] Cloudflare container-local SQLite and generated files remain ephemeral across replacement. No destructive persistence migration was attempted because replacement was not confirmed as the specific incident trigger.
+
+## Dark editorial presentation slice (2026-09-19)
+
+- [x] Replaced the accumulated visual override layers with one semantic dark token system, fine borders, restrained shadows, small radii, and no gradients or glow effects.
+- [x] Kept the editor as the dominant surface with readable body typography and an approximately 820px writing measure; the supporting panel remains secondary and stacks below the document at narrower widths.
+- [x] Preserved the Document, Product, split-view, provider connection, Build my changes, invitation, participant, collaboration, and last-working-preview interactions.
+- [x] Kept generated Product content style-isolated; workspace CSS does not restyle the generated iframe document.
+- [x] API connections remains an accessible labeled dialog and returns focus to its launcher on close.
+- [x] Font/icon sources and licenses are recorded in `docs/ui-assets.md`; no copied reference assets or new imagery were added.
+- [x] Windows Chrome visual/interaction checks passed at 1440px, 1280px, 1024px, 768px, and 390px, plus a 720 CSS-pixel effective viewport representing 1440px at 200% zoom. Every case retained essential controls with zero horizontal overflow; split view, long-document scrolling, Product, dialog labelling, and dialog focus return passed.
+- [x] A local two-participant WebSocket/Yjs probe passed bidirectional editing, save acknowledgement, interruption, reconnect, and post-reconnect synchronization without provider calls.
+- [x] The full controlled suite passed 51/51 and `pnpm build` passed. The build retained the existing non-failing Vite large-chunk warning.
+- [x] Measured token contrast pairs exceed WCAG AA for normal text: primary/panel 14.20:1, secondary/panel 8.58:1, accent/panel 12.30:1, accent text/accent 13.03:1, and error/panel 8.17:1. The strong structural line against the raised surface is 3.31:1.
+- [-] Windows Chrome was exercised. Firefox, Safari, Linux, macOS hardware, and a native browser 200% zoom session were not exercised; the 200% result is an equivalent CSS viewport simulation.
+- [ ] `graphify update .` could not run because this workspace has no Graphify executable, Python installation, or `uv` runtime. Source/tests were verified directly; the existing graph remains stale for this slice.

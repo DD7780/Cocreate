@@ -80,3 +80,5 @@ This MVP uses SQLite plus local generated-project files and is intended for a tr
 ## AI steering documents
 
 Start with [AGENTS.md](AGENTS.md), [context.md](context.md), [product.md](product.md), and [instructions.md](instructions.md). Canonical design and progress live in [docs/harness/architecture.md](docs/harness/architecture.md), [decisions.md](docs/harness/decisions.md), and [checklist.md](docs/harness/checklist.md); implemented contracts live in [api.md](api.md). Product requirements are not completion evidence. Update affected documents alongside changes; do not duplicate architecture or progress files at the root.
+
+The workspace uses a dark editorial presentation with restrained neubrutalist accents. Third-party font and icon sources are recorded in [docs/ui-assets.md](docs/ui-assets.md); generated Product previews remain visually isolated from workspace styling.
