@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const origin='http://localhost:5173';
+const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173';
 const profile=path.join(os.tmpdir(),`cocreate-browser-smoke-${process.pid}-${Date.now()}`);
 const debugPort=9300+(process.pid%300);
 const chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
@@ -46,7 +46,8 @@ try{
     throw new Error(`Workspace connection controls did not render: ${text||'empty document'}; exceptions=${exceptions.join('; ')||'none'}; ${JSON.stringify(diagnostic)}`);
   }
 
-  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('API connections')).click()`);
+  if(!text.includes('Estimated one-pass maximum')||!text.includes('Spending limit (USD)')||!text.includes('View assigned models, allowances, and rates')||!text.includes('Motion designer'))throw new Error(`Recommended pricing presentation is incomplete: ${text}`);
+  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Advanced: Choose my own models')).click()`);
   await new Promise(resolve=>setTimeout(resolve,250));
   text=await evaluate('document.body.innerText');
   if(!text.toLowerCase().includes('provider-independent ai')||!text.includes('API key')||text.includes('Try demo'))throw new Error(`Owner API panel is incomplete or still exposes demo UI: ${text}`);

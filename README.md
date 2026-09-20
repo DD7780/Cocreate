@@ -17,7 +17,9 @@ To test with multiple people, create a room, copy **Invite**, and open the URL o
 
 ## Connect AI
 
-Open **API connections** as the room owner. Add any number of named OpenAI, Anthropic, Google Gemini, OpenRouter, DeepSeek, custom OpenAI-compatible, or Ollama connections. Save the provider settings and credential, optionally discover account models, or enter an exact model ID manually. Run capability checks before assigning that connection/model to the default personal idea agent, shared builder, or a participant override.
+Open **API connections** as the room owner. Save a supported provider connection and run capability checks for the exact models available to that account. In **Recommended setup**, choose a specialty, bounded effort level, and maximum spend; inspect the assigned models and rates, then confirm. CoCreate resolves only against the existing checked connection and does not call AI while you browse options.
+
+Choose **Advanced: Choose my own models** to manage any number of named OpenAI, Anthropic, Google Gemini, OpenRouter, DeepSeek, custom OpenAI-compatible, or Ollama connections, exact manual model IDs, separate personal/builder assignments, and participant overrides. Existing rooms remain Custom until the owner explicitly opts into Recommended; switching views does not remove credentials, assignments, or overrides.
 
 The four checks are intentionally separate: endpoint/authentication reachability, usable text generation, the internal requirements schema, and the internal project-operation schema. Passing them verifies the API contract for a small request; it does not certify a model's general coding quality. CoCreate never silently changes provider or model when a request fails.
 
@@ -25,7 +27,7 @@ Ollama defaults to `http://localhost:11434` and does not need a fake key. Here, 
 
 Keys never enter the shared document or generated app; they are encrypted at rest using `CREDENTIAL_ENCRYPTION_SECRET` and are never returned to the browser.
 
-Only the room owner can add, update, test, assign, or disconnect credentials. Collaborators receive safe status and can use configured agents without receiving a key. Token/rate-limit values are treated as unknown when the provider does not return them; CoCreate does not label models as free or estimate cost without maintained pricing data.
+Only the room owner can add, update, test, assign, or disconnect credentials or change the shared specialty, effort, and spending policy. Collaborators receive safe status and can use configured agents without receiving a key. [`server/ai-presets.ts`](server/ai-presets.ts) is the single versioned catalog for source-linked USD input, cached-input, cache-write, output, reasoning, tier, and routing-fee terms. Recommended setup shows per-interpreter and shared-builder allowances, an explicitly scoped estimated one-pass maximum, an incomplete marker when not every billable category is bounded, and a separate user-controlled spending limit. These are estimates, not provider invoices. Missing provider usage or billing categories remain unknown and are never shown as free. CoCreate has no credit ledger or payment system.
 
 ## Product loop
 
@@ -33,7 +35,7 @@ Everyone brainstorms and co-writes in the same rich canvas. Typing, formatting, 
 
 On Windows and Linux, **Alt + X** invokes the same submission function while the shared editor has focus. The button exposes this through its tooltip and `aria-keyshortcuts`. The adjacent shortcut preference can remap it to Alt + S or Alt + Y, or disable it. macOS defaults to no shortcut so Option + X retains its normal text-input behavior; Mac users may explicitly choose a shortcut.
 
-The submission collection window defaults to three seconds and is configurable with `BUILD_DEBOUNCE_MS`; `BUILD_COOLDOWN_MS` and `BUILD_MAX_WAIT_MS` still bound shared builder scheduling. Model inputs are compacted before dispatch, and provider-reported request/input/output token totals are persisted in each room's state for comparison and budgeting.
+The submission collection window defaults to three seconds and is configurable with `BUILD_DEBOUNCE_MS`; `BUILD_COOLDOWN_MS` and `BUILD_MAX_WAIT_MS` still bound shared builder scheduling. Model inputs are compacted before dispatch. Each completed run stores a versioned call ledger with provider-reported input, cached input, cache writes, output, and separately available reasoning usage; pricing snapshots; interpretation/builder/repair breakdowns; latency; outcome; and explicit verification fields. Reasoning already included in provider output is not counted twice, the shared builder is counted once, and missing/timeout usage remains uncertain rather than zero.
 
 The generated scope is deliberately bounded: a real multi-file React and TypeScript frontend under `generated/rooms/<room-id>`. The builder may use approved local React dependencies, relative source modules, CSS, JSON, and isolated app storage; it cannot request networks, cookies, parent-window access, dynamic imports, or backend code. Every file operation is validated, the project is compiled before promotion, and a failed update keeps the last working Product. The Product view can refresh, open in a new tab, or download a complete runnable project ZIP.
 
@@ -66,6 +68,7 @@ Tests cover signed participant attribution, character-level Yjs edits across thr
 - `server/rooms.ts` — room isolation, Yjs persistence, presence, participant debouncing, exactly-one serialized orchestrator, versioning, rollback.
 - `server/providers.ts` — provider adapters, native authentication/request parsing, retries, error classification, model discovery, usage normalization, and schema validation.
 - `server/generator.ts` — provider-independent agent prompts, internal structured schemas, and deliberately budgeted whole-file context.
+- `server/ai-presets.ts`, `server/ai-accounting.ts` — canonical published-rate catalog, deterministic allowances, normalized charge calculations, run aggregation, and comparable effectiveness metrics.
 - `server/project.ts` — room-scoped file operations, project persistence, dependency policy, and compile validation.
 - `server/event-store.ts` — SQLite event history, content-addressed artifacts, derived workspace/run views, migrations, and recovery.
 - `server/tool-registry.ts` — typed generated-project tools, deny-by-default policy, and audited execution outcomes.

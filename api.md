@@ -1,6 +1,6 @@
 # CoCreate API reference
 
-Source-inspected 2026-09-19. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
+Source-inspected 2026-09-20. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
 
 ## Transport and authentication
 
@@ -29,6 +29,8 @@ All operations below require the room owner. Saving a connection does not certif
 | Method and path | Request | Response |
 | --- | --- | --- |
 | POST /api/rooms/:id/ai/connections | `{id?: string, name: string, provider: AIProvider, baseUrl?: string, apiFormat?: AIFormat, apiKey?: string}` | `{id: string}` |
+| GET /api/rooms/:id/ai/recommendation | query: `specialty`, `effort` | Server-resolved `AIRecommendation`; read-only and makes no model call |
+| POST /api/rooms/:id/ai/recommendation | `{specialty, effort, maximumSpendUsd}` | Applied `AIRecommendation` or actionable 400 |
 | POST /api/rooms/:id/ai/connections/:connectionId/models | Empty object | `{models: AIModel[]}` |
 | POST /api/rooms/:id/ai/connections/:connectionId/check | `{model: string}` | `ModelChecks` |
 | DELETE /api/rooms/:id/ai/connections/:connectionId | None | `{ok: true}` |
@@ -94,10 +96,16 @@ RoomView includes:
 - `status`: Waiting for ideas | Collecting submissions | Understanding edits | Decision needed | Building | Updated | Error.
 - `requirements`, authoritative `conflictGroups`, derived compatibility `contradictions`, `specificationRevision`, `requirementsRevision`.
 - `latestVersion: number | null`, `versions`, optional `lastError`.
-- `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, `usage`.
+- `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, cumulative `usage`, and the last 50 `aiRuns`.
 - Optional `savedAt` and `persistRevision`.
 
-`AIConnection` includes safe named connections, optional default personal/builder assignments, and participant overrides. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key.
+`AIConnection` includes safe named connections, optional default personal/builder assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` specialty/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key.
+
+Both recommendation routes are owner-only. Previewing a recommendation is pure resolution: it does not check capabilities, call a provider, change assignments, or start a build. Applying re-resolves on the server, requires passed role capabilities, rejects a maximum below its conservative bound, and affects future submissions/runs. Manual `/ai/assignments` activation marks the room Custom and preserves overrides.
+
+Recommendations also expose `routingRuleVersion`, `routingReason`, `status`, same-connection `builderCandidates`, `onePassEstimateUsd`, `maximumEstimateUsd`, `estimateScope`, and `estimateComplete`. The one-pass scope is one submitted participant interpretation plus one shared builder call, without repairs or additional participant interpretations, and assumes uncached input. The bounded maximum includes configured builder/structured-output repairs but only one interpreter, so it is marked incomplete when team size or other provider charges are unknown. `status: hypothesis` means compatibility and prices are known but specialty superiority is not measured. The spending limit is a safety ceiling, not an expected charge.
+
+`AIRate` is a frozen catalog snapshot containing USD input/output rates, optional cached-input/cache-write rates, reasoning treatment, optional long-context tiers/platform multiplier/other charges, official source URL, and verification date. `AIRunRecord` freezes the effective models and routing/pricing/verification-policy versions; call-level `interpretation`, `builder`, and `repair` entries; normalized usage; estimated charge; uncertainty; latency; outcome; and separate verification fields. Provider reasoning tokens marked as included in output are informational and are never added to the charge again. A timeout or omitted provider field remains unknown. `compilationPassed` must not be read as requirement or regression proof.
 
 `SharedRequirement` includes ID/revision/category/description/acceptanceCriteria/status/authority/sources/timestamps. Current statuses: proposed, accepted, withdrawn, superseded. Current categories: goal, feature, design, constraint. Implemented/verified evidence states are planned, not current fields.
 
@@ -105,7 +113,7 @@ Each participant `Requirement` interpretation may include `classifierVersion` an
 
 `ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view during the UI/API transition. No selection mutation endpoint is implemented in this slice.
 
-`Version` includes ID, createdAt, summary, optional fileCount/conflicts. `AIUsage` includes request counts and input/output token totals; it is not a currency-cost contract.
+`Version` includes ID, createdAt, summary, optional fileCount/conflicts, and the promoted run's `aiRun`. `AIUsage` includes request counts, input/output totals, optional cached/cache-write/reasoning totals, and optional estimated/uncertain cost. It is an operational estimate, not confirmed provider billing.
 
 ## WebSocket collaboration
 

@@ -1,6 +1,8 @@
 # CoCreate context handoff
 
-As of 2026-09-19. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, Windows Chrome interaction checks, and live collaboration diagnostics, but no live-provider semantic evaluation.
+Model routing has a versioned deterministic foundation. Specialties do not currently select different models: no authorized repeated benchmark exists, so the economical capability-validated model on the owner's chosen connection remains the baseline. The UI reports source-linked published rates, separate layer allowances, an explicitly scoped one-pass maximum, a distinct spending limit, and the latest build's normalized usage/estimated charge. See `docs/harness/model-evaluation.md`.
+
+As of 2026-09-20. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, browser interaction checks, and live collaboration diagnostics, but no paid live-provider semantic evaluation.
 
 ## Product
 
@@ -23,7 +25,8 @@ No duplicate root architecture.md or progress.md was created because the existin
 - `server/index.ts`: HTTP routes and WebSocket upgrade/authentication.
 - `server/rooms.ts`: room lifecycle, interpretation, scheduling, provider assignments, shared intent, and version promotion.
 - `server/requirements.ts`: shared intent reconciliation and contradiction handling.
-- `server/providers.ts`: seven provider adapters and capability checks.
+- `server/providers.ts`: seven provider adapters, capability checks, and normalized cached/reasoning usage.
+- `server/ai-presets.ts`, `server/ai-accounting.ts`: canonical versioned pricing, allowances, charge arithmetic, run aggregation, and comparable effectiveness metrics.
 - `server/generator.ts`: model prompts, structured schemas, and context preparation.
 - `server/event-store.ts`: SQLite event/artifact history and derived state.
 - `server/tool-registry.ts`: audited apply/build/promote tools and application policy.
@@ -70,9 +73,11 @@ The repair adds authenticated failure diagnosis, safe server categories/correlat
 
 ## Steering update and next slice (2026-09-19)
 
-Documentation source audit only; application tests and live inference were not rerun for this update. Submission-first generation, one shared product, the three-second default collection window, Alt+X and multi-option affected-contributor agreement are the accepted direction. Recommended owner setup remains a target; current connections/assignments are manual. Preserve the scrollable writing surface and calm body typography.
+The earlier documentation-only audit established submission-first generation, one shared product, the three-second default collection window, Alt+X, and multi-option affected-contributor agreement. Recommended owner setup has since been implemented as the opt-in, capability-gated flow described below; manual connections/assignments remain Advanced/Custom. Preserve the scrollable writing surface and calm body typography.
 
-Prioritize closing the legacy `/build` all-draft flush and verifying source ownership in personal outputs: submission snapshots currently contain shared canvas context. Then implement durable submission/batch/run links and restart resumption; the current 200-record list bounds deduplication and the debounce is not a frozen batch barrier. Complete conflict mutation APIs/cards/Disagreements with revision checks. Before durable hosted launch, resolve container-replacement data loss and the execution/verification limitations listed above. See the canonical checklist for acceptance criteria.
+Recommended owner setup now provides five specialty emphases and four bounded effort levels while retaining the full Advanced connection/assignment flow. `server/ai-presets.ts` is the canonical versioned catalog. Resolution requires existing role-specific capability checks, confirms exact models/rates, freezes settings for submissions/builds, and uses conservative persisted reservations. Existing rooms stay Custom until explicit opt-in. The accounting layer preserves cached/cache-write/reasoning categories, call-level pricing snapshots, repair/failure costs, and uncertain timeouts without logging prompts or secrets. Product shows the latest run and only derives comparable effectiveness after three matching records; compilation alone is not verified. There is no credit ledger; USD estimates are not invoices, and missing billing categories remain uncertain. The compiled 66-test suite and production build pass after the normal `tsx` launcher was blocked by the host `uv_os_get_passwd ENOMEM`; fresh-server Windows Chrome also passed pricing labels, Advanced setup, shortcut, Product, recovery, and mobile checks. Graph status is recorded in the checklist. No paid inference was run.
+
+Prioritize closing the legacy `/build` all-draft flush and verifying source ownership in personal outputs: submission snapshots currently contain shared canvas context. Add retrievable references for omitted context, provider-billing confirmation/import where authorized, and an explicitly budgeted comparative live evaluation before promoting recommendations beyond provisional. Complete durable submission/batch/run links and restart resumption; the current 200-record list bounds deduplication and the debounce is not a frozen batch barrier. Before durable hosted launch, resolve container-replacement data loss and the execution/verification limitations listed above.
 
 ## Dark editorial presentation slice (2026-09-19)
 

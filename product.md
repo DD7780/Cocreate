@@ -1,5 +1,7 @@
 # CoCreate product brief
 
+AI specialties are evidence-gated. They still shape the builder brief, but they do not claim different-model quality until repeated representative trials pass the published protocol. Setup defaults to one provider connection, never buys a routing call, preserves Advanced assignments, and shows canonical provider rates, separately scoped allowances, an estimated one-pass maximum, and a distinct user spending limit.
+
 Created: 2026-09-18. This file defines product intent, not proof of implementation.
 
 ## Mission
@@ -33,6 +35,8 @@ Core loop: shared document -> explicit participant submission -> attributed inte
 - Product shows the generated interactive application, not a generic progress tracker or canned demo.
 - Keep the last successful preview when a candidate fails.
 - Dedicated API connections UI with owner-managed credentials and role/model assignments.
+- For every assigned layer, show source-linked, date-verified input, cached-input when supported, output, and reasoning billing terms. Do not render unavailable cache rates as zero.
+- Keep per-interpreter allowances distinct from the number of submitted participants and count the one shared builder once. After a build, show normalized provider usage, interpretation/builder/repair charges, outcome, and verification status; unknown usage remains unknown.
 - Use a clean dark editorial workspace with restrained neubrutalist accents: expressive serif brand/headings, calm high-contrast writing surfaces, compact controls, and fine structural borders. The document remains the primary surface; supporting panels must not compete with it.
 
 ## Scope and non-goals
@@ -79,6 +83,6 @@ These are product requirements; implementation evidence and remaining gaps belon
 - Invoke logical personal agents only on explicit submission or targeted reinterpretation. Typing, saving, presence, reconnect, and polling must not invoke a model. Submitting a speculative idea does not change its classification into an accepted requirement.
 - **Alt+X** is the Windows/Linux editor-focused shortcut for the same Build my changes action. No Enter binding. Ignore repeat, composition, AltGraph, and additional modifiers; support disabling/remapping and retain focus. macOS defaults to no shortcut to preserve Option text input.
 - Show accepted-requirement contradictions as highlights and multi-option decision cards below Shared intent. Only affected contributors resolve a round; silence stays pending. Unanimous explicit choices resolve; differing completed choices move the group to **Disagreements** without deleting the alternatives. Preserve the last agreed baseline and block dependent changes while safe independent work continues. A compromise or changed alternative requires fresh confirmation.
-- Target a **Recommended** setup: the owner supplies a supported connection, then confirms suggested personal/builder assignments selected using measured quality, cost, and latency. Keep Advanced configuration and the dedicated API connections entry. Collaborators reuse the room configuration. This recommendation flow is planned; existing manual assignments remain supported. Do not imply universal model compatibility, free provider access, or platform-funded usage.
+- **Recommended** setup is available as an owner opt-in: choose General app, Engineer, Designer, Web developer, or Motion designer, then Light, Medium, High, or Extra and a spending limit. The server resolves exact personal/builder assignments only on an existing capability-checked connection. Specialty changes emphasis, not accepted requirements or agent count. Medium is the default. Collaborators reuse the room configuration. Existing manual assignments and participant overrides remain available as Custom in Advanced. The estimated one-pass maximum explicitly covers one submitted participant interpretation and one shared builder call, excludes repairs/additional participants, and assumes no cache hits; the separately labeled bounded maximum remains incomplete where provider charges cannot be bounded. Recommendations are provisional; do not imply universal compatibility, free provider access, platform-funded usage, arbitrary backends, or video generation.
 
 Launch readiness requires durable deployed records/artifacts across container replacement and honest verification/permission boundaries. A fixed launch date does not convert an unchecked criterion into a completed feature.

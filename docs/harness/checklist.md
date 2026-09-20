@@ -1,5 +1,31 @@
 # CoCreate harness implementation checklist
 
+## Evidence-based model routing slice — 2026-09-20
+
+- [x] Replaced fixed $0.25/$0.75/$2/$4 defaults with rate-derived estimated one-pass maximum and separately labeled spending limit.
+- [x] Added explicit catalog, pricing, routing-rule, and evaluation-protocol versions.
+- [x] Retained one selected provider by default and preserved Advanced manual assignments.
+- [x] Added deterministic complexity classification and no-model-call routing that retains the validated economical baseline while specialty evidence is absent.
+- [x] Added five specialty task rubrics, repeated-trial thresholds, and satisfaction, verification, regression, latency, total-cost, and cost-per-verified-build metrics.
+- [x] Added immutable promoted-version run records; compilation is separate from unmeasured requirement/regression verification.
+- [x] `pnpm build` passed on 2026-09-20 (existing non-failing Vite chunk-size warning remains).
+- [x] Earlier in-app Chromium evidence confirmed the five specialties and effort controls; the pricing/accounting wording below supersedes its old cost labels.
+- [x] Compiled Node test fallback passed the complete then-current suite 57/57 plus the final routing suite 7/7 on 2026-09-20; the direct `tsx` launcher still fails before loading tests with the host's `uv_os_get_passwd ENOMEM` defect.
+- [ ] No paid repeated trials were run because no evaluation budget was authorized; all specialty mappings remain hypotheses.
+- [ ] `graphify update .` was attempted but this workspace still has no Graphify executable; the existing graph is stale for this slice.
+
+## Pricing presentation and accounting slice — 2026-09-20
+
+- [x] Expanded the canonical catalog in `server/ai-presets.ts` with official source URLs, verification dates, USD input/cached-input/cache-write/output rates, reasoning treatment, long-context tiers, and known routing/storage charges. Unsupported cached pricing is absent, never zero.
+- [x] Setup displays interpreter and builder rates/allowances separately, explains per-interpreter versus shared-builder scope, and labels the estimated one-pass maximum, incomplete bounded maximum, and spending safety ceiling distinctly.
+- [x] Provider normalization records cached input, cache writes, output, and separately available reasoning usage. Reasoning already included in output is not charged twice.
+- [x] Persisted run ledgers break calls into interpretation, builder, and repair phases; retain pricing snapshots, unknown/timeout usage, estimated charge, outcome, latency, and explicit verification status; one shared builder is counted once.
+- [x] Product exposes the latest run ledger and comparable metrics. Fewer than three comparable runs or zero verified successes report `Not enough data`; compilation-only runs are not marked verified.
+- [x] Synthetic accounting/provider tests cover uncached/cached/cache-write math, included reasoning, multiple interpreters plus one builder, repairs/failures/missing usage, tiers, pricing-version changes, estimate/spending-limit separation, sample thresholds, and no-success handling. No provider credits were used.
+- [x] After one assertion correction and compatibility cleanup, the compiled Node fallback passed 66/66 controlled tests. The direct `pnpm test` launcher still fails before loading tests with the host `uv_os_get_passwd ENOMEM` defect.
+- [x] Final `pnpm build` passed with only the existing non-failing Vite chunk warning. Fresh-server Windows headless Chrome passed Recommended pricing labels, Advanced owner setup, editor-only Alt+X, remapping/focus, Product empty state, invalid-session recovery, and 390px no-overflow checks.
+- [ ] No live provider invoice reconciliation, paid model evaluation, successful-run accounting screenshot, Linux/macOS hardware run, or non-Chromium browser run was attempted.
+
 Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 
 ## Foundation and first vertical slice
@@ -122,9 +148,19 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Persist immutable submission/batch/run links; test simultaneous submissions, slow interpreters, edits during a build, and next-batch isolation.
 - [ ] Resume queued/interrupted submissions safely after restart; define durable deduplication retention beyond the last-200 room list and prevent retry double spending.
 - [ ] Complete authenticated conflict-choice APIs and cards below Shared intent, document highlights, multi-option Disagreements, compromise/reopen rounds and stale-choice rejection. Silence must stay pending; dependent work must stay blocked.
-- [ ] Add Recommended owner setup with explicit confirmation and measured role recommendations while preserving Advanced connections/assignments; no unannounced model fallback.
+- [x] Added owner-only Recommended specialty/effort setup with explicit confirmation, exact checked models from one available connection, provider-currency rates, versioned provisional evidence, and preserved Advanced connections/assignments/overrides; no unannounced fallback.
 - [-] Long-document scrolling, editor usability, shortcut accessibility, and reconnect behavior are verified in Windows Chrome. Linux, macOS, Firefox, and Safari hardware/browser runs remain outstanding.
-- [ ] Establish model-aware context ceilings, retrieval of omitted references and per-run cost/repair budgets; do not claim unlimited context.
+- [-] Recommended runs now freeze model IDs/versions, output ceilings, repair ceilings and conservative server-side currency reservations with uncertain timeout retention. Input preparation remains compacted but does not yet expose retrievable omitted references; provider-specific cached/reasoning/tool billing may remain uncertain.
+
+## Specialty preset evidence (2026-09-20)
+
+- [x] Pure resolution rejects discovery-only models until personal/builder schema checks pass and preserves one connection/data destination.
+- [x] Existing/manual assignments migrate to Custom; applying Recommended preserves dormant Advanced overrides.
+- [x] Selector preview is read-only and owner-only; application re-resolves server-side and rejects an underfunded cap.
+- [x] Submission and builder records freeze their resolved policy; reservations are persisted before calls and concurrent/repair reservations fail closed at the cap.
+- [x] Controlled preset tests passed 4/4 and the complete compiled test suite passed 55/55. `pnpm run build` passed with only the existing Vite chunk-size warning.
+- [x] In-app browser at a narrow/mobile viewport showed all five specialties, four effort levels, spend input, disabled unavailable confirmation, actionable missing-connection detail, and the preserved Advanced connection/assignment UI.
+- [ ] No paid live-provider quality/cost/latency evaluation was run; recommendations and catalog evidence are explicitly provisional. Desktop wide viewport and Linux/macOS hardware were not exercised in this slice.
 - [ ] Demonstrate hosted records and generated artifacts survive container replacement before a durable hosted launch claim.
 
 ## Collaboration reconnect repair (2026-09-19)

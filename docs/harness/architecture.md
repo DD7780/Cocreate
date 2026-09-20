@@ -1,5 +1,9 @@
 # Harness architecture
 
+## Evidence-based routing boundary
+
+`server/ai-presets.ts` is the single versioned model/rate catalog and deterministic resolver; `server/ai-accounting.ts` applies those frozen rates to normalized usage and comparable run groups; `server/ai-evaluation.ts` is the versioned benchmark protocol. Specialty is an evaluation and prompt dimension, not permission to invent a model advantage. The resolver uses one owner-selected connection by default, passed capabilities, effort allowances and remaining budget. Active runs freeze the result. Promoted versions record effective models, routing reason and versions, call-level pricing snapshots, token/cost usage, latency, and which verification gates actually ran.
+
 ## Source of truth
 
 `data/cocreate.sqlite` is the transactional source for new harness records on the local single-server deployment. The append-only `events` table provides a per-workspace sequence, actor, run/step IDs, correlation and causation fields, schema version, input revision, content hash, and payload/artifact reference. Large Yjs updates and complete workspace snapshots are content-addressed in `artifacts`. `workspace_state` and `run_state` are replaceable derived views.
@@ -91,7 +95,13 @@ Target hardening: persist submission-to-batch-to-run membership, freeze source/s
 
 The n personal agents are logical participant identities, not n permanently running model sessions. One logical builder reconstructs each request from durable accepted requirements, unresolved-conflict exclusions, relevant project files and concise verification evidence. Storage and context are separate: records may outlive a model session, but stored records must not all be injected into its next request.
 
-Explicit model-aware input/output budgets, relevance selection with retrievable omitted references, usage ceilings and bounded repair remain work items. Cache by source/specification/model-policy version where safe; unchanged drafts and unchanged eligible fingerprints should not create extra inference. Never silently switch models to meet a budget. Provider recommendations are planned configuration assistance based on capability checks and measured quality/cost, not a new agent or an assertion that all models are interchangeable.
+Recommended setup is resolved server-side from the versioned canonical catalog in `server/ai-presets.ts`. A candidate is eligible only when an owner connection contains the exact model ID and the existing reachability, text, and role-specific schema checks passed. Resolution prefers one connection and never silently changes provider or data destination. Existing explicit assignments remain Custom.
+
+Each recommended configuration records specialty, effort, exact personal/builder layers, separate input/output/reasoning allowances, repair ceiling, preset/pricing versions, an explicitly scoped one-pass maximum, completeness, and a user spending limit. Submission records freeze the personal assignment and policy; builder runs freeze their resolved builder configuration and include it in run events. Conservative reservations assume no cache hits and are serialized in the room snapshot before dispatch. Provider-normalized input, cached input, cache writes, output, and separately available reasoning usage reconcile the reservation. Reasoning included in output is never counted twice. Missing usage and timeouts retain an uncertain reservation. A shared builder call is recorded once regardless of participant count; interpretation, builder, and repair calls remain distinct.
+
+The latest 50 `AIRunRecord` values persist in room state without prompts, document contents, or credentials. Each call retains its rate/source/version snapshot so later catalog changes do not rewrite historical estimates. Run totals include failed attempts and repairs. Effectiveness groups are comparable only when model configuration, specialty, effort, deterministic complexity, and verification-policy version match. UI metrics require at least three comparable runs; no verified successes render “Not enough data,” never $0. Compilation is recorded separately and does not make `verified` true.
+
+This remains an enforceable estimate, not a provider invoice, credit ledger, or tax accounting system. Unsupported cache prices are absent rather than zero; provider/account-specific fees and usage categories remain explicit uncertainty. Recoverable references to omitted context remain a work item. Cache by source/specification/model-policy version where safe; unchanged drafts and unchanged eligible fingerprints should not create extra inference. Never silently switch models to meet a budget.
 
 ## Collaboration connection lifecycle
 

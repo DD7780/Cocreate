@@ -36,6 +36,9 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - Keep one active writer per room. Do not claim an in-memory promise is a durable multi-process lease.
 - Record action intent, authorization, outcomes, and unknown outcomes honestly.
 - Never silently switch models, providers, or simulated generation.
+- Keep specialty/effort mappings, exact model IDs, rate categories, source URLs, verification dates, evidence, and limitations canonical in `server/ai-presets.ts`; do not copy the changing matrix into UI or documentation.
+- Updating catalog rates requires current official provider evidence, a pricing-version change, controlled resolver/budget tests, and an explicit note when cached/reasoning/tool billing cannot be reconciled. Recommendations stay provisional until authorized paid comparison evidence exists.
+- Preset resolution is server-authoritative and capability-gated. Selector changes must remain inference-free. Freeze resolved versions/limits per submission and builder run; reserve before dispatch and retain uncertain timeout usage.
 - Use targeted context and bounded retries. Do not truncate serialized JSON or reset budgets by opening another run.
 
 ## Safety and scope
