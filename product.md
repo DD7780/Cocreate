@@ -2,6 +2,8 @@
 
 CoCreate exposes exactly three modes: Developer, Analyst, and Researcher. A mode configures the one shared executor's workflow, tools, output, and verification; it never creates additional permanent agents. Light, Medium, High, and Extra are effort settings within each mode. Setup defaults to one provider connection, never buys a routing call, preserves Advanced assignments, and shows canonical provider rates, separately scoped allowances, an estimated one-pass maximum, and a distinct user spending limit.
 
+The user spending limit bounds aggregate cost; it is not a token allowance. Developer effort controls the per-call input/output limits. Structured truncation receives one bounded compact retry with both attempts accounted; repeated truncation asks the owner to select a higher effort or larger-output model instead of silently upgrading.
+
 Developer is implemented using the bounded app-building pipeline. Analyst and Researcher are shown but unavailable: Analyst requires validated data ingestion and isolated reproducible computation; Researcher requires controlled retrieval, source capture, and citation verification. The UI and server reject unavailable-mode activation rather than simulating it. Legacy coding presets migrate to Developer while their exact connections, models, credentials, effort, participant overrides, and historical records remain intact. Platform-managed AI remains unavailable until reliable account authentication, billing authorization, quotas, atomic reservations, and an auditable ledger exist.
 
 Created: 2026-09-18. This file defines product intent, not proof of implementation.

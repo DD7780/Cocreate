@@ -1,5 +1,13 @@
 # CoCreate harness implementation checklist
 
+## Truncated structured-output recovery — 2026-09-22
+
+- [x] Confirmed that a spending limit and a per-call output-token allowance are independent: increasing the USD ceiling does not change the provider request's `max_output_tokens`.
+- [x] Added one bounded compact retry when a structured interpreter/executor response reaches its output-token allowance. The retry uses the existing two-call reservation and preserves reported usage from both calls.
+- [x] If the compact retry also truncates, the error now explains the distinction and directs the owner to reapply a higher Recommended effort or choose a larger-output model.
+- [x] Raised new Developer executor allowances to 8K / 12K / 20K / 32K for Light / Medium / High / Extra and aligned Advanced's default executor allowance with Medium at 12K. Existing frozen runs are not silently changed.
+- [x] Current-source production build passed; current-source compiled tests passed 71/71, including synthetic one-retry, repeated-truncation, usage aggregation, spending-limit, routing, and submission coverage. No provider credits were used.
+
 ## Visible model discovery — 2026-09-22
 
 - [x] Fixed Advanced API setup so the response from **Discover models** is retained immediately instead of depending only on a later room-state broadcast.

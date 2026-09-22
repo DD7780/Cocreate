@@ -135,7 +135,7 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     assert.equal(empty.message,'No new changes to submit');
     assert.equal(personalCalls,1,'duplicate and empty submissions must not invoke a model');
     assert.equal(personalBodies[0].max_output_tokens, 2_400);
-    assert.equal(builderBodies[0].max_output_tokens, 6_000);
+    assert.equal(builderBodies[0].max_output_tokens, 12_000);
     assert.ok(JSON.parse(personalBodies[0].input).sharedBrainstormCanvas.length <= 6_000);
     assert.ok(JSON.parse(builderBodies[0].input).acceptedRequirements.length > 0);
 

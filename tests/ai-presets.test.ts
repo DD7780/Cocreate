@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {classifyTaskComplexity,resolveRecommendation,routeBuilderForRun} from '../server/ai-presets.js';
+import {classifyTaskComplexity,effortLevels,resolveRecommendation,routeBuilderForRun} from '../server/ai-presets.js';
 import {qualifiesModeMapping,summarizeTrials,type EvaluationTrial} from '../server/ai-evaluation.js';
 import {RoomManager} from '../server/rooms.js';
 
@@ -27,10 +27,15 @@ test('Developer / Medium resolves one validated connection and exposes honest ra
   assert.equal(recommendation.builder?.model, 'openai/gpt-5.6-luna', 'Developer retains the economical baseline');
   assert.equal(recommendation.personal?.connectionId, recommendation.builder?.connectionId);
   assert.equal(recommendation.status, 'hypothesis');
+  assert.equal(recommendation.builder?.maxOutputTokens, 12_000);
   assert.ok((recommendation.maximumEstimateUsd || 0) > (recommendation.onePassEstimateUsd || 0));
   assert.equal(recommendation.status, 'hypothesis');
   assert.ok(recommendation.defaultMaximumSpendUsd >= recommendation.maximumEstimateUsd!);
   assert.match(recommendation.personal!.rate.sourceUrl, /^https:/);
+});
+
+test('Developer effort levels expose distinct bounded executor output allowances',()=>{
+  assert.deepEqual(Object.fromEntries(Object.entries(effortLevels).map(([effort,limits])=>[effort,limits.builderOutput])),{light:8_000,medium:12_000,high:20_000,extra:32_000});
 });
 
 test('complexity is deterministic and does not spend a model call',()=>{

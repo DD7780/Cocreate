@@ -67,3 +67,7 @@ Status: accepted boundary; not implemented. Signed room participant sessions are
 ## D-0017 — Three room modes replace coding specialties
 
 Status: implemented contract and migration; only Developer execution is available. The user-facing modes are exactly Developer, Analyst, and Researcher, with effort subordinate to mode and n interpreters plus one shared executor preserved. Developer reuses the bounded app pipeline. Researcher is displayed as unavailable pending controlled retrieval, source capture, and citation evidence. Analyst is displayed as unavailable pending validated data ingestion and isolated reproducible computation. All five legacy coding presets normalize to Developer without inference and without changing models, credentials, effort, participant overrides, or historical run records. Advanced manual assignments remain available.
+
+## D-0018 — Spending ceilings do not replace per-call token allowances
+
+Status: implemented 2026-09-22. A room's USD spending limit authorizes aggregate bounded cost but never silently expands a frozen request's input/output allowance. New Developer effort allowances provide more realistic space for complete project operations, and Advanced defaults to the Medium executor output allowance. One compact retry is permitted after structured-output truncation because the existing reservation already accounts for two schema attempts; both attempts' reported usage is retained. A second truncation remains a failure with actionable effort/model guidance. No provider, model, or effort is silently upgraded.

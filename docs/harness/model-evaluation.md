@@ -1,6 +1,6 @@
 # Model-routing evaluation protocol
 
-Version: `2026-09-21.v2`. No paid evaluation has been authorized or run.
+Version: `2026-09-22.v3`. No paid evaluation has been authorized or run.
 
 The canonical executable catalog and mode availability map are in `server/ai-presets.ts`. Provider capability checks prove API/schema compatibility only. They do not prove that a model is better for a workflow. Developer uses the economical capability-validated baseline on the owner's selected connection and is labelled `hypothesis` until repeated live trials qualify it. Analyst and Researcher have no routing candidates because their required tools are not implemented.
 

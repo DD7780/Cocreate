@@ -11,9 +11,9 @@ import type {
 } from '../src/types.js';
 import{maximumAllowanceCharge}from'./ai-accounting.js';
 
-export const PRESET_VERSION = '2026-09-21.v2';
+export const PRESET_VERSION = '2026-09-22.v3';
 export const PRICING_VERSION = '2026-09-20';
-export const ROUTING_RULE_VERSION = '2026-09-21.v2';
+export const ROUTING_RULE_VERSION = '2026-09-22.v3';
 
 export const workflowModes: Record<AIWorkflowMode, {label: string; benefit: string; instruction: string; available:boolean; unavailableReason?:string}> = {
   developer: {label: 'Developer', benefit: 'Build and verify the shared interactive product.', instruction: 'Implement the accepted requirements as a reliable, accessible application and preserve unaffected working behavior.', available:true},
@@ -33,10 +33,10 @@ export const effortLevels: Record<AIEffort, {
   repairAttempts: number;
   reasoning: string;
 }> = {
-  light: {label: 'Light', benefit: 'Fast drafts and small changes.', personalInput: 8_000, personalOutput: 1_600, builderInput: 24_000, builderOutput: 4_000, repairAttempts: 1, reasoning: 'low'},
-  medium: {label: 'Medium · Recommended', benefit: 'Balanced quality, checks, and cost.', personalInput: 12_000, personalOutput: 2_400, builderInput: 40_000, builderOutput: 6_000, repairAttempts: 2, reasoning: 'medium'},
-  high: {label: 'High', benefit: 'More room for difficult implementation work.', personalInput: 16_000, personalOutput: 3_200, builderInput: 56_000, builderOutput: 8_000, repairAttempts: 3, reasoning: 'high'},
-  extra: {label: 'Extra', benefit: 'Largest bounded context and verification allowance.', personalInput: 20_000, personalOutput: 4_000, builderInput: 72_000, builderOutput: 10_000, repairAttempts: 3, reasoning: 'high'},
+  light: {label: 'Light', benefit: 'Fast drafts and small changes.', personalInput: 8_000, personalOutput: 1_600, builderInput: 24_000, builderOutput: 8_000, repairAttempts: 1, reasoning: 'low'},
+  medium: {label: 'Medium · Recommended', benefit: 'Balanced quality, checks, and cost.', personalInput: 12_000, personalOutput: 2_400, builderInput: 40_000, builderOutput: 12_000, repairAttempts: 2, reasoning: 'medium'},
+  high: {label: 'High', benefit: 'More room for difficult implementation work.', personalInput: 16_000, personalOutput: 3_200, builderInput: 56_000, builderOutput: 20_000, repairAttempts: 3, reasoning: 'high'},
+  extra: {label: 'Extra', benefit: 'Largest bounded context and verification allowance.', personalInput: 20_000, personalOutput: 4_000, builderInput: 72_000, builderOutput: 32_000, repairAttempts: 3, reasoning: 'high'},
 };
 
 type CatalogEntry = {
