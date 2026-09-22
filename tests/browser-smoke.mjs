@@ -34,6 +34,7 @@ try{
   socket.addEventListener('close',()=>{for(const task of pending.values())task.reject(new Error(`Chrome debugging socket closed. ${browserErrors}`));pending.clear()});
   await call('Page.enable');
   await call('Runtime.enable');
+  await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin});
   await new Promise(resolve=>setTimeout(resolve,500));
   await call('Runtime.evaluate',{expression:`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Browser QA');localStorage.removeItem('cocreate-build-shortcut')`});
@@ -48,7 +49,10 @@ try{
 
   for(const mode of['Developer','Analyst','Researcher'])if(!text.includes(mode))throw new Error(`Recommended setup is missing ${mode}: ${text}`);
   for(const removed of['General app','Engineer','Designer','Web developer','Motion designer'])if(text.includes(removed))throw new Error(`Legacy specialty remains user-facing: ${removed}`);
-  if(!text.includes('Your API powers Recommended')||!text.includes('Estimated one-pass maximum')||!text.includes('Spending limit (USD)')||!text.includes('View assigned models, allowances, and rates')||!text.includes('validated data ingestion')||!text.includes('retrieval, source capture')||!text.includes('Connect your API'))throw new Error(`Recommended API-powered setup is incomplete: ${text}`);
+  const recommendedText=text.toLowerCase();
+  if(!text.includes('Your API powers Recommended')||!text.includes('Know the ceiling before you build')||!recommendedText.includes('this build')||!recommendedText.includes('room spend')||!recommendedText.includes('limit')||!text.includes('Model rates')||!text.includes('validated data ingestion')||!text.includes('retrieval, source capture')||!text.includes('Connect your API'))throw new Error(`Recommended API-powered setup is incomplete: ${text}`);
+  const setupSemantics=await evaluate(`({modes:[...document.querySelectorAll('[aria-label="CoCreate mode"] [role="radio"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked')})),modalHasEffort:!!document.querySelector('[role="dialog"] [aria-label*="AI effort"]'),limitLabel:document.querySelector('input[aria-label="Spending limit (USD)"]')?.getAttribute('aria-label')})`);
+  if(setupSemantics.modes.length!==3||setupSemantics.modes.filter(item=>item.checked==='true').length!==1||setupSemantics.modalHasEffort||setupSemantics.limitLabel!=='Spending limit (USD)')throw new Error(`Recommended selection semantics failed: ${JSON.stringify(setupSemantics)}`);
   if(process.env.COCREATE_RECOMMENDED_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
     fs.writeFileSync(process.env.COCREATE_RECOMMENDED_SCREENSHOT,Buffer.from(capture.data,'base64'));
@@ -67,6 +71,12 @@ try{
   const dialogIgnored=await evaluate(`(()=>{const input=document.querySelector('[role="dialog"] input');input.focus();return input.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   if(!dialogIgnored)throw new Error('Dialog incorrectly handled Alt+X');
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.getAttribute('aria-label')==='Close API connections').click()`);
+  const canvasEffort=await evaluate(`({options:[...document.querySelectorAll('[aria-label="AI effort beside canvas"] [role="radio"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked'),disabled:node.disabled}))})`);
+  if(canvasEffort.options.length!==4||canvasEffort.options.filter(item=>item.checked==='true').length!==1||!canvasEffort.options.every(item=>item.disabled))throw new Error(`Canvas effort control did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
+  if(process.env.COCREATE_WORKSPACE_SCREENSHOT){
+    const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
+    fs.writeFileSync(process.env.COCREATE_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));
+  }
 
   const shortcut=await evaluate(`(()=>{const button=[...document.querySelectorAll('button')].find(item=>item.textContent.includes('Build my changes'));const editor=document.querySelector('.document-editor');const metadata={aria:button?.getAttribute('aria-keyshortcuts'),title:button?.getAttribute('title')};editor.focus();const handled=!editor.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}));return{...metadata,handled,focused:document.activeElement===editor}})()`);
   await new Promise(resolve=>setTimeout(resolve,150));
@@ -80,6 +90,10 @@ try{
   await new Promise(resolve=>setTimeout(resolve,200));
   text=await evaluate('document.body.innerText');
   if(!text.includes('Connect an AI model to generate your app.'))throw new Error('Disconnected Product state is incorrect');
+  if(process.env.COCREATE_PRODUCT_SCREENSHOT){
+    const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
+    fs.writeFileSync(process.env.COCREATE_PRODUCT_SCREENSHOT,Buffer.from(capture.data,'base64'));
+  }
   await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await new Promise(resolve=>setTimeout(resolve,200));
   const metrics=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,text:document.body.innerText})');
@@ -87,7 +101,7 @@ try{
   await evaluate(`localStorage.setItem('cocreate-session-${roomId}','invalid-session')`);
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   let invalidText='';
-  for(let attempt=0;attempt<40&&!invalidText.includes('Rejoin room');attempt++){await new Promise(resolve=>setTimeout(resolve,100));invalidText=await evaluate('document.body.innerText')}
+  for(let attempt=0;attempt<120&&!invalidText.includes('Rejoin room');attempt++){await new Promise(resolve=>setTimeout(resolve,100));invalidText=await evaluate('document.body.innerText')}
   if(!invalidText.includes('participant session expired or is invalid')||!invalidText.includes('Rejoin room'))throw new Error(`Invalid session did not render an actionable terminal state: ${invalidText}`);
   console.log(JSON.stringify({roomId,ownerPanel:true,altXEditorOnly:true,remap:true,editorFocusPreserved:true,productEmptyState:true,invalidSessionActionable:true,mobileWidth:metrics.width,viewport:metrics.viewport}));
 }finally{

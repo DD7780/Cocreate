@@ -71,3 +71,7 @@ Status: implemented contract and migration; only Developer execution is availabl
 ## D-0018 — Spending ceilings do not replace per-call token allowances
 
 Status: implemented 2026-09-22. A room's USD spending limit authorizes aggregate bounded cost but never silently expands a frozen request's input/output allowance. New Developer effort allowances provide more realistic space for complete project operations, and Advanced defaults to the Medium executor output allowance. One compact retry is permitted after structured-output truncation because the existing reservation already accounts for two schema attempts; both attempts' reported usage is retained. A second truncation remains a failure with actionable effort/model guidance. No provider, model, or effort is silently upgraded.
+
+## D-0019 — Effort is a canvas-side build control
+
+Status: implemented 2026-09-22. Light, Medium, High, and Extra are removed from the Recommended setup dialog and shown beside the shared canvas. Only the owner can change a Recommended room's effort. The control reuses the existing recommendation mutation with the current mode and spending ceiling, so capability validation, server-side budget enforcement, future-run assignment freezing, and unavailable-mode rules remain authoritative. Custom, disconnected, and collaborator views remain visible but non-editable with an explanation.
