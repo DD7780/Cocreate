@@ -1,17 +1,50 @@
 # CoCreate harness implementation checklist
 
+## Visible model discovery — 2026-09-22
+
+- [x] Fixed Advanced API setup so the response from **Discover models** is retained immediately instead of depending only on a later room-state broadcast.
+- [x] Added a visible discovered-model selector, model count, and result-specific status while preserving exact manual model-ID entry and existing capability checks.
+- [x] Added a synthetic-provider Windows Chrome regression check proving two returned model IDs are visible and selectable and that discovery itself does not run a paid model test.
+- [x] `pnpm build` passed. `node tests/connections-ui-smoke.mjs` passed against the production server with `synthetic/fast` and `synthetic/capable`; the compiled server suite passed 69/69. No provider credits were used. The direct `tsx` launcher was unavailable in the final environment because Node `uv_os_get_passwd` returned `ENOMEM`, so the already-compiled suite was run directly.
+
+## Exactly three modes — 2026-09-22
+
+- [x] Replaced the user-facing General app, Engineer, Designer, Web developer, and Motion designer selector with exactly Developer, Analyst, and Researcher.
+- [x] Kept Light, Medium, High, and Extra as effort settings within the selected mode; Advanced manual model selection remains available.
+- [x] Preserved n personal interpreters plus one shared executor. Developer configures the existing app workflow; no additional permanent agent roles were added.
+- [x] Analyst is visibly unavailable with its validated-ingestion and isolated-computation prerequisite. Researcher is visibly unavailable with its controlled-retrieval, source-capture, and citation-verification prerequisite. Neither can be applied or silently routed through Developer.
+- [x] Active legacy coding presets normalize to Developer without changing saved assignments, encrypted credentials, effort, participant overrides, resolved models, or spending ceiling. Historical run specialty fields remain intact.
+- [x] Updated types, server routes, deterministic routing, evaluation protocol, accounting comparison keys, UI, browser assertions, and steering documents to the three-mode contract.
+- [x] `pnpm build` passed; the focused mode/accounting suite passed 16/16 and the complete compiled suite passed 69/69 serially.
+- [x] Fresh production-server Windows Chrome checks showed exactly the three modes, no legacy specialty labels, four effort controls, explicit Analyst/Researcher prerequisites, disabled unavailable-mode activation, preserved Advanced setup, Alt+X behavior, Product state, invalid-session recovery, and 390px layout. The rendered mode selector was visually inspected.
+- [ ] No paid provider inference, Analyst/Researcher tool execution, deployment, or non-Chromium hardware/browser validation was run.
+- [ ] `graphify update .` was attempted after this slice, but the Graphify executable remains unavailable; the stored graph is stale.
+
+## Reliable API connection entry — Phase 1, 2026-09-21
+
+- [x] Reproduced the missing-testing experience: named connections, four capability checks, manual model IDs, encrypted credentials, and assignments existed, but the route between Recommended and Advanced did not clearly explain how owner API models power the preset.
+- [x] Following explicit product direction, API connections leads with Recommended. It states that the owner's checked API powers the setup, exposes prominent Connect/manage Advanced actions, and returns to Recommended without deleting connections, assignments, or overrides.
+- [x] Preserved add/edit/disconnect, seven provider choices, endpoint/format configuration, secret reuse, optional discovery, manual model IDs, and interpreter/shared-executor assignments.
+- [x] Renamed and explained model results as Authentication & reachability, Text generation, Interpreter structured output, and Developer executor operations. UI states that explicit tests make real provider requests and may consume usage; opening or changing settings remains inference-free.
+- [x] Production build passed with the existing non-failing chunk warning. The first parallel compiled suite reached 65/66 before one SQLite initialization returned `database is locked`; the isolated assignment file passed 4/4. After adding the collaborator authorization/redaction case, the focused connection suite passed 2/2 and the full compiled suite passed 67/67 with test concurrency set to one.
+- [x] Fresh production-server Windows Chrome checks passed the Recommended-first API entry, all seven providers, Ollama no-key guidance, assignment labels, Advanced/Recommended round-trip, Alt+X regression, Product state, invalid-session recovery, and 390px layout. A captured Advanced modal render was visually inspected for layout and legibility.
+- [ ] Managed AI/account authentication/quotas/ledger/payments are not implemented. No deployment secrets or payment-provider configuration were added.
+- [x] The three-mode contract and Developer migration are implemented; Researcher and Analyst correctly remain unavailable until their tool and verification prerequisites exist.
+- [ ] No paid provider test, payment event, deployment, or live commercial validation was run.
+- [ ] `graphify update .` was attempted after the code changes, but the Graphify executable is still unavailable; the stored graph remains stale for this slice.
+
 ## Evidence-based model routing slice — 2026-09-20
 
 - [x] Replaced fixed $0.25/$0.75/$2/$4 defaults with rate-derived estimated one-pass maximum and separately labeled spending limit.
 - [x] Added explicit catalog, pricing, routing-rule, and evaluation-protocol versions.
 - [x] Retained one selected provider by default and preserved Advanced manual assignments.
-- [x] Added deterministic complexity classification and no-model-call routing that retains the validated economical baseline while specialty evidence is absent.
-- [x] Added five specialty task rubrics, repeated-trial thresholds, and satisfaction, verification, regression, latency, total-cost, and cost-per-verified-build metrics.
+- [x] Added deterministic complexity classification and no-model-call routing that retains the validated economical Developer baseline while comparison evidence is absent.
+- [x] Added an implemented Developer task rubric, explicit unavailable-mode evaluation results, repeated-trial thresholds, and satisfaction, verification, regression, latency, total-cost, and cost-per-verified-build metrics.
 - [x] Added immutable promoted-version run records; compilation is separate from unmeasured requirement/regression verification.
 - [x] `pnpm build` passed on 2026-09-20 (existing non-failing Vite chunk-size warning remains).
-- [x] Earlier in-app Chromium evidence confirmed the five specialties and effort controls; the pricing/accounting wording below supersedes its old cost labels.
+- [x] Earlier in-app Chromium evidence for the retired five-specialty selector is historical and superseded by the three-mode verification section above.
 - [x] Compiled Node test fallback passed the complete then-current suite 57/57 plus the final routing suite 7/7 on 2026-09-20; the direct `tsx` launcher still fails before loading tests with the host's `uv_os_get_passwd ENOMEM` defect.
-- [ ] No paid repeated trials were run because no evaluation budget was authorized; all specialty mappings remain hypotheses.
+- [ ] No paid repeated trials were run because no evaluation budget was authorized; the Developer model recommendation remains a hypothesis.
 - [ ] `graphify update .` was attempted but this workspace still has no Graphify executable; the existing graph is stale for this slice.
 
 ## Pricing presentation and accounting slice — 2026-09-20
@@ -148,7 +181,7 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Persist immutable submission/batch/run links; test simultaneous submissions, slow interpreters, edits during a build, and next-batch isolation.
 - [ ] Resume queued/interrupted submissions safely after restart; define durable deduplication retention beyond the last-200 room list and prevent retry double spending.
 - [ ] Complete authenticated conflict-choice APIs and cards below Shared intent, document highlights, multi-option Disagreements, compromise/reopen rounds and stale-choice rejection. Silence must stay pending; dependent work must stay blocked.
-- [x] Added owner-only Recommended specialty/effort setup with explicit confirmation, exact checked models from one available connection, provider-currency rates, versioned provisional evidence, and preserved Advanced connections/assignments/overrides; no unannounced fallback.
+- [x] Added owner-only Recommended mode/effort setup with explicit confirmation, exact checked models from one available connection, provider-currency rates, versioned provisional evidence, and preserved Advanced connections/assignments/overrides; no unannounced fallback.
 - [-] Long-document scrolling, editor usability, shortcut accessibility, and reconnect behavior are verified in Windows Chrome. Linux, macOS, Firefox, and Safari hardware/browser runs remain outstanding.
 - [-] Recommended runs now freeze model IDs/versions, output ceilings, repair ceilings and conservative server-side currency reservations with uncertain timeout retention. Input preparation remains compacted but does not yet expose retrievable omitted references; provider-specific cached/reasoning/tool billing may remain uncertain.
 
@@ -159,7 +192,7 @@ Documentation-only source inspection; historical test counts above are retained,
 - [x] Selector preview is read-only and owner-only; application re-resolves server-side and rejects an underfunded cap.
 - [x] Submission and builder records freeze their resolved policy; reservations are persisted before calls and concurrent/repair reservations fail closed at the cap.
 - [x] Controlled preset tests passed 4/4 and the complete compiled test suite passed 55/55. `pnpm run build` passed with only the existing Vite chunk-size warning.
-- [x] In-app browser at a narrow/mobile viewport showed all five specialties, four effort levels, spend input, disabled unavailable confirmation, actionable missing-connection detail, and the preserved Advanced connection/assignment UI.
+- [x] The former five-specialty mobile evidence is retained only as historical UI evidence and is superseded by the three-mode browser assertions.
 - [ ] No paid live-provider quality/cost/latency evaluation was run; recommendations and catalog evidence are explicitly provisional. Desktop wide viewport and Linux/macOS hardware were not exercised in this slice.
 - [ ] Demonstrate hosted records and generated artifacts survive container replacement before a durable hosted launch claim.
 

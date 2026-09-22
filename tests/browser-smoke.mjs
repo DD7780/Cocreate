@@ -46,11 +46,24 @@ try{
     throw new Error(`Workspace connection controls did not render: ${text||'empty document'}; exceptions=${exceptions.join('; ')||'none'}; ${JSON.stringify(diagnostic)}`);
   }
 
-  if(!text.includes('Estimated one-pass maximum')||!text.includes('Spending limit (USD)')||!text.includes('View assigned models, allowances, and rates')||!text.includes('Motion designer'))throw new Error(`Recommended pricing presentation is incomplete: ${text}`);
-  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Advanced: Choose my own models')).click()`);
+  for(const mode of['Developer','Analyst','Researcher'])if(!text.includes(mode))throw new Error(`Recommended setup is missing ${mode}: ${text}`);
+  for(const removed of['General app','Engineer','Designer','Web developer','Motion designer'])if(text.includes(removed))throw new Error(`Legacy specialty remains user-facing: ${removed}`);
+  if(!text.includes('Your API powers Recommended')||!text.includes('Estimated one-pass maximum')||!text.includes('Spending limit (USD)')||!text.includes('View assigned models, allowances, and rates')||!text.includes('validated data ingestion')||!text.includes('retrieval, source capture')||!text.includes('Connect your API'))throw new Error(`Recommended API-powered setup is incomplete: ${text}`);
+  if(process.env.COCREATE_RECOMMENDED_SCREENSHOT){
+    const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
+    fs.writeFileSync(process.env.COCREATE_RECOMMENDED_SCREENSHOT,Buffer.from(capture.data,'base64'));
+  }
+  const unavailableMode=await evaluate(`(async()=>{[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Analyst')).click();await new Promise(resolve=>setTimeout(resolve,250));const use=[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Use Analyst'));return{disabled:use?.disabled,text:document.body.innerText}})()`);
+  if(!unavailableMode.disabled||!unavailableMode.text.includes('validated data ingestion and isolated reproducible computation are not implemented'))throw new Error('Analyst did not remain explicitly unavailable');
+  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Developer')).click()`);
+  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Connect your API')).click()`);
   await new Promise(resolve=>setTimeout(resolve,250));
   text=await evaluate('document.body.innerText');
-  if(!text.toLowerCase().includes('provider-independent ai')||!text.includes('API key')||text.includes('Try demo'))throw new Error(`Owner API panel is incomplete or still exposes demo UI: ${text}`);
+  if(!text.toLowerCase().includes('bring your own key · advanced')||!text.includes('API key')||!text.includes('may consume provider usage')||!text.includes('View recommended setup')||text.includes('Try demo'))throw new Error(`Owner API panel is incomplete or still exposes demo UI: ${text}`);
+  if(process.env.COCREATE_SCREENSHOT){
+    const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
+    fs.writeFileSync(process.env.COCREATE_SCREENSHOT,Buffer.from(capture.data,'base64'));
+  }
   const dialogIgnored=await evaluate(`(()=>{const input=document.querySelector('[role="dialog"] input');input.focus();return input.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   if(!dialogIgnored)throw new Error('Dialog incorrectly handled Alt+X');
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.getAttribute('aria-label')==='Close API connections').click()`);

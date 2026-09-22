@@ -48,7 +48,7 @@ test('applies long-context tiers and preserves pricing-version changes per call'
 
 test('estimates stay distinct from the user spending limit',()=>{
   const passed={reachable:{status:'passed' as const},text:{status:'passed' as const},personal:{status:'passed' as const},builder:{status:'passed' as const}};
-  const recommendation=resolveRecommendation([{id:'test',name:'Synthetic',provider:'openrouter',models:[{id:'openai/gpt-5.6-luna'}],checks:{'openai/gpt-5.6-luna':passed}}],'general','medium');
+  const recommendation=resolveRecommendation([{id:'test',name:'Synthetic',provider:'openrouter',models:[{id:'openai/gpt-5.6-luna'}],checks:{'openai/gpt-5.6-luna':passed}}],'developer','medium');
   assert.equal(recommendation.available,true);
   assert.equal(recommendation.estimateComplete,false);
   assert.match(recommendation.estimateScope,/one submitted participant interpretation/i);
@@ -56,7 +56,7 @@ test('estimates stay distinct from the user spending limit',()=>{
   assert.notEqual(recommendation.onePassEstimateUsd,recommendation.defaultMaximumSpendUsd);
 });
 
-const record=(id:string,verified:boolean,cost:number|undefined,latencyMs:number,calls:AIRunCall[]=[call('builder')]):AIRunRecord=>({runId:id,catalogVersion:'test-catalog',pricingVersion:'test-pricing-v1',routingRuleVersion:'test-routing',verificationPolicyVersion:VERIFICATION_POLICY_VERSION,specialty:'general',effort:'medium',complexity:'standard',evidenceStatus:'hypothesis',routingReason:'Synthetic fixture',personalModels:['synthetic-interpreter'],builderModel:'synthetic-builder',calls,usage:{...aggregateCalls(calls),estimatedChargeUsd:cost},latencyMs,outcome:verified?'promoted':'failed',verification:{operationsApplied:verified,compilationPassed:verified,requirementSatisfaction:verified?'passed':'failed',regressionCheck:verified?'passed':'failed',verified}});
+const record=(id:string,verified:boolean,cost:number|undefined,latencyMs:number,calls:AIRunCall[]=[call('builder')]):AIRunRecord=>({runId:id,catalogVersion:'test-catalog',pricingVersion:'test-pricing-v1',routingRuleVersion:'test-routing',verificationPolicyVersion:VERIFICATION_POLICY_VERSION,workflowMode:'developer',effort:'medium',complexity:'standard',evidenceStatus:'hypothesis',routingReason:'Synthetic fixture',personalModels:['synthetic-interpreter'],builderModel:'synthetic-builder',calls,usage:{...aggregateCalls(calls),estimatedChargeUsd:cost},latencyMs,outcome:verified?'promoted':'failed',verification:{operationsApplied:verified,compilationPassed:verified,requirementSatisfaction:verified?'passed':'failed',regressionCheck:verified?'passed':'failed',verified}});
 
 test('effectiveness requires comparable samples and includes failed repairs in cost',()=>{
   assert.equal(effectiveness([record('one',true,.10,1000)])[0].verificationPassRate,undefined);

@@ -25,6 +25,7 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - Keep provider-specific requests in adapters, orchestration in the room/harness layer, and UI presentation out of provider logic.
 - Validate external input and structured model output before use. Never cast invalid data into a trusted schema merely to satisfy TypeScript.
 - Keep credentials server-side and encrypted. Do not log keys, dump environment files, or return secrets in room state.
+- Keep the operational BYOK connection workflow directly discoverable. Opening, editing, selecting, and viewing settings must not invoke a provider; only explicit discovery, model-test, submission, and build actions may do so. Warn that model tests may consume usage and report reachability, text, interpreter schema, and current mode executor compatibility separately.
 - Reuse existing accessible UI primitives. Preserve editor formatting, participant colors, keyboard navigation, and preview style isolation.
 
 ## Agent and state rules
@@ -36,7 +37,9 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - Keep one active writer per room. Do not claim an in-memory promise is a durable multi-process lease.
 - Record action intent, authorization, outcomes, and unknown outcomes honestly.
 - Never silently switch models, providers, or simulated generation.
-- Keep specialty/effort mappings, exact model IDs, rate categories, source URLs, verification dates, evidence, and limitations canonical in `server/ai-presets.ts`; do not copy the changing matrix into UI or documentation.
+- Treat platform-managed AI as a separate credential, account, permission, and accounting domain. Room invitation identity is not billing identity, and BYOK must never fall back to managed funding silently.
+- Do not simulate Researcher retrieval or Analyst computation. Keep those modes unavailable until controlled network tools, validated data ingestion, and genuinely isolated execution exist.
+- Keep mode/effort mappings, availability reasons, exact model IDs, rate categories, source URLs, verification dates, evidence, and limitations canonical in `server/ai-presets.ts`; do not copy the changing model/rate matrix into UI or documentation.
 - Updating catalog rates requires current official provider evidence, a pricing-version change, controlled resolver/budget tests, and an explicit note when cached/reasoning/tool billing cannot be reconciled. Recommendations stay provisional until authorized paid comparison evidence exists.
 - Preset resolution is server-authoritative and capability-gated. Selector changes must remain inference-free. Freeze resolved versions/limits per submission and builder run; reserve before dispatch and retain uncertain timeout usage.
 - Use targeted context and bounded retries. Do not truncate serialized JSON or reset budgets by opening another run.

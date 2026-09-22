@@ -3,24 +3,25 @@ import type {
   AIProvider,
   AIRecommendation,
   AIRate,
-  AISpecialty,
+  AIWorkflowMode,
+  LegacyAISpecialty,
   ModelChecks,
   SharedRequirement,
   TaskComplexity,
 } from '../src/types.js';
 import{maximumAllowanceCharge}from'./ai-accounting.js';
 
-export const PRESET_VERSION = '2026-09-20.v1';
+export const PRESET_VERSION = '2026-09-21.v2';
 export const PRICING_VERSION = '2026-09-20';
-export const ROUTING_RULE_VERSION = '2026-09-20.v1';
+export const ROUTING_RULE_VERSION = '2026-09-21.v2';
 
-export const specialties: Record<AISpecialty, {label: string; benefit: string; instruction: string}> = {
-  general: {label: 'General app', benefit: 'Balanced functionality, usability, and visual quality.', instruction: 'Balance functionality, usability, visual quality, and accessibility.'},
-  engineer: {label: 'Engineer', benefit: 'Logic, reliability, acceptance criteria, and edge cases.', instruction: 'Emphasize logic, data handling, reliability, acceptance criteria, and edge cases.'},
-  designer: {label: 'Designer', benefit: 'Layout, typography, responsiveness, and accessibility.', instruction: 'Emphasize layout, typography, responsive design, and accessibility.'},
-  web_developer: {label: 'Web developer', benefit: 'Structure, navigation, and interactive frontend behavior.', instruction: 'Emphasize website structure, navigation, and interactive frontend behavior.'},
-  motion_designer: {label: 'Motion designer', benefit: 'Purposeful motion with performance and reduced-motion support.', instruction: 'Emphasize frontend animation, transitions, performance, and prefers-reduced-motion support.'},
+export const workflowModes: Record<AIWorkflowMode, {label: string; benefit: string; instruction: string; available:boolean; unavailableReason?:string}> = {
+  developer: {label: 'Developer', benefit: 'Build and verify the shared interactive product.', instruction: 'Implement the accepted requirements as a reliable, accessible application and preserve unaffected working behavior.', available:true},
+  analyst: {label: 'Analyst', benefit: 'Analyze validated datasets with reproducible computation.', instruction: '', available:false, unavailableReason:'Unavailable: validated data ingestion and isolated reproducible computation are not implemented.'},
+  researcher: {label: 'Researcher', benefit: 'Research with controlled retrieval and cited evidence.', instruction: '', available:false, unavailableReason:'Unavailable: controlled retrieval, source capture, and citation verification are not implemented.'},
 };
+
+export const migrateLegacySpecialty=(_specialty?:LegacyAISpecialty):AIWorkflowMode=>'developer';
 
 export const effortLevels: Record<AIEffort, {
   label: string;
@@ -58,7 +59,7 @@ const openRouter=(options:Partial<AIRate>={}):Partial<AIRate>=>({platformMultipl
 
 /** Canonical model and pricing data. UI and resolver consume this list; do not duplicate it. */
 export const modelCatalog: CatalogEntry[] = [
-  {provider:'openai',model:'gpt-5.6-luna',adapter:'responses',roles:['personal','builder'],efforts:['light','medium','high','extra'],contextTokens:1_050_000,outputTokens:128_000,reasoning:['none','low','medium','high','xhigh','max'],rate:rate(.20,1.20,'https://developers.openai.com/api/docs/models/gpt-5.6-luna',{cachedInputPerMillion:.02,cacheWrite5mPerMillion:.25,tiers:longContext}),evidence:'Published capabilities and CoCreate schema checks only.',limitation:'No authorized repeated live benchmark has been run; specialty quality is an untested hypothesis.'},
+  {provider:'openai',model:'gpt-5.6-luna',adapter:'responses',roles:['personal','builder'],efforts:['light','medium','high','extra'],contextTokens:1_050_000,outputTokens:128_000,reasoning:['none','low','medium','high','xhigh','max'],rate:rate(.20,1.20,'https://developers.openai.com/api/docs/models/gpt-5.6-luna',{cachedInputPerMillion:.02,cacheWrite5mPerMillion:.25,tiers:longContext}),evidence:'Published capabilities and CoCreate schema checks only.',limitation:'No authorized repeated live benchmark has been run; Developer quality is an untested hypothesis.'},
   {provider:'openai',model:'gpt-5.6-terra',adapter:'responses',roles:['builder'],efforts:['medium','high','extra'],contextTokens:1_050_000,outputTokens:128_000,reasoning:['none','low','medium','high','xhigh','max'],rate:rate(2,12,'https://developers.openai.com/api/docs/models/gpt-5.6-terra',{cachedInputPerMillion:.20,cacheWrite5mPerMillion:2.50,tiers:longContext}),evidence:'Published capabilities and CoCreate schema checks only.',limitation:'No paid cross-model benchmark has been run; recommendation is provisional.'},
   {provider:'anthropic',model:'claude-haiku-4-5-20251001',adapter:'messages',roles:['personal'],efforts:['light','medium','high','extra'],contextTokens:200_000,outputTokens:64_000,reasoning:['extended'],rate:rate(1,5,'https://platform.claude.com/docs/en/about-claude/pricing',{cachedInputPerMillion:.10,cacheWrite5mPerMillion:1.25,cacheWrite1hPerMillion:2}),evidence:'Published capabilities and CoCreate schema checks only.',limitation:'No paid cross-model benchmark has been run; recommendation is provisional.'},
   {provider:'anthropic',model:'claude-sonnet-5',adapter:'messages',roles:['builder'],efforts:['light','medium','high','extra'],contextTokens:1_000_000,outputTokens:128_000,reasoning:['adaptive'],rate:rate(2,10,'https://platform.claude.com/docs/en/about-claude/pricing',{cachedInputPerMillion:.20,cacheWrite5mPerMillion:2.50,cacheWrite1hPerMillion:4}),evidence:'Published capabilities and CoCreate schema checks only.',limitation:'No paid cross-model benchmark has been run; recommendation is provisional.'},
@@ -87,9 +88,14 @@ function preferred(entries: CatalogEntry[], role: 'personal'|'builder', effort: 
 const layer=(connection:ResolvableConnection,item:CatalogEntry,input:number,output:number)=>({connectionId:connection.id,connectionName:connection.name,provider:connection.provider,model:item.model,rate:item.rate,maxInputTokens:input,maxOutputTokens:output,reasoning:item.reasoning});
 const roundCap=(value:number)=>Math.max(.01,Math.ceil(value*1.15*100)/100);
 
-export function resolveRecommendation(connections: ResolvableConnection[], specialty: AISpecialty, effort: AIEffort): AIRecommendation {
+export function resolveRecommendation(connections: ResolvableConnection[], workflowMode: AIWorkflowMode, effort: AIEffort): AIRecommendation {
   const limits = effortLevels[effort];
+  const mode=workflowModes[workflowMode];
   const missing: string[] = [];
+  if(!mode.available){
+    const reason=mode.unavailableReason||`${mode.label} is unavailable.`;
+    return {available:false,workflowMode,modeAvailable:false,unavailableReason:reason,effort,presetVersion:PRESET_VERSION,pricingVersion:PRICING_VERSION,routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:reason,estimateComplete:false,estimateScope:'Unavailable until the required workflow tools and verification are implemented.',defaultMaximumSpendUsd:.01,repairAttempts:limits.repairAttempts,assumptions:[],missing:[reason]};
+  }
   // The first connection is the owner's active/default choice. Never hop providers implicitly.
   for(const connection of connections.slice(0,1)) {
     const providerEntries = modelCatalog.filter(item => item.provider === connection.provider);
@@ -105,11 +111,12 @@ export function resolveRecommendation(connections: ResolvableConnection[], speci
     const builderCost = cost(limits.builderInput, limits.builderOutput, builder),maximum=personalCost+builderCost*limits.repairAttempts*2;
     return {
       available: true,
-      specialty,
+      workflowMode,
+      modeAvailable:true,
       effort,
       presetVersion: PRESET_VERSION,
       pricingVersion: PRICING_VERSION,
-      routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:'No authorized repeated specialty benchmark exists, so the economical validated baseline is retained.',
+      routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:'Developer uses the economical capability-validated baseline; no authorized repeated comparative benchmark exists.',
       personal:layer(connection,personal,limits.personalInput,limits.personalOutput),builder:layer(connection,builder,limits.builderInput,limits.builderOutput),builderCandidates:builderEntries.filter(item=>passed(connection.checks[item.model],'builder')).map(item=>layer(connection,item,limits.builderInput,limits.builderOutput)),
       onePassEstimateUsd:personalCost+builderCost,maximumEstimateUsd:maximum,estimateComplete:false,estimateScope:'One submitted participant interpretation plus one shared builder call. Repairs and additional submitted participants are excluded from the one-pass figure; the displayed maximum includes bounded builder repairs but only one interpreter.',defaultMaximumSpendUsd:roundCap(maximum),
       repairAttempts: limits.repairAttempts,
@@ -119,7 +126,7 @@ export function resolveRecommendation(connections: ResolvableConnection[], speci
   }
   if(!connections.length) missing.push('Save a supported API connection first.');
   else if(!missing.length) missing.push('The selected connection has no validated catalog baseline for this setup. Run capability checks or explicitly choose another connection in Advanced.');
-  return {available:false,specialty,effort,presetVersion:PRESET_VERSION,pricingVersion:PRICING_VERSION,routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:'No validated same-connection baseline is available.',estimateComplete:false,estimateScope:'Unavailable until exact validated models are selected.',defaultMaximumSpendUsd:.01,repairAttempts:limits.repairAttempts,assumptions:[],missing};
+  return {available:false,workflowMode,modeAvailable:true,effort,presetVersion:PRESET_VERSION,pricingVersion:PRICING_VERSION,routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:'No validated same-connection baseline is available.',estimateComplete:false,estimateScope:'Unavailable until exact validated models are selected.',defaultMaximumSpendUsd:.01,repairAttempts:limits.repairAttempts,assumptions:[],missing};
 }
 
 export function classifyTaskComplexity(requirements:SharedRequirement[]):TaskComplexity{
@@ -135,12 +142,12 @@ export function routeBuilderForRun(setup:NonNullable<import('../src/types.js').A
   if(required>remainingBudgetUsd)throw new Error(`The validated baseline needs up to $${required.toFixed(3)} for one call, but only $${remainingBudgetUsd.toFixed(3)} remains.`);
   const reason=complexity==='uncertain'
     ?'Complexity was uncertain, so the selected preset baseline was kept within its ceiling; no silent upgrade occurred.'
-    :`${complexity[0].toUpperCase()+complexity.slice(1)} task under the ${setup.effort||'custom'} effort ceiling. No measured specialty advantage exists, so the economical validated baseline was kept.`;
+    :`${complexity[0].toUpperCase()+complexity.slice(1)} Developer task under the ${setup.effort||'custom'} effort ceiling. The economical validated baseline was kept.`;
   return{assignment:{connectionId:baseline.connectionId,model:baseline.model},layer:baseline,complexity,evidenceStatus:setup.status||'hypothesis',reason};
 }
 
-export function specialtyInstruction(specialty?: AISpecialty) {
-  return specialty ? specialties[specialty].instruction : '';
+export function workflowInstruction(mode?: AIWorkflowMode) {
+  return mode ? workflowModes[mode].instruction : '';
 }
 
 export function estimateLayerMaximum(layer: AIRecommendation['personal']) {

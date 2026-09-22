@@ -1,6 +1,6 @@
 # CoCreate API reference
 
-Source-inspected 2026-09-20. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
+Source-inspected 2026-09-21. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
 
 ## Transport and authentication
 
@@ -26,11 +26,13 @@ Session names are trimmed and limited to 40 characters. Supplying a valid token 
 
 All operations below require the room owner. Saving a connection does not certify inference or coding quality.
 
+The browser's persistent **API connections** control leads with Recommended setup and links prominently to this named-connection contract in Advanced. Recommended resolution uses exact capability-checked models from the owner's saved connection; it does not supply platform credentials. Model tests run only through the explicit `check` request and may consume provider usage. The four returned checks mean authentication/reachability, basic text, interpreter structured output, and the current Developer project-operation schema; they do not certify broad quality or Researcher/Analyst capabilities. Collaborators can read only the redacted `RoomView.ai` status and cannot call these mutations successfully.
+
 | Method and path | Request | Response |
 | --- | --- | --- |
 | POST /api/rooms/:id/ai/connections | `{id?: string, name: string, provider: AIProvider, baseUrl?: string, apiFormat?: AIFormat, apiKey?: string}` | `{id: string}` |
-| GET /api/rooms/:id/ai/recommendation | query: `specialty`, `effort` | Server-resolved `AIRecommendation`; read-only and makes no model call |
-| POST /api/rooms/:id/ai/recommendation | `{specialty, effort, maximumSpendUsd}` | Applied `AIRecommendation` or actionable 400 |
+| GET /api/rooms/:id/ai/recommendation | query: `mode`, `effort` | Server-resolved `AIRecommendation`; read-only and makes no model call |
+| POST /api/rooms/:id/ai/recommendation | `{mode, effort, maximumSpendUsd}` | Applied Developer `AIRecommendation` or actionable 400; unavailable modes cannot be applied |
 | POST /api/rooms/:id/ai/connections/:connectionId/models | Empty object | `{models: AIModel[]}` |
 | POST /api/rooms/:id/ai/connections/:connectionId/check | `{model: string}` | `ModelChecks` |
 | DELETE /api/rooms/:id/ai/connections/:connectionId | None | `{ok: true}` |
@@ -56,7 +58,7 @@ type ModelChecks = {
 };
 ```
 
-Formats are configuration options, not a promise that all providers share the OpenAI protocol. Adapters own provider-specific behavior. Model discovery is not proof that the account can generate with every listed model. Capability checks issue inference requests and may consume usage.
+Formats are configuration options, not a promise that all providers share the OpenAI protocol. Adapters own provider-specific behavior. Successful model discovery returns the account-visible IDs and the client presents them as selectable options while preserving exact manual entry. Discovery is not proof that the account can generate with every listed model. Capability checks issue inference requests and may consume usage.
 
 ## Legacy AI routes (currently retained)
 
@@ -87,6 +89,8 @@ Reinterpretation is deliberately targeted: it reuses the authenticated edit sequ
 
 No current route exposes approval decisions, owner contradiction resolution, a public run-history API, pause, or rollback. Do not invent those client contracts from target architecture documents.
 
+No current route exposes managed platform credentials, accounts, balances, purchases, webhooks, a credit ledger, room billing authorization, Researcher retrieval, or Analyst data upload. Recommended setup stores the selected workflow mode when it is available; only Developer can currently be applied. Analyst and Researcher recommendation previews return `modeAvailable: false` with an actionable prerequisite and never simulate execution.
+
 ## Shared response models
 
 Import exact contracts from `src/types.ts`; do not maintain a second application type definition from this prose.
@@ -99,11 +103,11 @@ RoomView includes:
 - `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, cumulative `usage`, and the last 50 `aiRuns`.
 - Optional `savedAt` and `persistRevision`.
 
-`AIConnection` includes safe named connections, optional default personal/builder assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` specialty/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key.
+`AIConnection` includes safe named connections, optional default personal/shared-executor assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` workflow-mode/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key. On normalization, any legacy General app, Engineer, Designer, Web developer, or Motion designer active preset gains `workflowMode: developer`; its assignments, encrypted credential, effort, overrides, resolved layers, and spending ceiling are unchanged. Historical run `specialty` fields remain readable and are not rewritten.
 
 Both recommendation routes are owner-only. Previewing a recommendation is pure resolution: it does not check capabilities, call a provider, change assignments, or start a build. Applying re-resolves on the server, requires passed role capabilities, rejects a maximum below its conservative bound, and affects future submissions/runs. Manual `/ai/assignments` activation marks the room Custom and preserves overrides.
 
-Recommendations also expose `routingRuleVersion`, `routingReason`, `status`, same-connection `builderCandidates`, `onePassEstimateUsd`, `maximumEstimateUsd`, `estimateScope`, and `estimateComplete`. The one-pass scope is one submitted participant interpretation plus one shared builder call, without repairs or additional participant interpretations, and assumes uncached input. The bounded maximum includes configured builder/structured-output repairs but only one interpreter, so it is marked incomplete when team size or other provider charges are unknown. `status: hypothesis` means compatibility and prices are known but specialty superiority is not measured. The spending limit is a safety ceiling, not an expected charge.
+Recommendations expose `workflowMode`, `modeAvailable`, optional `unavailableReason`, `routingRuleVersion`, `routingReason`, `status`, same-connection `builderCandidates`, `onePassEstimateUsd`, `maximumEstimateUsd`, `estimateScope`, and `estimateComplete`. The one-pass scope is one submitted participant interpretation plus one shared executor call, without repairs or additional participant interpretations, and assumes uncached input. The bounded maximum includes configured executor/structured-output repairs but only one interpreter, so it is marked incomplete when team size or other provider charges are unknown. `status: hypothesis` means compatibility and prices are known but comparative quality is not measured. The spending limit is a safety ceiling, not an expected charge.
 
 `AIRate` is a frozen catalog snapshot containing USD input/output rates, optional cached-input/cache-write rates, reasoning treatment, optional long-context tiers/platform multiplier/other charges, official source URL, and verification date. `AIRunRecord` freezes the effective models and routing/pricing/verification-policy versions; call-level `interpretation`, `builder`, and `repair` entries; normalized usage; estimated charge; uncertainty; latency; outcome; and separate verification fields. Provider reasoning tokens marked as included in output are informational and are never added to the charge again. A timeout or omitted provider field remains unknown. `compilationPassed` must not be read as requirement or regression proof.
 
