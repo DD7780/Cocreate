@@ -74,6 +74,11 @@ test('room restart reconstructs the last product and interrupts an in-flight run
     room.versions=[{id:1,createdAt:new Date().toISOString(),summary:'Calculator',fileCount:1,conflicts:[],files:[{path:'src/App.tsx',content:'export default function App(){return <main>Calculator</main>}' }],bundle:'document.body.textContent="Calculator"',css:'',decisions:[],specification:{agreed:['Calculator'],proposed:[],questions:[]}}];
     room.status='Updated';
     first.save(room,'product.promoted','builder','builder');
+    first.eventStore.transitionWorkflow({workspaceId,phase:'queued'});
+    first.eventStore.createTask({workspaceId,taskId:runId,runId,title:'Build calculator',requirementRevision:1,assignedWorker:'shared-executor',acceptanceCriteria:['Calculator remains runnable.']});
+    first.eventStore.transitionTask({workspaceId,taskId:runId,state:'queued'});
+    first.eventStore.transitionTask({workspaceId,taskId:runId,state:'running'});
+    first.eventStore.transitionWorkflow({workspaceId,phase:'running'});
     first.eventStore.transitionRun({workspaceId,runId,kind:'builder',state:'queued',inputRevision:1});
     first.eventStore.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1,attempt:1});
   }finally{first.shutdown()}
@@ -85,8 +90,10 @@ test('room restart reconstructs the last product and interrupts an in-flight run
     assert.equal(recovered.requirements[0].participantId,'alice');
     assert.equal(recovered.versions.at(-1)?.summary,'Calculator');
     assert.equal(second.eventStore.runsForWorkspace(workspaceId).find(run=>run.runId===runId)?.state,'interrupted');
+    assert.equal(second.eventStore.tasksForWorkspace(workspaceId).find(task=>task.id===runId)?.state,'interrupted');
+    assert.equal(second.eventStore.workflowForWorkspace(workspaceId)?.phase,'awaiting_input');
     assert.equal(second.eventStore.pendingApprovals(workspaceId).length,0);
-    assert.equal(second.eventStore.eventsForWorkspace(workspaceId).at(-1)?.eventType,'run.interrupted');
+    assert.ok(second.eventStore.eventsForWorkspace(workspaceId).some(event=>event.eventType==='run.interrupted'));
   }finally{second.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
 });
 
@@ -99,6 +106,37 @@ test('legacy workspace migration makes a backup before importing state',()=>{
     assert.ok(fs.existsSync(path.join(dataDir,'backups','pre-event-store',`${workspaceId}.json`)));
     assert.equal(manager.eventStore.eventsForWorkspace(workspaceId)[0].eventType,'workspace.legacy_imported');
   }finally{manager.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('durable workflow projection records task transitions and supports cursor recovery',()=>{
+  const dataDir=temporaryData(),store=new EventStore(dataDir),workspaceId='workflow-a',taskId=randomUUID();
+  try{
+    const initial=store.ensureWorkflow(workspaceId);
+    assert.equal(initial.phase,'draft');
+    store.assignInitialController(workspaceId,'alice');
+    store.transitionWorkflow({workspaceId,phase:'queued',expectedRevision:0,actorId:'alice',actorType:'user'});
+    store.createTask({workspaceId,taskId,runId:taskId,title:'Build specification r3',requirementRevision:3,assignedWorker:'shared-executor',acceptanceCriteria:['The calculator adds two numbers.']});
+    store.transitionTask({workspaceId,taskId,state:'queued'});
+    store.transitionTask({workspaceId,taskId,state:'running'});
+    store.transitionWorkflow({workspaceId,phase:'running'});
+    const cursorBeforeVerification=store.latestSequence(workspaceId);
+    store.transitionTask({workspaceId,taskId,state:'verifying'});
+    store.transitionTask({workspaceId,taskId,state:'completed',evidenceStatus:'unverified',artifactVersion:2});
+    store.transitionWorkflow({workspaceId,phase:'completed'});
+
+    const workflow=store.workflowForWorkspace(workspaceId)!;
+    const task=store.tasksForWorkspace(workspaceId)[0];
+    assert.equal(workflow.controllerId,'alice');
+    assert.equal(workflow.phase,'completed');
+    assert.equal(task.artifactVersion,2);
+    assert.equal(task.evidenceStatus,'unverified','compilation alone must not become verified evidence');
+    const missed=store.activityForWorkspace(workspaceId,cursorBeforeVerification,10);
+    assert.ok(missed.length>=3);
+    assert.ok(missed.every(event=>event.sequence>cursorBeforeVerification));
+    assert.deepEqual(missed.map(event=>event.sequence),[...new Set(missed.map(event=>event.sequence))]);
+    assert.throws(()=>store.transitionTask({workspaceId,taskId,state:'running'}),/Illegal task transition/);
+    assert.throws(()=>store.transitionWorkflow({workspaceId,phase:'running',expectedRevision:0}),/Stale workflow revision/);
+  }finally{store.close();fs.rmSync(dataDir,{recursive:true,force:true})}
 });
 
 test('restart preserves a pending multi-option conflict group and resolver membership',()=>{

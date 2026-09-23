@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import type { WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../src/types.js';
 
 export type ActorType='user'|'personal_agent'|'builder'|'system'|'tool';
 export type RunState='queued'|'interpreting'|'planning'|'awaiting_approval'|'executing'|'verifying'|'repairing'|'ready'|'failed'|'cancelled'|'interrupted';
@@ -12,6 +13,7 @@ export type EventInput={
 };
 export type StoredEvent=EventInput&{eventId:string;workspaceSeq:number;occurredAt:string;schemaVersion:number};
 export type StoredRun={runId:string;workspaceId:string;kind:string;state:RunState;inputRevision:number;attempt:number;triggerEventId?:string;lastEventId:string;createdAt:string;updatedAt:string;error?:string};
+export type StoredWorkflow={workflowId:string;workspaceId:string;phase:WorkflowPhase;revision:number;controllerId?:string;controlEpoch:number;lastEventId?:string;createdAt:string;updatedAt:string};
 
 const sensitiveKey=/(api[-_]?key|authorization|credential|password|secret|token|cookie)/i;
 const transitions:Record<RunState,Set<RunState>>={
@@ -23,6 +25,27 @@ const transitions:Record<RunState,Set<RunState>>={
   verifying:new Set(['repairing','ready','failed','cancelled','interrupted']),
   repairing:new Set(['executing','verifying','failed','cancelled','interrupted']),
   ready:new Set(),failed:new Set(),cancelled:new Set(),interrupted:new Set(),
+};
+const workflowTransitions:Record<WorkflowPhase,Set<WorkflowPhase>>={
+  draft:new Set(['queued','running','awaiting_input','failed','cancel_requested','cancelled']),
+  queued:new Set(['running','awaiting_input','awaiting_approval','pause_requested','failed','cancel_requested','cancelled']),
+  running:new Set(['queued','awaiting_input','awaiting_approval','pause_requested','completed','failed','cancel_requested','cancelled']),
+  awaiting_input:new Set(['queued','running','pause_requested','failed','cancel_requested','cancelled']),
+  awaiting_approval:new Set(['queued','running','pause_requested','failed','cancel_requested','cancelled']),
+  pause_requested:new Set(['paused','running','failed','cancel_requested','cancelled']),
+  paused:new Set(['queued','running','cancel_requested','cancelled']),
+  completed:new Set(['queued','running','awaiting_input','cancel_requested']),
+  failed:new Set(['queued','running','awaiting_input','cancel_requested']),
+  cancel_requested:new Set(['cancelled','failed']),
+  cancelled:new Set(['queued']),
+};
+const taskTransitions:Record<WorkflowTaskState,Set<WorkflowTaskState>>={
+  planned:new Set(['queued','blocked','cancelled','stale']),
+  queued:new Set(['running','blocked','failed','cancelled','stale','interrupted']),
+  running:new Set(['verifying','blocked','failed','cancelled','stale','interrupted']),
+  blocked:new Set(['queued','running','cancelled','stale']),
+  verifying:new Set(['completed','failed','cancelled','stale','interrupted']),
+  completed:new Set(['stale']),failed:new Set(),cancelled:new Set(),stale:new Set(),interrupted:new Set(['queued','cancelled','stale']),
 };
 
 const hash=(value:string|Uint8Array)=>createHash('sha256').update(value).digest('hex');
@@ -41,7 +64,7 @@ export class EventStore{
     fs.mkdirSync(dataDir,{recursive:true});
     this.file=path.join(dataDir,'cocreate.sqlite');
     this.db=new DatabaseSync(this.file);
-    this.db.exec('PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON; PRAGMA busy_timeout=5000;');
+    this.db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
     this.migrate();
   }
   private migrate(){
@@ -76,8 +99,22 @@ export class EventStore{
         action_json TEXT NOT NULL,input_hash TEXT NOT NULL,requested_by TEXT NOT NULL,
         authorized_role TEXT NOT NULL,source_event_id TEXT NOT NULL,updated_at TEXT NOT NULL
       );
+      CREATE TABLE IF NOT EXISTS workflow_state(
+        workflow_id TEXT PRIMARY KEY,workspace_id TEXT NOT NULL UNIQUE,phase TEXT NOT NULL,
+        revision INTEGER NOT NULL,controller_id TEXT,control_epoch INTEGER NOT NULL DEFAULT 0,
+        last_event_id TEXT,created_at TEXT NOT NULL,updated_at TEXT NOT NULL
+      );
+      CREATE TABLE IF NOT EXISTS task_state(
+        task_id TEXT PRIMARY KEY,workflow_id TEXT NOT NULL,workspace_id TEXT NOT NULL,kind TEXT NOT NULL,
+        title TEXT NOT NULL,state TEXT NOT NULL,requirement_revision INTEGER NOT NULL,run_id TEXT,
+        depends_on_json TEXT NOT NULL,assigned_worker TEXT,acceptance_json TEXT NOT NULL,
+        evidence_status TEXT NOT NULL,artifact_version INTEGER,blocker TEXT,last_event_id TEXT NOT NULL,
+        created_at TEXT NOT NULL,updated_at TEXT NOT NULL
+      );
+      CREATE INDEX IF NOT EXISTS task_state_workspace ON task_state(workspace_id,updated_at);
     `);
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(1,?)').run(new Date().toISOString());
+    this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(2,?)').run(new Date().toISOString());
   }
   private nextSequence(workspaceId:string){
     const row=this.db.prepare('SELECT next_seq AS nextSeq FROM workspace_sequences WHERE workspace_id=?').get(workspaceId) as {nextSeq:number}|undefined;
@@ -128,6 +165,54 @@ export class EventStore{
       this.db.exec('COMMIT');return event;
     }catch(error){this.db.exec('ROLLBACK');throw error}
   }
+  ensureWorkflow(workspaceId:string){
+    const current=this.workflowForWorkspace(workspaceId);if(current)return current;
+    const workflowId=`workflow:${workspaceId}`,createdAt=new Date().toISOString();
+    this.db.prepare('INSERT INTO workflow_state(workflow_id,workspace_id,phase,revision,controller_id,control_epoch,last_event_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?)').run(workflowId,workspaceId,'draft',0,null,0,null,createdAt,createdAt);
+    return this.workflowForWorkspace(workspaceId)!;
+  }
+  assignInitialController(workspaceId:string,participantId:string){
+    const workflow=this.ensureWorkflow(workspaceId);if(workflow.controllerId)return workflow;
+    const updatedAt=new Date().toISOString();this.db.exec('BEGIN IMMEDIATE');try{
+      const event=this.insert({eventType:'workflow.controller_assigned',workspaceId,actorId:participantId,actorType:'user',inputRevision:workflow.revision,payload:{workflowId:workflow.workflowId,controllerId:participantId,controlEpoch:1}});
+      this.db.prepare('UPDATE workflow_state SET controller_id=?,control_epoch=1,last_event_id=?,updated_at=? WHERE workspace_id=? AND controller_id IS NULL').run(participantId,event.eventId,updatedAt,workspaceId);
+      this.db.exec('COMMIT');return this.workflowForWorkspace(workspaceId)!;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
+  }
+  transitionWorkflow(input:{workspaceId:string;phase:WorkflowPhase;actorId?:string;actorType?:ActorType;expectedRevision?:number;payload?:unknown}){
+    const current=this.ensureWorkflow(input.workspaceId);if(current.phase===input.phase)return current;
+    if(input.expectedRevision!==undefined&&current.revision!==input.expectedRevision)throw new Error(`Stale workflow revision: expected ${input.expectedRevision}, current ${current.revision}.`);
+    if(!workflowTransitions[current.phase].has(input.phase))throw new Error(`Illegal workflow transition: ${current.phase} -> ${input.phase}`);
+    const revision=current.revision+1,updatedAt=new Date().toISOString();this.db.exec('BEGIN IMMEDIATE');try{
+      const event=this.insert({eventType:`workflow.${input.phase}`,workspaceId:input.workspaceId,actorId:input.actorId||'coordinator',actorType:input.actorType||'system',inputRevision:revision,payload:{workflowId:current.workflowId,from:current.phase,to:input.phase,revision,...(input.payload&&typeof input.payload==='object'?input.payload as object:{})}});
+      this.db.prepare('UPDATE workflow_state SET phase=?,revision=?,last_event_id=?,updated_at=? WHERE workspace_id=?').run(input.phase,revision,event.eventId,updatedAt,input.workspaceId);
+      this.db.exec('COMMIT');return this.workflowForWorkspace(input.workspaceId)!;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
+  }
+  createTask(input:{workspaceId:string;taskId:string;title:string;kind?:'developer_build';requirementRevision:number;runId?:string;dependsOn?:string[];assignedWorker?:string;acceptanceCriteria:string[]}){
+    const existing=this.task(input.taskId);if(existing)return existing;const workflow=this.ensureWorkflow(input.workspaceId),createdAt=new Date().toISOString();this.db.exec('BEGIN IMMEDIATE');try{
+      const event=this.insert({eventType:'task.planned',workspaceId:input.workspaceId,actorId:'coordinator',actorType:'system',runId:input.runId,stepId:input.taskId,inputRevision:input.requirementRevision,payload:{taskId:input.taskId,title:input.title,kind:input.kind||'developer_build',dependsOn:input.dependsOn||[],acceptanceCriteria:input.acceptanceCriteria}});
+      this.db.prepare(`INSERT INTO task_state(task_id,workflow_id,workspace_id,kind,title,state,requirement_revision,run_id,depends_on_json,assigned_worker,acceptance_json,evidence_status,artifact_version,blocker,last_event_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(input.taskId,workflow.workflowId,input.workspaceId,input.kind||'developer_build',input.title,'planned',input.requirementRevision,input.runId??null,JSON.stringify(input.dependsOn||[]),input.assignedWorker??null,JSON.stringify(input.acceptanceCriteria),'pending',null,null,event.eventId,createdAt,createdAt);
+      this.db.exec('COMMIT');return this.task(input.taskId)!;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
+  }
+  transitionTask(input:{workspaceId:string;taskId:string;state:WorkflowTaskState;actorId?:string;actorType?:ActorType;evidenceStatus?:WorkflowTask['evidenceStatus'];artifactVersion?:number;blocker?:string;payload?:unknown}){
+    const current=this.task(input.taskId);if(!current)throw new Error(`Task ${input.taskId} does not exist.`);if(current.state===input.state&&input.evidenceStatus===undefined&&input.artifactVersion===undefined&&input.blocker===undefined)return current;
+    if(current.state!==input.state&&!taskTransitions[current.state].has(input.state))throw new Error(`Illegal task transition: ${current.state} -> ${input.state}`);
+    const updatedAt=new Date().toISOString(),evidenceStatus=input.evidenceStatus??current.evidenceStatus,artifactVersion=input.artifactVersion??current.artifactVersion,blocker=input.blocker??current.blocker;this.db.exec('BEGIN IMMEDIATE');try{
+      const event=this.insert({eventType:`task.${input.state}`,workspaceId:input.workspaceId,actorId:input.actorId||'coordinator',actorType:input.actorType||'system',runId:current.runId,stepId:input.taskId,inputRevision:current.requirementRevision,payload:{taskId:input.taskId,from:current.state,to:input.state,evidenceStatus,artifactVersion,blocker,...(input.payload&&typeof input.payload==='object'?input.payload as object:{})}});
+      this.db.prepare('UPDATE task_state SET state=?,evidence_status=?,artifact_version=?,blocker=?,last_event_id=?,updated_at=? WHERE task_id=?').run(input.state,evidenceStatus,artifactVersion??null,blocker??null,event.eventId,updatedAt,input.taskId);
+      this.db.exec('COMMIT');return this.task(input.taskId)!;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
+  }
+  private mapTask(row:any):WorkflowTask{return{id:row.id,workflowId:row.workflowId,kind:row.kind,title:row.title,state:row.state,requirementRevision:row.requirementRevision,runId:row.runId||undefined,dependsOn:JSON.parse(row.dependsOnJson),assignedWorker:row.assignedWorker||undefined,acceptanceCriteria:JSON.parse(row.acceptanceJson),evidenceStatus:row.evidenceStatus,artifactVersion:row.artifactVersion??undefined,blocker:row.blocker||undefined,createdAt:row.createdAt,updatedAt:row.updatedAt}}
+  task(taskId:string){const row=this.db.prepare('SELECT task_id AS id,workflow_id AS workflowId,kind,title,state,requirement_revision AS requirementRevision,run_id AS runId,depends_on_json AS dependsOnJson,assigned_worker AS assignedWorker,acceptance_json AS acceptanceJson,evidence_status AS evidenceStatus,artifact_version AS artifactVersion,blocker,created_at AS createdAt,updated_at AS updatedAt FROM task_state WHERE task_id=?').get(taskId);return row?this.mapTask(row):null}
+  tasksForWorkspace(workspaceId:string){return(this.db.prepare('SELECT task_id AS id,workflow_id AS workflowId,kind,title,state,requirement_revision AS requirementRevision,run_id AS runId,depends_on_json AS dependsOnJson,assigned_worker AS assignedWorker,acceptance_json AS acceptanceJson,evidence_status AS evidenceStatus,artifact_version AS artifactVersion,blocker,created_at AS createdAt,updated_at AS updatedAt FROM task_state WHERE workspace_id=? ORDER BY created_at').all(workspaceId) as any[]).map(row=>this.mapTask(row))}
+  workflowForWorkspace(workspaceId:string){return this.db.prepare('SELECT workflow_id AS workflowId,workspace_id AS workspaceId,phase,revision,controller_id AS controllerId,control_epoch AS controlEpoch,last_event_id AS lastEventId,created_at AS createdAt,updated_at AS updatedAt FROM workflow_state WHERE workspace_id=?').get(workspaceId) as StoredWorkflow|undefined}
+  activityForWorkspace(workspaceId:string,after=0,limit=30):WorkflowActivity[]{const bounded=Math.max(1,Math.min(100,Math.trunc(limit)||30)),rows=this.db.prepare('SELECT event_type AS type,actor_id AS actorId,actor_type AS actorType,run_id AS runId,step_id AS taskId,occurred_at AS occurredAt,workspace_seq AS sequence,payload_json AS payloadJson FROM events WHERE workspace_id=? AND workspace_seq>? ORDER BY workspace_seq LIMIT ?').all(workspaceId,Math.max(0,Math.trunc(after)||0),bounded) as any[];return rows.map(row=>{const payload=JSON.parse(row.payloadJson);return{sequence:row.sequence,type:row.type,actorId:row.actorId,actorType:row.actorType,occurredAt:row.occurredAt,runId:row.runId||undefined,taskId:row.taskId||undefined,summary:this.activitySummary(row.type,payload)}})}
+  latestSequence(workspaceId:string){return Number((this.db.prepare('SELECT MAX(workspace_seq) AS sequence FROM events WHERE workspace_id=?').get(workspaceId) as {sequence?:number}|undefined)?.sequence||0)}
+  private activitySummary(type:string,payload:any){if(type==='task.planned')return`Planned ${payload.title||'workflow task'}.`;if(type.startsWith('task.'))return`Task ${String(type).slice(5).replaceAll('_',' ')}.`;if(type.startsWith('workflow.'))return`Workflow ${String(type).slice(9).replaceAll('_',' ')}.`;if(type.startsWith('tool.'))return`${payload.tool||'Tool'} ${String(type).slice(5).replaceAll('_',' ')}.`;if(type.startsWith('run.'))return`Executor ${String(type).slice(4).replaceAll('_',' ')}.`;if(type.startsWith('participant.'))return`Participant ${String(type).slice(12).replaceAll('_',' ')}.`;if(type==='submission.submitted')return'Steering submission received.';if(type==='requirement.registry_reconciled')return'Accepted requirements reconciled.';if(type==='product.promoted')return'Verified candidate promoted.';return String(type).replaceAll('.',' · ').replaceAll('_',' ')}
+  recoverWorkflow(workspaceId:string){const active=this.tasksForWorkspace(workspaceId).filter(task=>['queued','running','verifying'].includes(task.state));for(const task of active)this.transitionTask({workspaceId,taskId:task.id,state:'interrupted',actorId:'recovery',actorType:'system',evidenceStatus:'unverified',blocker:'Server restarted before the task outcome was durably recorded.'});const workflow=this.ensureWorkflow(workspaceId);if(active.length&&['queued','running','awaiting_approval','pause_requested'].includes(workflow.phase))this.transitionWorkflow({workspaceId,phase:'awaiting_input',actorId:'recovery',actorType:'system',payload:{reason:'Interrupted tasks require review before retry.'}});return active.length}
   interruptActiveRuns(workspaceId:string){
     const rows=this.db.prepare(`SELECT run_id AS runId,kind,input_revision AS inputRevision,attempt FROM run_state WHERE workspace_id=? AND state IN ('queued','interpreting','planning','awaiting_approval','executing','verifying','repairing')`).all(workspaceId) as Array<{runId:string;kind:string;inputRevision:number;attempt:number}>;
     for(const run of rows)this.transitionRun({workspaceId,runId:run.runId,kind:run.kind,state:'interrupted',inputRevision:run.inputRevision,attempt:run.attempt,actorId:'recovery',actorType:'system',error:'Server restarted before the run outcome was durably recorded.'});

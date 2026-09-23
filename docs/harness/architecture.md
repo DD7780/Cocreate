@@ -1,5 +1,20 @@
 # Harness architecture
 
+## Workflow-first implementation map
+
+CoCreate now treats each room as one durable workflow. `workflow_state` is the current workflow projection, `task_state` is the dependency-ready task projection, `events` remains the ordered append-only audit stream, `workspace_state` remains a replaceable room snapshot, `run_state` records executor attempts, and `artifacts` stores content-addressed snapshots and Yjs updates. These are additive projections in the existing SQLite source of truth, not a second event store.
+
+Implemented Phase 1 slice:
+
+- Room creation initializes one versioned workflow; the first room owner becomes its initial controller without transferring separate spending authority.
+- Authenticated submissions queue the workflow. The existing Developer executor is wrapped in one durable task with source specification revision, assigned shared executor, acceptance criteria, evidence state, run ID, and promoted artifact version.
+- Workflow and task transitions are validated and recorded as ordered events. Compilation yields `unverified` evidence rather than a false functional-verification claim.
+- Restart interrupts nonterminal runs and matching tasks, then moves the workflow to `awaiting_input`; it never invents success or automatically repeats external work.
+- `RoomView.workflow` gives late joiners a consistent workflow/task/artifact snapshot plus a safe recent activity window and cursor. The authenticated cursor endpoint retrieves later safe activity without returning event payloads, secrets, document contents, or chain-of-thought.
+- The existing UI renders this durable overview, task plan, live activity, and artifact verification state beside the collaborative brief.
+
+Not implemented in this slice: role migration beyond owner/controller identity, steering-command schemas beyond the existing authenticated submission path, pause/resume/cancel commands, control handoff, approval mutations, dependency scheduling, isolated concurrent workers, durable leases/fencing, deployed external artifact storage, and Analyst/Researcher tools. The current executor remains serialized. These gaps must not be simulated in the UI.
+
 ## Evidence-based routing boundary
 
 `server/ai-presets.ts` is the single versioned model/rate catalog and deterministic resolver; `server/ai-accounting.ts` applies those frozen rates to normalized usage and comparable run groups; `server/ai-evaluation.ts` is the versioned benchmark protocol. Specialty is an evaluation and prompt dimension, not permission to invent a model advantage. The resolver uses one owner-selected connection by default, passed capabilities, effort allowances and remaining budget. Active runs freeze the result. Promoted versions record effective models, routing reason and versions, call-level pricing snapshots, token/cost usage, latency, and which verification gates actually ran.

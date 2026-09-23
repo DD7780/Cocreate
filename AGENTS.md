@@ -2,7 +2,7 @@
 
 Before CoCreate work, read [context.md](context.md), [product.md](product.md), and [instructions.md](instructions.md). Use [docs/harness/architecture.md](docs/harness/architecture.md) for design, [docs/harness/checklist.md](docs/harness/checklist.md) for progress, [docs/harness/decisions.md](docs/harness/decisions.md) for accepted decisions, and [api.md](api.md) for implemented contracts.
 
-Preserve the submission-first pivot: real-time writing does not trigger inference; Build my changes / editor-focused Alt+X submits only the authenticated participant's changes to one shared product. Distinguish target behavior from verified implementation. Update affected steering documents in the same change, following instructions.md. Explicit user instructions take precedence.
+Preserve the workflow-first, submission-first pivot: the durable workflow is the primary shared object; real-time writing does not trigger inference; Build my changes / editor-focused Alt+X submits only the authenticated participant's steering to that workflow. Durable commands, tasks, events, decisions, and artifacts—not model memory—are authoritative. Keep one logical coordinator, use bounded workers only for justified independent tasks, and serialize integration/promotion. Distinguish target behavior from verified implementation. Update affected steering documents in the same change, following instructions.md. Explicit user instructions take precedence.
 
 ## graphify
 

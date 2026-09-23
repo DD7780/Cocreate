@@ -1,6 +1,8 @@
 # CoCreate
 
-CoCreate is a local-first collaborative vibe-coding canvas. Multiple collaborators brainstorm and co-write in one Google Docs–style document while private idea lenses preserve who contributed what. Participants explicitly submit their own changes, and one serialized builder synthesizes eligible submissions into a shared React product shown in a restricted browser preview.
+CoCreate is a local-first multiplayer agent-workflow workspace. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. The current Developer template uses one serialized executor to produce a React product in a restricted preview; Analyst and Researcher remain unavailable until their real tools and verification exist.
+
+The right-side workflow panel is backed by durable server records. It shows the workflow phase/controller, planned and active tasks, safe activity summaries with an event cursor, and the latest promoted artifact's verification state. Compilation is labeled unverified unless functional acceptance checks actually passed. A server restart interrupts unfinished runs/tasks and waits for review rather than silently repeating side effects.
 
 ## Start
 
@@ -17,7 +19,7 @@ To test with multiple people, create a room, copy **Invite**, and open the URL o
 
 ## Connect AI
 
-Open **API connections** as the room owner. Recommended setup is the primary experience and explains that the owner's saved API powers its model assignments. Use **Connect your API** or **Connect or manage API · Advanced** to add or edit a provider, configure its endpoint, save an encrypted credential, optionally discover models in a visible selector, manually enter an exact model ID, explicitly run model tests, and assign the personal interpreter and shared executor. Return with **View recommended setup**, choose one of the three modes and an effort/spending limit, inspect the models resolved from that checked connection, and apply the setup.
+Open **API connections** as the room owner. Recommended setup is the primary experience and explains that the owner's saved API powers its model assignments. Use **Connect your API** or **Connect or manage API · Advanced** to add or edit a provider, configure its endpoint, save an encrypted credential, optionally discover models in a visible selector, manually enter an exact model ID, explicitly run model tests, and assign the personal interpreter and shared executor. Return with **View recommended setup**, choose one of the three modes and a spending limit, inspect the models resolved from that checked connection, and apply the setup. Light, Medium, High, and Extra are selected later from the compact AI effort picker beside the canvas.
 
 The only user-facing modes are **Developer**, **Analyst**, and **Researcher**. Light, Medium, High, and Extra are effort settings inside a mode. Developer uses the implemented app-building executor. Analyst is visibly unavailable until validated data ingestion and isolated reproducible computation exist; Researcher is visibly unavailable until controlled retrieval, source capture, and citation verification exist. CoCreate does not simulate either unavailable workflow. Existing General app, Engineer, Designer, Web developer, and Motion designer presets migrate to Developer without changing their saved models, credentials, effort, overrides, or historical runs.
 
@@ -90,4 +92,4 @@ This MVP uses SQLite plus local generated-project files and is intended for a tr
 
 Start with [AGENTS.md](AGENTS.md), [context.md](context.md), [product.md](product.md), and [instructions.md](instructions.md). Canonical design and progress live in [docs/harness/architecture.md](docs/harness/architecture.md), [decisions.md](docs/harness/decisions.md), and [checklist.md](docs/harness/checklist.md); implemented contracts live in [api.md](api.md). Product requirements are not completion evidence. Update affected documents alongside changes; do not duplicate architecture or progress files at the root.
 
-The workspace uses a dark graphite-and-silver editorial presentation with an original CSS-only liquid-metal treatment across its Lucide symbols. Recommended setup is ordered Funding → Mode → Cost and limits → technical detail, with a persistent Cancel/Apply footer; Light, Medium, High, and Extra effort controls live beside the canvas. Third-party font/icon sources and visual references are recorded in [docs/ui-assets.md](docs/ui-assets.md); generated Product previews remain visually isolated from workspace styling.
+The workspace uses a dark editorial presentation with restrained neubrutalist accents. Third-party font and icon sources are recorded in [docs/ui-assets.md](docs/ui-assets.md); generated Product previews remain visually isolated from workspace styling.

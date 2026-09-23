@@ -1,6 +1,6 @@
 # CoCreate API reference
 
-Source-inspected 2026-09-21. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
+Source-inspected 2026-09-23. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/event-store.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
 
 ## Transport and authentication
 
@@ -19,8 +19,19 @@ Invalid sessions return 401 with `{error: string}`; missing or mismatched rooms 
 | POST /api/rooms | None | Empty object | `{roomId, inviteUrl}`; inviteUrl is `/r/<roomId>` |
 | POST /api/session | None | `{roomId: string, name: string, token?: string}` | `{token: string, participantId: string, owner: boolean}` |
 | GET /api/rooms/:id/state | Participant | None | `RoomView` |
+| GET /api/rooms/:id/workflow/events | Participant | Query: `after` non-negative sequence cursor; `limit` 1–100 | `{events: WorkflowActivity[], cursor: number, latestCursor: number, hasMore: boolean}` |
 
 Session names are trimmed and limited to 40 characters. Supplying a valid token for the same room reuses that participant identity. Do not invent a client-chosen participant ID.
+
+## Durable workflow projection
+
+Every room has one `WorkflowOverview` in `RoomView.workflow`. It includes the stable workflow ID, schema version, explicit phase, revision, current controller identity, control epoch, current tasks, a safe recent activity window, the latest activity cursor, and the last promoted artifact with its honest verification state. The current Phase 1 task model wraps the serialized Developer builder; it does not yet dispatch concurrent workers.
+
+Workflow phases are `draft`, `queued`, `running`, `awaiting_input`, `awaiting_approval`, `pause_requested`, `paused`, `completed`, `failed`, `cancel_requested`, and `cancelled`. Only the transitions used by the current submission/build/recovery path are exposed through application behavior; pause, resume, cancellation, approval, and handoff command routes are not implemented yet.
+
+Developer tasks record a source requirement revision, run ID, dependencies, assigned worker label, acceptance criteria, evidence state, artifact version, timestamps, and blocker. Current tasks have no dependencies and use `shared-executor`. A successful compilation/promote sequence completes the task with `unverified` evidence unless explicit acceptance checks establish more; compilation is never upgraded to functional verification.
+
+The workflow events route is authenticated and cursor-based. It returns ordered safe summaries only, not raw event payloads, document contents, secrets, provider inputs, unrestricted logs, or chain-of-thought. `cursor` is the last returned event (or the supplied cursor when no event is returned); `latestCursor` and `hasMore` permit bounded pagination without skipping a backlog. A late joiner's room state contains a consistent snapshot and recent activity; the cursor can retrieve subsequent events without treating repeated reads as commands.
 
 ## Named AI connections (preferred API)
 

@@ -71,8 +71,10 @@ try{
   const dialogIgnored=await evaluate(`(()=>{const input=document.querySelector('[role="dialog"] input');input.focus();return input.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   if(!dialogIgnored)throw new Error('Dialog incorrectly handled Alt+X');
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.getAttribute('aria-label')==='Close API connections').click()`);
-  const canvasEffort=await evaluate(`({options:[...document.querySelectorAll('[aria-label="AI effort beside canvas"] [role="radio"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked'),disabled:node.disabled}))})`);
-  if(canvasEffort.options.length!==4||canvasEffort.options.filter(item=>item.checked==='true').length!==1||!canvasEffort.options.every(item=>item.disabled))throw new Error(`Canvas effort control did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
+  const canvasEffort=await evaluate(`(()=>{const select=document.querySelector('select[aria-label="AI effort beside canvas"]');return{value:select?.value,disabled:select?.disabled,options:[...select?.options||[]].map(option=>({label:option.textContent,value:option.value}))}})()`);
+  if(canvasEffort.options.length!==4||canvasEffort.value!=='medium'||!canvasEffort.disabled||!canvasEffort.options.some(item=>item.label.includes('Recommended')))throw new Error(`Compact AI effort picker did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
+  const workflowOverview=await evaluate(`(()=>{const panel=document.querySelector('.workflow-overview');return{text:panel?.innerText||'',phase:panel?.querySelector('header strong')?.textContent,cursor:panel?.querySelector('.workflow-activity summary')?.textContent}})()`);
+  if(workflowOverview.phase!=='draft'||!workflowOverview.text.includes('Browser QA')||!workflowOverview.text.includes('No submitted work is planned yet')||!workflowOverview.cursor?.includes('cursor'))throw new Error(`Durable workflow overview is incomplete: ${JSON.stringify(workflowOverview)}`);
   if(process.env.COCREATE_WORKSPACE_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
     fs.writeFileSync(process.env.COCREATE_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));

@@ -1,5 +1,22 @@
 # CoCreate harness implementation checklist
 
+## Workflow-first pivot — Phase 1 durable workflow slice (2026-09-23)
+
+- [x] Wrote the source-backed implementation map before changing orchestration boundaries. Reused the existing event/artifact/run store; did not introduce a competing source of truth.
+- [x] Added additive `workflow_state` and `task_state` projections with stable IDs, schema migration version 2, validated workflow/task transitions, controller/control-epoch fields, requirement revisions, dependency arrays, assigned worker, acceptance criteria, evidence state, run linkage, artifact provenance, and timestamps.
+- [x] Wrapped the current serialized Developer executor in one durable task created before dispatch. Queue, run, verification, stale, failure, cancellation, and completion outcomes append attributable events. Compilation/promote completes with `unverified` evidence unless real acceptance checks pass.
+- [x] Restart recovery interrupts active runs and their tasks, moves the workflow to `awaiting_input`, and never automatically repeats the external operation.
+- [x] Added `RoomView.workflow` plus authenticated `GET /api/rooms/:id/workflow/events?after=&limit=`. Activity is ordered and cursor-based, exposes safe summaries only, and omits raw payloads/private document content.
+- [x] Added a workflow overview, readable task plan, safe live activity, and artifact verification state to the existing dark workspace while retaining the collaborative brief, submission shortcut, provider configuration, and Product preview.
+- [x] Focused workflow/recovery and container tests passed 9/9 after correcting an obsolete final-event assertion; the schema initializer now applies SQLite busy timeout before requesting WAL mode.
+- [x] `pnpm build` passed: 34.45 kB CSS / 6.95 kB gzip and 768.29 kB JavaScript / 243.46 kB gzip, with the existing non-failing chunk-size warning.
+- [x] Full controlled suite passed 72/72 using the established temporary Windows user-info shim after the host `uv_os_get_passwd` ENOMEM fault; the shim was removed. No paid provider calls ran.
+- [x] Current-source Windows Chrome smoke passed the durable workflow overview/controller/activity cursor, Recommended/Advanced semantics, editor-only Alt+X and remapping, focus preservation, Product empty state, invalid-session recovery, and 390px no-overflow layout.
+- [ ] `graphify update .` could not run because the Graphify executable is not installed/on PATH and this workspace has no recorded Graphify Python runtime. The existing graph is stale for this slice; source, tests, build, and browser behavior were verified directly.
+- [ ] Phase 2: durable membership roles, structured/revision-safe steering commands, conflict/decision integration, pause/resume/cancel, scoped approvals, and authorized control handoff.
+- [ ] Phase 3: dependency scheduling, bounded workers in isolated workspaces, shared budget accounting, durable leases/fencing, stale-result integration guards, and serialized promotion.
+- [ ] Phase 4: deployed durable records/blob storage across container replacement, uncertain-side-effect reconciliation, approval recovery, and adversarial authorization verification.
+
 ## Truncated structured-output recovery — 2026-09-22
 
 - [x] Confirmed that a spending limit and a per-call output-token allowance are independent: increasing the USD ceiling does not change the provider request's `max_output_tokens`.
@@ -231,15 +248,13 @@ Documentation-only source inspection; historical test counts above are retained,
 - [-] Windows Chrome was exercised. Firefox, Safari, Linux, macOS hardware, and a native browser 200% zoom session were not exercised; the 200% result is an equivalent CSS viewport simulation.
 - [ ] `graphify update .` could not run because this workspace has no Graphify executable, Python installation, or `uv` runtime. Source/tests were verified directly; the existing graph remains stale for this slice.
 
-## Editorial liquid-metal refinement (2026-09-22)
+## Non-metal presentation rollback and compact effort picker (2026-09-23)
 
-- [x] Audited the existing workspace, Recommended, Advanced, Product-empty, disconnected, invalid-session, and mobile states with the isolated Windows Chrome smoke room; saved before/after Recommended and Advanced captures plus after-only workspace and Product-empty captures under `artifacts/ui-refinement/`.
-- [x] Expanded one original CSS-only liquid-metal material across workspace icons using layered silver/pearl/blue-gray gradients, slow organic deformation, and moving highlights. Removed the green accent palette and added no image, animation, or rendering dependency.
-- [x] Reordered Recommended into Funding → Mode → Cost and limits → technical detail → persistent Cancel/Apply. Exactly Developer, Analyst, and Researcher remain visible; unavailable modes keep their prerequisite explanations and cannot be applied.
-- [x] Moved Light, Medium, High, and Extra out of Recommended and beside the canvas. The compact rail exposes radio roles and one checked value, disables safely for Custom/disconnected/non-owner states, and applies owner changes through the existing recommendation endpoint and budget checks.
-- [x] Cost presentation separates model rates, the estimated one-pass maximum, room spend availability, and the safety limit. Technical pricing/allowance details remain disclosed on demand and missing values remain explanatory rather than zero.
-- [x] The Build action presents a metallic primary treatment and a visible, preference-aware Alt X/S/Y hint using the existing `aria-keyshortcuts`; its submission path and filtering are unchanged.
-- [x] Controlled suite passed 71/71 using a local `NODE_OPTIONS` test-runner shim after Windows `uv_os_get_passwd` returned ENOMEM before test discovery. The shim was removed after the run. `pnpm build` passed; bundle output was 766.17 kB JS / 243.03 kB gzip and 38.13 kB CSS / 8.17 kB gzip, with the existing non-failing chunk-size warning.
-- [x] Windows Chrome production interaction smoke passed Recommended semantics, unavailable-mode blocking, Advanced round-trip, dialog shortcut exclusion, Alt+X/remap/focus preservation, disconnected Product state, invalid-session recovery, and 390px no-overflow.
-- [-] Windows Chrome was exercised. Firefox, Safari, Linux, macOS hardware, native 200% zoom, connected-provider pricing screens, populated Product, loading, read-only collaborator, and live reconnect visuals were not manually screenshot-inspected in this slice.
-- [ ] `graphify update .` remains pending because the executable is unavailable in this workspace; direct source and test evidence were used.
+- [x] Restored the pre-metal dark editorial stylesheet and removed the WebGL mercury renderer, metallic icon gradients, liquid motion, and glassmorphism overrides.
+- [x] Preserved Recommended/Advanced setup, exactly three modes, server-enforced effort allowances, owner permissions, submission behavior, shortcuts, collaboration, and Product isolation.
+- [x] Replaced the four large canvas-side effort cards with one compact Light/Medium/High/Extra selector; Medium remains visibly marked Recommended.
+- [x] Controlled suite passed 71/71 after the established temporary Windows user-info shim worked around a pre-discovery `uv_os_get_passwd` ENOMEM host fault; the shim was not retained.
+- [x] Production build passed with 31.99 kB CSS and 766.03 kB JavaScript, retaining only the existing non-failing large-chunk warning.
+- [x] Windows Chrome smoke passed Recommended/Advanced semantics, the compact disabled Medium-default effort picker, shortcut behavior, Product state, invalid-session recovery, and 390px zero-overflow layout. Desktop visual inspection confirmed the restored non-metal workspace and compact selector.
+- [-] Firefox, Safari, Linux, macOS hardware, connected-owner effort changes, and native 200% zoom were not exercised in this rollback slice.
+- [ ] `graphify update .` remains unavailable because no Graphify executable is installed in this workspace; source, build, controlled tests, and browser behavior were verified directly.

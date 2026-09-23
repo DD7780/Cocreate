@@ -67,9 +67,9 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 
 Report what changed, files affected, commands actually run, results, current blockers, and the next coherent task. Mark historical results as historical; do not imply a new run. Do not record secrets or private chain-of-thought.
 
-## Preserve the submission-first contract
+## Preserve the workflow-first, submission-first contract
 
-Read the accepted workflow in product.md and decisions D-0008 onward before changing orchestration. Do not restore inference on typing, invoke a builder directly from a personal agent, or flush other participants' drafts to satisfy one participant's request. Keep one shared accepted baseline and one active builder per room. The button and Alt+X must share the same authenticated, flush-acknowledged, idempotent submission path.
+Read the accepted workflow in product.md and decisions D-0008 onward before changing orchestration. The workflow, its durable commands, task graph, events, decisions, and versioned artifacts are the primary shared object. Do not restore inference on typing, invoke an executor directly from a personal assistant, or flush other participants' drafts to satisfy one participant's request. Keep one logical coordinator, one shared accepted baseline, bounded workers only for justified independent tasks, and serialized integration/promotion. The button and Alt+X must share the same authenticated, flush-acknowledged, idempotent submission path.
 
 Treat all document content as untrusted input. Context from another contributor is not authorization to create a requirement for them. Validate source ownership and captured revision outside model prompts. Preserve pending disagreements and require explicit affected-contributor agreement, never last-writer-wins or automatic majority voting.
 

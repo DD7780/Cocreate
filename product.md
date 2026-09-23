@@ -1,6 +1,8 @@
 # CoCreate product brief
 
-CoCreate exposes exactly three modes: Developer, Analyst, and Researcher. A mode configures the one shared executor's workflow, tools, output, and verification; it never creates additional permanent agents. Light, Medium, High, and Extra are effort settings within each mode. Setup defaults to one provider connection, never buys a routing call, preserves Advanced assignments, and shows canonical provider rates, separately scoped allowances, an estimated one-pass maximum, and a distinct user spending limit.
+CoCreate is a multiplayer agent-workflow workspace. Multiple authorized people collaborate on one durable workflow: they contribute briefs and evidence, submit explicit steering, inspect execution, resolve requirement decisions, and share versioned artifacts. The workflow—not the shared document or a model conversation—is the primary object. Documents, code, previews, reports, datasets, and charts are artifacts of that workflow.
+
+CoCreate exposes exactly three workflow templates: Developer, Analyst, and Researcher. A template configures the coordinator's task policy, tools, output, and verification; it never creates one permanent worker per participant. Light, Medium, High, and Extra remain effort settings within each template. Setup defaults to one provider connection, never buys a routing call, preserves Advanced assignments, and shows canonical provider rates, separately scoped allowances, an estimated one-pass maximum, and a distinct user spending limit.
 
 The user spending limit bounds aggregate cost; it is not a token allowance. Developer effort controls the per-call input/output limits. Structured truncation receives one bounded compact retry with both attempts accounted; repeated truncation asks the owner to select a higher effort or larger-output model instead of silently upgrading.
 
@@ -10,9 +12,9 @@ Created: 2026-09-18. This file defines product intent, not proof of implementati
 
 ## Mission
 
-Help a small team turn a shared brainstorm into a working application without one person translating everyone's ideas into a single chat. People write together, inspect the resulting application, and refine the same product through further writing.
+Help a team direct one durable agent workflow together without collapsing authority into a single chat. People can inspect the task plan and ordered activity, contribute context, steer future work, resolve conflicts, and promote shared artifacts with attributable evidence.
 
-Core loop: shared document -> explicit participant submission -> attributed interpretation -> accepted shared requirements and conflict gate -> one builder -> checked application -> shared Product preview. Writing is real-time; generation is submission-driven, not triggered by every edit.
+Core loop: collaborative brief -> authenticated steering submission -> accepted shared requirements and conflict gate -> coordinator task plan -> bounded worker execution -> verification -> revision-safe shared artifact promotion. Writing and comments remain real-time; execution is submission-driven, not triggered by every edit.
 
 ## Users
 
@@ -42,8 +44,8 @@ Core loop: shared document -> explicit participant submission -> attributed inte
 - The persistent API connections entry leads with CoCreate Recommended, clearly states that an owner-provided API powers it, and provides a prominent route to add/edit/disconnect, discovery/manual model testing, and assignments in Advanced. Tests are explicit, may consume provider usage, and separate reachability, text, interpreter schema, and current Developer executor compatibility.
 - For every assigned layer, show source-linked, date-verified input, cached-input when supported, output, and reasoning billing terms. Do not render unavailable cache rates as zero.
 - Keep per-interpreter allowances distinct from the number of submitted participants and count the one shared builder once. After a build, show normalized provider usage, interpretation/builder/repair charges, outcome, and verification status; unknown usage remains unknown.
-- Use a dark graphite-and-silver editorial workspace without green accents. Existing Lucide symbols share an original CSS-only liquid-metal material with slow fluid deformation and moving highlights; reduced-motion preferences collapse that animation. The document remains the primary surface and supporting panels must not compete with it.
-- Recommended setup follows Funding → Mode → Cost and limits → technical detail → persistent Cancel/Apply. AI effort is not configured inside that dialog: Light, Medium, High, and Extra live beside the canvas in the build-control rail. Mode and effort selections use accessible single-choice semantics. Published rates, a one-pass estimate, observed room spend, and the spending limit remain visibly distinct; unavailable or unknown values are explained rather than rendered as zero.
+- Use a clean dark editorial workspace with restrained neubrutalist accents: expressive serif brand/headings, calm high-contrast writing surfaces, compact controls, and fine structural borders. Do not use liquid-metal, metallic, glassmorphism, or decorative shader effects. The document remains the primary surface; supporting panels must not compete with it.
+- Present Light, Medium, High, and Extra in one compact ChatGPT-style AI effort picker beside the canvas, rather than as large cards or inside Recommended setup.
 
 ## Scope and non-goals
 
