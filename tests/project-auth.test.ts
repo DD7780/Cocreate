@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import test from 'node:test';
 import { createSession, verifySession } from '../server/auth.js';
 import { supabasePlatformFromEnv, supabasePlatformInternals } from '../server/supabase-platform.js';
+import { defaultSupabaseOAuthRedirectUrl, defaultSupabasePublishableKey, defaultSupabaseUrl, resolveSupabaseAuthConfig } from '../src/auth-config.js';
 
 test('project tickets are scoped and expire',()=>{
   const secret='synthetic-ticket-secret',valid=createSession(secret,{roomId:'project-a',participantId:'user-a',accountId:'user-a',name:'Test User',role:'editor',exp:Math.floor(Date.now()/1000)+60}),expired=createSession(secret,{roomId:'project-a',participantId:'user-a',name:'Test User',role:'editor',exp:Math.floor(Date.now()/1000)-1});
@@ -15,6 +16,20 @@ test('project tickets are scoped and expire',()=>{
 test('hosted Supabase mode fails closed when the server secret is absent',()=>{
   const result=supabasePlatformFromEnv({COCREATE_HOSTED:'true',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'} as NodeJS.ProcessEnv);
   assert.equal(result.mode,'supabase');assert.equal(result.platform,null);assert.match(result.error||'',/SUPABASE_SECRET_KEY/);
+});
+
+test('public auth configuration defaults to the deployed Supabase project and Google callback',()=>{
+  assert.deepEqual(resolveSupabaseAuthConfig({}),{
+    url:'https://dnsapasubeoxxsgkiotw.supabase.co',
+    publishableKey:defaultSupabasePublishableKey,
+    redirectTo:'https://cocreate.pages.dev/api/auth/callback',
+  });
+  assert.equal(defaultSupabaseUrl,'https://dnsapasubeoxxsgkiotw.supabase.co');
+  assert.equal(defaultSupabaseOAuthRedirectUrl,'https://cocreate.pages.dev/api/auth/callback');
+  const source=fs.readFileSync(new URL('../src/ProjectApp.tsx',import.meta.url),'utf8');
+  assert.match(source,/signInWithOAuth\(\{provider:'google'/);
+  assert.match(source,/redirectTo:supabaseOAuthRedirectUrl/);
+  assert.doesNotMatch(source,/provider:'twitch'/);
 });
 
 test('invite tokens are hashed before persistence',()=>{

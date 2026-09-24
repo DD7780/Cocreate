@@ -281,8 +281,12 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] `graphify update .` remains unavailable because no Graphify executable is installed in this workspace; source, build, controlled tests, and browser behavior were verified directly.
 ## Supabase saved-project slice — 2026-09-24
 
+- [x] Added the public Supabase project URL and publishable/anon key to the canonical Cloudflare `wrangler.jsonc` runtime variables. The server-only `SUPABASE_SECRET_KEY` remains an encrypted deployment secret and is not stored in the repository; no competing `wrangler.toml` was introduced.
+- [x] Audited source and ignored environment files for the obsolete `amygxtdgjlphxaetqzkk` project (no occurrences), replaced template placeholders with `dnsapasubeoxxsgkiotw`, and pinned Google OAuth to the allow-listable `https://cocreate.pages.dev/api/auth/callback` default with a focused regression test.
+- [x] Supabase configuration validation passed: 84/84 tests, production TypeScript/Vite build, and a production-mode HTTP probe proving `/api/auth/callback?code=synthetic` serves the SPA callback route with status 200. No provider login or remote dashboard mutation was simulated.
+
 - [x] Versioned SQL schema for profiles, projects, memberships, hashed one-time invites, snapshots/updates, harness records, usage, artifact metadata, RLS, restricted grants, atomic creation/acceptance functions, and private Storage policy.
-- [x] Google OAuth PKCE client routes (`/login`, `/auth/callback`), session restore/automatic refresh/sign-out, near-expiry refresh plus one bounded 401 retry for authenticated project requests, local return-path validation, and explicit configuration/denied states.
+- [x] Google OAuth PKCE client routes (`/login`, production `/api/auth/callback`, and the legacy `/auth/callback` recovery path), session restore/automatic refresh/sign-out, near-expiry refresh plus one bounded 401 retry for authenticated project requests, local return-path validation, and explicit configuration/denied states.
 - [x] Server JWT verification through `@supabase/server` with project issuer/audience/JWKS pinning; no browser-supplied user ID is trusted.
 - [x] Project list/create/rename/archive/session/invite endpoints, authenticated invite-link acceptance, and owner/editor/viewer mapping scoped to the current membership; no model call on project operations.
 - [x] Five-minute project-scoped collaboration ticket, origin validation, viewer update/command denial, client ticket refresh, and protected preview/download routes.

@@ -7,6 +7,10 @@
   "observability": {
     "enabled": true
   },
+  "vars": {
+    "SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuc2FwYXN1YmVveHhzZ2tpb3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxODIyOTEsImV4cCI6MjEwNTc1ODI5MX0.gUDEoMSpHhtdsnXNz0oi4bDYml6Ofl5QrkxDU06nc24",
+    "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co"
+  },
   "containers": [
     {
       "class_name": "CoCreateContainer",

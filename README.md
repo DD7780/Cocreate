@@ -95,13 +95,13 @@ Start with [AGENTS.md](AGENTS.md), [context.md](context.md), [product.md](produc
 The workspace uses a dark editorial presentation with restrained neubrutalist accents. Third-party font and icon sources are recorded in [docs/ui-assets.md](docs/ui-assets.md); generated Product previews remain visually isolated from workspace styling.
 ## Supabase saved projects
 
-Hosted CoCreate uses Supabase Google Auth, Postgres project/membership records, and private Storage while keeping Express, Yjs, and the existing agent harness. Copy `.env.example` to `.env`; only `VITE_SUPABASE_URL` and `VITE_SUPABASE_PUBLISHABLE_KEY` enter the browser. Keep `SUPABASE_SECRET_KEY`, provider credentials, session/encryption secrets, and migration credentials server-only.
+Hosted CoCreate uses Supabase Google Auth, Postgres project/membership records, and private Storage while keeping Express, Yjs, and the existing agent harness. The checked-in browser configuration defaults to this application's Supabase project URL and public/anon key so container builds do not depend on excluded `.env` files; `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_SUPABASE_OAUTH_REDIRECT_URL` may override those public values at build time. Keep `SUPABASE_SECRET_KEY`, provider credentials, session/encryption secrets, and migration credentials server-only.
 
 CoCreate is a Vite SPA with an Express API, not a Next.js application. The browser client therefore uses `@supabase/supabase-js` with persisted PKCE sessions and automatic refresh; authenticated project requests refresh near-expiry sessions and retry one 401 once. `@supabase/ssr` is installed for a possible future cookie/SSR host, but Next.js `page.tsx`, `next/headers`, and middleware/proxy files are intentionally not active entrypoints here.
 
 1. The initial hosted schema migration is applied to the verified target project. For later schema changes, continue using versioned files under `supabase/migrations` and the Supabase CLI; run `supabase test db` against a local stack when available.
 2. In Google Auth, set the authorized redirect URI to the callback shown by the Supabase Google-provider page for this exact project.
-3. In Supabase Auth URL Configuration, set the production Site URL and add exact CoCreate callbacks such as `http://localhost:5173/auth/callback` and the production `/auth/callback`. Avoid production wildcards.
+3. In Supabase Auth URL Configuration, allow the exact production callback `https://cocreate.pages.dev/api/auth/callback`. Google sign-in uses that callback by default; `VITE_SUPABASE_OAUTH_REDIRECT_URL` can override it for a separately allow-listed environment. Avoid production wildcards.
 4. Set `COCREATE_APP_ORIGINS` to the exact local/production origins and configure the listed server/public environment variables.
 5. Start CoCreate and verify sign in → create → write → sign out → sign in → reopen before enabling collaborators.
 
