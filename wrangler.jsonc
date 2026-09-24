@@ -8,13 +8,22 @@
     "enabled": true
   },
   "vars": {
-    "SUPABASE_PUBLISHABLE_KEY": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRuc2FwYXN1YmVveHhzZ2tpb3R3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3OTAxODIyOTEsImV4cCI6MjEwNTc1ODI5MX0.gUDEoMSpHhtdsnXNz0oi4bDYml6Ofl5QrkxDU06nc24",
+    "COCREATE_APP_ORIGINS": "https://cocreate.susan981314271.workers.dev",
+    "SUPABASE_ARTIFACT_BUCKET": "cocreate-artifacts",
+    "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
+    "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
     "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co"
   },
   "containers": [
     {
       "class_name": "CoCreateContainer",
       "image": "./Dockerfile",
+      "image_vars": {
+        "VITE_COCREATE_APP_ORIGIN": "https://cocreate.susan981314271.workers.dev",
+        "VITE_COCREATE_AUTH_MODE": "supabase",
+        "VITE_SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
+        "VITE_SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co"
+      },
       "max_instances": 1,
       "instance_type": "basic"
     }

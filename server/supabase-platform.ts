@@ -131,6 +131,14 @@ export function supabasePlatformFromEnv(env=process.env) {
   if(mode==='local')return {mode:'local' as const,platform:null,error:null};
   const url=env.SUPABASE_URL,publishableKey=env.SUPABASE_PUBLISHABLE_KEY,secretKey=env.SUPABASE_SECRET_KEY;
   if(!url||!publishableKey||!secretKey)return {mode:'supabase' as const,platform:null,error:'SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, and server-only SUPABASE_SECRET_KEY are required.'};
+  try{
+    const projectUrl=new URL(url),suffix='.supabase.co',projectRef=projectUrl.hostname.endsWith(suffix)?projectUrl.hostname.slice(0,-suffix.length):'';
+    if(projectUrl.protocol!=='https:'||!projectRef||projectUrl.pathname!=='/'||projectUrl.search||projectUrl.hash)throw new Error('SUPABASE_URL must be the intended HTTPS project origin under supabase.co.');
+    const credentialRef=(key:string)=>{if(!key.includes('.'))return null;try{const payload=JSON.parse(Buffer.from(key.split('.')[1],'base64url').toString('utf8'));return typeof payload.ref==='string'?payload.ref:''}catch{return''}};
+    for(const key of [publishableKey,secretKey]){const ref=credentialRef(key);if(ref==='')throw new Error('A configured Supabase credential is malformed.');if(ref&&ref!==projectRef)throw new Error('The configured Supabase URL and credentials belong to different projects.');}
+    const expectedJwks=`${projectUrl.origin}/auth/v1/.well-known/jwks.json`;
+    if(env.SUPABASE_JWKS_URL&&env.SUPABASE_JWKS_URL!==expectedJwks)throw new Error('SUPABASE_JWKS_URL does not match SUPABASE_URL.');
+  }catch(error){return{mode:'supabase' as const,platform:null,error:error instanceof Error?error.message:'Supabase server configuration is invalid.'};}
   return {mode:'supabase' as const,platform:new SupabasePlatform({url,publishableKey,secretKey,jwksUrl:env.SUPABASE_JWKS_URL,artifactBucket:env.SUPABASE_ARTIFACT_BUCKET}),error:null};
 }
 
