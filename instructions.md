@@ -17,6 +17,7 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - Persistence: SQLite harness records plus generated files and legacy JSON compatibility writes. Consult the architecture before changing persistence.
 - Preserve TypeScript strict mode and the pnpm lockfile. Do not introduce a competing framework or package manager.
 - `app/` exists but is not the active Vite client entry. Verify entrypoints rather than editing by filename convention.
+- Do not add Next.js `page.tsx`, `next/headers`, or middleware/proxy auth helpers to the active product unless the application is deliberately migrated to Next.js. The current auth boundary is Vite browser PKCE plus Express bearer verification.
 
 ## Coding conventions
 
@@ -85,3 +86,6 @@ At completion, inspect each affected canonical document and update it when behav
 - README.md: actual setup and user-facing operation; this file for coding rules.
 
 This is an agent obligation, not an automatic documentation synchronization service. Do not invent completed features from a plan, relabel historical test runs as current, or create duplicate root architecture.md/progress.md files. Keep historical assessments and migration plans identifiable as history. For docs-only changes, inspect links and the diff; do not run paid inference or claim application tests were rerun.
+## Supabase project rules
+
+Treat Supabase user UUIDs as account identity and project membership as authority. Never restore room-link ownership in hosted mode, identify owners by display name/email, put secret keys in `VITE_*`, acknowledge hosted saves before the remote commit, make artifact buckets public, or let local SQLite/JSON silently replace failed Postgres. Project creation/switching is inference-free. Apply migrations only after verifying the intended project; legacy imports are dry-run by default and require a trusted room-to-user UUID map.

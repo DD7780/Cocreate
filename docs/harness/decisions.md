@@ -74,8 +74,31 @@ Status: implemented 2026-09-22. A room's USD spending limit authorizes aggregate
 
 ## D-0019 — Effort is a canvas-side build control
 
-Status: implemented 2026-09-23. Light, Medium, High, and Extra are removed from the Recommended setup dialog and shown in one compact ChatGPT-style selector beside the shared canvas. Only the owner can change a Recommended room's effort. The control reuses the existing recommendation mutation with the current mode and spending ceiling, so capability validation, server-side budget enforcement, future-run assignment freezing, and unavailable-mode rules remain authoritative. Custom, disconnected, and collaborator views remain visible but non-editable with an explanation.
+Status: revised and implemented 2026-09-23. Light, Medium, High, and Extra are shown in one compact ChatGPT-style selector beside the shared canvas. Only the owner of a connected room can change effort. A dedicated inference-free mutation re-resolves Recommended under its current mode and spending ceiling, or updates Custom/Advanced allowances while preserving all manual models and participant overrides. Submitted setup snapshots and active builds remain frozen. Disconnected and collaborator views stay visible but read-only with an explanation.
 
 ## D-0020 — The durable workflow is the primary shared object
 
 Status: accepted; Phase 1 foundation implemented 2026-09-23. A room owns one logical coordinator and one durable workflow. Documents and generated products are workflow artifacts; model conversations are replaceable. Existing canvas-first decisions remain historical but are superseded where they describe the document or product as the primary object. The existing serialized Developer executor is represented as a durable task before dispatch, with source revision, acceptance criteria, assignment, evidence state, run linkage, and artifact provenance. Ordered events and SQLite projections are authoritative. Compilation alone records unverified evidence. Bounded parallel workers, leases/fencing, scoped approvals, pause/resume/cancel, and control handoff remain future phases and must not be presented as implemented.
+
+## D-0021 — Recover JSON serialization locally without weakening validation
+
+Status: implemented 2026-09-24. Before spending the existing bounded schema-repair call, CoCreate may deterministically normalize raw control characters inside JSON string values, trailing commas, Markdown fences, and a balanced object surrounded by prose. This is serialization recovery, not inference: no keys, values, file operations, or code semantics are invented, and the recovered value must still pass the exact response schema plus existing project path/content validation. An unclosed object/string is classified as probable truncation so the existing compact retry and effort guidance apply even when a provider reports a normal stop. No additional provider retry was added.
+## D-0021 — Supabase is the hosted project authority
+
+Accepted 2026-09-24. Supabase Auth provides account identity, Postgres owns project/membership/harness records, and private Storage owns generated artifact blobs. Express/Yjs and the existing agent runtime remain in place. Local SQLite/JSON remains an explicit local-development mode or cache and may not silently take authority after a hosted failure.
+
+## D-0022 — Membership precedes collaboration tickets
+
+Accepted 2026-09-24. A room URL is not authority. The server verifies a Supabase bearer token and current project membership before issuing a five-minute role-scoped collaboration ticket. Viewers cannot update Yjs or invoke mutations. The ticket lifetime is the current bounded revocation window; immediate socket closure on membership removal remains follow-up work.
+
+## D-0023 — Durable acknowledgement follows the remote commit
+
+Accepted 2026-09-24. Hosted clients receive `saved` only after the Supabase snapshot commit. Local memory, a received WebSocket frame, or a SQLite cache write is insufficient. Failures remain visibly unsynced and do not discard the last promoted artifact.
+
+## D-0024 — Keep bearer-token SPA auth instead of adding inactive Next.js middleware
+
+Accepted 2026-09-24. CoCreate remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.
+
+## D-0025 — Prisma is not a second migration authority
+
+Accepted 2026-09-24. Prisma 7.10 is pinned as an optional typed Postgres access and introspection layer. Its runtime URL uses Supavisor transaction mode and its CLI URL uses session mode. Cross-schema introspection includes Supabase `auth` only to model public foreign keys, and the managed auth tables/enums are explicitly external to Prisma Migrate. Existing versioned SQL under `supabase/migrations` remains authoritative; no Prisma migration may be applied to the hosted database until an explicit cutover reconciles migration histories, RLS, functions, grants, and Storage policies.

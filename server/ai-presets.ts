@@ -39,6 +39,14 @@ export const effortLevels: Record<AIEffort, {
   extra: {label: 'Extra', benefit: 'Largest bounded context and verification allowance.', personalInput: 20_000, personalOutput: 4_000, builderInput: 72_000, builderOutput: 32_000, repairAttempts: 3, reasoning: 'high'},
 };
 
+export function effortAllowance(effort: AIEffort = 'medium', kind: 'personal'|'builder') {
+  const limits = effortLevels[effort];
+  const repairAttempts = kind === 'builder' && effort === 'medium' ? 3 : limits.repairAttempts;
+  return kind === 'personal'
+    ? {maxInputTokens: limits.personalInput, maxOutputTokens: limits.personalOutput, repairAttempts}
+    : {maxInputTokens: limits.builderInput, maxOutputTokens: limits.builderOutput, repairAttempts};
+}
+
 type CatalogEntry = {
   provider: Exclude<AIProvider, 'custom'|'ollama'>;
   model: string;

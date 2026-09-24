@@ -35,6 +35,61 @@ export async function discoverModels(config:ProviderConfig,signal?:AbortSignal){
 
 function validate(value:any,schema:any,path='$'):string[]{const errors:string[]=[];if(schema.type==='object'){if(!value||typeof value!=='object'||Array.isArray(value))return[`${path} must be an object`];for(const key of schema.required||[])if(!(key in value))errors.push(`${path}.${key} is required`);if(schema.additionalProperties===false)for(const key of Object.keys(value))if(!schema.properties?.[key])errors.push(`${path}.${key} is not allowed`);for(const[key,child]of Object.entries<any>(schema.properties||{}))if(key in value)errors.push(...validate(value[key],child,`${path}.${key}`))}else if(schema.type==='array'){if(!Array.isArray(value))return[`${path} must be an array`];if(schema.minItems!==undefined&&value.length<schema.minItems)errors.push(`${path} needs at least ${schema.minItems} items`);if(schema.maxItems!==undefined&&value.length>schema.maxItems)errors.push(`${path} has too many items`);value.forEach((item,index)=>errors.push(...validate(item,schema.items,`${path}[${index}]`)))}else if(schema.type==='string'&&typeof value!=='string')errors.push(`${path} must be a string`);if(schema.enum&&!schema.enum.includes(value))errors.push(`${path} has an unsupported value`);return errors}
 const upgradeLegacyIntents=(value:any,schema:any)=>{if(!schema?.properties?.intents||Array.isArray(value?.intents))return value;const classification=value?.classification,affectedRequirementIds=Array.isArray(value?.affectedRequirementIds)?value.affectedRequirementIds:[],sourcePassages=Array.isArray(value?.sourcePassages)?value.sourcePassages:[],groups:[string,string[]][]=[['goal',value?.goals],['feature',value?.features],['design',value?.design],['constraint',value?.constraints],['question',value?.questions]];return{...value,intents:groups.flatMap(([category,items])=>Array.isArray(items)?items.filter(item=>typeof item==='string'&&item.trim()).map(text=>({text,category,classification,rationale:'Migrated from the contribution-level structured response.',sourcePassage:sourcePassages.find((passage:string)=>passage.includes(text)||text.includes(passage))||text,affectedRequirementIds})):[])}};
-function parseStructured(text:string,schema:Record<string,unknown>){const cleaned=text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');let value;try{value=JSON.parse(cleaned)}catch{const start=cleaned.indexOf('{'),end=cleaned.lastIndexOf('}');if(start<0||end<=start)throw new ProviderError('invalid_output','The model returned malformed JSON.');try{value=JSON.parse(cleaned.slice(start,end+1))}catch{throw new ProviderError('invalid_output','The model returned malformed JSON.')}}value=upgradeLegacyIntents(value,schema);const errors=validate(value,schema);if(errors.length)throw new ProviderError('invalid_output',`The model output did not match the required schema: ${errors.slice(0,3).join('; ')}`);return value}
-export async function generateStructured(config:ProviderConfig,request:GenerateRequest){const adapter=adapterFor(config.provider),prepared=/^\s*[\[{]/.test(request.input)?request:{...request,input:JSON.stringify({request:request.input})};let first:GenerateResult;try{first=await adapter.generate(config,prepared);return{value:parseStructured(first.text,request.schema!),...first}}catch(error){if(!(error instanceof ProviderError)||!['invalid_output','truncated'].includes(error.kind))throw error;const truncated=error.kind==='truncated',firstUsage=error.usage||first!?.usage||{},repairRequest={...prepared,instructions:truncated?`${request.instructions}\nThe previous response hit the output-token allowance. Return one compact, complete JSON object matching the schema. Include only essential changed-file operations, keep code concise, and do not repeat unchanged files.`:`${request.instructions}\nThe previous response was invalid. Return only one complete JSON object that exactly matches the schema.`,input:truncated?request.input:JSON.stringify({request:request.input,invalidResponse:(first!?.text||'').slice(0,8000)}),maxOutputTokens:request.maxOutputTokens};try{const repaired=await adapter.generate(config,repairRequest);return{value:parseStructured(repaired.text,request.schema!),...repaired,usage:mergeUsage(firstUsage,repaired.usage)}}catch(repairError){if(repairError instanceof ProviderError&&repairError.kind==='truncated'){repairError.usage=mergeUsage(firstUsage,repairError.usage||{});repairError.message='The model hit the per-call output-token allowance twice. The spending limit controls cost but does not increase this token allowance. Reapply a higher Recommended effort or choose a model with a larger output limit.'}throw repairError}}}
+function normalizeJsonSerialization(text:string){
+  let escaped='',inString=false,escape=false;
+  for(const character of text){
+    if(inString){
+      if(escape){escaped+=character;escape=false;continue}
+      if(character==='\\'){escaped+=character;escape=true;continue}
+      if(character==='"'){escaped+=character;inString=false;continue}
+      if(character==='\n'){escaped+='\\n';continue}
+      if(character==='\r'){escaped+='\\r';continue}
+      if(character==='\t'){escaped+='\\t';continue}
+      escaped+=character;continue
+    }
+    if(character==='"')inString=true;
+    escaped+=character
+  }
+  let normalized='';inString=false;escape=false;
+  for(let index=0;index<escaped.length;index++){
+    const character=escaped[index];
+    if(inString){normalized+=character;if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
+    if(character==='"'){inString=true;normalized+=character;continue}
+    if(character===','){
+      let next=index+1;while(/\s/.test(escaped[next]||''))next++;
+      if(escaped[next]==='}'||escaped[next]===']')continue
+    }
+    normalized+=character
+  }
+  return normalized
+}
+function balancedObject(text:string){
+  let start=-1,depth=0,inString=false,escape=false;
+  for(let index=0;index<text.length;index++){
+    const character=text[index];
+    if(inString){if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
+    if(character==='"'){inString=true;continue}
+    if(character==='{'){if(depth===0)start=index;depth++;continue}
+    if(character==='}'&&depth>0&&--depth===0)return text.slice(start,index+1)
+  }
+  return undefined
+}
+function looksIncompleteJson(text:string){
+  const start=text.indexOf('{');if(start<0)return false;
+  let depth=0,inString=false,escape=false;
+  for(const character of text.slice(start)){
+    if(inString){if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
+    if(character==='"')inString=true;else if(character==='{')depth++;else if(character==='}')depth--
+  }
+  return depth>0||inString||escape
+}
+function parseStructured(text:string,schema:Record<string,unknown>){
+  const cleaned=text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
+  const balanced=balancedObject(cleaned),candidates=[cleaned,...(balanced&&balanced!==cleaned?[balanced]:[])];
+  let value:any,parsed=false;
+  for(const candidate of candidates){for(const attempt of [candidate,normalizeJsonSerialization(candidate)]){try{value=JSON.parse(attempt);parsed=true;break}catch{}}if(parsed)break}
+  if(!parsed)throw new ProviderError(looksIncompleteJson(normalizeJsonSerialization(cleaned))?'truncated':'invalid_output',looksIncompleteJson(normalizeJsonSerialization(cleaned))?'The model returned an incomplete JSON object.':'The model returned malformed JSON.');
+  value=upgradeLegacyIntents(value,schema);const errors=validate(value,schema);if(errors.length)throw new ProviderError('invalid_output',`The model output did not match the required schema: ${errors.slice(0,3).join('; ')}`);return value
+}
+export async function generateStructured(config:ProviderConfig,request:GenerateRequest){const adapter=adapterFor(config.provider),prepared=/^\s*[\[{]/.test(request.input)?request:{...request,input:JSON.stringify({request:request.input})};let first:GenerateResult;try{first=await adapter.generate(config,prepared);return{value:parseStructured(first.text,request.schema!),...first}}catch(error){if(!(error instanceof ProviderError)||!['invalid_output','truncated'].includes(error.kind))throw error;const truncated=error.kind==='truncated',firstUsage=error.usage||first!?.usage||{},repairRequest={...prepared,instructions:truncated?`${request.instructions}\nThe previous response hit the output-token allowance or ended with an incomplete JSON object. Return one compact, complete JSON object matching the schema. Include only essential changed-file operations, keep code concise, and do not repeat unchanged files.`:`${request.instructions}\nThe previous response had invalid JSON serialization. Return only one complete JSON object matching the schema. Escape every newline, tab, backslash, and quote inside string values. Do not use Markdown fences.`,input:truncated?request.input:JSON.stringify({request:request.input,invalidResponse:(first!?.text||'').slice(0,8000)}),maxOutputTokens:request.maxOutputTokens};try{const repaired=await adapter.generate(config,repairRequest);return{value:parseStructured(repaired.text,request.schema!),...repaired,usage:mergeUsage(firstUsage,repaired.usage)}}catch(repairError){if(repairError instanceof ProviderError&&repairError.kind==='truncated'){repairError.usage=mergeUsage(firstUsage,repairError.usage||{});repairError.message='The model hit the per-call output-token allowance twice. The spending limit controls cost but does not increase this token allowance. Choose a higher AI effort beside the canvas or a model with a larger output limit.'}else if(repairError instanceof ProviderError&&repairError.kind==='invalid_output'){repairError.usage=mergeUsage(firstUsage,repairError.usage||{});repairError.message='The model returned invalid structured JSON twice. CoCreate kept the last working product. Try a higher AI effort or choose a model that passed the Builder file schema check.'}throw repairError}}}
 export async function generateText(config:ProviderConfig,request:GenerateRequest){const prepared=request.maxOutputTokens===64?{...request,instructions:`${request.instructions} Return only the word OK.`}:request;return adapterFor(config.provider).generate(config,prepared)}

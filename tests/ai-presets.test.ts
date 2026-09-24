@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import {classifyTaskComplexity,effortLevels,resolveRecommendation,routeBuilderForRun} from '../server/ai-presets.js';
+import {classifyTaskComplexity,effortAllowance,effortLevels,resolveRecommendation,routeBuilderForRun} from '../server/ai-presets.js';
 import {qualifiesModeMapping,summarizeTrials,type EvaluationTrial} from '../server/ai-evaluation.js';
 import {RoomManager} from '../server/rooms.js';
 
@@ -36,6 +36,7 @@ test('Developer / Medium resolves one validated connection and exposes honest ra
 
 test('Developer effort levels expose distinct bounded executor output allowances',()=>{
   assert.deepEqual(Object.fromEntries(Object.entries(effortLevels).map(([effort,limits])=>[effort,limits.builderOutput])),{light:8_000,medium:12_000,high:20_000,extra:32_000});
+  assert.equal(effortAllowance('medium','builder').repairAttempts,3,'Advanced Medium preserves its established retry ceiling');
 });
 
 test('complexity is deterministic and does not spend a model call',()=>{

@@ -44,6 +44,7 @@ The browser's persistent **API connections** control leads with Recommended setu
 | POST /api/rooms/:id/ai/connections | `{id?: string, name: string, provider: AIProvider, baseUrl?: string, apiFormat?: AIFormat, apiKey?: string}` | `{id: string}` |
 | GET /api/rooms/:id/ai/recommendation | query: `mode`, `effort` | Server-resolved `AIRecommendation`; read-only and makes no model call |
 | POST /api/rooms/:id/ai/recommendation | `{mode, effort, maximumSpendUsd}` | Applied Developer `AIRecommendation` or actionable 400; unavailable modes cannot be applied |
+| POST /api/rooms/:id/ai/effort | `{effort}` | Owner-only, inference-free update for future submissions; Recommended re-resolves within its existing spending limit, while Custom preserves manual assignments and applies canonical allowances |
 | POST /api/rooms/:id/ai/connections/:connectionId/models | Empty object | `{models: AIModel[]}` |
 | POST /api/rooms/:id/ai/connections/:connectionId/check | `{model: string}` | `ModelChecks` |
 | DELETE /api/rooms/:id/ai/connections/:connectionId | None | `{ok: true}` |
@@ -118,11 +119,11 @@ RoomView includes:
 
 Both recommendation routes are owner-only. Previewing a recommendation is pure resolution: it does not check capabilities, call a provider, change assignments, or start a build. Applying re-resolves on the server, requires passed role capabilities, rejects a maximum below its conservative bound, and affects future submissions/runs. Manual `/ai/assignments` activation marks the room Custom and preserves overrides.
 
-The client presents mode, funding, rates, and limits in Recommended setup, while effort is a canvas-side control. Changing effort does not introduce a separate API: the owner client posts the current workflow mode, selected effort, and existing spending limit to the same recommendation mutation. Custom, disconnected, and collaborator effort controls are read-only, and the server remains authoritative for capability and budget rejection.
+The client presents mode, funding, rates, and limits in Recommended setup, while effort is a canvas-side control. The owner posts the selected level to `/ai/effort`. Recommended rooms re-resolve the current mode under the existing spending ceiling; Custom/Advanced rooms keep their exact connections, models, and participant overrides while receiving the canonical input/output and repair allowances. Disconnected and collaborator controls remain read-only. The mutation makes no model call, and submitted work keeps its frozen setup snapshot.
 
 Recommendations expose `workflowMode`, `modeAvailable`, optional `unavailableReason`, `routingRuleVersion`, `routingReason`, `status`, same-connection `builderCandidates`, `onePassEstimateUsd`, `maximumEstimateUsd`, `estimateScope`, and `estimateComplete`. The one-pass scope is one submitted participant interpretation plus one shared executor call, without repairs or additional participant interpretations, and assumes uncached input. The bounded maximum includes configured executor/structured-output repairs but only one interpreter, so it is marked incomplete when team size or other provider charges are unknown. `status: hypothesis` means compatibility and prices are known but comparative quality is not measured. The spending limit is a safety ceiling, not an expected charge.
 
-`maximumSpendUsd` does not control `max_output_tokens`. Recommended effort freezes per-call allowances; new Developer setups use 8K / 12K / 20K / 32K executor outputs from Light through Extra, and Custom/Advanced defaults to 12K when no explicit layer allowance exists. Structured generation may use one compact retry after provider-reported truncation within the existing two-call reservation. Reported usage is aggregated across both attempts; a second truncation is returned as an actionable failure without silently raising effort or changing the model.
+`maximumSpendUsd` does not control `max_output_tokens`. Effort freezes per-call allowances for both Recommended and Custom/Advanced; Developer executor outputs are 8K / 12K / 20K / 32K from Light through Extra, with old Custom rooms defaulting to Medium until the owner changes them. Before a repair call, structured generation locally normalizes only fenced/balanced JSON envelopes, raw control characters inside strings, and trailing commas, then applies the same strict schema. An unclosed JSON object/string is classified as probable truncation even if the provider reports a normal stop. Structured generation may use one compact retry; reported usage is aggregated across both attempts. A second failure is actionable and never silently raises effort or changes the model.
 
 `AIRate` is a frozen catalog snapshot containing USD input/output rates, optional cached-input/cache-write rates, reasoning treatment, optional long-context tiers/platform multiplier/other charges, official source URL, and verification date. `AIRunRecord` freezes the effective models and routing/pricing/verification-policy versions; call-level `interpretation`, `builder`, and `repair` entries; normalized usage; estimated charge; uncertainty; latency; outcome; and separate verification fields. Provider reasoning tokens marked as included in output are informational and are never added to the charge again. A timeout or omitted provider field remains unknown. `compilationPassed` must not be read as requirement or regression proof.
 
@@ -159,3 +160,19 @@ The provider keeps its Y.Doc in memory and answers the server state vector after
 ## Maintenance
 
 When routes, authorization, shared types, or WebSocket messages change, update this file alongside implementation and contract tests. Separate implemented contracts from proposed extensions. This reference was checked against source, not against a live API session.
+## Authenticated project API (Supabase mode, 2026-09-24)
+
+Hosted project routes accept `Authorization: Bearer <Supabase access token>`. `@supabase/server` verifies issuer, audience, expiry, and signature against the configured JWKS. Room routes and WebSockets then use a separate five-minute project ticket returned by `POST /api/projects/:id/session`; that ticket contains no provider credential.
+
+The Vite browser client keeps PKCE sessions through `@supabase/supabase-js` automatic refresh. Before an authenticated project request it refreshes a token within the configured one-minute boundary; a 401 permits exactly one explicit refresh-and-retry. This is client request handling, not Next.js cookie middleware.
+
+| Method and path | Permission | Result |
+| --- | --- | --- |
+| `GET /api/projects?search=&archived=&offset=&limit=` | authenticated member | recent-first paginated private project list |
+| `POST /api/projects` | authenticated account | atomically creates project + owner membership; no inference |
+| `PATCH /api/projects/:id` | owner | rename or archive/restore |
+| `POST /api/projects/:id/session` | member | rehydrate room and return scoped collaboration ticket |
+| `POST /api/projects/:id/invites` | owner | return one-time raw invite token; only its SHA-256 hash is stored |
+| `POST /api/invites/accept` | authenticated account | atomically consume a valid invite and add membership |
+
+In Supabase mode, legacy room creation and display-name join endpoints are disabled. Preview and download access require the project ticket. Hosted WebSocket origins must match `COCREATE_APP_ORIGINS`; viewers may receive state/awareness but cannot submit Yjs updates or room mutations.

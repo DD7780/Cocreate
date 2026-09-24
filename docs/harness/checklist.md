@@ -257,4 +257,45 @@ Documentation-only source inspection; historical test counts above are retained,
 - [x] Production build passed with 31.99 kB CSS and 766.03 kB JavaScript, retaining only the existing non-failing large-chunk warning.
 - [x] Windows Chrome smoke passed Recommended/Advanced semantics, the compact disabled Medium-default effort picker, shortcut behavior, Product state, invalid-session recovery, and 390px zero-overflow layout. Desktop visual inspection confirmed the restored non-metal workspace and compact selector.
 - [-] Firefox, Safari, Linux, macOS hardware, connected-owner effort changes, and native 200% zoom were not exercised in this rollback slice.
+
+## Functional canvas effort control (2026-09-23)
+
+- [x] Added an owner-only, inference-free `/ai/effort` mutation used by the canvas control for both Recommended and Advanced/Custom rooms.
+- [x] Advanced effort changes preserve personal, builder, and participant-override assignments while applying canonical per-call input/output and repair allowances; existing rooms default safely to Medium.
+- [x] Submission and build setup snapshots keep active work revision-safe; later effort changes affect future submissions only.
+- [x] Focused server tests passed 18/18 for allowance mapping, assignment preservation, authorization, validation, and existing recommendation behavior.
+- [x] Full synthetic regression suite passed 75/75; the first run exposed and the fix preserved Advanced Medium's established three-attempt builder behavior. The final suite includes a connected Custom owner changing effort through the HTTP route without a provider call.
+- [x] Production TypeScript/Vite build passed. The existing Windows Chrome smoke passed the disconnected/read-only effort state, editor-only shortcut behavior, remapping, focus preservation, Product state, invalid-session recovery, and 390px viewport checks.
+- [-] A connected-owner effort change was verified through server/integration tests but not through a live provider-backed browser session; no provider credits were spent. Firefox, Safari, Linux, and macOS were not exercised.
+- [!] `graphify query` and `graphify update .` were attempted as required, but the executable and an installed Python runtime are unavailable in this environment; the existing graph was not refreshed.
+
+## Structured-output serialization recovery (2026-09-24)
+
+- [x] Added deterministic local recovery for raw JSON string control characters, trailing commas, Markdown fences, and a balanced object surrounded by prose; recovered values still pass the unchanged exact schema and project-operation validators.
+- [x] Incomplete JSON envelopes are classified as probable truncation even when the provider reports a normal stop, then use the existing single compact retry and combined usage accounting.
+- [x] Repeated malformed output now gives actionable effort/model guidance while retaining the last working Product; no additional provider call, model switch, or effort increase was introduced.
+- [x] Focused synthetic provider and builder tests passed 10/10, including multiline TSX recovery without a paid retry and inferred-truncation accounting.
+- [x] Full controlled regression suite passed 78/78 and the production TypeScript/Vite build passed, retaining only the existing non-failing large-chunk warning.
+- [x] Windows Chrome smoke passed owner panel, editor-only shortcut/remapping, focus preservation, Product empty state, invalid-session recovery, and 390px viewport coverage. The parser change itself was verified through controlled provider fixtures and did not spend provider credits.
+- [!] `graphify query` and `graphify update .` were attempted, but the executable remains unavailable in this environment; the existing graph was not refreshed.
 - [ ] `graphify update .` remains unavailable because no Graphify executable is installed in this workspace; source, build, controlled tests, and browser behavior were verified directly.
+## Supabase saved-project slice — 2026-09-24
+
+- [x] Versioned SQL schema for profiles, projects, memberships, hashed one-time invites, snapshots/updates, harness records, usage, artifact metadata, RLS, restricted grants, atomic creation/acceptance functions, and private Storage policy.
+- [x] Google OAuth PKCE client routes (`/login`, `/auth/callback`), session restore/automatic refresh/sign-out, near-expiry refresh plus one bounded 401 retry for authenticated project requests, local return-path validation, and explicit configuration/denied states.
+- [x] Server JWT verification through `@supabase/server` with project issuer/audience/JWKS pinning; no browser-supplied user ID is trusted.
+- [x] Project list/create/rename/archive/session/invite endpoints, authenticated invite-link acceptance, and owner/editor/viewer mapping scoped to the current membership; no model call on project operations.
+- [x] Five-minute project-scoped collaboration ticket, origin validation, viewer update/command denial, client ticket refresh, and protected preview/download routes.
+- [x] Hosted snapshot acknowledgement after remote commit; save failure emits unsynced state; ordered update writes are idempotent.
+- [x] Authenticated project shell and compact collapsible context panel with automatic conflict expansion and long-detail drawer.
+- [x] Dry-run-first, idempotent legacy importer with backup requirement, deterministic ID mapping, trusted UUID ownership map, hashes, counts, and quarantine of unmapped rooms.
+- [x] Final local verification passed on 2026-09-24: `pnpm test` passed 83/83, including the synthetic session-expiry boundary, and `pnpm build` passed TypeScript and the Vite production build. The build retained only the existing non-failing large-chunk warning; no provider credits were used.
+- [x] The unauthenticated Google sign-in screen was rendered and visually checked in Windows Chromium at `/login`. Authenticated project, invite, refresh, and two-account collaboration behavior remain unclaimed until the remote prerequisites below are available.
+- [x] Pinned Prisma CLI/client/Postgres adapter 7.10.0, initialized the Prisma 7 schema/config, separated transaction-mode runtime and session-mode CLI URLs, and retained Supabase SQL migrations as the sole current schema authority.
+- [x] Applied `202609240001_projects_auth_persistence.sql` through Supabase CLI 2.117.0. A follow-up dry run reported the remote database up to date; read-only checks found 13 public tables, RLS on all 13, 17 public policies, one private `cocreate-artifacts` bucket, and one matching migration-history record.
+- [x] Prisma introspected 40 models across `public` and Supabase-managed `auth`, declared all auth tables/enums external to Prisma Migrate, validated/formatted the schema, and generated the ignored Prisma 7 ESM client. A read-only Prisma query through Supavisor transaction mode succeeded.
+- [x] Synchronized the ignored local `DATABASE_URL` credential with `DIRECT_URL` without exposing it. A final read-only Prisma query using the stored transaction-pooler URL succeeded; both current application tables were empty as expected for a fresh project.
+- [x] Added the official project-scoped Supabase remote MCP configuration in `.mcp.json`. OAuth authentication remains a local user action because Claude Code is not installed in this environment; no access token is stored in the repository.
+- [ ] Live Google OAuth and two-account collaboration evidence. Blocked on Google/Supabase dashboard configuration and two test accounts; mocked auth is not counted.
+- [ ] Run `supabase test db` against a local Supabase CLI stack and complete immediate socket closure on membership revocation. Current ticket expiry bounds access to five minutes.
+- [ ] Move complete generated artifact restoration to private Storage. Upload/finalization boundary exists, but room promotion/rehydration still embeds recent generated files in the snapshot.

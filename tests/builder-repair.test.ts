@@ -25,3 +25,16 @@ test('builder schema and planning repair missing or invalid file operations befo
     assert.deepEqual(result.usage,{inputTokens:3,outputTokens:6,rateLimitRemaining:undefined,rateLimitReset:undefined});
   }finally{await new Promise<void>(resolve=>provider.close(()=>resolve()))}
 });
+
+test('builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry',async()=>{
+  let calls=0;
+  const malformed=`{\n  "operations": [{\n    "type": "write",\n    "path": "src/App.tsx",\n    "content": "export default function App(){\n  return <main>Decision Room</main>\n}",\n  }],\n  "summary": "Decision Room ready",\n  "decisions": [],\n  "conflicts": [],\n  "specification": {"agreed": ["Decision Room"], "proposed": [], "questions": [],},\n}`;
+  const provider=http.createServer((_request,reply)=>{calls++;reply.writeHead(200,{'content-type':'application/json'});reply.end(JSON.stringify({output:[{content:[{type:'output_text',text:malformed}]}],usage:{input_tokens:2,output_tokens:3},status:'completed'}))});
+  await new Promise<void>(resolve=>provider.listen(0,'127.0.0.1',resolve));
+  const baseUrl=`http://127.0.0.1:${(provider.address()as {port:number}).port}`;
+  try{
+    const result=await generateProjectPlan({mode:'openai',apiKey:'test-key',model:'builder-model',baseUrl,apiFormat:'responses',provider:'custom'},[],undefined);
+    assert.equal(calls,1);
+    assert.match(result.value.operations[0].content||'',/Decision Room/);
+  }finally{await new Promise<void>(resolve=>provider.close(()=>resolve()))}
+});

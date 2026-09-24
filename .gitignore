@@ -53,3 +53,16 @@ next-env.d.ts
 /graphify-out/.run_ast.py
 /graphify-out/favicon-preview.png
 /graphify-out/20??-??-??/
+
+/src/generated/prisma
+
+# Prisma init may install local editor-agent helpers; keep them machine-local.
+/.agents/
+/.claude/
+/.windsurf/
+/skills-lock.json
+
+# Local UI review copies and Supabase CLI state are not project source.
+/.review-cocreate-v1/
+/.review-cocreate-v2/
+/supabase/.temp/
