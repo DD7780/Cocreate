@@ -9,7 +9,7 @@ export async function completeOAuthCallback(
   exchangeCode:(code:string)=>Promise<{error:{message:string}|null}>,
 ):Promise<OAuthCallbackOutcome>{
   const params=new URLSearchParams(search);
-  if(params.has('error')||params.has('error_description'))return{status:'denied',message:'Google sign-in was cancelled or denied.'};
+  if(params.has('error')||params.has('error_description'))return{status:'denied',message:'Sign-in was cancelled, denied, or the email link expired.'};
   const code=params.get('code');
   if(!code)return{status:'error',message:'The sign-in callback did not contain an authorization code. Start sign-in again.'};
   const result=await exchangeCode(code);

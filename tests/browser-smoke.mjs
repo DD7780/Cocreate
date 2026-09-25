@@ -41,8 +41,8 @@ try{
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   const evaluate=async expression=>(await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
   let text='';
-  for(let attempt=0;attempt<40&&!text.includes('API connections');attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}
-  if(!text.includes('API connections')||!text.includes('Generation is paused')){
+  for(let attempt=0;attempt<40&&!text.includes('AI setup');attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}
+  if(!text.includes('AI setup')||!text.includes('Generation is paused')){
     const diagnostic=await evaluate(`Promise.race([fetch('/api/rooms/${roomId}/state?token=${encodeURIComponent(session.token)}').then(async response=>({status:response.status,body:await response.text(),stored:localStorage.getItem('cocreate-session-${roomId}'),path:location.pathname})).catch(error=>({error:String(error)})),new Promise(resolve=>setTimeout(()=>resolve({error:'diagnostic timeout'}),2000))])`);
     throw new Error(`Workspace connection controls did not render: ${text||'empty document'}; exceptions=${exceptions.join('; ')||'none'}; ${JSON.stringify(diagnostic)}`);
   }
@@ -71,10 +71,10 @@ try{
   const dialogIgnored=await evaluate(`(()=>{const input=document.querySelector('[role="dialog"] input');input.focus();return input.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   if(!dialogIgnored)throw new Error('Dialog incorrectly handled Alt+X');
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.getAttribute('aria-label')==='Close API connections').click()`);
-  const canvasEffort=await evaluate(`(()=>{const select=document.querySelector('select[aria-label="AI effort beside canvas"]');return{value:select?.value,disabled:select?.disabled,options:[...select?.options||[]].map(option=>({label:option.textContent,value:option.value}))}})()`);
-  if(canvasEffort.options.length!==4||canvasEffort.value!=='medium'||!canvasEffort.disabled||!canvasEffort.options.some(item=>item.label.includes('Recommended')))throw new Error(`Compact AI effort picker did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
-  const workflowOverview=await evaluate(`(()=>{const panel=document.querySelector('.workflow-overview');return{text:panel?.innerText||'',phase:panel?.querySelector('header strong')?.textContent,cursor:panel?.querySelector('.workflow-activity summary')?.textContent}})()`);
-  if(workflowOverview.phase!=='draft'||!workflowOverview.text.includes('Browser QA')||!workflowOverview.text.includes('No submitted work is planned yet')||!workflowOverview.cursor?.includes('cursor'))throw new Error(`Durable workflow overview is incomplete: ${JSON.stringify(workflowOverview)}`);
+  const canvasEffort=await evaluate(`(()=>{const group=document.querySelector('fieldset[aria-label="AI effort beside canvas"]'),options=[...group?.querySelectorAll('input[type="radio"]')||[]].map(option=>({label:option.parentElement?.innerText,value:option.value,checked:option.checked}));return{disabled:group?.disabled,options}})()`);
+  if(canvasEffort.options.length!==4||canvasEffort.options.filter(item=>item.checked).map(item=>item.value).join()!=='medium'||!canvasEffort.disabled||canvasEffort.options.map(item=>item.label).join('|')!=='Low|Medium|High|Extra')throw new Error(`Segmented AI effort control did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
+  const workflowOverview=await evaluate(`(()=>{const panel=document.querySelector('.workflow-compact');return{text:panel?.textContent||'',summary:panel?.querySelector('summary')?.textContent||''}})()`);
+  if(!workflowOverview.summary.includes('draft')||!workflowOverview.text.includes('No submitted work is planned yet'))throw new Error(`Durable workflow overview is incomplete: ${JSON.stringify(workflowOverview)}`);
   if(process.env.COCREATE_WORKSPACE_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
     fs.writeFileSync(process.env.COCREATE_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));
@@ -88,7 +88,7 @@ try{
   const remap=await evaluate(`(async()=>{const select=document.querySelector('[aria-label="Build shortcut"]');const setter=Object.getOwnPropertyDescriptor(HTMLSelectElement.prototype,'value').set;setter.call(select,'alt+s');select.dispatchEvent(new Event('change',{bubbles:true}));await new Promise(resolve=>setTimeout(resolve,50));const editor=document.querySelector('.document-editor');const oldHandled=!editor.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}));const newHandled=!editor.dispatchEvent(new KeyboardEvent('keydown',{key:'s',altKey:true,bubbles:true,cancelable:true}));return{oldHandled,newHandled}})()`);
   if(remap.oldHandled||!remap.newHandled)throw new Error('Remapped shortcut preference was not respected');
 
-  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Product')).click()`);
+  await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Artifacts')).click()`);
   await new Promise(resolve=>setTimeout(resolve,200));
   text=await evaluate('document.body.innerText');
   if(!text.includes('Connect an AI model to generate your app.'))throw new Error('Disconnected Product state is incorrect');
@@ -99,7 +99,7 @@ try{
   await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await new Promise(resolve=>setTimeout(resolve,200));
   const metrics=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,text:document.body.innerText})');
-  if(metrics.width>metrics.viewport||!metrics.text.includes('Product'))throw new Error('Mobile workspace overflow or navigation failure');
+  if(metrics.width>metrics.viewport||!metrics.text.includes('Artifacts'))throw new Error('Mobile workspace overflow or navigation failure');
   await evaluate(`localStorage.setItem('cocreate-session-${roomId}','invalid-session')`);
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   let invalidText='';

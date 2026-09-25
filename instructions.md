@@ -89,3 +89,5 @@ This is an agent obligation, not an automatic documentation synchronization serv
 ## Supabase project rules
 
 Treat Supabase user UUIDs as account identity and project membership as authority. Never restore room-link ownership in hosted mode, identify owners by display name/email, put secret keys in `VITE_*`, acknowledge hosted saves before the remote commit, make artifact buckets public, or let local SQLite/JSON silently replace failed Postgres. Project creation/switching is inference-free. Apply migrations only after verifying the intended project; legacy imports are dry-run by default and require a trusted room-to-user UUID map.
+
+Project invitations are app-level records, not Supabase Auth invitations. Bind them to a normalized intended email and verified account, hash random tokens at rest, enforce owner/explicit sharing permission server-side, keep editor/viewer roles bounded, and make accept/resend/revoke transactional and idempotent. Transactional email secrets stay server-only; provider acceptance is not proof of delivery.

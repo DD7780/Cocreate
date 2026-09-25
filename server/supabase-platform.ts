@@ -5,8 +5,10 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 export type ProjectRole = 'owner' | 'editor' | 'viewer';
 export type ProjectSummary = {
   id: string; ownerId: string; title: string; workflowMode: 'developer' | 'analyst' | 'researcher';
-  archivedAt?: string; createdAt: string; updatedAt: string; role: ProjectRole;
+  archivedAt?: string; createdAt: string; updatedAt: string; role: ProjectRole; canShare:boolean;
 };
+export type ProjectMemberSummary={userId:string;email:string;displayName:string;role:ProjectRole;canShare:boolean;joinedAt:string};
+export type ProjectInviteSummary={id:string;email:string;role:Exclude<ProjectRole,'owner'>;expiresAt:string;createdAt:string;lastSentAt?:string;deliveryState:'pending'|'sent'|'failed'|'configuration_required';deliveryError?:string;resendCount:number};
 
 type PlatformConfig = { url: string; publishableKey: string; secretKey: string; jwksUrl?: string; artifactBucket?: string };
 export type AuthenticatedUser={id:string;email?:string;user_metadata:Record<string,unknown>};
@@ -14,6 +16,8 @@ type ProjectRow = { id:string; owner_id:string; title:string; workflow_mode:Proj
 
 const fail = (label:string, error:{message?:string}|null) => { if(error) throw new Error(`${label}: ${error.message || 'Supabase request failed.'}`); };
 const hashToken = (token:string) => createHash('sha256').update(token).digest('hex');
+export const normalizeProjectTitle=(value:string)=>{const title=value.trim();if(!title)throw Object.assign(new Error('Project name cannot be empty.'),{status:400});if(title.length>120)throw Object.assign(new Error('Project name must be 120 characters or fewer.'),{status:400});return title};
+export const normalizeInviteEmail=(value:string)=>{const email=value.trim().toLowerCase();if(email.length>254||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Object.assign(new Error('Enter a valid recipient email address.'),{status:400});return email};
 
 export class SupabasePlatform {
   readonly admin: SupabaseClient;
@@ -38,44 +42,55 @@ export class SupabasePlatform {
     return{id:data.userClaims.id,email:data.userClaims.email,user_metadata:data.userClaims.userMetadata||{}};
   }
 
-  async membership(projectId:string,userId:string):Promise<ProjectRole|null> {
-    const { data, error } = await this.admin.from('project_members').select('role').eq('project_id',projectId).eq('user_id',userId).maybeSingle();
+  async membership(projectId:string,userId:string):Promise<{role:ProjectRole;canShare:boolean}|null> {
+    const { data, error } = await this.admin.from('project_members').select('role,can_share').eq('project_id',projectId).eq('user_id',userId).maybeSingle();
     fail('Membership lookup failed',error);
-    return (data?.role as ProjectRole|undefined) || null;
+    return data?{role:data.role as ProjectRole,canShare:Boolean(data.can_share)}:null;
   }
 
   async requireMembership(projectId:string,userId:string,allowed:ProjectRole[]=['owner','editor','viewer']) {
-    const role=await this.membership(projectId,userId);
-    if(!role||!allowed.includes(role)) throw Object.assign(new Error('You do not have permission to access this project.'),{status:403});
-    return role;
+    const membership=await this.membership(projectId,userId);
+    if(!membership||!allowed.includes(membership.role)) throw Object.assign(new Error('You do not have permission to access this project.'),{status:403});
+    return membership.role;
+  }
+
+  async requireSharePermission(projectId:string,userId:string) {
+    const membership=await this.membership(projectId,userId);
+    if(!membership||(membership.role!=='owner'&&!membership.canShare))throw Object.assign(new Error('You do not have permission to manage project sharing.'),{status:403});
+    return membership;
   }
 
   async listProjects(accessToken:string,options:{search?:string;archived?:boolean;offset?:number;limit?:number}={}) {
     const user=await this.verifyUser(accessToken);
     const client=this.userClient(accessToken),limit=Math.min(50,Math.max(1,options.limit||30)),offset=Math.max(0,options.offset||0);
-    let query=client.from('projects').select('id,owner_id,title,workflow_mode,archived_at,created_at,updated_at,project_members!inner(role,user_id)',{count:'exact'})
+    let query=client.from('projects').select('id,owner_id,title,workflow_mode,archived_at,created_at,updated_at,project_members!inner(role,user_id,can_share)',{count:'exact'})
       .eq('project_members.user_id',user.id)
       .order('updated_at',{ascending:false}).range(offset,offset+limit-1);
     if(options.search?.trim()) query=query.ilike('title',`%${options.search.trim().slice(0,80)}%`);
     query=options.archived?query.not('archived_at','is',null):query.is('archived_at',null);
     const {data,error,count}=await query;fail('Project list failed',error);
-    const projects=(data||[]).map((row:any):ProjectSummary=>({id:row.id,ownerId:row.owner_id,title:row.title,workflowMode:row.workflow_mode,archivedAt:row.archived_at||undefined,createdAt:row.created_at,updatedAt:row.updated_at,role:row.project_members?.[0]?.role||row.project_members?.role}));
+    const projects=(data||[]).map((row:any):ProjectSummary=>({id:row.id,ownerId:row.owner_id,title:row.title,workflowMode:row.workflow_mode,archivedAt:row.archived_at||undefined,createdAt:row.created_at,updatedAt:row.updated_at,role:row.project_members?.[0]?.role||row.project_members?.role,canShare:Boolean(row.project_members?.[0]?.can_share||row.project_members?.can_share||row.project_members?.[0]?.role==='owner')}));
     return {projects,total:count||0,nextOffset:offset+projects.length<(count||0)?offset+projects.length:null};
   }
 
   async createProject(accessToken:string,title='Untitled project',workflowMode:ProjectSummary['workflowMode']='developer') {
     const user=await this.verifyUser(accessToken),client=this.userClient(accessToken);
-    const {data,error}=await client.rpc('create_project',{project_title:title,project_mode:workflowMode}).single();fail('Project creation failed',error);
+    const projectTitle=normalizeProjectTitle(title);
+    const {data,error}=await client.rpc('create_project',{project_title:projectTitle,project_mode:workflowMode}).single();fail('Project creation failed',error);
     const row=data as unknown as ProjectRow;
-    return {id:row.id,ownerId:user.id,title:row.title,workflowMode:row.workflow_mode,createdAt:row.created_at,updatedAt:row.updated_at,role:'owner' as const};
+    return {id:row.id,ownerId:user.id,title:row.title,workflowMode:row.workflow_mode,createdAt:row.created_at,updatedAt:row.updated_at,role:'owner' as const,canShare:true};
   }
 
   async updateProject(projectId:string,userId:string,patch:{title?:string;archived?:boolean}) {
     await this.requireMembership(projectId,userId,['owner']);
     const values:Record<string,unknown>={};
-    if(patch.title!==undefined) values.title=patch.title.trim().slice(0,120)||'Untitled project';
+    if(patch.title!==undefined) values.title=normalizeProjectTitle(patch.title);
     if(patch.archived!==undefined) values.archived_at=patch.archived?new Date().toISOString():null;
     const {data,error}=await this.admin.from('projects').update(values).eq('id',projectId).select().single();fail('Project update failed',error);return data;
+  }
+
+  async projectTitle(projectId:string) {
+    const {data,error}=await this.admin.from('projects').select('title').eq('id',projectId).single();fail('Project lookup failed',error);return String(data!.title);
   }
 
   async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>) {
@@ -101,11 +116,42 @@ export class SupabasePlatform {
     fail('Durable document update failed',error);
   }
 
-  async createInvite(projectId:string,userId:string,role:Exclude<ProjectRole,'owner'>,ttlHours=72) {
-    await this.requireMembership(projectId,userId,['owner']);
+  async listSharing(projectId:string,userId:string) {
+    const membership=await this.requireSharePermission(projectId,userId);
+    const membersResult=await this.admin.from('project_members').select('user_id,role,can_share,joined_at').eq('project_id',projectId).order('joined_at');fail('Member list failed',membersResult.error);
+    const members:ProjectMemberSummary[]=[];
+    for(const row of membersResult.data||[]){const result=await this.admin.auth.admin.getUserById(String(row.user_id));fail('Member profile lookup failed',result.error);const user=result.data.user;members.push({userId:String(row.user_id),email:user?.email||'Email unavailable',displayName:String(user?.user_metadata?.full_name||user?.user_metadata?.name||user?.email?.split('@')[0]||'Collaborator'),role:row.role as ProjectRole,canShare:row.role==='owner'||Boolean(row.can_share),joinedAt:String(row.joined_at)})}
+    const invitesResult=await this.admin.from('project_invites').select('id,recipient_email,intended_role,expires_at,created_at,last_sent_at,delivery_state,delivery_error,resend_count').eq('project_id',projectId).is('accepted_at',null).is('revoked_at',null).order('created_at',{ascending:false});fail('Pending invitation list failed',invitesResult.error);
+    const invitations=(invitesResult.data||[]).filter(row=>row.recipient_email).map((row:any):ProjectInviteSummary=>({id:row.id,email:row.recipient_email,role:row.intended_role,expiresAt:row.expires_at,createdAt:row.created_at,lastSentAt:row.last_sent_at||undefined,deliveryState:row.delivery_state,deliveryError:row.delivery_error||undefined,resendCount:Number(row.resend_count||0)}));
+    return{permission:membership.role==='owner'?'owner':'member',members,invitations};
+  }
+
+  async createInvite(projectId:string,userId:string,email:string,role:Exclude<ProjectRole,'owner'>,ttlHours=72) {
+    await this.requireSharePermission(projectId,userId);
+    const recipientEmail=normalizeInviteEmail(email);
     const token=randomBytes(32).toString('base64url'),expiresAt=new Date(Date.now()+Math.min(168,Math.max(1,ttlHours))*3_600_000).toISOString();
-    const {error}=await this.admin.from('project_invites').insert({project_id:projectId,token_hash:hashToken(token),intended_role:role,created_by:userId,expires_at:expiresAt});fail('Invite creation failed',error);
-    return {token,expiresAt,role};
+    const {data,error}=await this.admin.rpc('create_project_invite',{target_project_id:projectId,actor_id:userId,recipient:recipientEmail,invite_role:role,invite_hash:hashToken(token),invite_expires_at:expiresAt}).single();fail('Invite creation failed',error);
+    const row=data as any;return {id:String(row.id),token,email:recipientEmail,expiresAt,role,resendCount:Number(row.resend_count||0)};
+  }
+
+  async resendInvite(projectId:string,userId:string,inviteId:string,ttlHours=72) {
+    await this.requireSharePermission(projectId,userId);
+    const existing=await this.admin.from('project_invites').select('id').eq('id',inviteId).eq('project_id',projectId).is('accepted_at',null).is('revoked_at',null).maybeSingle();fail('Invitation lookup failed',existing.error);if(!existing.data)throw Object.assign(new Error('Invitation is no longer pending.'),{status:404});
+    const token=randomBytes(32).toString('base64url'),expiresAt=new Date(Date.now()+Math.min(168,Math.max(1,ttlHours))*3_600_000).toISOString();
+    const {data,error}=await this.admin.rpc('resend_project_invite',{prior_invite_id:inviteId,actor_id:userId,invite_hash:hashToken(token),invite_expires_at:expiresAt}).single();fail('Invitation resend failed',error);const row=data as any;if(String(row.project_id)!==projectId)throw Object.assign(new Error('Invitation does not belong to this project.'),{status:404});return{id:String(row.id),token,email:String(row.recipient_email),expiresAt,role:row.intended_role as Exclude<ProjectRole,'owner'>,resendCount:Number(row.resend_count||0)};
+  }
+
+  async recordInviteDelivery(inviteId:string,delivery:{state:string;error?:string;providerMessageId?:string}) {
+    const values={delivery_state:delivery.state,delivery_error:delivery.error?.slice(0,500)||null,provider_message_id:delivery.providerMessageId||null,last_sent_at:delivery.state==='sent'?new Date().toISOString():null};
+    const {error}=await this.admin.from('project_invites').update(values).eq('id',inviteId);fail('Invitation delivery update failed',error);
+  }
+
+  async revokeInvite(projectId:string,userId:string,inviteId:string) {
+    await this.requireSharePermission(projectId,userId);const {data,error}=await this.admin.from('project_invites').update({revoked_at:new Date().toISOString()}).eq('id',inviteId).eq('project_id',projectId).is('accepted_at',null).is('revoked_at',null).select('id').maybeSingle();fail('Invitation revocation failed',error);if(!data)throw Object.assign(new Error('Invitation is no longer pending.'),{status:404});return{ok:true};
+  }
+
+  async updateMember(projectId:string,userId:string,memberId:string,patch:{role?:Exclude<ProjectRole,'owner'>;canShare?:boolean}) {
+    const actor=await this.requireSharePermission(projectId,userId),target=await this.membership(projectId,memberId);if(!target)throw Object.assign(new Error('Project member not found.'),{status:404});if(target.role==='owner')throw Object.assign(new Error('The project owner role cannot be changed.'),{status:400});if(actor.role!=='owner'&&patch.canShare!==undefined)throw Object.assign(new Error('Only the owner can grant sharing permission.'),{status:403});if(actor.role!=='owner'&&patch.role!==undefined&&memberId===userId)throw Object.assign(new Error('Only the owner can change your own project role.'),{status:403});if(actor.role==='viewer'&&patch.role==='editor')throw Object.assign(new Error('A viewer cannot grant editor access.'),{status:403});const values:Record<string,unknown>={};if(patch.role)values.role=patch.role;if(patch.canShare!==undefined)values.can_share=patch.canShare;if(!Object.keys(values).length)throw Object.assign(new Error('No member changes were supplied.'),{status:400});const {error}=await this.admin.from('project_members').update(values).eq('project_id',projectId).eq('user_id',memberId);fail('Member update failed',error);return{ok:true};
   }
 
   async acceptInvite(accessToken:string,token:string) {

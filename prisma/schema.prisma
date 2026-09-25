@@ -680,10 +680,18 @@ model project_invites {
   accepted_by                              String?      @db.Uuid
   accepted_at                              DateTime?    @db.Timestamptz(6)
   created_at                               DateTime     @default(now()) @db.Timestamptz(6)
+  recipient_email                          String?
+  delivery_state                           String       @default("pending")
+  delivery_error                           String?
+  provider_message_id                      String?
+  last_sent_at                             DateTime?    @db.Timestamptz(6)
+  resend_count                             Int          @default(0)
   users_project_invites_accepted_byTousers users?       @relation("project_invites_accepted_byTousers", fields: [accepted_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   users_project_invites_created_byTousers  users        @relation("project_invites_created_byTousers", fields: [created_by], references: [id], onDelete: NoAction, onUpdate: NoAction)
   projects                                 projects     @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
+  @@index([project_id, created_at(sort: Desc)], map: "project_invites_project_created_idx")
+  @@index([created_by, created_at(sort: Desc)], map: "project_invites_creator_rate_idx")
   @@schema("public")
 }
 
@@ -693,6 +701,7 @@ model project_members {
   user_id    String       @db.Uuid
   role       project_role
   joined_at  DateTime     @default(now()) @db.Timestamptz(6)
+  can_share  Boolean      @default(false)
   projects   projects     @relation(fields: [project_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
   users      users        @relation(fields: [user_id], references: [id], onDelete: Cascade, onUpdate: NoAction)
 

@@ -9,6 +9,7 @@
   },
   "vars": {
     "COCREATE_APP_ORIGINS": "https://cocreate.susan981314271.workers.dev",
+    "COCREATE_PUBLIC_ORIGIN": "https://cocreate.susan981314271.workers.dev",
     "SUPABASE_ARTIFACT_BUCKET": "cocreate-artifacts",
     "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",

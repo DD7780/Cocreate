@@ -2,7 +2,8 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import test from 'node:test';
 import { createSession, verifySession } from '../server/auth.js';
-import { supabasePlatformFromEnv, supabasePlatformInternals } from '../server/supabase-platform.js';
+import { normalizeInviteEmail, normalizeProjectTitle, supabasePlatformFromEnv, supabasePlatformInternals } from '../server/supabase-platform.js';
+import { invitationEmailSenderFromEnv } from '../server/invitation-email.js';
 import { resolveSupabaseAuthConfig, safeLocalDestination } from '../src/auth-config.js';
 import { completeOAuthCallback } from '../src/oauth-callback.js';
 
@@ -67,12 +68,55 @@ test('Google callback exchanges once, reports errors, and restores only local de
   assert.equal(safeLocalDestination('//evil.example/steal','/projects','https://cocreate.example'),'/projects');
 });
 
-test('OAuth source uses Google and handles the exact application callback',()=>{
+test('auth source preserves Google and adds password, confirmation, and recovery flows',()=>{
   const source=fs.readFileSync(new URL('../src/ProjectApp.tsx',import.meta.url),'utf8');
   assert.match(source,/signInWithOAuth\(\{provider:'google'/);
-  assert.match(source,/redirectTo:supabaseOAuthRedirectUrl/);
+  assert.match(source,/redirectTo:supabaseAuthCallbackUrl\(returnTo\)/);
+  assert.match(source,/signInWithPassword/);
+  assert.match(source,/auth\.signUp/);
+  assert.match(source,/auth\.resend/);
+  assert.match(source,/resetPasswordForEmail/);
+  assert.match(source,/updateUser\(\{password/);
   assert.match(source,/location\.pathname==='\/api\/auth\/callback'/);
   assert.doesNotMatch(source,/provider:'twitch'|cocreate\.pages\.dev|amygxtdgjlphxaetqzkk/);
+});
+
+test('project names and invitation emails use canonical validation',()=>{
+  assert.equal(normalizeProjectTitle('  Roadmap  '),'Roadmap');
+  assert.throws(()=>normalizeProjectTitle('   '),/cannot be empty/);
+  assert.throws(()=>normalizeProjectTitle('x'.repeat(121)),/120 characters/);
+  assert.equal(normalizeInviteEmail('  PERSON@Example.COM '),'person@example.com');
+  assert.throws(()=>normalizeInviteEmail('not-an-email'),/valid recipient/);
+});
+
+test('transactional invitation email is truthful and idempotent at the provider boundary',async()=>{
+  const unconfigured=invitationEmailSenderFromEnv({} as NodeJS.ProcessEnv);
+  assert.equal(unconfigured.configured,false);
+  assert.equal((await unconfigured.send({invitationId:'i1',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token'})).state,'configuration_required');
+  let request:{url:string;init:RequestInit}|undefined;
+  const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'CoCreate <invites@example.com>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{'Content-Type':'application/json'}})});
+  const sent=await configured.send({invitationId:'i2',recipientEmail:'person@example.com',inviterName:'<Owner>',projectTitle:'Plan & Ship',role:'editor',inviteUrl:'https://example.com/invite/token'});
+  assert.deepEqual(sent,{state:'sent',providerMessageId:'email_synthetic'});
+  assert.equal(request?.url,'https://api.resend.com/emails');
+  assert.equal((request?.init.headers as Record<string,string>)['Idempotency-Key'],'cocreate-project-invite-i2');
+  const payload=JSON.parse(String(request?.init.body)) as {html:string};
+  assert.doesNotMatch(payload.html,/<Owner>|Plan & Ship/);
+  const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@example.com'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));
+  assert.deepEqual(await failed.send({invitationId:'i3',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token'}),{state:'failed',error:'synthetic rejection'});
+});
+
+test('email invitation migration binds recipients and enforces sharing permissions',()=>{
+  const sql=fs.readFileSync(new URL('../supabase/migrations/202609250001_email_invitations_and_sharing.sql',import.meta.url),'utf8');
+  assert.match(sql,/recipient_email text/);
+  assert.match(sql,/pm\.role = 'owner' or pm\.can_share/);
+  assert.match(sql,/email_confirmed_at is not null/);
+  assert.match(sql,/lower\(invite\.recipient_email\) <> verified_email/);
+  assert.match(sql,/for update/);
+  assert.match(sql,/on conflict \(project_id, user_id\) do update/);
+  assert.match(sql,/grant execute on function public\.accept_project_invite\(text\) to authenticated/);
+  const platform=fs.readFileSync(new URL('../server/supabase-platform.ts',import.meta.url),'utf8');
+  assert.match(platform,/Only the owner can change your own project role/);
+  assert.match(platform,/A viewer cannot grant editor access/);
 });
 
 test('invite tokens are hashed before persistence',()=>{

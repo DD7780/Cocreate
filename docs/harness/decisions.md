@@ -106,3 +106,11 @@ Accepted 2026-09-24. Prisma 7.10 is pinned as an optional typed Postgres access 
 ## D-0026 — OAuth callbacks follow the verified Worker origin
 
 Accepted 2026-09-24. The canonical CoCreate production origin is `https://cocreate.susan981314271.workers.dev`. Google returns to the selected Supabase project at `/auth/v1/callback`; Supabase then returns to CoCreate at the separately allow-listed `/api/auth/callback`. Production callback selection is derived from an explicit build-time app origin rather than a hardcoded third-party Pages deployment or browser location. Hosted sign-in fails closed when the URL, key, JWKS, or project references disagree. Localhost remains a separately configured development callback, and callback codes are exchanged at most once.
+
+## D-0027 — Email-bound project invitations remain separate from account invitations
+
+Accepted 2026-09-25. Supabase Auth owns Google and email/password account identity, confirmation, and recovery. CoCreate owns project invitations and membership. Each invitation is project-scoped, recipient-email-bound, role-bounded, expiring, revocable, rate-limited, and stored by token hash; acceptance requires a matching confirmed Supabase account and is transactional/idempotent. Owners and members with explicit sharing permission may manage invitations and non-owner roles, while only owners grant sharing permission. Transactional email is server-side and provider acceptance is recorded as sent without claiming confirmed delivery.
+
+## D-0028 — Low is a presentation label for the existing light effort value
+
+Accepted 2026-09-25. The canvas renders Low, Medium, High, and Extra as an accessible segmented radio group. `light` remains the stored/API value to avoid rewriting snapshots and historical records. Effort changes are inference-free, affect future submissions only, preserve manual assignments and the spending ceiling, and do not mutate active or queued work.

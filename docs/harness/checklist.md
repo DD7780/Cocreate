@@ -86,6 +86,22 @@
 
 Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 
+## Email invitations, complete auth, project names, and segmented effort (2026-09-25)
+
+- [x] Added Google-preserving email/password signup, confirmation resend, login, non-enumerating recovery, authenticated password update, logout, and safe local return destinations through the existing Supabase client.
+- [x] Added non-destructive invitation schema changes: normalized recipient email, delivery state, explicit member `can_share`, active-recipient uniqueness, bounded create/resend rate, hashed tokens, and transactional confirmed-email acceptance.
+- [x] Added server-authorized member/invitation listing, multi-recipient editor/viewer invitations, resend, revoke, role updates, owner-controlled sharing permission, and a server-only Resend adapter with deterministic idempotency keys and truthful failure/configuration states.
+- [x] Replaced immediate link sharing with the Share project dialog; it shows current members, roles, pending invitations, delivery state, resend/revoke controls, and recipient-bound copy links as a secondary action.
+- [x] Added named or Untitled project creation, owner-only header/sidebar rename, stable IDs, 120-character server validation, polling-based participant refresh, folder-outline icons, truncation, and full-title tooltips.
+- [x] Replaced the canvas effort select with a Low/Medium/High/Extra accessible radio group while retaining stored `light`; canonical rates and this-project provider usage remain immediately below it.
+- [x] TypeScript passed and the full synthetic suite passed 91/91. Focused auth/invitation tests passed 12/12 without provider credits.
+- [x] Applied `202609250001_email_invitations_and_sharing.sql` to the configured `dnsapasubeoxxsgkiotw` Supabase project through its session-mode pooler; read-only follow-up found `can_share`, recipient/delivery/resend columns, and create/resend/accept functions.
+- [-] Public Auth settings report email and Google enabled, signup enabled, and auto-confirm disabled. Account confirmation, recovery, allowed redirect URLs, RLS/role denial, wrong-account/expired/revoked/duplicate acceptance, and cross-account rename/invite behavior still require designated live accounts and inbox testing.
+- [ ] Configure and verify Supabase custom SMTP plus `RESEND_API_KEY`/`COCREATE_EMAIL_FROM`; a provider-accepted invitation and designated-recipient receipt have not been observed.
+- [x] Production build passed with the existing non-failing large-chunk warning. Production-mode Windows Chrome smoke passed Recommended/Advanced setup, the four-option segmented effort control, editor-only Alt+X/remap/focus, compact workflow, Artifacts empty state, invalid-session recovery, and 390px zero-overflow layout.
+- [ ] Firefox, Safari, Linux, macOS, hosted account/project UI, and native screen-reader testing remain outstanding.
+- [ ] `graphify update .` was attempted after the code changes, but the Graphify executable is not installed/on PATH; the existing graph remains stale for this slice.
+
 ## Foundation and first vertical slice
 
 - [x] Repository capability/gap assessment exists. Evidence: `docs/harness/assessment.md`.
