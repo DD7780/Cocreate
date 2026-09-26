@@ -155,6 +155,10 @@ Server JSON:
 
 The browser provider reports `connecting`, `connected`, bounded `reconnecting`, and terminal `error` states. Transient failures use capped exponential backoff with jitter (six attempts, capped at roughly 10 seconds before jitter). Before retrying, the client calls the existing authenticated room-state route: 401 becomes an invalid-session action, 404 becomes a missing-room action, and 403 becomes a permission error. Upgrade rejection responses and server logs contain only a safe category/correlation ID; tokens and authenticated URLs are not logged by application code.
 
+Hosted persistence stores discriminator-0 payloads and full snapshots as Yjs V1 bytes. Supabase `bytea` requests use PostgreSQL hex text; Node Buffer JSON is not a valid wire/storage encoding. Restore validates decoded bytes in an isolated document before hydrating a room. The exact historical Buffer-JSON envelope is recoverable only after its original stored bytes are quarantined. If a snapshot is unreadable, recovery replays only update rows whose decoded bytes pass Yjs validation and whose SHA-256 matches `update_hash`; otherwise the project fails closed with an actionable recovery error.
+
+`/api/auth/callback` captures and removes OAuth query parameters, restores any existing persisted session, and exchanges a PKCE `code` once. A cancelled or failed new login with an existing valid session returns an explicit account-choice screen; without a valid session it returns to login or shows an actionable error. UI state never substitutes for server-side project membership.
+
 The provider keeps its Y.Doc in memory and answers the server state vector after a successful reconnect, so edits made during a recoverable disconnect are resynchronized. A disconnected or unacknowledged flush rejects before `/submit` is called. Do not promise persisted offline browser edits across a page reload: this client does not implement a durable browser Yjs store.
 
 ## Maintenance

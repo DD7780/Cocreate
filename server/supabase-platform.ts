@@ -1,6 +1,8 @@
 import { createHash, randomBytes } from 'node:crypto';
 import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
+import * as Y from 'yjs';
+import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
 
 export type ProjectRole = 'owner' | 'editor' | 'viewer';
 export type ProjectSummary = {
@@ -97,7 +99,7 @@ export class SupabasePlatform {
     const update=typeof payload.update==='string'?payload.update:'';
     const harness={...payload};delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
-    const {error}=await this.admin.from('project_snapshots').upsert({project_id:projectId,revision,yjs_state:bytes,harness_state:harness,content_hash:contentHash,committed_at:new Date().toISOString()},{onConflict:'project_id'});fail('Durable snapshot failed',error);
+    const {error}=await this.admin.from('project_snapshots').upsert({project_id:projectId,revision,yjs_state:encodePostgresBytea(bytes),harness_state:harness,content_hash:contentHash,committed_at:new Date().toISOString()},{onConflict:'project_id'});fail('Durable snapshot failed',error);
     await this.admin.from('projects').update({updated_at:new Date().toISOString()}).eq('id',projectId);
     return {contentHash};
   }
@@ -106,14 +108,32 @@ export class SupabasePlatform {
     const {data,error}=await this.admin.from('project_snapshots').select('revision,yjs_state,harness_state,committed_at').eq('project_id',projectId).maybeSingle();fail('Snapshot restore failed',error);
     if(!data)return null;
     const raw=data.yjs_state as unknown;
-    const bytes=typeof raw==='string'?Buffer.from(raw.replace(/^\\x/,''),'hex'):Buffer.from(raw as Uint8Array);
-    return {...(data.harness_state as Record<string,unknown>),update:bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at};
+    let decoded:ReturnType<typeof decodePersistedYjsUpdate>;
+    try{decoded=decodePersistedYjsUpdate(raw)}catch(error){
+      await this.quarantine(projectId,'snapshot',Number(data.revision),raw,error);
+      const recovered=await this.recoverDocumentUpdates(projectId);
+      if(!recovered)throw new Error('Stored collaboration data is unreadable and no verified update history can recover it. The original bytes were quarantined; contact the project owner before making further edits.');
+      return {...(data.harness_state as Record<string,unknown>),update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
+    }
+    if(decoded.legacyBufferJson&&!await this.quarantine(projectId,'snapshot',Number(data.revision),raw,new Error('Legacy Node Buffer JSON serialization backed up before verified in-memory recovery.')))throw new Error('The collaboration snapshot is recoverable, but its required backup could not be recorded. Apply the persistence-quarantine migration before reopening this project.');
+    return {...(data.harness_state as Record<string,unknown>),update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
   }
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {
     const bytes=Buffer.from(update),digest=createHash('sha256').update(bytes).digest('hex');
-    const {error}=await this.admin.from('project_document_updates').upsert({project_id:projectId,sequence,actor_id:actorId,update_bytes:bytes,update_hash:digest},{onConflict:'project_id,sequence',ignoreDuplicates:true});
+    const {error}=await this.admin.from('project_document_updates').upsert({project_id:projectId,sequence,actor_id:actorId,update_bytes:encodePostgresBytea(bytes),update_hash:digest},{onConflict:'project_id,sequence',ignoreDuplicates:true});
     fail('Durable document update failed',error);
+  }
+
+  private async quarantine(projectId:string,kind:'snapshot'|'update',sourceRevision:number,raw:unknown,error:unknown){
+    try{const{error:storageError}=await this.admin.from('project_persistence_quarantine').upsert({project_id:projectId,record_kind:kind,source_revision:sourceRevision,raw_bytes:encodePostgresBytea(persistedRawBytes(raw)),reason:error instanceof Error?error.message.slice(0,500):'Invalid persisted Yjs data'},{onConflict:'project_id,record_kind,source_revision',ignoreDuplicates:true});return!storageError}catch{return false}
+  }
+
+  private async recoverDocumentUpdates(projectId:string){
+    const {data,error}=await this.admin.from('project_document_updates').select('sequence,update_bytes,update_hash').eq('project_id',projectId).order('sequence');
+    fail('Document recovery lookup failed',error);if(!data?.length)return null;
+    const recovered=new Y.Doc();let applied=0;
+    try{for(const row of data){try{const decoded=decodePersistedYjsUpdate(row.update_bytes),digest=createHash('sha256').update(decoded.bytes).digest('hex');if(digest!==row.update_hash)throw new Error('Stored update hash did not match its decoded bytes.');Y.applyUpdate(recovered,decoded.bytes,'verified-recovery');applied++}catch(error){await this.quarantine(projectId,'update',Number(row.sequence),row.update_bytes,error)}}return applied?Buffer.from(Y.encodeStateAsUpdate(recovered)):null}finally{recovered.destroy()}
   }
 
   async listSharing(projectId:string,userId:string) {

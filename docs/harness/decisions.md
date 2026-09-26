@@ -114,3 +114,11 @@ Accepted 2026-09-25. Supabase Auth owns Google and email/password account identi
 ## D-0028 — Low is a presentation label for the existing light effort value
 
 Accepted 2026-09-25. The canvas renders Low, Medium, High, and Extra as an accessible segmented radio group. `light` remains the stored/API value to avoid rewriting snapshots and historical records. Effort changes are inference-free, affect future submissions only, preserve manual assignments and the spending ceiling, and do not mutate active or queued work.
+
+## D-0029 — Persist Yjs as explicit bytes and validate before hydration
+
+Accepted 2026-09-26. Editor, transport, snapshot, and update history use Yjs V1. Supabase `bytea` writes use explicit PostgreSQL hex rather than Node Buffer objects. Stored bytes are decoded by one established path and applied first to an isolated document; arbitrary byte stripping or decoder guessing is forbidden. The exact historical Buffer-JSON defect may be unwrapped only after backing up the original row. Unreadable rows are quarantined, never overwritten, and snapshot recovery may use only individually valid, hash-matching update history.
+
+## D-0030 — Callback failure does not erase or silently use a valid session
+
+Accepted 2026-09-26. OAuth callback processing first resolves persisted session state, exchanges each PKCE code once, and removes sensitive query parameters. Cancellation, missing codes, and rejected/reused codes are distinct from initialization. When a prior valid session survives, CoCreate identifies that account and requires an explicit continue or switch-account action; dismissing an error never authorizes a workspace. Backend membership remains authoritative.

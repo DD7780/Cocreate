@@ -86,6 +86,24 @@
 
 Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 
+## Collaboration persistence and auth callback repair (2026-09-26)
+
+| Agreed requirement | Current implementation | Verification | Remaining gap |
+| --- | --- | --- | --- |
+| Durable collaborative canvas must survive reload/build | Yjs V1 bytes now use explicit Postgres hex writes; legacy Buffer JSON is strictly decoded and validated before hydration | Read-only production audit: 16/16 snapshots had the reported malformed representation; 1,500/1,500 legacy updates decoded, passed Yjs validation, and matched stored hashes | Deploy application code; two-account live production replay remains |
+| Failed records must not destroy good data | Original rows remain untouched; quarantine is server-only; invalid snapshots recover only from validated/hash-matching history | Synthetic codec regression passes; production backup contains 16 snapshots and 1,500 updates matching originals byte-for-byte; RLS enabled with no `anon`/`authenticated` read grant | Live recovery path remains to be exercised after deployment |
+| Submission captures acknowledged participant edits once | Existing WebSocket flush precedes idempotent participant-scoped `/submit`; serialized builder promotion remains unchanged | Existing collaboration, idempotency, reconnect, and integration tests pass | Two separately authenticated hosted sessions were not available locally |
+| Login must not show a false expired-link error | Callback initializes session, strips parameters, exchanges once, distinguishes cancellation, and offers explicit Continue/Switch for a surviving session | Focused callback tests cover success, cancellation, reused code, existing session, and safe return paths | Live Google cancellation/reused-link checks require designated accounts |
+| Preserve agreed product direction | Workflow-first authority, Developer/Analyst/Researcher availability, effort, model selection, accounting, sharing, and visual direction remain unchanged | Canonical documents reconciled with source | Analyst/Researcher tools remain intentionally unavailable |
+
+- [x] Confirmed the exact production root cause using redacted hashes and byte prefixes; no token, credential, project content, or raw project identifier was logged.
+- [x] Added strict byte encoding/decoding, isolated Yjs validation, original-byte quarantine, and hash-verified update-history recovery.
+- [x] Added callback single-flight/session-aware behavior without weakening Google, password, confirmation, recovery, invitation, RLS, or membership checks.
+- [x] Full deterministic suite passed 92/92; production TypeScript/Vite build passed with only the existing large-chunk warning. No paid provider request was made.
+- [x] Applied the additive production quarantine migration. It copied all 1,516 affected records without changing originals; byte equality, RLS, and denied client read privileges were verified.
+- [ ] Application code is not deployed. Production is therefore backed up and diagnosed but not yet claimed fixed.
+- [ ] Fresh/valid/expired/reused/cancelled auth and the full two-account hosted collaboration checklist require live designated sessions.
+
 ## Email invitations, complete auth, project names, and segmented effort (2026-09-25)
 
 - [x] Added Google-preserving email/password signup, confirmation resend, login, non-enumerating recovery, authenticated password update, logout, and safe local return destinations through the existing Supabase client.
@@ -99,6 +117,14 @@ Status is evidence-based: `[x]` verified, `[-]` partial, `[ ]` not implemented.
 - [-] Public Auth settings report email and Google enabled, signup enabled, and auto-confirm disabled. Account confirmation, recovery, allowed redirect URLs, RLS/role denial, wrong-account/expired/revoked/duplicate acceptance, and cross-account rename/invite behavior still require designated live accounts and inbox testing.
 - [ ] Configure and verify Supabase custom SMTP plus `RESEND_API_KEY`/`COCREATE_EMAIL_FROM`; a provider-accepted invitation and designated-recipient receipt have not been observed.
 - [x] Production build passed with the existing non-failing large-chunk warning. Production-mode Windows Chrome smoke passed Recommended/Advanced setup, the four-option segmented effort control, editor-only Alt+X/remap/focus, compact workflow, Artifacts empty state, invalid-session recovery, and 390px zero-overflow layout.
+
+## Draggable effort toggle and visible project naming (2026-09-25)
+
+- [x] Upgraded the canvas effort picker to a true four-position range toggle: pointer dragging, track selection, and keyboard changes commit through the same owner-only inference-free effort mutation.
+- [x] Kept Low mapped to stored `light`; disabled/read-only states, frozen active runs, Recommended/Advanced behavior, and future-submission semantics are unchanged.
+- [x] Kept project names mandatory for named creation (with an explicit Untitled choice), retained owner-only persisted rename, and added an always-visible pencil affordance beside the current title.
+- [x] Increased the visibility of the existing folder-outline icon before every sidebar project while preserving truncation and full-title tooltips.
+- [ ] Verification pending for this slice.
 - [ ] Firefox, Safari, Linux, macOS, hosted account/project UI, and native screen-reader testing remain outstanding.
 - [ ] `graphify update .` was attempted after the code changes, but the Graphify executable is not installed/on PATH; the existing graph remains stale for this slice.
 

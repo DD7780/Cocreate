@@ -6,6 +6,8 @@ import { normalizeInviteEmail, normalizeProjectTitle, supabasePlatformFromEnv, s
 import { invitationEmailSenderFromEnv } from '../server/invitation-email.js';
 import { resolveSupabaseAuthConfig, safeLocalDestination } from '../src/auth-config.js';
 import { completeOAuthCallback } from '../src/oauth-callback.js';
+import { decodePersistedYjsUpdate, encodePostgresBytea } from '../server/yjs-persistence.js';
+import * as Y from 'yjs';
 
 const deployedPublicEnv={
   VITE_COCREATE_APP_ORIGIN:'https://cocreate.susan981314271.workers.dev',
@@ -63,9 +65,22 @@ test('Google callback exchanges once, reports errors, and restores only local de
   assert.equal((await completeOAuthCallback('?error=access_denied','/projects',async()=>{throw new Error('must not exchange')})).status,'denied');
   assert.equal((await completeOAuthCallback('','/projects',async()=>{throw new Error('must not exchange')})).status,'error');
   assert.equal((await completeOAuthCallback('?code=used','/projects',async()=>({error:{message:'Code already used'}}))).status,'error');
+  assert.deepEqual(await completeOAuthCallback('?error=access_denied','/projects',async()=>{throw new Error('must not exchange')},true),{status:'authenticated-error',destination:'/projects',message:'The new Google sign-in was cancelled. Your existing session is still available.'});
+  assert.equal((await completeOAuthCallback('?code=used','/projects/123',async()=>({error:{message:'Code already used'}}),true)).status,'authenticated-error');
   assert.equal(safeLocalDestination('/projects/123?tab=canvas','/projects','https://cocreate.example'),'/projects/123?tab=canvas');
   assert.equal(safeLocalDestination('https://evil.example/steal','/projects','https://cocreate.example'),'/projects');
   assert.equal(safeLocalDestination('//evil.example/steal','/projects','https://cocreate.example'),'/projects');
+});
+
+test('Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect',()=>{
+  const source=new Y.Doc();source.getText('brief').insert(0,'synthetic collaboration fixture');
+  const update=Buffer.from(Y.encodeStateAsUpdate(source)),legacy=Buffer.from(JSON.stringify(update));
+  const recovered=decodePersistedYjsUpdate(`\\x${legacy.toString('hex')}`);
+  assert.equal(recovered.legacyBufferJson,true);assert.deepEqual(recovered.bytes,update);
+  assert.equal(encodePostgresBytea(update),`\\x${update.toString('hex')}`);
+  const restored=new Y.Doc();Y.applyUpdate(restored,recovered.bytes);assert.equal(restored.getText('brief').toString(),'synthetic collaboration fixture');
+  assert.throws(()=>decodePersistedYjsUpdate('\\x7b226e6f74223a22796a73227d'),/failed Yjs V1 validation/);
+  source.destroy();restored.destroy();
 });
 
 test('auth source preserves Google and adds password, confirmation, and recovery flows',()=>{
