@@ -346,3 +346,13 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Complete a real user Google sign-in and two-account collaboration check after confirming the dashboards: Google authorized redirect URI `https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/callback`; Supabase Site URL `https://cocreate.susan981314271.workers.dev`; Supabase allowed redirect `https://cocreate.susan981314271.workers.dev/api/auth/callback`. Dashboard access and the second test account are not available in this workspace, so mocked auth is not counted.
 - [ ] Run `supabase test db` against a local Supabase CLI stack and complete immediate socket closure on membership revocation. Current ticket expiry bounds access to five minutes.
 - [ ] Move complete generated artifact restoration to private Storage. Upload/finalization boundary exists, but room promotion/rehydration still embeds recent generated files in the snapshot.
+
+## Responsiveness evidence slice — 2026-09-26
+
+- [x] Added a repeatable two-participant localhost benchmark for 2k- and 200k-character Yjs documents with five cold samples; environment, raw samples, medians, traffic, subscriptions, sync, flush, and reconnect are recorded in `docs/harness/responsiveness.md`.
+- [x] Removed the redundant full room-state broadcast from the typing path. Incremental Yjs propagation, pending durable edit records, save acknowledgement, permissions, and explicit submission remain unchanged. The measured single-edit peer scenario fell from 9 to 8 messages and from 10,958 to 8,797 bytes for the small document.
+- [x] Removed the duplicate initial HTTP room-state fetch; initial state and document sync now share the authenticated WebSocket. The HTTP read remains for terminal reconnect diagnosis.
+- [x] Split the hosted auth/project shell from the heavy workspace/editor chunk. Initial login/projects JavaScript fell from 310.98 kB gzip to about 129.19 kB gzip before opening a workspace (58% reduction).
+- [x] Full controlled suite passed 92/92, TypeScript/Vite production build passed, and Windows Chrome production smoke passed after its stale effort-control assertion was aligned with the current accessible range control.
+- [-] Localhost timing medians overlapped, so no latency improvement is claimed. Real Supabase login timing, warm-cache/project-switch traces, throttled real networks, two real browser accounts, provider queue/execution timing, Firefox, Safari, Linux, and macOS remain unmeasured.
+- [!] `graphify query` and `graphify update .` were attempted, but the Graphify executable remains unavailable in this workspace.

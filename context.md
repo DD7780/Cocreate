@@ -79,6 +79,10 @@ On 2026-09-19, the submission/Alt+X slice passed the full 45-test controlled sui
 
 `pnpm dev` starts the application, normally at http://localhost:5173. `pnpm test` runs the TypeScript test suite. `pnpm build` checks TypeScript and builds the Vite client. `pnpm start` serves production mode after a build. See README.md for prerequisites and configuration. This document does not establish whether a server is currently running.
 
+## Responsiveness slice (2026-09-26)
+
+After the collaboration/auth regression suite passed, a five-sample, two-participant localhost benchmark identified redundant full-state traffic on every incremental edit and an eager workspace bundle on authentication routes. The retained changes remove that redundant state broadcast, rely on the authenticated WebSocket for successful initial state, and lazy-load the editor/workspace after the project shell. Small-document peer traffic fell from 10,958 to 8,797 bytes in the measured scenario; the login/projects JavaScript path fell from 310.98 kB to about 129.19 kB gzip. Local timing samples overlap, so no latency improvement is claimed. Full evidence, limitations, and commands are in `docs/harness/responsiveness.md`; 92 tests, the production build, and Windows Chrome smoke passed.
+
 ## Suggested next work
 
 Choose the next incomplete criterion from the canonical checklist after inspecting actual code. Highest-risk boundaries are real execution isolation and durable coordination; verification gates are required before calling results functionally verified. Preserve the current working vertical slice and avoid a new framework or swarm rewrite.

@@ -132,6 +132,14 @@ The latest 50 `AIRunRecord` values persist in room state without prompts, docume
 
 This remains an enforceable estimate, not a provider invoice, credit ledger, or tax accounting system. Unsupported cache prices are absent rather than zero; provider/account-specific fees and usage categories remain explicit uncertainty. Recoverable references to omitted context remain a work item. Cache by source/specification/model-policy version where safe; unchanged drafts and unchanged eligible fingerprints should not create extra inference. Never silently switch models to meet a budget.
 
+## Responsive delivery and synchronization
+
+Hosted authentication and project navigation load independently from the editor/Tiptap/Yjs workspace chunk. Opening a workspace lazily loads that secondary code and then establishes one project-scoped provider. The WebSocket is the sole successful initial room-state/document path; HTTP state reads are reserved for diagnosing failed reconnects.
+
+Document edits use incremental Yjs frames. The server records each authorized edit, schedules its durable snapshot acknowledgement, and forwards the incremental frame without broadcasting an otherwise unchanged full `RoomView`. Workflow, participant, permission, AI, decision, and build transitions still broadcast authoritative room state. This isolation removes React-wide state updates from the keystroke path without weakening persistence or submission boundaries.
+
+Performance evidence is kept in `docs/harness/responsiveness.md`. Engineering samples must identify environment, data size, participants, count, and cold/warm condition; they are not production percentiles. Provider queue and execution timings remain separate from interface responsiveness and require authorized representative runs.
+
 ## Collaboration connection lifecycle
 
 The browser owns one generation-guarded WebSocket provider per mounted workspace. It distinguishes initial connection, confirmed connection, transient reconnect, and terminal authentication/room/permission failure. An authenticated state read disambiguates the browser's otherwise opaque failed-upgrade event. Transient retries use capped exponential backoff with jitter; provider disposal invalidates stale handlers, clears its timer, rejects outstanding flushes, and removes Yjs/awareness listeners.
