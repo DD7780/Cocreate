@@ -24,6 +24,8 @@ Model routing has a versioned deterministic foundation. Developer uses the econo
 
 As of 2026-09-21. Recheck the source and checklist before acting; this handoff records controlled tests, a production build, browser interaction checks, and live collaboration diagnostics, but no paid live-provider semantic evaluation.
 
+The 2026-09-26 accounting repair begins at the physical provider HTTP boundary. Room-scoped model discovery and explicit capability checks now create unique attempt records for transport retries and structured-output repairs, record normalized usage/outcomes without private inputs, and show setup usage separately from latest-build and cumulative generation totals. The controlled suite passes 93/93 and production build passes. Interpretation/executor adoption of this ledger, a single durable cross-agent execution budget, awaited hosted pre-dispatch persistence, context token budgeting, capability-result reuse, and restart reconciliation remain unfinished and must not be presented as complete.
+
 ## Product
 
 Multiple users write in one shared canvas. Explicit participant submissions invoke personal agents to interpret authenticated contributions; typing itself makes no model call; a shared requirement registry separates proposals from accepted intent; one builder produces a shared application preview. Priorities: intent correctness, contradictions, low hallucination, cost efficiency, responsiveness, bounded context, and recovery.

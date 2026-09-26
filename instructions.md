@@ -59,6 +59,7 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - For functional changes, run `pnpm test` and `pnpm build` when feasible. Document any blocker and exact command/result.
 - Browser checks are needed for visible interaction claims. Compilation does not establish that a generated product works.
 - Controlled provider tests and live provider tests must be reported separately. Do not spend credentials for unrelated UI/documentation work.
+- Count and reconcile every physical provider request at the lowest shared HTTP boundary. A retry, fallback, or repair is a new request with its own ID and purpose; never infer physical request count from logical runs or aggregate usage. Keep setup-test usage separate from generation and preserve unknown usage after ambiguous failures.
 - Do not change tests to conceal failures or assert success without execution evidence.
 - After code changes run `graphify update .` per AGENTS.md. Documentation-only work does not require an AST update.
 - Update the canonical checklist with evidence and refresh context.md when verified state changes. Keep API documentation synchronized with route and type changes.

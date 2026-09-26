@@ -113,6 +113,7 @@ RoomView includes:
 - `requirements`, authoritative `conflictGroups`, derived compatibility `contradictions`, `specificationRevision`, `requirementsRevision`.
 - `latestVersion: number | null`, `versions`, optional `lastError`.
 - `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, cumulative `usage`, and the last 50 `aiRuns`.
+- The last 100 redacted `providerCalls` and separately aggregated `setupUsage`. A provider call is one physical HTTP attempt, so retries and structured-output repairs have distinct IDs and records. Setup usage includes explicit connection/capability checks and is not merged into project-generation totals.
 - Optional `savedAt` and `persistRevision`.
 
 `AIConnection` includes safe named connections, optional default personal/shared-executor assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` workflow-mode/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key. On normalization, any legacy General app, Engineer, Designer, Web developer, or Motion designer active preset gains `workflowMode: developer`; its assignments, encrypted credential, effort, overrides, resolved layers, and spending ceiling are unchanged. Historical run `specialty` fields remain readable and are not rewritten.

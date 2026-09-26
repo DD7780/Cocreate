@@ -356,3 +356,14 @@ Documentation-only source inspection; historical test counts above are retained,
 - [x] Full controlled suite passed 92/92, TypeScript/Vite production build passed, and Windows Chrome production smoke passed after its stale effort-control assertion was aligned with the current accessible range control.
 - [-] Localhost timing medians overlapped, so no latency improvement is claimed. Real Supabase login timing, warm-cache/project-switch traces, throttled real networks, two real browser accounts, provider queue/execution timing, Firefox, Safari, Linux, and macOS remain unmeasured.
 - [!] `graphify query` and `graphify update .` were attempted, but the Graphify executable remains unavailable in this workspace.
+
+## Token-efficiency and physical usage-accounting repair — 2026-09-26
+
+- [x] Confirmed the known causes in code: setup capability checks spend generation calls outside project usage; provider transport retry and structured repair loops are nested; the header previously paired cumulative tokens with latest-run cost; request sizing used a byte ceiling rather than model-aware token accounting.
+- [x] Added a lowest-boundary physical request record with unique call ID, workspace/run/submission links when supplied, purpose/retry reason, provider/model/configuration/pricing references, timestamps, provider request ID, normalized usage, estimated charge completeness, outcome, and safe error kind. Prompts, document contents, and credentials are excluded.
+- [x] Room-scoped discovery and capability checks persist and expose the ledger. Setup usage is displayed separately from last-build and cumulative project-generation usage.
+- [x] Added a synthetic test proving a transport retry and structured-output repair become three unique physical calls while cached/reasoning usage remains normalized without double charging. No provider credits were used.
+- [x] Validation passed: 93/93 controlled tests and TypeScript/Vite production build. Only the existing non-failing large-chunk warning remains.
+- [ ] Extend the physical ledger context to every personal interpretation and shared executor call, await hosted intent persistence before dispatch, reconcile orphaned intents after restart, and restore ledger records during every local/hosted hydration path.
+- [ ] Replace layer-local reservations with one durable per-workflow execution budget covering interpreters, shared executor, repairs, retries, fallbacks, tests, cancellation, and uncertain outcomes.
+- [ ] Enforce model-aware input token budgets, targeted edit payloads and stable context references; add capability-result expiry/reuse keyed by provider/model/configuration/test version; complete the requested scenario matrix and two-participant verification.
