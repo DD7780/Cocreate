@@ -2,7 +2,7 @@
 
 CoCreate is a multiplayer agent-workflow workspace. Multiple authorized people collaborate on one durable workflow: they contribute briefs and evidence, submit explicit steering, inspect execution, resolve requirement decisions, and share versioned artifacts. The workflow—not the shared document or a model conversation—is the primary object. Documents, code, previews, reports, datasets, and charts are artifacts of that workflow.
 
-CoCreate exposes exactly three workflow templates: Developer, Analyst, and Researcher. A template configures the coordinator's task policy, tools, output, and verification; it never creates one permanent worker per participant. Low, Medium, High, and Extra are the user-facing effort settings within each template; the stored `light` value remains backward compatible and is displayed as Low. Setup defaults to one provider connection, never buys a routing call, preserves Advanced assignments, and shows canonical provider rates, separately scoped allowances, an estimated one-pass maximum, and a distinct user spending limit.
+CoCreate currently exposes Developer only. The normal hosted path is sign in, create or open a project, write, then **Build my changes**. New projects preselect a shared managed builder and use a fixed economical personal interpreter. Advanced preserves own API connections, discovery, manual model IDs, explicit tests, custom role assignments, and supported effort controls. Researcher and Analyst are absent from active setup and navigation; historical records remain readable.
 
 Provider usage is presented by scope. Connection discovery/capability-test usage is separate from the latest build and cumulative project generation usage. A physical provider retry or structured-output repair is a separate request, even when the user initiated one logical action; missing usage remains unknown rather than zero.
 
@@ -10,7 +10,7 @@ Hosted collaboration must preserve original Yjs bytes end to end. Stored snapsho
 
 The user spending limit bounds aggregate cost; it is not a token allowance. Developer effort controls the per-call input/output limits. CoCreate may locally normalize narrowly defined JSON-envelope defects such as raw control characters inside strings or trailing commas, but the result must still pass the exact schema and project-operation validators. Incomplete structured output receives one bounded compact retry with both attempts accounted; repeated failure asks the owner to select a higher effort or compatible model instead of silently upgrading.
 
-Developer is implemented using the bounded app-building pipeline. Analyst and Researcher are shown but unavailable: Analyst requires validated data ingestion and isolated reproducible computation; Researcher requires controlled retrieval, source capture, and citation verification. The UI and server reject unavailable-mode activation rather than simulating it. Legacy coding presets migrate to Developer while their exact connections, models, credentials, effort, participant overrides, and historical records remain intact. Platform-managed AI remains unavailable until reliable account authentication, billing authorization, quotas, atomic reservations, and an auditable ledger exist.
+Developer uses the bounded app-building pipeline. Managed dispatch requires the server-only founder credential, authenticated project membership, an explicit funding account and authorized spender, credit, and an atomic reservation for each physical provider call. Unknown external outcomes retain their reservation. Failed BYOK never falls back to founder funds, and managed mode never borrows a personal key. Existing BYOK projects retain their settings until explicit opt-in; changing to managed preserves those settings for later reuse. The versioned managed catalog is capped at 15 enabled builders; Gemini 3.8 Flash is provisional pending comparative qualification. Missing credentials or accounting fail closed.
 
 Created: 2026-09-18. This file defines product intent, not proof of implementation.
 
@@ -23,7 +23,7 @@ Core loop: collaborative brief -> authenticated steering submission -> accepted 
 ## Users
 
 - Collaborator: contributes ideas and tests the product without needing to operate a coding environment.
-- Workspace owner: connects providers, assigns models, and manages the room's AI configuration.
+- Workspace owner: chooses the shared builder, authorizes project spenders, and optionally manages Advanced provider connections.
 - Initial market hypothesis: small product teams and agencies prototyping with clients. Willingness to pay and market fit are not yet validated.
 
 ## Priorities
@@ -44,18 +44,18 @@ Core loop: collaborative brief -> authenticated steering submission -> accepted 
 - Keep writing free of model calls. Provide **Build my changes** to capture one participant's unsubmitted edits, briefly batch nearby submissions, and run one shared builder without including another participant's draft.
 - Product shows the generated interactive application, not a generic progress tracker or canned demo.
 - Keep the last successful preview when a candidate fails.
-- Dedicated API connections UI with owner-managed credentials and role/model assignments.
-- The persistent API connections entry leads with CoCreate Recommended, clearly states that an owner-provided API powers it, and provides a prominent route to add/edit/disconnect, discovery/manual model testing, and assignments in Advanced. Tests are explicit, may consume provider usage, and separate reachability, text, interpreter schema, and current Developer executor compatibility.
+- Compact managed Builder selector with three featured choices, further catalog candidates, credit visibility, and an Advanced entry. Opening or changing settings never invokes inference.
+- Advanced API connections preserve add/edit/disconnect, discovery/manual model testing, and personal/builder assignments. Tests are explicit and may consume provider usage.
 - For every assigned layer, show source-linked, date-verified input, cached-input when supported, output, and reasoning billing terms. Do not render unavailable cache rates as zero.
 - Keep per-interpreter allowances distinct from the number of submitted participants and count the one shared builder once. After a build, show normalized provider usage, interpretation/builder/repair charges, outcome, and verification status; unknown usage remains unknown.
 - Use a clean dark editorial workspace with restrained neubrutalist accents: expressive serif brand/headings, calm high-contrast writing surfaces, compact controls, and fine structural borders. Do not use liquid-metal, metallic, glassmorphism, or decorative shader effects. The document remains the primary surface; supporting panels must not compete with it.
-- Present Low, Medium, High, and Extra in one compact ChatGPT-style draggable AI effort toggle beside the canvas, with pointer, click, and keyboard operation. The owner can use it with either Recommended or Advanced assignments; Advanced keeps its chosen models while the level changes bounded input/output and repair allowances for future frozen submissions.
+- Hide effort selection from the normal managed path. Advanced retains supported detailed effort controls for future submissions.
 
 ## Scope and non-goals
 
 The first generated-product scope is small React/TypeScript frontend applications. Arbitrary backends, unrestricted package installation, production systems, and unsandboxed shell access are outside that scope.
 
-Do not add billing, enterprise administration, extra dashboards, autonomous developer swarms, new hosting, or integrations without an explicit requirement. Do not replace real generation with simulated output. Test fixtures may simulate providers but must be identified as such.
+The managed credit entitlement boundary is in scope; payment checkout is separate work. Do not add enterprise administration, autonomous developer swarms, new hosting, or unrelated integrations. Do not replace real generation with simulated output. Test fixtures may simulate providers but must be identified as such.
 
 Shared preview means everyone sees the same application version; shared end-user data inside that generated application is a separate capability.
 

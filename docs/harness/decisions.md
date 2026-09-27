@@ -126,3 +126,15 @@ Accepted 2026-09-26. OAuth callback processing first resolves persisted session 
 ## D-0031 — Count physical provider requests at the HTTP boundary
 
 Accepted 2026-09-26. A user action, workflow run, or combined provider usage object is not the accounting unit. Every outbound provider HTTP attempt receives a unique call ID and records dispatch intent, purpose, retry reason, frozen configuration/pricing references, timing, outcome, provider request ID when available, and normalized usage. Transport retries and structured-output repairs are separate calls. Setup tests are displayed separately from generation, unknown usage is not coerced to zero, and prompt/document/credential content is excluded from the ledger.
+
+## D-0032 — Developer-only managed default with preserved Advanced settings
+
+Accepted 2026-09-27; supersedes D-0019 and earlier three-mode/default-BYOK presentation decisions for new hosted projects. Developer is the only activatable workflow. New projects preselect a managed shared builder with a fixed economical interpreter. Normal setup has one Builder selector and no effort control. Existing BYOK projects remain unchanged until explicit owner opt-in, and returning to managed retains custom settings. Researcher/Analyst history is readable but cannot be newly activated.
+
+## D-0033 — Founder funding is an explicit project authorization
+
+Accepted 2026-09-27. The hosted account/project funding row and owner-authorized spender row are distinct from invitation membership. A physical managed request requires membership, configured server credential, positive credit or bounded allowance, spending/concurrency limits, atomic reservation, and durable reconciliation. Unknown provider outcomes keep the reservation. Managed and BYOK never silently fund one another. Credit starts at zero; checkout is separate. Migration and live billing tests remain pending.
+
+## D-0034 — Curated builders and measured qualification
+
+Accepted 2026-09-27. The versioned server allowlist has no more than 15 enabled exact IDs. Gemini 3.8 Flash remains the provisional default, DeepSeek V4.1 Flash the budget featured choice, and Claude Sonnet 5 the higher-capability candidate. Published metadata is not a quality ranking. The managed interpreter is provisionally DeepSeek pending comparative tests against GPT-6 Luna and Qwen3.8 Flash. Model/configuration/rate policy freezes per submission. A repeatable fixture and scoring gate exist; paid comparative results have not been run.

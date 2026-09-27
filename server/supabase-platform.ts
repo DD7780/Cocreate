@@ -62,6 +62,54 @@ export class SupabasePlatform {
     return membership;
   }
 
+  async managedFunding(projectId:string,userId:string) {
+    await this.requireMembership(projectId,userId);
+    const {data:funding,error}=await this.admin.from('project_managed_funding')
+      .select('funding_account_id,max_concurrent,daily_limit_usd,max_request_usd')
+      .eq('project_id',projectId).single();
+    fail('Managed funding lookup failed',error);
+    const {data:account,error:accountError}=await this.admin.from('managed_credit_accounts')
+      .select('balance_usd,reserved_usd').eq('account_id',funding!.funding_account_id).single();
+    fail('Managed credit lookup failed',accountError);
+    const {data:spenders,error:spendersError}=await this.admin.from('project_managed_spenders')
+      .select('user_id').eq('project_id',projectId);
+    fail('Managed spender lookup failed',spendersError);
+    return {fundingAccountId:funding!.funding_account_id,
+      availableUsd:Math.max(0,Number(account!.balance_usd)-Number(account!.reserved_usd)),
+      maxConcurrent:Number(funding!.max_concurrent),dailyLimitUsd:Number(funding!.daily_limit_usd),
+      maxRequestUsd:Number(funding!.max_request_usd),authorizedSpenderIds:(spenders||[]).map(row=>row.user_id),
+      canManage:(await this.membership(projectId,userId))?.role==='owner'};
+  }
+
+  async setManagedSpender(projectId:string,actorId:string,memberId:string,authorized:boolean) {
+    await this.requireMembership(projectId,actorId,['owner']);
+    await this.requireMembership(projectId,memberId,['owner','editor']);
+    if(memberId===actorId&&!authorized)throw Object.assign(new Error('The funding owner remains an authorized spender.'),{status:400});
+    if(authorized){const {error}=await this.admin.from('project_managed_spenders')
+      .upsert({project_id:projectId,user_id:memberId,authorized_by:actorId},{onConflict:'project_id,user_id'});
+      fail('Managed spending authorization failed',error);
+    }else{const {error}=await this.admin.from('project_managed_spenders')
+      .delete().eq('project_id',projectId).eq('user_id',memberId);
+      fail('Managed spending revocation failed',error)}
+    return {ok:true};
+  }
+
+  async reserveManagedRequest(input:{callId:string;projectId:string;actorId:string;modelId:string;catalogVersion:string;reservedUsd:number}) {
+    const {error}=await this.admin.rpc('reserve_managed_request',{
+      p_call_id:input.callId,p_project_id:input.projectId,p_actor_id:input.actorId,
+      p_model_id:input.modelId,p_catalog_version:input.catalogVersion,p_reserved_usd:input.reservedUsd,
+    });
+    fail('Managed request blocked',error);
+  }
+
+  async settleManagedRequest(input:{callId:string;actualUsd:number|null;providerRequestId?:string;usage:Record<string,unknown>}) {
+    const {error}=await this.admin.rpc('settle_managed_request',{
+      p_call_id:input.callId,p_actual_usd:input.actualUsd,
+      p_provider_request_id:input.providerRequestId||null,p_usage:input.usage,
+    });
+    fail('Managed usage reconciliation failed',error);
+  }
+
   async listProjects(accessToken:string,options:{search?:string;archived?:boolean;offset?:number;limit?:number}={}) {
     const user=await this.verifyUser(accessToken);
     const client=this.userClient(accessToken),limit=Math.min(50,Math.max(1,options.limit||30)),offset=Math.max(0,options.offset||0);

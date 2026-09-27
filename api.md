@@ -1,6 +1,22 @@
 # CoCreate API reference
 
-Source-inspected 2026-09-23. Describes the current implementation, not proposed endpoints. Canonical sources: `server/index.ts`, `server/rooms.ts`, `server/event-store.ts`, `server/ai-presets.ts`, `server/auth.ts`, `src/types.ts`, and `src/provider.ts`.
+Source-inspected 2026-09-27. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
+
+## Hosted managed AI
+
+Hosted requests use a Supabase bearer session and project membership. New projects are Developer/managed by default. The shared builder is selected from the server's versioned exact-ID allowlist; the personal interpreter is fixed. These routes never return the founder OpenRouter key. The funding account and authorized spenders are separate from membership, and a zero-credit project cannot dispatch a managed provider call. The additive `202609270001_managed_ai_funding.sql` migration must be applied before these contracts are usable.
+
+| Method and path | Authorization | Behavior |
+| --- | --- | --- |
+| GET `/api/rooms/:id/ai/managed-catalog` | Project member | Versioned, redacted builder metadata, published rates, provisional evidence, and availability; no inference |
+| GET `/api/rooms/:id/ai/managed-funding` | Project member | Funding account, available balance, limits, and spender authorization; no credential |
+| PUT `/api/rooms/:id/ai/managed-spenders/:accountId` | Project owner | `{authorized: boolean}` explicitly grants or revokes project spending for a member |
+| POST `/api/rooms/:id/ai/managed-builder` | Project owner | `{modelId: string}` selects an enabled exact catalog ID for future submissions only |
+| POST `/api/rooms/:id/submit` | Project editor/owner | Authenticated participant steering; managed physical calls reserve credit atomically before dispatch |
+
+The provider-call ledger stores one row per physical attempt, including frozen model/catalog/rate policy, reservation, outcome, and reported charge when available. Timeout or unknown charge remains reserved/uncertain. Setup tests and project generation are reported separately. The hosted `/build` and `/process` compatibility routes return 410; managed `/reinterpret` returns 409 pending a submission-based implementation. The local harness keeps its older compatibility routes. Advanced/BYOK remains available and never falls back to managed funding.
+
+The remainder of this file includes earlier local-room and BYOK contracts. Statements below that claim no hosted account, no credit ledger, three active modes, or callable hosted legacy build routes are superseded by this section.
 
 ## Transport and authentication
 

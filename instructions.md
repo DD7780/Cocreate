@@ -39,8 +39,9 @@ Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Grap
 - Record action intent, authorization, outcomes, and unknown outcomes honestly.
 - Never silently switch models, providers, or simulated generation.
 - Treat platform-managed AI as a separate credential, account, permission, and accounting domain. Room invitation identity is not billing identity, and BYOK must never fall back to managed funding silently.
-- Do not simulate Researcher retrieval or Analyst computation. Keep those modes unavailable until controlled network tools, validated data ingestion, and genuinely isolated execution exist.
-- Keep mode/effort mappings, availability reasons, exact model IDs, rate categories, source URLs, verification dates, evidence, and limitations canonical in `server/ai-presets.ts`; do not copy the changing model/rate matrix into UI or documentation.
+- Developer is the only active workflow. Keep Researcher and Analyst out of new setup and reject activation through the API; preserve historical records.
+- The managed builder catalog and published rates are canonical in `server/managed-catalog.ts`; the older BYOK recommendation matrix remains in `server/ai-presets.ts`. Do not copy changing rates into UI or documents.
+- Managed provider requests require membership, explicit funding and spender authorization, credit, atomic reservation, and durable reconciliation. Keep the founder key server-only and retain reservation for unknown external outcomes. Use deterministic permissions, budgets, validation, and promotion.
 - Updating catalog rates requires current official provider evidence, a pricing-version change, controlled resolver/budget tests, and an explicit note when cached/reasoning/tool billing cannot be reconciled. Recommendations stay provisional until authorized paid comparison evidence exists.
 - Preset resolution is server-authoritative and capability-gated. Selector changes must remain inference-free. Freeze resolved versions/limits per submission and builder run; reserve before dispatch and retain uncertain timeout usage.
 - Use targeted context and bounded retries. Do not truncate serialized JSON or reset budgets by opening another run.

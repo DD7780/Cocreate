@@ -1,6 +1,20 @@
 # CoCreate
 
-CoCreate is a local-first multiplayer agent-workflow workspace. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. The current Developer template uses one serialized executor to produce a React product in a restricted preview; Analyst and Researcher remain unavailable until their real tools and verification exist.
+CoCreate is a multiplayer agent-workflow workspace for collaborative software building. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. Developer is the only active workflow; one serialized builder produces a React product in a restricted preview. Historical Analyst and Researcher records remain readable.
+
+## Managed hosted setup (current)
+
+New hosted projects preselect a shared managed builder and a fixed personal interpreter. The normal path is sign in, create/open a project, write, then **Build my changes**; the compact Builder selector offers three featured choices and more catalog entries, usage/credit state, and Advanced settings. Opening settings, changing builders, typing, saving, and navigating never invoke inference. Existing BYOK projects retain their connection and assignments until explicit owner opt-in. Advanced preserves discovery, exact model IDs, explicit capability tests, custom assignments, and supported effort controls.
+
+Before managed inference, apply `supabase/migrations/202609270001_managed_ai_funding.sql`, set server-only `COCREATE_MANAGED_OPENROUTER_KEY`, and deliberately credit an account in the server-only `managed_credit_accounts` entitlement table. The project owner must authorize each additional spending member; membership alone does not grant spend. Credit starts at zero, so missing migration, key, authorization, or balance blocks provider dispatch. Do not expose the founder key in a `VITE_` variable or client bundle. The migration and live billing/provider flow have not been verified in this workspace. Payment checkout is separate work.
+
+Deployment order: apply the additive SQL migration with a privileged database operator; verify its tables, functions, grants, and zero starting balances; configure the credential in server secrets; credit a specific account with an explicitly approved amount; authorize project spenders; then run two-account credit/concurrency checks and a small live provider request before opening managed access. The SQL migration, provider bill reconciliation, and hosted browser flow require external verification. For rollback, remove the server credential or put the funding account on `billing_hold`, then roll back the application release. Keep the ledger tables, project IDs, snapshots, and audit rows for reconciliation; do not reverse the migration by deleting them.
+
+Managed metadata is in `server/managed-catalog.ts`; qualification fixtures and the offline scorer are in `server/managed-qualification.ts` and `scripts/managed-qualification.ts`. Run `pnpm exec tsx scripts/managed-qualification.ts plan` before funding any evaluation. Gemini 3.8 Flash and the DeepSeek interpreter are provisional choices; no paid comparative qualification has run. Catalog rates and endpoint policy require verification before production credit is added.
+
+### Historical local/BYOK documentation
+
+The sections below describe earlier local-room and BYOK workflows. Their claims that owner keys are the default, three modes appear in setup, or managed credit does not exist are superseded by the hosted setup above.
 
 The right-side workflow panel is backed by durable server records. It shows the workflow phase/controller, planned and active tasks, safe activity summaries with an event cursor, and the latest promoted artifact's verification state. Compilation is labeled unverified unless functional acceptance checks actually passed. A server restart interrupts unfinished runs/tasks and waits for review rather than silently repeating side effects.
 

@@ -367,3 +367,15 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Extend the physical ledger context to every personal interpretation and shared executor call, await hosted intent persistence before dispatch, reconcile orphaned intents after restart, and restore ledger records during every local/hosted hydration path.
 - [ ] Replace layer-local reservations with one durable per-workflow execution budget covering interpreters, shared executor, repairs, retries, fallbacks, tests, cancellation, and uncertain outcomes.
 - [ ] Enforce model-aware input token budgets, targeted edit payloads and stable context references; add capability-result expiry/reuse keyed by provider/model/configuration/test version; complete the requested scenario matrix and two-participant verification.
+
+## Developer-only managed-model slice — 2026-09-27
+
+- [x] Inspected the existing provider ledger and preserved the prior generator edit. Added a versioned exact-ID catalog of 13 candidates, three featured choices, and provisional Gemini default; there is no automatic model import.
+- [x] Added server-only managed OpenRouter routing with per-physical-request reservation and settlement, privacy/price/parameter constraints, conservative complete-request input cap, reported-cost capture, and uncertain-outcome retention.
+- [x] Added additive Supabase funding, spender authorization, account/project limits, zero starting credit, and server-only reserve/settle functions. The migration has not been applied or live database tested.
+- [x] New hosted projects select Developer/managed; existing BYOK settings remain. The normal workspace has a compact Builder selector, credit state and Advanced entry; managed effort and Researcher/Analyst setup are hidden. Hosted legacy build/process routes are disabled.
+- [x] Added nine qualification fixtures and an offline multi-example scorer. No paid comparison, human visual rubric, or functional/visual acceptance run has occurred.
+- [x] Local validation: `pnpm test` passed 97/97, `pnpm build` passed, `pnpm exec tsx scripts/managed-qualification.ts plan` produced the fixture plan, `git diff --check` passed, and `graphify update .` refreshed the graph. These checks use mocks/local code, not live Supabase or OpenRouter.
+- [ ] Apply and test the SQL migration with two accounts, concurrent reservations, spender revocation, zero credit, uncertain outcomes, and billing reconciliation.
+- [ ] Configure the server-only credential and a deliberately funded account; qualify exact endpoints, reasoning parameters, interpreter candidates, and builder outcomes under an authorized budget.
+- [ ] Verify hosted managed flow in a browser with real Supabase auth, project membership, collaboration, conflict handling, preview promotion, and rollback.
