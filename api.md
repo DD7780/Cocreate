@@ -1,8 +1,12 @@
 # CoCreate API reference
 
-Source-inspected 2026-09-27. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
+## Active hosted OpenRouter BYOK (2026-09-28)
 
-## Hosted managed AI
+Hosted routes require a signed project ticket and membership. `POST /api/rooms/:id/ai/openrouter/connect` accepts `{apiKey}`, validates through OpenRouter `/key` and discovers `/models` without generation, and returns redacted lease metadata. `POST /api/rooms/:id/ai/openrouter/models` accepts `{handle,interpreterModel,builderModel}` and validates both exact IDs. `PUT /api/rooms/:id/ai/openrouter/spenders/:memberId` accepts `{authorized:boolean}` for a project editor or owner. `POST /api/rooms/:id/ai/openrouter/disconnect` revokes the lease. The project owner controls these mutations. `/api/rooms/:id/submit` remains the hosted generation entry. Obsolete hosted `/ai` routes return 410, and managed dispatch is rejected even for historical assignments. The key is never serialized into room state or snapshots. `POST /api/rooms/:id/retry-build` with a unique `{requestId}` explicitly retries accepted requirements after a failed build using the currently selected BYOK models; it does not reinterpret edits. BYOK has no CoCreate dollar or call-count gate. Room state exposes recent physical provider requests and their reported token usage; incomplete usage stays marked. Lease expiry or restart requires reconnecting. Historical API sections below are superseded for the active hosted MVP.
+
+Source-inspected 2026-09-29. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
+
+## Historical hosted managed AI
 
 Hosted requests use a Supabase bearer session and project membership. New projects are Developer/managed by default. The shared builder is selected from the server's versioned exact-ID allowlist; the personal interpreter is fixed. These routes never return the founder OpenRouter key. The funding account and authorized spenders are separate from membership, and a zero-credit project cannot dispatch a managed provider call. The additive `202609270001_managed_ai_funding.sql` migration must be applied before these contracts are usable.
 
@@ -88,7 +92,7 @@ type ModelChecks = {
 
 Formats are configuration options, not a promise that all providers share the OpenAI protocol. Adapters own provider-specific behavior. Successful model discovery returns the account-visible IDs and the client presents them as selectable options while preserving exact manual entry. Discovery is not proof that the account can generate with every listed model. Capability checks issue inference requests and may consume usage.
 
-## Legacy AI routes (currently retained)
+## Legacy AI routes (local compatibility only; hosted routes return 410)
 
 Owner-only; use the named-connection API for new UI work.
 
@@ -201,3 +205,9 @@ The Vite browser client supports Google PKCE and Supabase email/password authent
 | `POST /api/invites/accept` | authenticated account with matching confirmed email | transactionally and idempotently consume a valid invitation and add membership |
 
 Invitation tokens are 256-bit random values and only SHA-256 hashes are stored. Pending invites expire, may be revoked, are limited to 30 creations/resends per actor per hour, and are unique per active project/recipient. `deliveryState` is `sent`, `failed`, or `configuration_required`; `sent` means the email provider accepted the request, not that delivery is confirmed. In Supabase mode, legacy room creation and display-name join endpoints are disabled. Preview and download access require the project ticket. Hosted WebSocket origins must match `COCREATE_APP_ORIGINS`; viewers may receive state/awareness but cannot submit Yjs updates or room mutations.
+
+## Client integration notes — 2026-09-28
+
+No route schema changes in this slice. POST /api/rooms/:id/ai/managed-builder remains owner-authorized and returns modelId plus catalogVersion. The client checks the returned modelId; selecting does not dispatch inference or require a successful funding query. Credit and spender checks still apply to actual generation. Only metadata_verified catalog entries can be selected.
+
+Outgoing WebSocket Yjs updates may be coalesced for 40 ms; the binary frame format is unchanged. The client drains pending changes before the existing flush request. Device-saved status comes from IndexedDB transaction completion; synced status still comes from the server. Cache hydration follows an authenticated room-state GET and does not confer authorization.

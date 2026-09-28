@@ -1,6 +1,23 @@
 # Harness architecture
 
-## Current managed-model boundary (2026-09-27)
+## Active hosted BYOK boundary (2026-09-28)
+
+New hosted projects hydrate with disconnected AI and no assigned models. `server/byok-lease.ts` validates the owner OpenRouter key via `/api/v1/key`, reads `/models`, and retains the key only in a two-hour per-project process-memory lease. Safe state exposes an opaque handle, expiry, model metadata, sponsor ID and authorized spender IDs. `server/rooms.ts` freezes both explicit model IDs and rates per submission, checks the lease and spender at dispatch, and records every physical request and its reported usage without a CoCreate BYOK spending or call-count gate. `server/index.ts` retires obsolete hosted AI routes; managed dispatch is rejected in the manager. No credential, funding, model, or demo fallback exists. Historical assignments, Yjs data, versions, audit events and billing rows remain. Numeric token usage is retained in redacted provider events; legacy events whose token fields were already redacted remain marked unknown. Failed build status and accepted requirements survive restart for an explicit retry. Metadata compatibility is not paid capability qualification. The managed boundary below is superseded history.
+
+## Browser recovery prototype and transport batching — 2026-09-28
+
+The current `main` visual port includes transport batching but does not include the separate browser draft cache, WorkflowBoard, or comic stylesheet. The recovery and alternate visual descriptions below record the unmerged prototype; they are not active behavior in this release.
+
+src/local-drafts.ts implements a native IndexedDB recovery store (cocreate-drafts-v1/documents), keyed by JSON [roomId, participantId]. Updates merge atomically in a read/write transaction to preserve competing tabs. Each record is bounded to 8 MiB; failures retain the existing record and surface an unavailable state. Corrupt reads are validated on an isolated Y.Doc before touching the live editor. Credentials, accepted requirements, billing and run records are not cached here.
+
+Workspace verifies its room-state authorization before loading the cached Yjs document, then creates the existing collaboration provider. Network-independent cold startup is not implemented. The cache is browser-managed, may be evicted, and is not an authoritative backup. Explicit account/persistence purge UI remains pending.
+
+CoCreateProvider coalesces local Yjs update bursts over 40 ms. Explicit flush drains the pending update before sending the existing flush acknowledgement request. Reconnect still uses state-vector synchronization. The server retains its existing persistence and permission checks; this reduces burst write frequency, not total durable state size. No claim of Cloudflare capacity improvement has been benchmarked.
+
+src/WorkflowBoard.tsx renders actual workflow projections. src/comic.css layers the new visual system over established layouts; generated artifact preview styling remains isolated.
+
+
+## Historical managed-model boundary (2026-09-27)
 
 The active product workflow is Developer only. A new hosted project starts in managed mode with one fixed economical interpreter per submitting participant and one owner-selected shared builder; neither is always running. Existing BYOK projects retain their exact configuration until the owner explicitly opts in. The Advanced connection path remains available. Earlier three-mode and owner-key-as-default sections below describe superseded design history.
 

@@ -1,6 +1,21 @@
 # CoCreate context handoff
 
-## Current managed-model slice — 2026-09-27
+## Current BYOK-only handoff (2026-09-28)
+
+The BYOK functionality is being ported onto the deployed `main` presentation. The project list and core stylesheet remain unchanged. The alternate comic styling, WorkflowBoard, and IndexedDB draft prototype are not part of this port. The current evidence is 102 passing local tests, a passing production build, and a local Chrome layout/setup smoke check; hosted validation and deployment remain pending.
+
+Hosted new projects start disconnected. The owner validates an OpenRouter key using `/key` without generation, explicitly selects both models from metadata-compatible `/models` entries, then saves. The server holds the key for two hours in process memory only. Expiry or restart blocks dispatch until reconnect. Owner authorization is required for editor spending. Managed dispatch and obsolete hosted AI routes are disabled; historical project and billing data remain. Local mocked tests and build are the current evidence; live OpenRouter and hosted two-account behavior remain unverified. A local real-key submission exposed an unintended three-call gate after successful interpretation; the BYOK gate was removed. Token usage from physical requests is now visible, including failed builds, and an explicit retry reuses accepted requirements after reconnect. Hosted two-account behavior remains unverified. Prior managed-default sections below are superseded.
+
+## UI and local recovery slice — 2026-09-28
+
+Implemented locally: managed builder selection no longer depends on a successful funding read; it checks the returned model ID. Selection stays inference-free and credit authorization still gates dispatch. Workflow now shows real tasks, verification states, recent activity and artifact navigation. Shared Intent previews accepted requirements. Setup opens on demand, without interrupting writing.
+
+Browser drafts use IndexedDB scoped to room and participant, validated before restore after an authenticated state request. The browser copy is distinct from server-confirmed sync. Collaboration batches outgoing document changes for 40 ms and flushes before submission. This is recovery caching, not full offline project startup or a replacement for durable shared storage. Quota/corruption failures are visible; retention/purge controls and cloud-scale load measurements remain follow-up work.
+
+The current visual direction is dark neubrutalist with lavender/lime accents, readable body text, hard shadows and brief original CSS comic effects. It supersedes earlier restrictive no-motion visual guidance. Reduced motion is supported. Desktop/mobile browser evidence: artifacts/ui-redesign/overhaul-checks.json. No deployment, paid inference, hosted migration or production scaling validation performed in this slice.
+
+
+## Historical managed-model slice — 2026-09-27
 
 The current product target is Developer-only, managed by default for new hosted projects, with a fixed economical personal interpreter and one owner-selected shared builder. The selector, rate/availability evidence, credit state, and Advanced/BYOK entry are implemented locally. Existing BYOK projects stay on their configuration until explicit opt-in, and their saved assignments survive a managed switch. Researcher/Analyst are removed from active setup; historical records remain readable. Earlier three-mode and BYOK-default paragraphs below are superseded history.
 

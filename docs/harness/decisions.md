@@ -1,5 +1,9 @@
 # Harness decision log
 
+## D-0035 — BYOK-only hosted MVP (2026-09-28)
+
+Status: accepted and implemented locally. Supersedes D-0032 through D-0034 for active routing. New hosted projects start without AI. The owner validates an OpenRouter key without generation, explicitly selects a builder and interpreter, and saves. The key is held in a two-hour in-memory lease; reconnect after expiry or restart. Editors require owner authorization to spend. Managed/founder dispatch and old hosted connection flows are disabled. Historical configurations, catalogs and billing remain readable without migration or deletion. A local real-key submission exposed the obsolete call-count gate after successful interpretation. D-0036 removes it, shows physical-request tokens, and adds explicit build retry. Hosted two-account evidence remains pending.
+
 ## D-0001 — Preserve the existing application while migrating additively
 
 Status: accepted. Existing Yjs collaboration, provider connections, generated projects, and compatibility JSON remain in place. New durable records and projections are additive and legacy rooms are normalized lazily on load.
@@ -138,3 +142,11 @@ Accepted 2026-09-27. The hosted account/project funding row and owner-authorized
 ## D-0034 — Curated builders and measured qualification
 
 Accepted 2026-09-27. The versioned server allowlist has no more than 15 enabled exact IDs. Gemini 3.8 Flash remains the provisional default, DeepSeek V4.1 Flash the budget featured choice, and Claude Sonnet 5 the higher-capability candidate. Published metadata is not a quality ranking. The managed interpreter is provisionally DeepSeek pending comparative tests against GPT-6 Luna and Qwen3.8 Flash. Model/configuration/rate policy freezes per submission. A repeatable fixture and scoring gate exist; paid comparative results have not been run.
+
+## D-0035 — Device recovery complements durable shared authority
+
+Accepted 2026-09-28. Use participant-scoped IndexedDB for document recovery and short transport batching for edit bursts. Keep cloud records authoritative for permissions, accepted intent, tasks, artifacts and credits. Do not acknowledge a cloud save from a local transaction. Local recovery requires a valid room session; full offline startup and cache retention controls are not claimed.
+
+## D-0036 — Calm workspace with restrained original comic motion
+
+Accepted 2026-09-28. The latest user directive supersedes earlier visual restrictions: dark neubrutalist framing, lavender/lime accents and brief original action effects with reduced-motion support. No copied artwork or animation packs. Workflow presents durable task/evidence state; setup remains available without interrupting the canvas.

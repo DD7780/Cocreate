@@ -1,8 +1,12 @@
 # CoCreate
 
+## Active hosted MVP: OpenRouter BYOK
+
+Create or open a project, write with collaborators, and connect AI when ready. The owner enters an OpenRouter key, clicks Connect for generation-free validation, explicitly selects a builder and Interpretation model, then saves. The key stays in server memory for a two-hour lease and must be reentered after expiry or restart. Editors need the owner's explicit spending permission. Hosted managed credits, founder funding, presets and the old connection wizard are inactive; historical project and billing data remain. CoCreate imposes no BYOK dollar or physical-call cap; the workspace shows reported input/output tokens from recent provider requests, marks unknown usage, and offers an explicit retry after failed builds. The previous managed-deployment instructions below are historical and superseded. Rollback is an application release rollback; retain project, billing and audit records.
+
 CoCreate is a multiplayer agent-workflow workspace for collaborative software building. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. Developer is the only active workflow; one serialized builder produces a React product in a restricted preview. Historical Analyst and Researcher records remain readable.
 
-## Managed hosted setup (current)
+## Historical managed hosted setup (inactive)
 
 New hosted projects preselect a shared managed builder and a fixed personal interpreter. The normal path is sign in, create/open a project, write, then **Build my changes**; the compact Builder selector offers three featured choices and more catalog entries, usage/credit state, and Advanced settings. Opening settings, changing builders, typing, saving, and navigating never invoke inference. Existing BYOK projects retain their connection and assignments until explicit owner opt-in. Advanced preserves discovery, exact model IDs, explicit capability tests, custom assignments, and supported effort controls.
 
@@ -130,3 +134,9 @@ The repository includes a project-scoped Supabase MCP server in `.mcp.json`. Cla
 Legacy import is dry-run-first: `pnpm migrate:legacy -- --mapping scripts/trusted-owner-map.example.json`. It never maps names or room-link holders to accounts. Review the report, verify `SUPABASE_URL`, then use `--apply --confirm-target`; the tool backs up local data first, hashes inputs, reruns idempotently, and quarantines unmapped rooms.
 
 Live OAuth, remote RLS, and Storage evidence are pending until a complete server secret and dashboard configuration are available. The arithmetic/unit suite does not impersonate that evidence.
+
+### Device draft recovery and refreshed workspace
+
+The canvas keeps a participant-scoped IndexedDB recovery copy after validating the room session. “Saved on this device” and “Synced” are separate statuses. Browser storage may be unavailable or evicted; server persistence remains required. New project startup still needs a network connection. Typing bursts are batched for 40 ms; Build my changes drains edits before submission.
+
+Workflow shows actual tasks and evidence, Canvas is for shared writing, and Artifacts opens the generated product. AI setup opens on demand. Managed model selection uses no inference; generation still requires configured funding. The dark comic styling supports reduced motion.

@@ -1,6 +1,21 @@
 # CoCreate product brief
 
-CoCreate is a multiplayer agent-workflow workspace. Multiple authorized people collaborate on one durable workflow: they contribute briefs and evidence, submit explicit steering, inspect execution, resolve requirement decisions, and share versioned artifacts. The workflow—not the shared document or a model conversation—is the primary object. Documents, code, previews, reports, datasets, and charts are artifacts of that workflow.
+## Active MVP (2026-09-28)
+
+Developer only. New hosted projects have no AI connection or assigned models. People can write and collaborate first. The owner validates an OpenRouter key without generation, explicitly selects a builder and Interpretation model from compatible models, and saves. The key lives only in a two-hour server-memory lease; expiry or restart requires reconnecting. Editors need explicit owner authorization to spend on that key. Managed/founder funding, credits, presets, recommended combinations, and the old connection wizard are inactive. Historical projects and billing remain intact. No silent key, funding or model fallback is allowed. CoCreate does not impose a BYOK dollar or physical-call budget. The workspace shows reported input and output tokens from recent physical provider requests, marks incomplete usage, and offers an explicit retry for a failed accepted build. The key owner's OpenRouter account remains the spending authority. Earlier managed-default sections below are superseded history.
+
+## Historical workspace visual slice — 2026-09-28
+
+This describes an unmerged visual prototype. The active MVP retains the existing `main` project and workspace presentation.
+
+The workspace keeps Workflow, Canvas and Artifacts as primary views. Workflow displays persisted task states and evidence; the compact Shared Intent rail previews accepted instructions and keeps conflict details discoverable. AI setup is deliberately opened by the user, and changing the managed builder is free of inference; insufficient credit blocks execution, not selection.
+
+Use dark neubrutalist framing with original comic accents on calls to action and calm, readable document text. Respect reduced motion and preserve mobile navigation. Keep local device recovery and cloud synchronization status separate. Browser persistence improves resilience but does not make project access, permissions, shared intent or billing local-authoritative.
+
+
+## Historical managed-model product brief
+
+The following managed-default and Advanced setup paragraphs describe superseded plans. CoCreate is a multiplayer agent-workflow workspace. Multiple authorized people collaborate on one durable workflow: they contribute briefs and evidence, submit explicit steering, inspect execution, resolve requirement decisions, and share versioned artifacts. The workflow—not the shared document or a model conversation—is the primary object. Documents, code, previews, reports, datasets, and charts are artifacts of that workflow.
 
 CoCreate currently exposes Developer only. The normal hosted path is sign in, create or open a project, write, then **Build my changes**. New projects preselect a shared managed builder and use a fixed economical personal interpreter. Advanced preserves own API connections, discovery, manual model IDs, explicit tests, custom role assignments, and supported effort controls. Researcher and Analyst are absent from active setup and navigation; historical records remain readable.
 
