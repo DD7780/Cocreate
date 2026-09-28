@@ -6,8 +6,9 @@
 - [x] Added generation-free key validation, temporary server-memory credential lease, explicit builder/interpreter selections, exact-ID checks, owner-authorized editor spending, and disconnect.
 - [x] Disabled managed dispatch and retired hosted managed/old AI routes; preserved historical project and billing data.
 - [x] Replaced active hosted setup with compact BYOK UI.
+- [x] Removed the unintended BYOK dollar and physical-call gates; exposed recent physical-request input/output tokens and incomplete usage; added explicit retry for failed accepted work.
 - [x] Local mocked tests cover no-generation setup, no stored secret, forged IDs, spender authorization, lease expiry/restart, and disabled managed dispatch.
-- [ ] Verify actual model compatibility, spending, owner/editor collaboration, and preview promotion with a real OpenRouter key and hosted accounts. No paid provider call was authorized here.
+- [ ] A user initiated one local real-key submission: interpretation returned usage, while the builder hit the now-removed gate. Verify end-to-end build, actual provider spending, owner/editor collaboration and preview promotion; hosted two-account evidence remains pending.
 - [ ] Deploy after hosted verification. Roll back the application release if needed; retain project, billing and audit records.
 
 ## Workflow-first pivot — Phase 1 durable workflow slice (2026-09-23)

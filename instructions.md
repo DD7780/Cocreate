@@ -2,7 +2,7 @@
 
 ## Active hosted AI boundary (2026-09-28)
 
-Preserve temporary OpenRouter BYOK as the only active hosted MVP inference mode. New projects have no AI assignment. Require explicit owner key validation without generation, explicit builder and interpretation selections, a bounded server-memory credential lease, and explicit owner authorization for editor spending. Reject managed dispatch server-side; never fall back to a founder key, old saved key, different model, or demo output. Keep historical project and billing records. Keep the active UI compact and omit credits, presets, recommended combinations, and the obsolete wizard. Earlier managed-default guidance below is superseded.
+Preserve temporary OpenRouter BYOK as the only active hosted MVP inference mode. New projects have no AI assignment. Require explicit owner key validation without generation, explicit builder and interpretation selections, a bounded server-memory credential lease, and explicit owner authorization for editor spending. Reject managed dispatch server-side; never fall back to a founder key, old saved key, different model, or demo output. Keep historical project and billing records. Keep the active UI compact and omit credits, presets, recommended combinations, and the obsolete wizard. Do not add a CoCreate monetary or physical-call gate to BYOK. Show reported physical-request tokens and incomplete usage, and require an explicit user action to retry a failed build. Provider-side key limits still apply. Earlier managed-default guidance below is superseded.
 
 Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Graphify rules and does not replace them. Explicit user instructions take precedence.
 

@@ -2,7 +2,7 @@
 
 ## Current BYOK-only handoff (2026-09-28)
 
-Hosted new projects start disconnected. The owner validates an OpenRouter key using `/key` without generation, explicitly selects both models from metadata-compatible `/models` entries, then saves. The server holds the key for two hours in process memory only. Expiry or restart blocks dispatch until reconnect. Owner authorization is required for editor spending. Managed dispatch and obsolete hosted AI routes are disabled; historical project and billing data remain. Local mocked tests and build are the current evidence; live OpenRouter and hosted two-account behavior remain unverified. Prior managed-default sections below are superseded.
+Hosted new projects start disconnected. The owner validates an OpenRouter key using `/key` without generation, explicitly selects both models from metadata-compatible `/models` entries, then saves. The server holds the key for two hours in process memory only. Expiry or restart blocks dispatch until reconnect. Owner authorization is required for editor spending. Managed dispatch and obsolete hosted AI routes are disabled; historical project and billing data remain. Local mocked tests and build are the current evidence; live OpenRouter and hosted two-account behavior remain unverified. A local real-key submission exposed an unintended three-call gate after successful interpretation; the BYOK gate was removed. Token usage from physical requests is now visible, including failed builds, and an explicit retry reuses accepted requirements after reconnect. Hosted two-account behavior remains unverified. Prior managed-default sections below are superseded.
 
 ## UI and local recovery slice — 2026-09-28
 

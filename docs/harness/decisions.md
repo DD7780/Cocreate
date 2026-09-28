@@ -2,7 +2,7 @@
 
 ## D-0035 — BYOK-only hosted MVP (2026-09-28)
 
-Status: accepted and implemented locally. Supersedes D-0032 through D-0034 for active routing. New hosted projects start without AI. The owner validates an OpenRouter key without generation, explicitly selects a builder and interpreter, and saves. The key is held in a two-hour in-memory lease; reconnect after expiry or restart. Editors require owner authorization to spend. Managed/founder dispatch and old hosted connection flows are disabled. Historical configurations, catalogs and billing remain readable without migration or deletion. No live provider or hosted two-account evidence yet.
+Status: accepted and implemented locally. Supersedes D-0032 through D-0034 for active routing. New hosted projects start without AI. The owner validates an OpenRouter key without generation, explicitly selects a builder and interpreter, and saves. The key is held in a two-hour in-memory lease; reconnect after expiry or restart. Editors require owner authorization to spend. Managed/founder dispatch and old hosted connection flows are disabled. Historical configurations, catalogs and billing remain readable without migration or deletion. A local real-key submission exposed the obsolete call-count gate after successful interpretation. D-0036 removes it, shows physical-request tokens, and adds explicit build retry. Hosted two-account evidence remains pending.
 
 ## D-0001 — Preserve the existing application while migrating additively
 

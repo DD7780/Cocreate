@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import type { WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../src/types.js';
+import type { ProviderRequestRecord, WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../src/types.js';
 
 export type ActorType='user'|'personal_agent'|'builder'|'system'|'tool';
 export type RunState='queued'|'interpreting'|'planning'|'awaiting_approval'|'executing'|'verifying'|'repairing'|'ready'|'failed'|'cancelled'|'interrupted';
@@ -49,9 +49,10 @@ const taskTransitions:Record<WorkflowTaskState,Set<WorkflowTaskState>>={
 };
 
 const hash=(value:string|Uint8Array)=>createHash('sha256').update(value).digest('hex');
+const numericUsageKey=/^(?:estimatedInputTokens|estimatedOutputTokens|inputTokens|outputTokens|cachedInputTokens|cacheWriteTokens|reasoningTokens)$/;
 const redact=(value:unknown):unknown=>{
   if(Array.isArray(value))return value.map(redact);
-  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value as Record<string,unknown>).map(([key,item])=>[key,sensitiveKey.test(key)?'[REDACTED]':redact(item)]));
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value as Record<string,unknown>).map(([key,item])=>[key,numericUsageKey.test(key)&&typeof item==='number'&&Number.isFinite(item)?item:sensitiveKey.test(key)?'[REDACTED]':redact(item)]));
   if(typeof value==='string')return value.replace(/\bBearer\s+[A-Za-z0-9._~+/=-]{8,}/gi,'Bearer [REDACTED]').replace(/\b(?:sk|api)[-_][A-Za-z0-9_-]{8,}\b/gi,'[REDACTED]').replace(/([?&](?:api_key|key|token)=)[^&\s]+/gi,'$1[REDACTED]');
   return value;
 };
@@ -221,5 +222,6 @@ export class EventStore{
   runsForWorkspace(workspaceId:string){return this.db.prepare('SELECT run_id AS runId,workspace_id AS workspaceId,kind,state,input_revision AS inputRevision,attempt,trigger_event_id AS triggerEventId,last_event_id AS lastEventId,created_at AS createdAt,updated_at AS updatedAt,error FROM run_state WHERE workspace_id=? ORDER BY created_at').all(workspaceId) as unknown as StoredRun[]}
   pendingApprovals(workspaceId:string){return this.db.prepare("SELECT * FROM approval_state WHERE workspace_id=? AND status='pending' ORDER BY updated_at").all(workspaceId)}
   eventsForWorkspace(workspaceId:string){return this.db.prepare('SELECT event_id AS eventId,event_type AS eventType,workspace_id AS workspaceId,actor_id AS actorId,actor_type AS actorType,run_id AS runId,step_id AS stepId,occurred_at AS occurredAt,workspace_seq AS workspaceSeq,correlation_id AS correlationId,causation_id AS causationId,schema_version AS schemaVersion,payload_json AS payloadJson,artifact_ref AS artifactRef,input_revision AS inputRevision,content_hash AS contentHash FROM events WHERE workspace_id=? ORDER BY workspace_seq').all(workspaceId).map((row:any)=>({...row,payload:JSON.parse(row.payloadJson)}))}
+  providerRequestRecordsForWorkspace(workspaceId:string){const rows=this.db.prepare("SELECT payload_json AS payloadJson FROM events WHERE workspace_id=? AND event_type IN ('provider.request_dispatched','provider.request_reconciled') ORDER BY workspace_seq DESC LIMIT 1000").all(workspaceId) as {payloadJson:string}[];const requests=new Map<string,ProviderRequestRecord>();for(const row of rows.reverse()){const record=JSON.parse(row.payloadJson) as ProviderRequestRecord;if(!record?.callId||record.workspaceId!==workspaceId)continue;const usage=record.usage||{},unavailable=Object.entries(usage).some(([key,value])=>numericUsageKey.test(key)&&typeof value!=='number');record.usage=Object.fromEntries(Object.entries(usage).filter(([key,value])=>!numericUsageKey.test(key)||typeof value==='number')) as ProviderRequestRecord['usage'];if(unavailable)record.usageStatus='unknown';if(typeof record.estimatedInputTokens!=='number')record.estimatedInputTokens=0;if(typeof record.estimatedOutputTokens!=='number')delete record.estimatedOutputTokens;requests.set(record.callId,record)}return[...requests.values()].slice(-500)}
   close(){this.db.close()}
 }

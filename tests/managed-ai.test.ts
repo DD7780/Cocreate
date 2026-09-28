@@ -96,5 +96,49 @@ test('explicit builder reaches the OpenRouter request; unauthorized editor canno
     assert.equal(requests.at(-1)?.model,'google/gemini-3.8-flash');
     assert.equal(requests.at(-1)?.authorization,'Bearer sk-or-test-private-key');
     assert.equal(room.providerCalls.at(-1)?.outcome,'succeeded');
+    for(let index=0;index<4;index++)await (manager as any).tracked(room,{purpose:'builder',provider:'openrouter',model:config.model,actorId:'owner',setup,estimatedOutputTokens:32},()=>generateText(config,{model:config.model,instructions:'Reply OK.',input:'Test',maxOutputTokens:32}));
+    assert.equal(requests.filter(item=>item.url.endsWith('/chat/completions')).length,5);
+    assert.equal(room.budgetWindow,undefined);
   }finally{manager.shutdown();globalThis.fetch=originalFetch;rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('failed accepted work can be retried explicitly without reinterpreting the document',async()=>{
+  const originalFetch=globalThis.fetch;
+  const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
+  globalThis.fetch=async(input)=>new Response(JSON.stringify(String(input).endsWith('/key')?{data:{limit_remaining:10}}:{data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});
+  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-retry-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  try{
+    const room=manager.create('retry');manager.join(room,'owner','Owner');
+    const lease=await manager.connectTemporaryOpenRouter(room,'owner','sk-or-test-private-key');manager.saveTemporaryModels(room,'owner',lease.handle,'deepseek/deepseek-v4.1-flash','google/gemini-3.8-flash');
+    room.sharedRequirements.push({id:'req-1',revision:1,category:'goal',description:'Build the restaurant site',acceptanceCriteria:[],status:'accepted',authority:'automatic',sources:[],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
+    room.submissions.push({id:'old',requestId:'old',participantId:'owner',editSeqs:[1],documentRevision:1,snapshot:'',createdAt:new Date().toISOString(),status:'queued',assignment:structuredClone(room.ai.personal),setup:structuredClone(room.ai.setup)});
+    room.status='Error';room.lastError='Earlier build failed';let requested=0;(manager as any).requestBuild=()=>{requested++};
+    const retry=manager.retryBuild(room,'owner','retry-1');
+    assert.equal(retry.status,'queued');assert.equal(requested,1);assert.equal(room.submissions.find(item=>item.id==='old')?.status,'failed');
+    assert.equal(room.submissions.at(-1)?.setup?.resolved?.builder.model,'google/gemini-3.8-flash');
+    assert.equal(room.submissions.at(-1)?.editSeqs.length,0);
+    assert.equal(manager.retryBuild(room,'owner','retry-1').submissionId,retry.submissionId);
+    assert.throws(()=>manager.retryBuild(room,'nonauthorized','retry-2'),/not authorized/);
+  }finally{manager.shutdown();globalThis.fetch=originalFetch;rmSync(dataDir,{recursive:true,force:true})}
+});
+
+test('physical provider usage survives room reload for token visibility',()=>{
+  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-usage-'));
+  let manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  try{
+    const room=manager.create('usage');manager.join(room,'owner','Owner');
+    room.providerCalls.push({callId:'call-1',workspaceId:room.id,purpose:'builder',provider:'openrouter',model:'example/model',configurationVersion:'test',startedAt:new Date().toISOString(),outcome:'succeeded',estimatedInputTokens:100,usage:{inputTokens:47,outputTokens:23},usageStatus:'measured'});
+    room.status='Error';room.lastError='test failure';
+    manager.eventStore.append({eventType:'provider.request_reconciled',workspaceId:room.id,actorId:'provider-gateway',actorType:'system',payload:room.providerCalls[0]});
+    manager.eventStore.append({eventType:'provider.request_reconciled',workspaceId:room.id,actorId:'provider-gateway',actorType:'system',payload:{...room.providerCalls[0],callId:'old-redacted',usage:{inputTokens:'[REDACTED]',outputTokens:'[REDACTED]'}}});
+    room.providerCalls=[];manager.save(room);manager.shutdown();
+    manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+    const restored=manager.get('usage');assert.ok(restored);
+    assert.equal(manager.view(restored).providerCalls[0]?.usage.inputTokens,47);
+    assert.equal(manager.view(restored).providerCalls[0]?.usage.outputTokens,23);
+    assert.equal(manager.view(restored).providerCalls[1]?.usageStatus,'unknown');
+    assert.equal(manager.view(restored).providerCalls[1]?.usage.inputTokens,undefined);
+    assert.equal(manager.view(restored).status,'Error');
+    assert.equal(manager.view(restored).lastError,'test failure');
+  }finally{manager.shutdown();rmSync(dataDir,{recursive:true,force:true})}
 });
