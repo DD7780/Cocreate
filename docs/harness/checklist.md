@@ -1,5 +1,15 @@
 # CoCreate harness implementation checklist
 
+## BYOK-only MVP slice (2026-09-28)
+
+- [x] New hosted projects start disconnected; writing and collaboration remain available.
+- [x] Added generation-free key validation, temporary server-memory credential lease, explicit builder/interpreter selections, exact-ID checks, owner-authorized editor spending, and disconnect.
+- [x] Disabled managed dispatch and retired hosted managed/old AI routes; preserved historical project and billing data.
+- [x] Replaced active hosted setup with compact BYOK UI.
+- [x] Local mocked tests cover no-generation setup, no stored secret, forged IDs, spender authorization, lease expiry/restart, and disabled managed dispatch.
+- [ ] Verify actual model compatibility, spending, owner/editor collaboration, and preview promotion with a real OpenRouter key and hosted accounts. No paid provider call was authorized here.
+- [ ] Deploy after hosted verification. Roll back the application release if needed; retain project, billing and audit records.
+
 ## Workflow-first pivot — Phase 1 durable workflow slice (2026-09-23)
 
 - [x] Wrote the source-backed implementation map before changing orchestration boundaries. Reused the existing event/artifact/run store; did not introduce a competing source of truth.
@@ -379,3 +389,15 @@ Documentation-only source inspection; historical test counts above are retained,
 - [ ] Apply and test the SQL migration with two accounts, concurrent reservations, spender revocation, zero credit, uncertain outcomes, and billing reconciliation.
 - [ ] Configure the server-only credential and a deliberately funded account; qualify exact endpoints, reasoning parameters, interpreter candidates, and builder outcomes under an authorized budget.
 - [ ] Verify hosted managed flow in a browser with real Supabase auth, project membership, collaboration, conflict handling, preview promotion, and rollback.
+
+## Workspace overhaul — 2026-09-28 (local evidence)
+
+- [x] Removed funding-read dependency from managed builder selection; verify modelId acknowledgement and preserve server allowlist. Added mocked switched-model dispatch regression; selection itself issues zero provider calls.
+- [x] Added participant-scoped, transactionally merged IndexedDB document recovery with validation, quota/error reporting and distinct device/sync status. Added isolation, reload, corruption, failure and concurrent-update tests.
+- [x] Coalesced outgoing document edits over 40 ms; explicit submission flush drains edits first. Reconnect and flush ordering tests pass.
+- [x] Added real workflow task/evidence/activity overview, accepted intent preview, on-demand setup and dark neubrutalist CSS comic accents with reduced-motion support.
+- [x] Full pnpm test: 103 passed, 0 failed. pnpm build passed (existing non-failing large-chunk warning).
+- [x] Browser checks at 1440, 1280, 1024, 768, 390 and 720 CSS pixels: no horizontal overflow, essential navigation/build controls visible, long document reachable, split view, dialog focus return, workflow navigation and IndexedDB record verified. Evidence: artifacts/ui-redesign/overhaul-checks.json and screenshots. Local-auth browser only; no hosted/paid request was run.
+- [x] graphify update . completed AST-only. SQL parser dependency absent; SQL graph extraction skipped. No migrations changed.
+- [ ] Full offline startup, cache retention/account purge controls, cloud capacity benchmarks and hosted live model qualification are not implemented or verified by this slice. Existing durable cloud storage remains authoritative.
+- [ ] Deployment was not performed. Prior unrelated generator edits, removed .codex files and architecture artifacts were preserved.

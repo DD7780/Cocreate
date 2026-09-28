@@ -57,3 +57,17 @@ test('disconnect rejects an in-flight flush and destroy removes document listene
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),setTimer:callback=>{timers.set(++timerId,callback);return timerId},clearTimer:id=>{timers.delete(id)}});
   const socket=FakeWebSocket.instances[0];socket.open();const flushing=provider.flush();socket.close();await assert.rejects(flushing,/No build was started/);provider.destroy();const before=saves;doc.getText('draft').insert(0,'after destroy');assert.equal(saves,before);
 });
+
+test('burst edits share one transport update and explicit flush drains before acknowledgement',async()=>{
+  FakeWebSocket.instances=[];const callbacks=new Map<number,()=>void>();let timerId=0;
+  const doc=new Y.Doc(),provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{},
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:callback=>{callbacks.set(++timerId,callback);return timerId},clearTimer:id=>{callbacks.delete(id)}});
+  const socket=FakeWebSocket.instances[0];socket.open();
+  doc.getText('draft').insert(0,'A');doc.getText('draft').insert(1,'B');
+  assert.equal(socket.sent.filter(value=>value instanceof Uint8Array&&value[0]===0).length,0);
+  const pending=provider.flush();
+  const packets=socket.sent.filter(value=>value instanceof Uint8Array&&value[0]===0) as Uint8Array[];
+  assert.equal(packets.length,1);const remote=new Y.Doc();Y.applyUpdate(remote,packets[0].slice(1));assert.equal(remote.getText('draft').toString(),'AB');
+  const request=JSON.parse(socket.sent.at(-1) as string);assert.equal(request.type,'flush');socket.message(JSON.stringify({type:'flushed',requestId:request.requestId}));await pending;
+  provider.destroy();doc.destroy();remote.destroy();
+});

@@ -1,5 +1,9 @@
 # CoCreate AI coding instructions
 
+## Active hosted AI boundary (2026-09-28)
+
+Preserve temporary OpenRouter BYOK as the only active hosted MVP inference mode. New projects have no AI assignment. Require explicit owner key validation without generation, explicit builder and interpretation selections, a bounded server-memory credential lease, and explicit owner authorization for editor spending. Reject managed dispatch server-side; never fall back to a founder key, old saved key, different model, or demo output. Keep historical project and billing records. Keep the active UI compact and omit credits, presets, recommended combinations, and the obsolete wizard. Earlier managed-default guidance below is superseded.
+
 Created: 2026-09-18. Read with [AGENTS.md](AGENTS.md); this supplements its Graphify rules and does not replace them. Explicit user instructions take precedence.
 
 ## Start each task
@@ -93,3 +97,7 @@ This is an agent obligation, not an automatic documentation synchronization serv
 Treat Supabase user UUIDs as account identity and project membership as authority. Never restore room-link ownership in hosted mode, identify owners by display name/email, put secret keys in `VITE_*`, acknowledge hosted saves before the remote commit, make artifact buckets public, or let local SQLite/JSON silently replace failed Postgres. Project creation/switching is inference-free. Apply migrations only after verifying the intended project; legacy imports are dry-run by default and require a trusted room-to-user UUID map.
 
 Project invitations are app-level records, not Supabase Auth invitations. Bind them to a normalized intended email and verified account, hash random tokens at rest, enforce owner/explicit sharing permission server-side, keep editor/viewer roles bounded, and make accept/resend/revoke transactional and idempotent. Transactional email secrets stay server-only; provider acceptance is not proof of delivery.
+
+## Local draft and visual invariants (2026-09-28)
+
+Keep local cache keys scoped to room and participant; never cache credentials or treat cached state as access permission. Validate CRDT bytes before hydration, fail visibly on storage failure, and preserve server acknowledgement semantics. Changes to transport batching must test flush ordering and reconnect recovery. Local draft caching is not a replacement for durable cloud persistence. Comic motion must be original, brief, nonessential and disabled for reduced motion; retain quiet document typography and accessible controls.
