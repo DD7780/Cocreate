@@ -1,5 +1,9 @@
 # Harness architecture
 
+## Reference-led presentation update (2026-09-30)
+
+`src/styles.css` now owns the active purple neubrutalist presentation; `src/main.tsx` does not load the older comic override. `Workspace` renders the collaborative canvas across its content width and places the existing Shared Intent panel in Workflow and Artifacts. The panel and its permissions still use the same room state and endpoints. Authentication and setup changes are presentation-only. No submission, model-dispatch, sharing, or API contract changed.
+
 ## 2guys1canvas presentation and invitation boundary (2026-09-30)
 
 The visible rename changes application copy and metadata; CoCreate technical names and deployed origins remain compatible. `server/invitation-email.ts` validates `COCREATE_EMAIL_FROM` before Resend, keeps the key server-side, and treats only a response with an ID as accepted. The SQL accept function still requires an authenticated verified-email identity and preserves any existing membership role. The canvas submission path is unchanged; old shortcut preferences now resolve to the fixed platform mapping. `WorkflowBoard` renders deduplicated physical usage from `RoomView`; the separate canvas card labels its partial coverage. The historical generation counter is separate because older physical records may be missing. These UI changes make no model calls. Earlier descriptions of optional shortcut remapping are superseded.

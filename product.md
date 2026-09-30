@@ -2,7 +2,7 @@
 
 ## Active presentation update (2026-09-30)
 
-2guys1canvas remains a multiplayer, workflow-first workspace with the existing BYOK and permission boundaries. The canvas remains primary. Build my changes uses fixed editor-focused Alt+X on Windows/Linux; the established macOS mapping is disabled. Shared Intent shows accepted requirements, attention items, provenance, and decision history. Workflow holds detailed usage, while a separate canvas card links to it. Workflow shows deduplicated recorded physical calls across generation and setup, alongside the older generation counter. Coverage is explicitly partial; unknown usage and missing pre-ledger calls are disclosed. Earlier CoCreate branding and optional shortcut controls below are historical.
+2guys1canvas remains a multiplayer, workflow-first workspace with the existing BYOK and permission boundaries. The canvas is a full-width gridded writing surface; Shared Intent sits in Workflow and Artifacts. The reference-led visual direction is dark purple neubrutalism, pixel-style accents, white content stages, hard shadows, and compact controls across login, projects, invites, and builder setup. Build my changes uses fixed editor-focused Alt+X on Windows/Linux; the established macOS mapping is disabled. Shared Intent shows accepted requirements, attention items, provenance, and decision history. Workflow holds detailed usage and shows deduplicated recorded physical calls across generation and setup, alongside the older generation counter. Coverage is explicitly partial; unknown usage and missing pre-ledger calls are disclosed. Earlier CoCreate branding, optional shortcut controls, and canvas Shared Intent descriptions below are historical.
 
 ## Active MVP (2026-09-28)
 

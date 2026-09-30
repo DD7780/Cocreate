@@ -1,5 +1,11 @@
 # 2guys1canvas harness implementation checklist
 
+## Reference-led visual refresh (2026-09-30)
+
+- [x] Purple neubrutalist styling applied across the workspace, project navigation, login, invite, builder, and API setup surfaces. The earlier comic stylesheet no longer overrides the theme.
+- [x] Canvas uses the full writing area; Shared Intent is rendered in Workflow and Artifacts. Split view retains canvas and preview.
+- [x] Local `pnpm test` passed 111/111 and `pnpm build` passed; `graphify update .` completed. A legacy browser capture script expects the old canvas sidebar and did not produce a valid visual result. Hosted account screens and responsive browser interactions still need visual verification.
+
 ## Invitation and workspace UI slice (2026-09-30)
 
 - [x] Local Resend sender syntax validation, email content, and provider acceptance ID check implemented; focused invitation tests passed.

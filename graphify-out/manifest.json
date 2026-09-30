@@ -684,10 +684,10 @@
     "semantic_hash": "dad1921040c5957b0d6898a851665a52"
   },
   "src/App.tsx": {
-    "mtime": 1790766494.0489979,
-    "seen": 1790766645.8376913,
-    "ast_hash": "de3075a817993743a7e421d85852af11",
-    "semantic_hash": "de3075a817993743a7e421d85852af11"
+    "mtime": 1790786566.1284676,
+    "seen": 1790786913.3401701,
+    "ast_hash": "37725706d3fe0c5028ecb49dd4ea77c7",
+    "semantic_hash": ""
   },
   "src/ByokSetup.tsx": {
     "mtime": 1790764577.513001,
@@ -696,10 +696,10 @@
     "semantic_hash": "c8d744940ce9030c3f2a78d1b1b23f6d"
   },
   "src/ProjectApp.tsx": {
-    "mtime": 1790707826.211677,
-    "seen": 1790766645.8376913,
-    "ast_hash": "ca06764a5ad54ebf3cb2dd7875f98ed0",
-    "semantic_hash": "ca06764a5ad54ebf3cb2dd7875f98ed0"
+    "mtime": 1790786604.3394153,
+    "seen": 1790786913.3401701,
+    "ast_hash": "5825b4f535319c61fb873fa222952520",
+    "semantic_hash": ""
   },
   "src/WorkflowBoard.tsx": {
     "mtime": 1790707491.468461,
@@ -732,10 +732,10 @@
     "semantic_hash": "fe64e45b47e30761a7864aec502be533"
   },
   "src/main.tsx": {
-    "mtime": 1790706088.707875,
-    "seen": 1790766645.8376913,
-    "ast_hash": "c7a7531fc05708b2e2d9d8c873240768",
-    "semantic_hash": "c7a7531fc05708b2e2d9d8c873240768"
+    "mtime": 1790786850.0986576,
+    "seen": 1790786913.3410175,
+    "ast_hash": "b68838b8acbcd400c1f88280c7bdb360",
+    "semantic_hash": ""
   },
   "src/oauth-callback.ts": {
     "mtime": 1790424592.840383,
@@ -940,5 +940,329 @@
     "seen": 1790766645.8376913,
     "ast_hash": "c345d10a53a930188f1a541622c7ca01",
     "semantic_hash": "c345d10a53a930188f1a541622c7ca01"
+  },
+  "AGENTS.md": {
+    "mtime": 1790171340.5319362,
+    "seen": 1790786913.3500242,
+    "ast_hash": "bc87b4247f5d880b65c977d6f03a7e12",
+    "semantic_hash": ""
+  },
+  "README.md": {
+    "mtime": 1790765264.4651034,
+    "seen": 1790786913.3500242,
+    "ast_hash": "fd2a25095466d451a9d2f8e04b6ce789",
+    "semantic_hash": ""
+  },
+  "api.md": {
+    "mtime": 1790765466.9006982,
+    "seen": 1790786913.3500242,
+    "ast_hash": "9bb9805760fe96975b70a827532d807e",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.html": {
+    "mtime": 1790432180.1389453,
+    "seen": 1790786913.3500242,
+    "ast_hash": "fea40da3c5ad810b5085ebbcb7fd959e",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.visual-check.html": {
+    "mtime": 1790432195.0416172,
+    "seen": 1790786913.3500242,
+    "ast_hash": "6a29676b813b057942ac1ec704594007",
+    "semantic_hash": ""
+  },
+  "context.md": {
+    "mtime": 1790765288.23584,
+    "seen": 1790786913.3500242,
+    "ast_hash": "bd83b6a573f35ac25750abee48d0854c",
+    "semantic_hash": ""
+  },
+  "docs/harness/architecture.md": {
+    "mtime": 1790765305.540624,
+    "seen": 1790786913.3500242,
+    "ast_hash": "64908ac514c907bf61942e3b86931110",
+    "semantic_hash": ""
+  },
+  "docs/harness/assessment.md": {
+    "mtime": 1789675673.9356785,
+    "seen": 1790786913.3500242,
+    "ast_hash": "b703a555575fb93bc76200575fd5d334",
+    "semantic_hash": ""
+  },
+  "docs/harness/checklist.md": {
+    "mtime": 1790765320.8281143,
+    "seen": 1790786913.3500242,
+    "ast_hash": "9adcc9b5cc6be75480a7ff3d7a555108",
+    "semantic_hash": ""
+  },
+  "docs/harness/contradiction-resolution-plan.md": {
+    "mtime": 1789737408.1016388,
+    "seen": 1790786913.3500242,
+    "ast_hash": "5a2c25d7f00f0ab44616bb165281d12f",
+    "semantic_hash": ""
+  },
+  "docs/harness/decisions.md": {
+    "mtime": 1790765356.7934103,
+    "seen": 1790786913.3500242,
+    "ast_hash": "17a9ea9bb48eec7375db72494aa13e0c",
+    "semantic_hash": ""
+  },
+  "docs/harness/migration-plan.md": {
+    "mtime": 1789738041.8055992,
+    "seen": 1790786913.3500242,
+    "ast_hash": "82fecf67775a8a4e93fcc5e137eb3c57",
+    "semantic_hash": ""
+  },
+  "docs/harness/model-evaluation.md": {
+    "mtime": 1790082252.375471,
+    "seen": 1790786913.3500242,
+    "ast_hash": "f4c2f1ae91524db7982001b7fd8eb489",
+    "semantic_hash": ""
+  },
+  "docs/harness/responsiveness.md": {
+    "mtime": 1790426475.620641,
+    "seen": 1790786913.3500242,
+    "ast_hash": "fcfa9cf28891773f67641b398746a7fe",
+    "semantic_hash": ""
+  },
+  "docs/ui-assets.md": {
+    "mtime": 1790171340.5383863,
+    "seen": 1790786913.3500242,
+    "ast_hash": "d33276f5e5081ca208eb7120b53fb150",
+    "semantic_hash": ""
+  },
+  "index.html": {
+    "mtime": 1790705469.5435016,
+    "seen": 1790786913.3500242,
+    "ast_hash": "95c22307038019e494bdd0e4cb25546d",
+    "semantic_hash": ""
+  },
+  "instructions.md": {
+    "mtime": 1790765378.2762942,
+    "seen": 1790786913.3500242,
+    "ast_hash": "b849f07120cc0e926cbdec8538192ce0",
+    "semantic_hash": ""
+  },
+  "pnpm-workspace.yaml": {
+    "mtime": 1790250989.5653336,
+    "seen": 1790786913.3500242,
+    "ast_hash": "3e37d56cb04d0cae8069694219f9df7c",
+    "semantic_hash": ""
+  },
+  "product.md": {
+    "mtime": 1790764577.4606378,
+    "seen": 1790786913.3500242,
+    "ast_hash": "1e5578d41604d3d97ab7f49d0b69c3b2",
+    "semantic_hash": ""
+  },
+  "artifacts/supabase-projects/login.png": {
+    "mtime": 1790195458.648363,
+    "seen": 1790786913.3500242,
+    "ast_hash": "f3055d872a0b7b1617ffbd899a39b6cb",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-compact.png": {
+    "mtime": 1789832368.5296092,
+    "seen": 1790786913.3500242,
+    "ast_hash": "5758a2588102cd24eb40a1a037266cc6",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-desktop.png": {
+    "mtime": 1789832367.9212594,
+    "seen": 1790786913.3500242,
+    "ast_hash": "e0564ef51bbdac9d888dc77800315184",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-dialog.png": {
+    "mtime": 1789832370.4835436,
+    "seen": 1790786913.3500242,
+    "ast_hash": "2782d1b0a3a66a19366c502e34cd487a",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-mobile.png": {
+    "mtime": 1789832369.1545708,
+    "seen": 1790786913.3500242,
+    "ast_hash": "ba74968fc7ebba69f3f447bd6b3c4e2d",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-product.png": {
+    "mtime": 1789832370.0953019,
+    "seen": 1790786913.3500242,
+    "ast_hash": "01fe571ff9666c48a0211580a136d99e",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-tablet.png": {
+    "mtime": 1789832368.8403835,
+    "seen": 1790786913.3500242,
+    "ast_hash": "7114e216ce5ba4766e9fbac6e49fbccd",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-wide.png": {
+    "mtime": 1789832368.2336836,
+    "seen": 1790786913.3500242,
+    "ast_hash": "c32bb4ff8d0c4bbe3a311d02ab629185",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/after-final-zoom200.png": {
+    "mtime": 1789832369.4558873,
+    "seen": 1790786913.3500242,
+    "ast_hash": "310f11e3fff758a62fb16fe97f11794a",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/before-desktop.png": {
+    "mtime": 1789831659.3291523,
+    "seen": 1790786913.3500242,
+    "ast_hash": "728ca6ee8a1139965f2092fce300bfc9",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/before-mobile.png": {
+    "mtime": 1789831659.985407,
+    "seen": 1790786913.3500242,
+    "ast_hash": "97d941f6d40b773aa8356c96cca44687",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/before-tablet.png": {
+    "mtime": 1789831659.6474738,
+    "seen": 1790786913.3500242,
+    "ast_hash": "5444e2ea40ff64223457b85ac73e9ac2",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-compact.png": {
+    "mtime": 1790615290.713162,
+    "seen": 1790786913.3500242,
+    "ast_hash": "7904327166063479286b355a26a321bf",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-desktop.png": {
+    "mtime": 1790615290.0749023,
+    "seen": 1790786913.3500242,
+    "ast_hash": "44809652ce99b525dcabf629666fed55",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-dialog.png": {
+    "mtime": 1790615292.6200976,
+    "seen": 1790786913.3500242,
+    "ast_hash": "7b5b06c15fb238b7084433a3b3be57e9",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-mobile.png": {
+    "mtime": 1790615291.3520732,
+    "seen": 1790786913.3500242,
+    "ast_hash": "2585dd50487782f978ade360915bea6b",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-product.png": {
+    "mtime": 1790615292.2832286,
+    "seen": 1790786913.3500242,
+    "ast_hash": "d75523cde48f0bcb9e4692e288d53ba3",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-tablet.png": {
+    "mtime": 1790615291.0220883,
+    "seen": 1790786913.3500242,
+    "ast_hash": "08648ae74c172aca0d72d0bce4922020",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-wide.png": {
+    "mtime": 1790615290.3888967,
+    "seen": 1790786913.3500242,
+    "ast_hash": "69070133a9fe246e96d7d899f9806e2d",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-workflow.png": {
+    "mtime": 1790615293.0229971,
+    "seen": 1790786913.3500242,
+    "ast_hash": "2c5e4a9d0b7c128a617cd0ad831e8715",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/byok-smoke-zoom200.png": {
+    "mtime": 1790615291.6636794,
+    "seen": 1790786913.3500242,
+    "ast_hash": "ecc948085d1abce168dffd868a75aadb",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-compact.png": {
+    "mtime": 1790539139.9770255,
+    "seen": 1790786913.3500242,
+    "ast_hash": "f5eeb64a19f4e179031029a45cf8e4fd",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-desktop.png": {
+    "mtime": 1790539139.1396809,
+    "seen": 1790786913.3500242,
+    "ast_hash": "e69719c6a9c212277179b15668f004bb",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-dialog.png": {
+    "mtime": 1790539142.5488124,
+    "seen": 1790786913.3500242,
+    "ast_hash": "7b5b06c15fb238b7084433a3b3be57e9",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-mobile.png": {
+    "mtime": 1790539140.8063269,
+    "seen": 1790786913.3500242,
+    "ast_hash": "816f00fba8158bf78d0c93deadf0e4d2",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-product.png": {
+    "mtime": 1790539142.159628,
+    "seen": 1790786913.3500242,
+    "ast_hash": "d75523cde48f0bcb9e4692e288d53ba3",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-tablet.png": {
+    "mtime": 1790539140.3368104,
+    "seen": 1790786913.3500242,
+    "ast_hash": "ebc15c78abf8bccaa502af9af6c00b65",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-wide.png": {
+    "mtime": 1790539139.6057868,
+    "seen": 1790786913.3500242,
+    "ast_hash": "0054a32ab1f7902cf993e27c51de50da",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-workflow.png": {
+    "mtime": 1790539143.0224898,
+    "seen": 1790786913.3500242,
+    "ast_hash": "fdf30f57563a319c3ec6c614ef930efe",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/overhaul-zoom200.png": {
+    "mtime": 1790539141.2561204,
+    "seen": 1790786913.3500242,
+    "ast_hash": "85838ab6ae6d133223eb7a46d8cd4efd",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.visual-check.1440x900.dark.png": {
+    "mtime": 1790432194.4686806,
+    "seen": 1790786913.3500242,
+    "ast_hash": "80fb147421379b45f790ca03e29e3e25",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.visual-check.1440x900.light.png": {
+    "mtime": 1790432192.7391162,
+    "seen": 1790786913.3500242,
+    "ast_hash": "200e36fc883a2f9348aafbf0b8c3140e",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.visual-check.2048x1320.dark.png": {
+    "mtime": 1790432195.0366948,
+    "seen": 1790786913.3500242,
+    "ast_hash": "8bf02e8a59950dcfb4d88e76eae88271",
+    "semantic_hash": ""
+  },
+  "artifacts/web-request-cache.visual-check.2048x1320.light.png": {
+    "mtime": 1790432193.9985008,
+    "seen": 1790786913.3500242,
+    "ast_hash": "8018e2ffc1a91f5ce3e506db0f5f1e6f",
+    "semantic_hash": ""
+  },
+  "public/favicon.svg": {
+    "mtime": 1789033860.8602538,
+    "seen": 1790786913.3500242,
+    "ast_hash": "65d2d7d0b0f2cb5580c3808f8282568d",
+    "semantic_hash": ""
   }
 }
