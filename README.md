@@ -10,7 +10,7 @@ Create or open a project, write with collaborators, and connect AI when ready. T
 
 2guys1canvas is a multiplayer agent-workflow workspace for collaborative software building. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. Developer is the only active workflow; one serialized builder produces a React product in a restricted preview. Historical Analyst and Researcher records remain readable.
 
-## Managed hosted setup (current)
+## Historical managed hosted setup (inactive)
 
 New hosted projects preselect a shared managed builder and a fixed personal interpreter. The normal path is sign in, create/open a project, write, then **Build my changes**; the compact Builder selector offers three featured choices and more catalog entries, usage/credit state, and Advanced settings. Opening settings, changing builders, typing, saving, and navigating never invoke inference. Existing BYOK projects retain their connection and assignments until explicit owner opt-in. Advanced preserves discovery, exact model IDs, explicit capability tests, custom assignments, and supported effort controls.
 

@@ -1,13 +1,5 @@
 # Harness decision log
 
-## D-0037 - Visible rename and fixed shortcut (2026-09-30)
-
-Status: implemented locally. User-facing identity is 2guys1canvas; CoCreate technical identifiers remain for compatibility. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
-
-## D-0038 - Usage and Shared Intent display (2026-09-30)
-
-Status: implemented locally, with accounting limits. Detailed build/call/setup usage is in Workflow; a separate canvas card displays recorded generation plus setup tokens. The retained setup-call window is not a proven all-history total. Shared Intent keeps accepted requirements, proposals, conflict alternatives, disagreements, sources, and decision history reachable. A retry-safe invitation migration remains pending after automatic approval review rejected a draft that could revoke existing pending links.
-
 ## D-0035 — BYOK-only hosted MVP (2026-09-28)
 
 Status: accepted and implemented locally. Supersedes D-0032 through D-0034 for active routing. New hosted projects start without AI. The owner validates an OpenRouter key without generation, explicitly selects a builder and interpreter, and saves. The key is held in a two-hour in-memory lease; reconnect after expiry or restart. Editors require owner authorization to spend. Managed/founder dispatch and old hosted connection flows are disabled. Historical configurations, catalogs and billing remain readable without migration or deletion. A local real-key submission exposed the obsolete call-count gate after successful interpretation. D-0036 removes it, shows physical-request tokens, and adds explicit build retry. Hosted two-account evidence remains pending.
@@ -170,3 +162,11 @@ Accepted 2026-09-30. Deduplicate dispatch/reconciliation by call ID in the local
 ## D-0039 — Conflict choices require current authority and revision
 
 Accepted 2026-09-30. Only a current owner/editor who is an affected contributor can select. Require the current group revision and decision timestamp, serialize room choices, reuse request IDs for retries, reject stale submissions with 409, and acknowledge only after persistence. Do not treat browser controls as an authorization boundary or an in-memory queue as a distributed lease.
+
+## D-0040 — Visible rename and fixed shortcut
+
+Accepted 2026-09-30. User-facing identity is 2guys1canvas; CoCreate technical identifiers remain for compatibility. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
+
+## D-0041 — Usage and Shared Intent display
+
+Accepted 2026-09-30. Detailed build, call, and setup usage is in Workflow; a separate canvas card displays recorded generation plus setup tokens. Physical usage keeps partial historical coverage explicit. Shared Intent keeps accepted requirements, proposals, conflict alternatives, disagreements, sources, and decision history reachable.

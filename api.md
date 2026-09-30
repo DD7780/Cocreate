@@ -2,13 +2,13 @@
 
 ## Invitation and usage update (2026-09-30)
 
-Invitation routes retain their existing paths and authorization. The server reads `RESEND_API_KEY` and `COCREATE_EMAIL_FROM`; invalid or absent sender configuration returns per-address `deliveryState: configuration_required` with an actionable `deliveryError`. Only a successful provider response with an ID returns `sent`. Email content includes inviter, project, role, accept link, and expiry. Acceptance remains authenticated and verified-email-bound in SQL. `RoomView.usage` and `setupUsage` remain separate; Workflow's token card adds their recorded input and output tokens. `providerCalls` is a recent window, and unknown usage is not converted to measured zero. Invitation creation can still produce multiple pending records for one address; a safe retry design is outstanding.
+Invitation routes retain their existing paths and authorization. The server reads `RESEND_API_KEY` and `COCREATE_EMAIL_FROM`; invalid or absent sender configuration returns per-address `deliveryState: configuration_required` with an actionable `deliveryError`. Only a successful provider response with an ID returns `sent`. Email content includes inviter, project, role, accept link, and expiry. Acceptance remains authenticated and verified-email-bound in SQL. Creation and resend requests use request IDs for replay, deliberate resends preserve all earlier pending links, and acceptance preserves an existing membership role. `RoomView.usage` and `setupUsage` remain separate from the deduplicated physical-call ledger. Unknown usage is not converted to measured zero, and historical coverage remains explicitly partial.
 
 ## Active hosted OpenRouter BYOK (2026-09-28)
 
 Hosted routes require a signed project ticket and membership. `POST /api/rooms/:id/ai/openrouter/connect` accepts `{apiKey}`, validates through OpenRouter `/key` and discovers `/models` without generation, and returns redacted lease metadata. `POST /api/rooms/:id/ai/openrouter/models` accepts `{handle,interpreterModel,builderModel}` and validates both exact IDs. `PUT /api/rooms/:id/ai/openrouter/spenders/:memberId` accepts `{authorized:boolean}` for a project editor or owner. `POST /api/rooms/:id/ai/openrouter/disconnect` revokes the lease. The project owner controls these mutations. `/api/rooms/:id/submit` remains the hosted generation entry. Obsolete hosted `/ai` routes return 410, and managed dispatch is rejected even for historical assignments. The key is never serialized into room state or snapshots. `POST /api/rooms/:id/retry-build` with a unique `{requestId}` explicitly retries accepted requirements after a failed build using the currently selected BYOK models; it does not reinterpret edits. BYOK has no CoCreate dollar or call-count gate. Room state exposes recent physical provider requests and their reported token usage; incomplete usage stays marked. Lease expiry or restart requires reconnecting. Historical API sections below are superseded for the active hosted MVP.
 
-Source-inspected 2026-09-27. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
+Source-inspected 2026-09-30. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
 
 ## Historical hosted managed AI
 
@@ -96,7 +96,7 @@ type ModelChecks = {
 
 Formats are configuration options, not a promise that all providers share the OpenAI protocol. Adapters own provider-specific behavior. Successful model discovery returns the account-visible IDs and the client presents them as selectable options while preserving exact manual entry. Discovery is not proof that the account can generate with every listed model. Capability checks issue inference requests and may consume usage.
 
-## Legacy AI routes (currently retained)
+## Legacy AI routes (local compatibility only; hosted routes return 410)
 
 Owner-only; use the named-connection API for new UI work.
 

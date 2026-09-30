@@ -23,6 +23,19 @@
 - [ ] A user initiated one local real-key submission: interpretation returned usage, while the builder hit the now-removed gate. Verify end-to-end build, actual provider spending, owner/editor collaboration and preview promotion; hosted two-account evidence remains pending.
 - [ ] Deploy after hosted verification. Roll back the application release if needed; retain project, billing and audit records.
 
+## BYOK-only MVP slice (2026-09-28)
+
+- [x] Ported the BYOK server, physical usage accounting, and retry flow onto the deployed `main` visual base without importing the alternate comic stylesheet, WorkflowBoard, or browser draft cache. The project list and core stylesheet are unchanged.
+- [x] Main-design port: `pnpm test` passed 102/102, `pnpm build` passed, and a local Chrome smoke check passed at 1440, 1280, 1024, 768, 720, and 390 CSS pixels. The setup dialog, focus return, split view, long document, and original workflow view passed. These are local checks; no paid request or hosted two-account check ran.
+- [x] New hosted projects start disconnected; writing and collaboration remain available.
+- [x] Added generation-free key validation, temporary server-memory credential lease, explicit builder/interpreter selections, exact-ID checks, owner-authorized editor spending, and disconnect.
+- [x] Disabled managed dispatch and retired hosted managed/old AI routes; preserved historical project and billing data.
+- [x] Replaced active hosted setup with compact BYOK UI.
+- [x] Removed the unintended BYOK dollar and physical-call gates; exposed recent physical-request input/output tokens and incomplete usage; added explicit retry for failed accepted work.
+- [x] Local mocked tests cover no-generation setup, no stored secret, forged IDs, spender authorization, lease expiry/restart, and disabled managed dispatch.
+- [ ] A user initiated one local real-key submission: interpretation returned usage, while the builder hit the now-removed gate. Verify end-to-end build, actual provider spending, owner/editor collaboration and preview promotion; hosted two-account evidence remains pending.
+- [ ] Deploy after hosted verification. Roll back the application release if needed; retain project, billing and audit records.
+
 ## Workflow-first pivot — Phase 1 durable workflow slice (2026-09-23)
 
 - [x] Wrote the source-backed implementation map before changing orchestration boundaries. Reused the existing event/artifact/run store; did not introduce a competing source of truth.
