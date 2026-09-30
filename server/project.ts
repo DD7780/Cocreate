@@ -21,9 +21,9 @@ const starter:ProjectFile[]=[
 
 export const infrastructureFiles:ProjectFile[]=[
   {path:'package.json',content:JSON.stringify({name:'cocreate-generated-app',private:true,version:'1.0.0',type:'module',scripts:{dev:'vite',build:'vite build',preview:'vite preview'},dependencies:{'@vitejs/plugin-react':'^5.0.4',vite:'^7.1.12',typescript:'^5.9.3',react:'^19.2.0','react-dom':'^19.2.0'}},null,2)},
-  {path:'index.html',content:'<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>CoCreate App</title></head><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>'},
+  {path:'index.html',content:'<!doctype html><html><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>2guys1canvas App</title></head><body><div id="root"></div><script type="module" src="/src/main.tsx"></script></body></html>'},
   {path:'vite.config.ts',content:"import{defineConfig}from'vite';import react from'@vitejs/plugin-react';export default defineConfig({plugins:[react()]})"},
-  {path:'README.md',content:'# CoCreate generated app\n\nRequires Node.js 22+. Run `npm install`, then `npm run dev`.\n'},
+  {path:'README.md',content:'# 2guys1canvas generated app\n\nRequires Node.js 22+. Run `npm install`, then `npm run dev`.\n'},
 ];
 
 export function validateProjectPath(value:string){const clean=value.replaceAll('\\','/');if(clean!==posix.normalize(clean)||clean.startsWith('/')||clean.startsWith('../')||!clean.startsWith('src/')||!allowedExtensions.has(posix.extname(clean)))throw new Error(`Project operation used an invalid path: ${value}`);return clean}

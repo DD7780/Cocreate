@@ -21,13 +21,12 @@ test('Alt+X is exact and ignores repeats, composition, AltGraph and extra modifi
   assert.equal(isBuildShortcut(event({getModifierState:(name:string)=>name==='AltGraph'}),'alt+x'),false);
 });
 
-test('preferences disable or remap the shortcut and macOS defaults to disabled',()=>{
+test('legacy preferences cannot override the fixed platform shortcut',()=>{
   assert.equal(defaultBuildShortcut(false),'alt+x');
   assert.equal(defaultBuildShortcut(true),'disabled');
   assert.equal(readBuildShortcut({getItem:()=>null},true),'disabled');
-  assert.equal(readBuildShortcut({getItem:()=> 'alt+s'},false),'alt+s');
-  assert.equal(isBuildShortcut(event({key:'s'}),'alt+s'),true);
-  assert.equal(isBuildShortcut(event(),'alt+s'),false);
+  assert.equal(readBuildShortcut({getItem:()=> 'alt+s'},false),'alt+x');
+  assert.equal(readBuildShortcut({getItem:()=> 'alt+x'},true),'disabled');
   assert.equal(isBuildShortcut(event(),'disabled'),false);
   assert.equal(shortcutLabel('alt+x'),'Alt + X');
   assert.equal(ariaShortcut('alt+x'),'Alt+X');

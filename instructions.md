@@ -1,4 +1,8 @@
-# CoCreate AI coding instructions
+# 2guys1canvas AI coding instructions
+
+## Current naming and UI boundary (2026-09-30)
+
+Use 2guys1canvas for new user-visible copy. Preserve CoCreate-prefixed storage keys, environment variables, package names, API paths, and deployed origins pending a compatibility migration. Keep fixed editor-focused Alt+X on Windows/Linux and the established disabled mapping on macOS. Detailed usage belongs in Workflow, with a separate canvas token card. Shared Intent must retain accepted requirements, proposals, conflicts, disagreements, sources, and decision history. Do not describe Resend acceptance as inbox delivery or unknown charges as zero. Keep historical generation counters separate from the partial physical-call ledger; never label their sum a complete project total.
 
 ## Active hosted AI boundary (2026-09-28)
 
@@ -96,7 +100,7 @@ This is an agent obligation, not an automatic documentation synchronization serv
 
 Treat Supabase user UUIDs as account identity and project membership as authority. Never restore room-link ownership in hosted mode, identify owners by display name/email, put secret keys in `VITE_*`, acknowledge hosted saves before the remote commit, make artifact buckets public, or let local SQLite/JSON silently replace failed Postgres. Project creation/switching is inference-free. Apply migrations only after verifying the intended project; legacy imports are dry-run by default and require a trusted room-to-user UUID map.
 
-Project invitations are app-level records, not Supabase Auth invitations. Bind them to a normalized intended email and verified account, hash random tokens at rest, enforce owner/explicit sharing permission server-side, keep editor/viewer roles bounded, and make accept/resend/revoke transactional and idempotent. Transactional email secrets stay server-only; provider acceptance is not proof of delivery.
+Project invitations are app-level records, not Supabase Auth invitations. Bind them to a normalized intended email and verified account, hash random tokens at rest, enforce owner/explicit sharing permission server-side, keep editor/viewer roles bounded, and make acceptance and request-ID based sending idempotent. A resend creates another valid link and must not revoke earlier pending links; explicit revoke remains separate. Transactional email secrets stay server-only; provider acceptance is not proof of delivery.
 
 ## Local draft and visual invariants (2026-09-28)
 

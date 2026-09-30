@@ -107,17 +107,24 @@ test('project names and invitation emails use canonical validation',()=>{
 test('transactional invitation email is truthful and idempotent at the provider boundary',async()=>{
   const unconfigured=invitationEmailSenderFromEnv({} as NodeJS.ProcessEnv);
   assert.equal(unconfigured.configured,false);
-  assert.equal((await unconfigured.send({invitationId:'i1',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token'})).state,'configuration_required');
+  assert.equal((await unconfigured.send({invitationId:'i1',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'})).state,'configuration_required');
   let request:{url:string;init:RequestInit}|undefined;
-  const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'CoCreate <invites@example.com>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{'Content-Type':'application/json'}})});
-  const sent=await configured.send({invitationId:'i2',recipientEmail:'person@example.com',inviterName:'<Owner>',projectTitle:'Plan & Ship',role:'editor',inviteUrl:'https://example.com/invite/token'});
+  const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@verified.test>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{'Content-Type':'application/json'}})});
+  const sent=await configured.send({invitationId:'i2',recipientEmail:'person@example.com',inviterName:'<Owner>',projectTitle:'Plan & Ship',role:'editor',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'});
   assert.deepEqual(sent,{state:'sent',providerMessageId:'email_synthetic'});
   assert.equal(request?.url,'https://api.resend.com/emails');
   assert.equal((request?.init.headers as Record<string,string>)['Idempotency-Key'],'cocreate-project-invite-i2');
   const payload=JSON.parse(String(request?.init.body)) as {html:string};
   assert.doesNotMatch(payload.html,/<Owner>|Plan & Ship/);
-  const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@example.com'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));
-  assert.deepEqual(await failed.send({invitationId:'i3',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token'}),{state:'failed',error:'synthetic rejection'});
+  assert.match(payload.html,/Accept invitation.*Expires:/);
+  const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));
+  assert.deepEqual(await failed.send({invitationId:'i3',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'}),{state:'failed',error:'Email provider rejected the invitation (422). Check the verified sender and recipient.'});
+  const malformed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'"2guys1canvas <invites@verified.test>"'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
+  assert.equal(malformed.configured,false);
+  const placeholder=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@example.com>'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
+  assert.equal(placeholder.configured,false);
+  const unconfirmed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response('{}',{status:200,headers:{'Content-Type':'application/json'}}));
+  assert.equal((await unconfirmed.send({invitationId:'i4',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'})).state,'failed');
 });
 
 test('email invitation migration binds recipients and enforces sharing permissions',()=>{

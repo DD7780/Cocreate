@@ -1,4 +1,16 @@
-# CoCreate harness implementation checklist
+# 2guys1canvas harness implementation checklist
+
+## Invitation and workspace UI slice (2026-09-30)
+
+- [x] Local Resend sender syntax validation, email content, and provider acceptance ID check implemented; focused invitation tests passed.
+- [x] Shortcut picker removed and old preference values ignored; fixed mapping and focused shortcut tests passed.
+- [x] Detailed usage moved to Workflow; separate canvas card uses the same recorded generation and setup values.
+- [x] Shared Intent previews accepted requirements and exposes proposal/conflict attention, full sources, and decision history.
+- [x] Visible client branding and browser metadata changed without renaming technical keys or origins.
+- [x] Full local test suite passed 106/106; production `pnpm build` passed. Headless Chrome checked desktop canvas, the absent shortcut picker, Workflow usage, and 390px mobile width without a provider call. `graphify update .` completed.
+- [ ] Live invitation delivery awaits `RESEND_API_KEY` and `COCREATE_EMAIL_FROM` on the exact verified Resend domain.
+- [ ] Invitation creation can leave multiple pending links for one recipient. Automatic approval review rejected a migration that could invalidate existing links; design a non-disruptive retry scheme.
+- [ ] Hosted two-account collaboration, authenticated hosted mobile review, and deployment remain unverified.
 
 ## BYOK-only MVP slice (2026-09-28)
 
@@ -402,3 +414,14 @@ Documentation-only source inspection; historical test counts above are retained,
 - [x] graphify update . completed AST-only. SQL parser dependency absent; SQL graph extraction skipped. No migrations changed.
 - [ ] Full offline startup, cache retention/account purge controls, cloud capacity benchmarks and hosted live model qualification are not implemented or verified by this slice. Existing durable cloud storage remains authoritative.
 - [ ] Deployment was not performed. Prior unrelated generator edits, removed .codex files and architecture artifacts were preserved.
+
+## Invitation, usage, and conflict repair — 2026-09-30
+
+- [x] Inspected the rejected migration and current SQL/routes. Added an additive invitation migration that preserves existing hashes, links, memberships, and roles. Request-ID replay and non-revoking resend have mocked route coverage.
+- [x] Added a Postgres physical-call ledger and recent-snapshot backfill. SQLite aggregation scans all events and deduplicates by call ID; a restart test covers 520 calls beyond the former display window. Workflow labels historical coverage as partial and keeps the older generation counter separate.
+- [x] Added an authenticated conflict selection route, affected-contributor check, stale-revision/timestamp rejection, serialized room decisions, accessible radio controls, and mocked permission/concurrency/retry tests.
+- [x] Applied both additive migrations to live Supabase after authorization and dry run. Pre/post fingerprints for invitation rows, memberships, and snapshots matched; 4 invites (1 pending), 26 memberships, and 13 backfilled ledger rows remain. Transactional checks rolled back synthetic rows after proving request replay, non-revoking resend, confirmed-email acceptance preserving an editor membership, and final ledger reconciliation surviving a delayed dispatch. No existing link was consumed.
+- [x] Final local suite passed 111/111, TypeScript/Vite build passed, and headless Chrome saved an accessible conflict radio choice and checked desktop/mobile usage. Graphify was updated AST-only; SQL extraction remains unavailable without `tree_sitter_sql`.
+- [ ] Configure `RESEND_API_KEY` and a verified-domain `COCREATE_EMAIL_FROM` in the target environment, then send to an authorized test recipient and verify provider acceptance plus inbox/webhook outcome. Both values are absent locally; no live email was sent.
+- [ ] Reconcile physical requests older than retained snapshots from provider/export records if available. One live project snapshot has historical generation usage but no retained physical-call records, so its missing call count and charges cannot be inferred.
+- [ ] Deploy the application code and verify conflict selection plus invitation delivery with two authenticated hosted accounts. The room queue is a single-coordinator guard, not a distributed lease.

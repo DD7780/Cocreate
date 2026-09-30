@@ -60,7 +60,7 @@ export function managedSetup(builderId = MANAGED_DEFAULT_BUILDER): AISetupPolicy
   const personal = managedCatalog.find(item => item.id === MANAGED_INTERPRETER_CANDIDATES[0]);
   if (!builder || !personal) throw new Error('Managed catalog configuration is incomplete.');
   const layer = (item: ManagedCatalogEntry, maxInputTokens: number, maxOutputTokens: number) => ({
-    connectionId: 'managed', connectionName: 'CoCreate managed OpenRouter', provider: 'openrouter' as const,
+    connectionId: 'managed', connectionName: '2guys1canvas managed OpenRouter', provider: 'openrouter' as const,
     model: item.id, rate: item.rate, maxInputTokens, maxOutputTokens,
     reasoning: item.reasoningEfforts,
   });

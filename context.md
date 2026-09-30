@@ -1,4 +1,8 @@
-# CoCreate context handoff
+# 2guys1canvas context handoff
+
+## Current implementation handoff (2026-09-30)
+
+Visible branding is 2guys1canvas; technical CoCreate identifiers and deployed origins remain for compatibility. Local code validates the Resend sender before calling the provider, includes inviter/project/role/accept link/expiry, and requires a provider acceptance ID before reporting Sent. No sender is configured locally, so live delivery remains unverified. The shortcut picker is removed and legacy preferences resolve to fixed platform mappings. Detailed usage moved to Workflow and a separate canvas card. Shared Intent exposes accepted requirements, attention items, provenance, and decision history. The physical-call ledger scans all local events or hosted Postgres rows, while historical generation counters remain separate. Coverage remains partial. The rejected revoke-on-retry migration was never created. Both additive migrations were applied live after approval. Invitation, membership, and snapshot fingerprints were unchanged; 13 retained calls were backfilled. Live transaction checks rolled back their test rows after proving replay, non-revoking resend, confirmed-email acceptance preserving an editor role, and ledger deduplication. The final local suite passed 111/111, build passed, and Chrome verified conflict controls and desktop/mobile usage. Live email delivery and deployed app behavior remain unverified.
 
 ## Current BYOK-only handoff (2026-09-28)
 

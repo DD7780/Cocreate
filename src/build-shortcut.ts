@@ -7,8 +7,9 @@ export function defaultBuildShortcut(isMac:boolean):BuildShortcutPreference{
 }
 
 export function readBuildShortcut(storage:Pick<Storage,'getItem'>,isMac:boolean):BuildShortcutPreference{
-  const value=storage.getItem(BUILD_SHORTCUT_STORAGE_KEY);
-  return value==='disabled'||value==='alt+x'||value==='alt+s'||value==='alt+y'?value:defaultBuildShortcut(isMac);
+  // The old preference is intentionally ignored: all clients use the fixed platform mapping.
+  void storage;
+  return defaultBuildShortcut(isMac);
 }
 
 export function shortcutLabel(value:BuildShortcutPreference){

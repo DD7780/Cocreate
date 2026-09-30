@@ -1,8 +1,10 @@
-import { createHash, randomBytes } from 'node:crypto';
+import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as Y from 'yjs';
 import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
+import { encryptSecret, decryptSecret, type EncryptedSecret } from './credentials.js';
+import type { ProviderRequestRecord } from '../src/types.js';
 
 export type ProjectRole = 'owner' | 'editor' | 'viewer';
 export type ProjectSummary = {
@@ -152,6 +154,22 @@ export class SupabasePlatform {
     return {contentHash};
   }
 
+  async recordProviderRequest(record:ProviderRequestRecord){
+    const {error}=await this.admin.rpc('record_project_provider_request',{target_project_id:record.workspaceId,target_call_id:record.callId,request_record:record});
+    fail('Durable provider accounting failed',error);
+  }
+
+  async loadProviderRecords(projectId:string):Promise<ProviderRequestRecord[]>{
+    const records:ProviderRequestRecord[]=[];
+    for(let offset=0;;offset+=1000){
+      const {data,error}=await this.admin.from('project_provider_requests').select('record').eq('project_id',projectId).order('first_recorded_at').order('call_id').range(offset,offset+999);
+      fail('Provider accounting restore failed',error);
+      records.push(...(data||[]).map(row=>row.record as ProviderRequestRecord));
+      if((data||[]).length<1000)break;
+    }
+    return records;
+  }
+
   async loadSnapshot(projectId:string) {
     const {data,error}=await this.admin.from('project_snapshots').select('revision,yjs_state,harness_state,committed_at').eq('project_id',projectId).maybeSingle();fail('Snapshot restore failed',error);
     if(!data)return null;
@@ -194,24 +212,28 @@ export class SupabasePlatform {
     return{permission:membership.role==='owner'?'owner':'member',members,invitations};
   }
 
-  async createInvite(projectId:string,userId:string,email:string,role:Exclude<ProjectRole,'owner'>,ttlHours=72) {
+  private inviteTokenSecret(){const secret=process.env.CREDENTIAL_ENCRYPTION_SECRET||process.env.SESSION_SECRET;if(!secret)throw new Error('Invitation delivery requires CREDENTIAL_ENCRYPTION_SECRET or SESSION_SECRET.');return secret}
+
+  async createInvite(projectId:string,userId:string,email:string,role:Exclude<ProjectRole,'owner'>,ttlHours=72,requestId:string=randomUUID()) {
     await this.requireSharePermission(projectId,userId);
     const recipientEmail=normalizeInviteEmail(email);
     const token=randomBytes(32).toString('base64url'),expiresAt=new Date(Date.now()+Math.min(168,Math.max(1,ttlHours))*3_600_000).toISOString();
-    const {data,error}=await this.admin.rpc('create_project_invite',{target_project_id:projectId,actor_id:userId,recipient:recipientEmail,invite_role:role,invite_hash:hashToken(token),invite_expires_at:expiresAt}).single();fail('Invite creation failed',error);
-    const row=data as any;return {id:String(row.id),token,email:recipientEmail,expiresAt,role,resendCount:Number(row.resend_count||0)};
+    const ciphertext=JSON.stringify(encryptSecret(this.inviteTokenSecret(),token));
+    const {data,error}=await this.admin.rpc('create_project_invite_v2',{target_project_id:projectId,actor_id:userId,recipient:recipientEmail,invite_role:role,invite_hash:hashToken(token),invite_expires_at:expiresAt,delivery_request_key:requestId,token_ciphertext:ciphertext}).single();fail('Invite creation failed',error);
+    const row=data as any;return{id:String(row.id),token:decryptSecret(this.inviteTokenSecret(),JSON.parse(row.encrypted_token) as EncryptedSecret),email:recipientEmail,expiresAt:String(row.expires_at),role,deliveryState:String(row.delivery_state),providerMessageId:row.provider_message_id||undefined,pending:row.accepted_at===null&&row.revoked_at===null&&Date.parse(String(row.expires_at))>Date.now(),resendCount:Number(row.resend_count||0)};
   }
 
-  async resendInvite(projectId:string,userId:string,inviteId:string,ttlHours=72) {
+  async resendInvite(projectId:string,userId:string,inviteId:string,ttlHours=72,requestId:string=randomUUID()) {
     await this.requireSharePermission(projectId,userId);
-    const existing=await this.admin.from('project_invites').select('id').eq('id',inviteId).eq('project_id',projectId).is('accepted_at',null).is('revoked_at',null).maybeSingle();fail('Invitation lookup failed',existing.error);if(!existing.data)throw Object.assign(new Error('Invitation is no longer pending.'),{status:404});
+    const existing=await this.admin.from('project_invites').select('id').eq('id',inviteId).eq('project_id',projectId).maybeSingle();fail('Invitation lookup failed',existing.error);if(!existing.data)throw Object.assign(new Error('Invitation does not belong to this project.'),{status:404});
     const token=randomBytes(32).toString('base64url'),expiresAt=new Date(Date.now()+Math.min(168,Math.max(1,ttlHours))*3_600_000).toISOString();
-    const {data,error}=await this.admin.rpc('resend_project_invite',{prior_invite_id:inviteId,actor_id:userId,invite_hash:hashToken(token),invite_expires_at:expiresAt}).single();fail('Invitation resend failed',error);const row=data as any;if(String(row.project_id)!==projectId)throw Object.assign(new Error('Invitation does not belong to this project.'),{status:404});return{id:String(row.id),token,email:String(row.recipient_email),expiresAt,role:row.intended_role as Exclude<ProjectRole,'owner'>,resendCount:Number(row.resend_count||0)};
+    const ciphertext=JSON.stringify(encryptSecret(this.inviteTokenSecret(),token));
+    const {data,error}=await this.admin.rpc('resend_project_invite_v2',{prior_invite_id:inviteId,actor_id:userId,invite_hash:hashToken(token),invite_expires_at:expiresAt,delivery_request_key:requestId,token_ciphertext:ciphertext}).single();fail('Invitation resend failed',error);const row=data as any;if(String(row.project_id)!==projectId)throw Object.assign(new Error('Invitation does not belong to this project.'),{status:404});return{id:String(row.id),token:decryptSecret(this.inviteTokenSecret(),JSON.parse(row.encrypted_token) as EncryptedSecret),email:String(row.recipient_email),expiresAt:String(row.expires_at),role:row.intended_role as Exclude<ProjectRole,'owner'>,deliveryState:String(row.delivery_state),providerMessageId:row.provider_message_id||undefined,pending:row.accepted_at===null&&row.revoked_at===null&&Date.parse(String(row.expires_at))>Date.now(),resendCount:Number(row.resend_count||0)};
   }
 
   async recordInviteDelivery(inviteId:string,delivery:{state:string;error?:string;providerMessageId?:string}) {
     const values={delivery_state:delivery.state,delivery_error:delivery.error?.slice(0,500)||null,provider_message_id:delivery.providerMessageId||null,last_sent_at:delivery.state==='sent'?new Date().toISOString():null};
-    const {error}=await this.admin.from('project_invites').update(values).eq('id',inviteId);fail('Invitation delivery update failed',error);
+    const {error}=await this.admin.from('project_invites').update(values).eq('id',inviteId).neq('delivery_state','sent');fail('Invitation delivery update failed',error);
   }
 
   async revokeInvite(projectId:string,userId:string,inviteId:string) {

@@ -1,4 +1,8 @@
-# CoCreate API reference
+# 2guys1canvas API reference
+
+## Invitation and usage update (2026-09-30)
+
+Invitation routes retain their existing paths and authorization. The server reads `RESEND_API_KEY` and `COCREATE_EMAIL_FROM`; invalid or absent sender configuration returns per-address `deliveryState: configuration_required` with an actionable `deliveryError`. Only a successful provider response with an ID returns `sent`. Email content includes inviter, project, role, accept link, and expiry. Acceptance remains authenticated and verified-email-bound in SQL. `RoomView.usage` and `setupUsage` remain separate; Workflow's token card adds their recorded input and output tokens. `providerCalls` is a recent window, and unknown usage is not converted to measured zero. Invitation creation can still produce multiple pending records for one address; a safe retry design is outstanding.
 
 ## Active hosted OpenRouter BYOK (2026-09-28)
 
@@ -133,7 +137,7 @@ RoomView includes:
 - `requirements`, authoritative `conflictGroups`, derived compatibility `contradictions`, `specificationRevision`, `requirementsRevision`.
 - `latestVersion: number | null`, `versions`, optional `lastError`.
 - `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, cumulative `usage`, and the last 50 `aiRuns`.
-- The last 100 redacted `providerCalls` and separately aggregated `setupUsage`. A provider call is one physical HTTP attempt, so retries and structured-output repairs have distinct IDs and records. Setup usage includes explicit connection/capability checks and is not merged into project-generation totals.
+- The last 100 redacted `providerCalls`, legacy windowed `setupUsage`, and authoritative recorded-scope `physicalUsage`. A provider call is one physical HTTP attempt, so retries and structured-output repairs have distinct IDs and records. `physicalUsage` scans the full available ledger and separates setup from generation; it still reports partial historical coverage.
 - Optional `savedAt` and `persistRevision`.
 
 `AIConnection` includes safe named connections, optional default personal/shared-executor assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` workflow-mode/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key. On normalization, any legacy General app, Engineer, Designer, Web developer, or Motion designer active preset gains `workflowMode: developer`; its assignments, encrypted credential, effort, overrides, resolved layers, and spending ceiling are unchanged. Historical run `specialty` fields remain readable and are not rewritten.
@@ -152,7 +156,7 @@ Recommendations expose `workflowMode`, `modeAvailable`, optional `unavailableRea
 
 Each participant `Requirement` interpretation may include `classifierVersion` and an `intents` array. Every intent has its own text, category, classification, short rationale, exact source passage, affected requirement IDs, participant attribution, source revision, and authenticated edit sequence IDs. Current classifications are `proposal`, `question`, `explicit_request`, `decision`, and `ambiguity`. Missing or invalid classifications normalize to `ambiguity`, never silently to an accepted request. Legacy interpretation arrays remain readable and are migrated into per-intent records during normalization.
 
-`ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view during the UI/API transition. No selection mutation endpoint is implemented in this slice.
+`ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view. The authenticated selection endpoint below mutates the authoritative group.
 
 `Version` includes ID, createdAt, summary, optional fileCount/conflicts, and the promoted run's `aiRun`. `AIUsage` includes request counts, input/output totals, optional cached/cache-write/reasoning totals, and optional estimated/uncertain cost. It is an operational estimate, not confirmed provider billing.
 
@@ -198,13 +202,19 @@ The Vite browser client supports Google PKCE and Supabase email/password authent
 | `PATCH /api/projects/:id` | owner | rename or archive/restore |
 | `POST /api/projects/:id/session` | member | rehydrate room and return scoped collaboration ticket |
 | `GET /api/projects/:id/sharing` | owner or member with `can_share` | current members and pending invitations |
-| `POST /api/projects/:id/invites` | owner or member with `can_share` | create 1–10 email-bound editor/viewer invitations and report truthful delivery state |
-| `POST /api/projects/:id/invites/:inviteId/resend` | owner or member with `can_share` | revoke the old token, create a replacement, and retry delivery |
+| `POST /api/projects/:id/invites` | owner or member with `can_share` | create 1–10 email-bound editor/viewer invitations; optional `requestId` replays the same invitation and link |
+| `POST /api/projects/:id/invites/:inviteId/resend` | owner or member with `can_share` | create another valid link without revoking the prior link; optional `requestId` replays the same resend |
 | `DELETE /api/projects/:id/invites/:inviteId` | owner or member with `can_share` | revoke a pending invitation |
 | `PATCH /api/projects/:id/members/:memberId` | owner or member with `can_share`; owner required for `can_share` | update a non-owner editor/viewer role or owner-controlled sharing permission |
 | `POST /api/invites/accept` | authenticated account with matching confirmed email | transactionally and idempotently consume a valid invitation and add membership |
 
-Invitation tokens are 256-bit random values and only SHA-256 hashes are stored. Pending invites expire, may be revoked, are limited to 30 creations/resends per actor per hour, and are unique per active project/recipient. `deliveryState` is `sent`, `failed`, or `configuration_required`; `sent` means the email provider accepted the request, not that delivery is confirmed. In Supabase mode, legacy room creation and display-name join endpoints are disabled. Preview and download access require the project ticket. Hosted WebSocket origins must match `COCREATE_APP_ORIGINS`; viewers may receive state/awareness but cannot submit Yjs updates or room mutations.
+Invitation tokens are 256-bit random values. SHA-256 hashes authorize acceptance; new links also store an encrypted token for same-request retries. Legacy hashes and links stay valid until their existing expiry, acceptance, or explicit revocation. A resend creates a second active link. The database deduplicates by actor/project/request ID; a retry with the same ID and different recipient or role fails. Existing memberships keep their role on acceptance. Pending invites expire, may be revoked, and are limited to 30 creations/resends per actor per hour. `deliveryState: sent` means the email provider accepted the request, not that delivery is confirmed. Resend idempotency is bounded by the provider's retention window; uncertain outcomes beyond it require reconciliation. In Supabase mode, legacy room creation and display-name join endpoints are disabled. Preview and download access require the project ticket. Hosted WebSocket origins must match `COCREATE_APP_ORIGINS`; viewers may receive state/awareness but cannot submit Yjs updates or room mutations.
+
+| Method and path | Permission | Result |
+| --- | --- | --- |
+| `POST /api/rooms/:id/conflicts/:groupId/selections` | current owner/editor membership and affected contributor | Submit `{groupRevision, expectedUpdatedAt, alternativeId, requestId}`; stale timestamp/revision returns 409, duplicate request returns the prior decision |
+
+`RoomView.physicalUsage` is the deduplicated physical-call ledger, split into generation and setup, with unknown-usage count, first recorded date, and `coverage: partial`. SQLite scans its full event history; hosted mode reads the server-only Postgres ledger, including recoverable recent snapshot calls. `usage` remains the separate historical generation counter. Neither counter proves complete pre-ledger history, and they must not be added together.
 
 ## Client integration notes — 2026-09-28
 
