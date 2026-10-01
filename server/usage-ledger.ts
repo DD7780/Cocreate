@@ -7,7 +7,7 @@ export type PhysicalUsage={recorded:AIUsage;generation:AIUsage;setup:AIUsage;unk
 /** A physical call has one callId and may have a dispatch followed by a reconciliation. */
 export function aggregatePhysicalUsage(records:ProviderRequestRecord[]):PhysicalUsage{
   const byCall=new Map<string,ProviderRequestRecord>();
-  for(const record of records){if(!record.callId)continue;const previous=byCall.get(record.callId);if(!previous||record.outcome!=='dispatching'||previous.outcome==='dispatching')byCall.set(record.callId,record)}
+  for(const record of records){if(!record.callId)continue;const previous=byCall.get(record.callId);if(!previous||(record.outcome!=='dispatching'&&(previous.outcome==='dispatching'||(record.endedAt||'')>=(previous.endedAt||'')))||previous.outcome==='dispatching')byCall.set(record.callId,record)}
   const recorded=empty(),generation=empty(),setup=empty();let unknownUsageRequests=0,recordedFrom:string|undefined;
   for(const call of byCall.values()){
     const bucket=setupPurposes.has(call.purpose)?setup:generation;
@@ -21,7 +21,7 @@ export function aggregatePhysicalUsage(records:ProviderRequestRecord[]):Physical
       target.estimatedCostUsd=(target.estimatedCostUsd||0)+(call.estimatedChargeUsd||0);
       if(call.chargeIncomplete)target.uncertainCostUsd=(target.uncertainCostUsd||0)+(call.estimatedChargeUsd||0);
     }
-    if(call.usageStatus!=='measured'||call.outcome==='dispatching'||call.outcome==='unknown')unknownUsageRequests++;
+    if(call.usage?.inputTokens===undefined||call.usage?.outputTokens===undefined||call.usageStatus!=='measured'||call.outcome==='dispatching'||call.outcome==='unknown')unknownUsageRequests++;
     if(!recordedFrom||call.startedAt<recordedFrom)recordedFrom=call.startedAt;
   }
   return{recorded,generation,setup,unknownUsageRequests,recordedFrom,coverage:'partial'};

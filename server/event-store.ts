@@ -52,7 +52,7 @@ const hash=(value:string|Uint8Array)=>createHash('sha256').update(value).digest(
 const numericUsageKey=/^(?:estimatedInputTokens|estimatedOutputTokens|inputTokens|outputTokens|cachedInputTokens|cacheWriteTokens|reasoningTokens)$/;
 const redact=(value:unknown):unknown=>{
   if(Array.isArray(value))return value.map(redact);
-  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value as Record<string,unknown>).map(([key,item])=>[key,numericUsageKey.test(key)&&typeof item==='number'&&Number.isFinite(item)?item:sensitiveKey.test(key)?'[REDACTED]':redact(item)]));
+  if(value&&typeof value==='object')return Object.fromEntries(Object.entries(value as Record<string,unknown>).filter(([,item])=>item!==undefined).map(([key,item])=>[key,numericUsageKey.test(key)&&typeof item==='number'&&Number.isFinite(item)?item:sensitiveKey.test(key)?'[REDACTED]':redact(item)]));
   if(typeof value==='string')return value.replace(/\bBearer\s+[A-Za-z0-9._~+/=-]{8,}/gi,'Bearer [REDACTED]').replace(/\b(?:sk|api)[-_][A-Za-z0-9_-]{8,}\b/gi,'[REDACTED]').replace(/([?&](?:api_key|key|token)=)[^&\s]+/gi,'$1[REDACTED]');
   return value;
 };
@@ -71,6 +71,9 @@ export class EventStore{
   private migrate(){
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS coordinator_leases(
+        workspace_id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,epoch INTEGER NOT NULL,expires_at INTEGER NOT NULL
+      );
       CREATE TABLE IF NOT EXISTS workspace_sequences(workspace_id TEXT PRIMARY KEY, next_seq INTEGER NOT NULL);
       CREATE TABLE IF NOT EXISTS events(
         event_id TEXT PRIMARY KEY,event_type TEXT NOT NULL,workspace_id TEXT NOT NULL,
@@ -117,6 +120,20 @@ export class EventStore{
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(1,?)').run(new Date().toISOString());
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(2,?)').run(new Date().toISOString());
   }
+  claimCoordinator(workspaceId:string,ownerId:string,ttlMs=30_000,at=Date.now()){
+    this.db.exec('BEGIN IMMEDIATE');try{
+      const current=this.db.prepare('SELECT owner_id AS ownerId,epoch,expires_at AS expiresAt FROM coordinator_leases WHERE workspace_id=?').get(workspaceId) as {ownerId:string;epoch:number;expiresAt:number}|undefined;
+      if(current&&current.expiresAt>at&&current.ownerId!==ownerId)throw new Error('Another coordinator owns this workflow. Retry after reconnecting.');
+      const epoch=current&&current.ownerId===ownerId&&current.expiresAt>at?current.epoch:(current?.epoch||0)+1;
+      this.db.prepare('INSERT INTO coordinator_leases VALUES(?,?,?,?) ON CONFLICT(workspace_id) DO UPDATE SET owner_id=excluded.owner_id,epoch=excluded.epoch,expires_at=excluded.expires_at').run(workspaceId,ownerId,epoch,at+ttlMs);
+      this.db.exec('COMMIT');return epoch;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
+  }
+  renewCoordinator(workspaceId:string,ownerId:string,epoch:number,ttlMs=30_000,at=Date.now()){
+    const result=this.db.prepare('UPDATE coordinator_leases SET expires_at=? WHERE workspace_id=? AND owner_id=? AND epoch=? AND expires_at>?').run(at+ttlMs,workspaceId,ownerId,epoch,at);
+    if(!result.changes)throw new Error('Coordinator ownership expired or changed. This worker cannot save or promote. Reconnect.');
+  }
+  releaseCoordinator(workspaceId:string,ownerId:string,epoch:number){this.db.prepare('UPDATE coordinator_leases SET expires_at=0 WHERE workspace_id=? AND owner_id=? AND epoch=?').run(workspaceId,ownerId,epoch)}
   private nextSequence(workspaceId:string){
     const row=this.db.prepare('SELECT next_seq AS nextSeq FROM workspace_sequences WHERE workspace_id=?').get(workspaceId) as {nextSeq:number}|undefined;
     if(!row){this.db.prepare('INSERT INTO workspace_sequences(workspace_id,next_seq) VALUES(?,2)').run(workspaceId);return 1}
@@ -222,7 +239,27 @@ export class EventStore{
   runsForWorkspace(workspaceId:string){return this.db.prepare('SELECT run_id AS runId,workspace_id AS workspaceId,kind,state,input_revision AS inputRevision,attempt,trigger_event_id AS triggerEventId,last_event_id AS lastEventId,created_at AS createdAt,updated_at AS updatedAt,error FROM run_state WHERE workspace_id=? ORDER BY created_at').all(workspaceId) as unknown as StoredRun[]}
   pendingApprovals(workspaceId:string){return this.db.prepare("SELECT * FROM approval_state WHERE workspace_id=? AND status='pending' ORDER BY updated_at").all(workspaceId)}
   eventsForWorkspace(workspaceId:string){return this.db.prepare('SELECT event_id AS eventId,event_type AS eventType,workspace_id AS workspaceId,actor_id AS actorId,actor_type AS actorType,run_id AS runId,step_id AS stepId,occurred_at AS occurredAt,workspace_seq AS workspaceSeq,correlation_id AS correlationId,causation_id AS causationId,schema_version AS schemaVersion,payload_json AS payloadJson,artifact_ref AS artifactRef,input_revision AS inputRevision,content_hash AS contentHash FROM events WHERE workspace_id=? ORDER BY workspace_seq').all(workspaceId).map((row:any)=>({...row,payload:JSON.parse(row.payloadJson)}))}
-  allProviderRequestRecordsForWorkspace(workspaceId:string){const rows=this.db.prepare("SELECT payload_json AS payloadJson FROM events WHERE workspace_id=? AND event_type IN ('provider.request_dispatched','provider.request_reconciled') ORDER BY workspace_seq").all(workspaceId) as {payloadJson:string}[];const requests=new Map<string,ProviderRequestRecord>();for(const row of rows){const record=JSON.parse(row.payloadJson) as ProviderRequestRecord;if(!record?.callId||record.workspaceId!==workspaceId)continue;const usage=record.usage||{},unavailable=Object.entries(usage).some(([key,value])=>numericUsageKey.test(key)&&typeof value!=='number');record.usage=Object.fromEntries(Object.entries(usage).filter(([key,value])=>!numericUsageKey.test(key)||typeof value==='number')) as ProviderRequestRecord['usage'];if(unavailable)record.usageStatus='unknown';if(typeof record.estimatedInputTokens!=='number')record.estimatedInputTokens=0;if(typeof record.estimatedOutputTokens!=='number')delete record.estimatedOutputTokens;requests.set(record.callId,record)}return[...requests.values()]}
+  /** Snapshot the durable projection/audit rows for the hosted authority; artifact bodies remain separate. */
+  exportHarness(workspaceId:string){
+    const tables=['events','workflow_state','task_state','run_state'] as const;
+    return Object.fromEntries(tables.map(table=>[table,this.db.prepare(`SELECT * FROM ${table} WHERE workspace_id=?`).all(workspaceId)]));
+  }
+  restoreHarness(workspaceId:string,state:Record<string,unknown>){
+    const tables=['events','workflow_state','task_state','run_state'] as const;
+    this.db.exec('BEGIN IMMEDIATE');try{
+      for(const table of tables){
+        const rows=state[table];if(!Array.isArray(rows))throw new Error('Hosted workflow projection is incomplete.');
+        const columns=(this.db.prepare(`PRAGMA table_info(${table})`).all() as {name:string}[]).map(item=>item.name);
+        const insert=this.db.prepare(`INSERT INTO ${table}(${columns.join(',')}) VALUES(${columns.map(()=>'?').join(',')})`);
+        this.db.prepare(`DELETE FROM ${table} WHERE workspace_id=?`).run(workspaceId);
+        for(const row of rows){if(!row||row.workspace_id!==workspaceId)throw new Error('Hosted projection belongs to another project.');insert.run(...columns.map(column=>row[column]??null));}
+      }
+      const next=this.latestSequence(workspaceId)+1;
+      this.db.prepare('INSERT INTO workspace_sequences VALUES(?,?) ON CONFLICT(workspace_id) DO UPDATE SET next_seq=excluded.next_seq').run(workspaceId,next);
+      this.db.exec('COMMIT');
+    }catch(error){this.db.exec('ROLLBACK');throw error;}
+  }
+  allProviderRequestRecordsForWorkspace(workspaceId:string){const rows=this.db.prepare("SELECT payload_json AS payloadJson FROM events WHERE workspace_id=? AND event_type IN ('provider.request_dispatched','provider.request_reconciled') ORDER BY workspace_seq").all(workspaceId) as {payloadJson:string}[];const requests=new Map<string,ProviderRequestRecord>();for(const row of rows){const record=JSON.parse(row.payloadJson) as ProviderRequestRecord;if(!record?.callId||record.workspaceId!==workspaceId)continue;const usage=record.usage||{},unavailable=Object.entries(usage).some(([key,value])=>/^(inputTokens|outputTokens)$/.test(key)&&typeof value!=='number');record.usage=Object.fromEntries(Object.entries(usage).filter(([key,value])=>!numericUsageKey.test(key)||typeof value==='number')) as ProviderRequestRecord['usage'];if(unavailable)record.usageStatus='unknown';if(typeof record.estimatedInputTokens!=='number')record.estimatedInputTokens=0;if(typeof record.estimatedOutputTokens!=='number')delete record.estimatedOutputTokens;const previous=requests.get(record.callId);if(!previous||previous.outcome==='dispatching'||(record.outcome!=='dispatching'&&(record.endedAt||'')>=(previous.endedAt||'')))requests.set(record.callId,record)}return[...requests.values()]}
   providerRequestRecordsForWorkspace(workspaceId:string){return this.allProviderRequestRecordsForWorkspace(workspaceId).slice(-500)}
   close(){this.db.close()}
 }

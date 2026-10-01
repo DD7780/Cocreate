@@ -170,3 +170,9 @@ Accepted 2026-09-30. User-facing identity is 2guys1canvas; CoCreate technical id
 ## D-0041 — Usage and Shared Intent display
 
 Accepted 2026-09-30. Detailed build, call, and setup usage is in Workflow; a separate canvas card displays recorded generation plus setup tokens. Physical usage keeps partial historical coverage explicit. Shared Intent keeps accepted requirements, proposals, conflict alternatives, disagreements, sources, and decision history reachable.
+
+## D-0042 — Bounded recovery and durable collaboration receipts
+
+Accepted 2026-10-01 from this user's explicit request. Whole-project output exhaustion decomposes into at most eight coherent one-file tasks with durable source checkpoints and one 24-physical-call executor ceiling shared across recovery, retries and superseded candidates. Configured spending, context capacity and provider completion limits stay separate. Never increase effort as unverified output-limit advice. Failed candidates retain the last compiled artifact.
+
+Capture only authenticated participant steering, serialize acceptance in durable capture order, persist draft batches and replay receipts, and acknowledge immutable canonical snapshots with insertion AND deletion receipts. Local owner epochs and prepared service-role Postgres fencing reject stale promotion. Reconnect does not trigger inference. Shared context returns to Canvas with selected durable accepted revision snapshots and separate partial usage. This supersedes earlier no-canvas-sidebar and no-recovery-call-ceiling statements; BYOK still never falls back to managed credit. Missing screenshot, live SQL and hosted-account verification remain explicit limitations.

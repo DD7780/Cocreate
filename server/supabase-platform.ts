@@ -1,3 +1,4 @@
+import { RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -25,10 +26,13 @@ export const normalizeInviteEmail=(value:string)=>{const email=value.trim().toLo
 
 export class SupabasePlatform {
   readonly admin: SupabaseClient;
-  readonly bucket: string;
+  readonly bucket: string;readonly coordinator:RemoteCoordinator;
+  claimCoordinator(projectId:string){return this.coordinator.claim(projectId)}
+  assertCoordinator(projectId:string){return this.coordinator.assert(projectId)}
 
   constructor(readonly config:PlatformConfig) {
     this.admin = createClient(config.url, config.secretKey, { auth:{ persistSession:false, autoRefreshToken:false } });
+    this.coordinator=new RemoteCoordinator((name,input)=>this.admin.rpc(name,input));
     this.bucket = config.artifactBucket || 'cocreate-artifacts';
   }
 
@@ -149,8 +153,8 @@ export class SupabasePlatform {
     const update=typeof payload.update==='string'?payload.update:'';
     const harness={...payload};delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
-    const {error}=await this.admin.from('project_snapshots').upsert({project_id:projectId,revision,yjs_state:encodePostgresBytea(bytes),harness_state:harness,content_hash:contentHash,committed_at:new Date().toISOString()},{onConflict:'project_id'});fail('Durable snapshot failed',error);
-    await this.admin.from('projects').update({updated_at:new Date().toISOString()}).eq('id',projectId);
+    const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
+    // Project timestamp is committed in the same fenced transaction.
     return {contentHash};
   }
 

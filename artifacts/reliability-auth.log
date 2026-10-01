@@ -1,0 +1,21 @@
+TAP version 13
+# (node:23616) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"e1c0c9f6-3b4c-428c-b8fa-3ca6c85db42a"}
+# {"event":"collaboration.connected","connectionId":"60876783-d33d-4fce-8be8-3ba7ccb48d87","correlationId":"8abfc524-35e7-42c6-b7b5-95d766bef32e"}
+# {"event":"collaboration.disconnected","connectionId":"60876783-d33d-4fce-8be8-3ba7ccb48d87","code":4403}
+# Subtest: hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+ok 1 - hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+  ---
+  duration_ms: 409.8356
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4062.1348

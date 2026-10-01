@@ -1,5 +1,16 @@
 # Harness architecture
 
+## Reliability implementation update (2026-10-01)
+
+The active implementation adds server/build-recovery.ts for complete one-file recovery envelopes, sequential source checkpoints and a bounded ordered task manifest; server/generator.ts compares accepted changes with room.lastBuiltRequirements. RoomManager serializes participant interpretation and snapshot commits independently. It captures immutable revisions, persists pending edit batches/command receipts/accepted revision history and restores interrupted interpretation sources. The 24-call executor budget spans candidate supersession and is checked at the lowest physical dispatch boundary with conservative byte-based input estimates and output reservations; it is not a tokenizer or context-occupancy meter.
+
+server/steering-edits.ts captures synchronous Yjs deltas and normalizes equivalent insertions inside reused word prefixes. src/document-state.ts supplies canonical deletion-range receipts alongside insertion state vectors. Clients filter old workflow/snapshot cursors and only mark current edits saved when both receipts cover them. A full snapshot can recover a failed document-update append; a failed snapshot cannot authorize a flush.
+
+SQLite coordinator_leases provides single-owner epochs per shared data directory. server/coordinator.ts maintains server-process Postgres ownership with 30-second leases renewed every 10 seconds, refusing reacquisition after loss. The new migration serializes claim and snapshot commit by advisory transaction lock and row locks, rejects expired/mismatched epochs and stale/conflicting snapshot revisions, and updates the project timestamp atomically. Application checks current membership on hosted HTTP reads/mutations, WebSocket upgrades and each received message and outbound state/document delivery. Leases do not route requests to an owner; another process fails closed. A live multi-instance deployment/routing test remains required.
+
+Hosted snapshots include the workflow/event/task/run projections for cache reconstruction; provider usage comes from the hosted physical ledger. Current artifact sources and recovery files are embedded in snapshots. Older content-addressed artifact bodies remain local and are not transferred by the projection, and embedding the full event projection has not been load-tested. The additive Postgres migration is prepared and unapplied. See [verification evidence](reliability-verification.md).
+
+
 ## Studio Ivory presentation layer (2026-10-01)
 
 `src/main.tsx` loads `src/styles.css` for layout and `src/studio-ivory.css` for the active palette and component states. The two font families are Inter and DM Serif Display, requested once in the base stylesheet. The new layer styles local and hosted auth, projects, invitation dialogs, Workflow, Canvas, Artifacts, and Builder/API setup without changing component state or server contracts. The purple presentation note below is historical.
