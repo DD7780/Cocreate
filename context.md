@@ -1,5 +1,16 @@
 # 2guys1canvas context handoff
 
+## Reliability and shared context slice (2026-10-01)
+
+The latest request supersedes older canvas-without-sidebar and unbounded-BYOK-recovery statements below. The canvas now has a compact Shared context sidebar with durable accepted revision snapshots, separate partial recorded usage, and workflow stage. The Studio Ivory shell remains; the requested new screenshot was absent, so a visual reference match is not verified.
+
+Whole-project output exhaustion now requests an ordered manifest of at most eight one-file tasks, validates complete operations and saves each source checkpoint before proceeding. Initial generation and every recovery/repair/transport attempt share a 24-physical-call executor ceiling; configured spending limits remain enforced. BYOK still has no managed-credit gate. Context capacity, provider output ceiling and spending are distinct. The last compiled artifact remains available after failure. New accepted changes are compared against the last promoted accepted baseline to avoid unnecessary regeneration.
+
+Participant submissions are captured durably and interpreted in capture order; only their authenticated edit batches and the accepted baseline enter interpretation. Exact Yjs insertions account for editor prefix reuse. Drafts, command receipts and accepted revision history survive snapshots; interrupted interpretations restore captured edits without automatic inference. Cloud saves serialize immutable revisions and acknowledge insertion clocks plus deletion ranges. Local coordinator leases fence processes; an additive server-only Postgres lease/atomic-snapshot migration is prepared but NOT applied. Hosted deployment requires that migration.
+
+Final local tests passed **129/129** and the production build passed; graphify was refreshed. Local controlled-provider and independent-browser evidence is in [reliability-verification.md](docs/harness/reliability-verification.md). No paid-provider, hosted-account, live SQL or deployment verification is claimed. Earlier dated results below are historical.
+
+
 ## Studio Ivory UI (2026-10-01)
 
 `src/studio-ivory.css` layers the active warm ivory, ink, cobalt, and terracotta palette over the established layouts in `src/styles.css`. One Google Fonts request loads only Inter and DM Serif Display. Local `pnpm build` and all 111 tests passed. Headless Chrome verified the canvas, Workflow, Artifacts, and Builder/API dialog at desktop, tablet, mobile, and 200% zoom widths without horizontal overflow; the canvas has no Shared Intent rail, while Workflow does. The local-mode welcome and hosted-style login screens were visually checked. Authenticated projects and invitation flows were restyled in CSS but were not account-tested in this visual run. No backend or API contract changed. The purple description below is historical.

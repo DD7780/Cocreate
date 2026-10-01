@@ -1,5 +1,14 @@
 # 2guys1canvas product brief
 
+## Current reliability and shared context requirement (2026-10-01)
+
+This request supersedes the older no-canvas-rail presentation rule and the earlier prohibition on a bounded BYOK recovery call ceiling. Shared context appears beside Canvas and remains reachable in Workflow/Artifacts. Its Shared Intent selector displays accepted-count and revision; the selected durable snapshot drives the Accepted requirements card and View requirements action. Unsubmitted drafts remain separate. A bordered Recorded usage · partial card displays reported tokens and View usage, followed by the workflow stage. The existing Studio Ivory shell is retained pending the missing screenshot; reference fidelity is unverified.
+
+Output-exhausted builders decompose the accepted change into at most eight coherent one-file tasks. Complete envelopes, source validation, durable checkpoints, serialized compilation/integration and promotion are required. A shared 24-physical-call executor ceiling includes recovery and retries; any configured spending limit also applies. Provider output allowance is bounded by reported completion metadata when available. Higher effort does not imply a higher provider output ceiling. Failure retains the compiled artifact and names the task/call bound and next action.
+
+Typing and reconnect never invoke inference. Authenticated submissions capture only the caller's pending steering, retain request IDs across uncertain replies, and reconcile in durable capture order. Later accepted steering supersedes an active fixed-revision candidate and stays queued for subsequent processing. Coordinator leases and fenced snapshot commits reject stale promotion; hosted application depends on the additive migration and still needs account-backed verification.
+
+
 ## Studio Ivory presentation (2026-10-01)
 
 The active visual direction is Studio Ivory: warm ivory surfaces, dark ink, restrained cobalt actions, terracotta highlights, a subtle gridded canvas, and precise hard shadows. Inter handles interface and document text; DM Serif Display is reserved for selected headings. Login, projects, invitations, Workflow, Canvas, Artifacts, and Builder/API setup share this palette. The workflow-first behavior, full-width canvas, Shared Intent placement, BYOK boundary, and submission shortcut below remain active. The earlier purple direction is historical.

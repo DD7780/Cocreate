@@ -1,6 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Y from 'yjs';
+import { deletionSignature } from '../src/document-state.js';
 import {CoCreateProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
 
 class FakeWebSocket {
@@ -17,10 +18,32 @@ class FakeWebSocket {
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);
 
+test('delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored',()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),saved:string[]=[],states:number[]=[];
+  const provider=new CoCreateProvider(doc,'room','token',state=>states.push(state.persistRevision),()=>{},state=>saved.push(state),
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>0,clearTimer:()=>{}});
+  const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'A');const oldVector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');doc.getText('draft').insert(1,'B');
+  socket.message(JSON.stringify({type:'saved',revision:1,vector:oldVector,savedAt:'2026-10-01T00:00:00Z'}));assert.notEqual(saved.at(-1),'saved');
+  socket.message(JSON.stringify({type:'saved',revision:2,vector:Buffer.from(Y.encodeStateVector(doc)).toString('base64')}));assert.equal(saved.at(-1),'saved');
+  socket.message(JSON.stringify({type:'room-state',state:{persistRevision:5,workflow:{activityCursor:10}}}));
+  socket.message(JSON.stringify({type:'room-state',state:{persistRevision:4,workflow:{activityCursor:9}}}));assert.deepEqual(states,[5]);
+  provider.destroy();doc.destroy();
+});
+
 test('retry delay is capped exponential backoff with bounded jitter',()=>{
   assert.equal(providerInternals.retryDelay(1,()=>0),400);
   assert.equal(providerInternals.retryDelay(2,()=>0.5),1_000);
   assert.equal(providerInternals.retryDelay(20,()=>1),12_000);
+});
+
+test('a receipt predating a deletion cannot mark the deleted draft saved',()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),saved:string[]=[];
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saved.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
+  const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'Remove me');
+  const vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64'),deletions=deletionSignature(doc);
+  doc.getText('draft').delete(0,9);socket.message(JSON.stringify({type:'saved',revision:1,vector,deletions}));assert.equal(saved.at(-1),'saving');
+  socket.message(JSON.stringify({type:'saved',revision:2,vector,deletions:deletionSignature(doc)}));assert.equal(saved.at(-1),'saved');
+  provider.destroy();doc.destroy();
 });
 
 test('invalid sessions become actionable terminal errors without retrying',async()=>{
@@ -49,6 +72,17 @@ test('an edit made while disconnected is offered to the server after reconnect s
   const restored=FakeWebSocket.instances[1];restored.open();const remote=new Y.Doc(),vector=Y.encodeStateVector(remote),packet=new Uint8Array(vector.length+1);packet[0]=2;packet.set(vector,1);restored.message(binary(packet));
   const update=restored.sent.find(value=>value instanceof Uint8Array&&value[0]===0) as Uint8Array;assert.ok(update);Y.applyUpdate(remote,update.slice(1));assert.equal(remote.getText('draft').toString(),'kept offline');
   provider.destroy();
+});
+
+test('a new connection can recover a lower authoritative cursor after uncommitted server events disappear',async()=>{
+  FakeWebSocket.instances=[];const callbacks:(()=>void)[]=[],states:number[]=[];
+  const provider=new CoCreateProvider(new Y.Doc(),'room','token',state=>states.push(state.persistRevision!),()=>{},()=>{},
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),setTimer:callback=>{callbacks.push(callback);return callbacks.length},clearTimer:()=>{}});
+  FakeWebSocket.instances[0].message(JSON.stringify({type:'room-state',state:{persistRevision:20,workflow:{activityCursor:30}}}));
+  FakeWebSocket.instances[0].close();await tick();callbacks.shift()?.();
+  FakeWebSocket.instances[1].message(JSON.stringify({type:'room-state',state:{persistRevision:18,workflow:{activityCursor:28}}}));
+  FakeWebSocket.instances[1].message(JSON.stringify({type:'room-state',state:{persistRevision:17,workflow:{activityCursor:27}}}));
+  assert.deepEqual(states,[20,18]);provider.destroy();
 });
 
 test('disconnect rejects an in-flight flush and destroy removes document listeners',async()=>{

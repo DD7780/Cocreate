@@ -24,3 +24,15 @@ test('SQLite accounting restores more than the recent 500 calls without double c
     store.close();
   }finally{fs.rmSync(dir,{recursive:true,force:true})}
 });
+test('optional token fields remain optional and replay cannot replace a newer final usage record',()=>{
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'usage-replay-')),store=new EventStore(dir);
+  try{
+    const latest=call('one',{endedAt:'2026-10-01T01:00:00Z',usage:{inputTokens:10,outputTokens:5,cachedInputTokens:undefined,reasoningTokens:undefined}});
+    store.append({workspaceId:'room',actorId:'provider',actorType:'system',eventType:'provider.request_reconciled',payload:latest});
+    const projection=store.exportHarness('room');store.restoreHarness('room',projection);
+    store.append({workspaceId:'room',actorId:'provider',actorType:'system',eventType:'provider.request_reconciled',payload:call('one',{endedAt:'2026-10-01T00:00:00Z',usage:{inputTokens:1,outputTokens:2}})});
+    store.append({workspaceId:'room',actorId:'provider',actorType:'system',eventType:'provider.request_dispatched',payload:call('one',{outcome:'dispatching',usage:{}})});
+    const total=aggregatePhysicalUsage(store.allProviderRequestRecordsForWorkspace('room'));
+    assert.equal(total.recorded.requests,1);assert.equal(total.recorded.inputTokens,10);assert.equal(total.recorded.outputTokens,5);assert.equal(total.unknownUsageRequests,0);
+  }finally{store.close();fs.rmSync(dir,{recursive:true,force:true});}
+});

@@ -1,5 +1,19 @@
 # 2guys1canvas harness implementation checklist
 
+## Reliability verification slice (2026-10-01)
+
+- [x] Final full suite passed **129/129**, production build passed, git diff --check passed and graphify update completed (SQL AST dependency absent).
+- [x] Controlled provider reproduction distinguishes output exhaustion, context overflow, malformed responses and transport failures; exhaustive calls retain the last compiled artifact.
+- [x] Bounded ordered task recovery, awaited durable source checkpoints, targeted accepted deltas, 24 physical-call executor ceiling and spending reservations; truncated envelopes are never applied.
+- [x] Deterministic captured submission ordering, caller-only pending steering, replay receipts, later acceptance during build, restart draft recovery, failed acceptance rollback and immutable save acknowledgments including deletion-only changes.
+- [x] Local owner takeover fencing and remote RPC-mock lost-owner rejection; prepared additive fenced Postgres snapshot/lease migration.
+- [x] Partial physical ledger survives projection restore/replay, optional fields remain optional and older final records cannot inflate/replace usage.
+- [x] Three independent Chrome profiles with signed local sessions: simultaneous submissions, third unsubmitted draft, offline edits, reconnect without inference, two total promoted builds and converged accepted requirements/artifacts/usage. Desktop and 1024/768/390px layouts and requirement/usage actions exercised. Scope and evidence: [reliability-verification.md](reliability-verification.md).
+- [ ] Requested reference image is missing; exact viewport/layout comparison remains unavailable.
+- [ ] Apply/review the additive coordinator migration, execute Postgres lease contention/fencing tests and test with independent hosted accounts and real permitted provider calls before deployment. No deployment or paid inference occurred.
+- [ ] Hosted owner routing, event-projection scale and external archival artifact bodies remain operational follow-ups; do not infer them from local browser checks.
+
+
 ## Studio Ivory conversion (2026-10-01)
 
 - [x] Applied the ivory, ink, cobalt, and terracotta theme across workspace, login, projects, invitations, and Builder/API setup with Inter and DM Serif Display as the only loaded font families.

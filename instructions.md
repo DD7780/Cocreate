@@ -1,5 +1,14 @@
 # 2guys1canvas AI coding instructions
 
+## Active reliability boundary (2026-10-01)
+
+The latest explicit user request supersedes earlier statements prohibiting a recovery call ceiling and placing Shared Intent only outside Canvas. Preserve the compact Canvas Shared context rail with selected durable accepted revisions, separate partial recorded usage and workflow stage. Keep the Studio Ivory shell until the missing reference is supplied; do not claim a visual match.
+
+Do not repeat a whole-project request after output exhaustion. Plan at most eight coherent one-file tasks, validate complete envelopes, and await each checkpoint before the next task. Recovery, repairs and transport retries share the executor's 24-call ceiling across superseded candidates; configured spending reservations still apply. BYOK must never fall back to managed credit or another credential. Keep context capacity, requested output, reported model completion ceiling, and spending separate. Compilation checkpoints are candidate source, not a promoted or functionally verified artifact.
+
+Keep participant pending batches, accepted revision snapshots and command receipts durable. Interpret captured submissions in order, using only authenticated changes and an accepted baseline. Restore interrupted interpretation batches without inference. A cloud save receipt must identify its actual insertion clocks AND deletion ranges; local persistence cannot acknowledge a cloud commit. Lost coordinator processes must not reacquire leases for old workers. Hosted release requires the server-only fencing migration; local mocked lease tests are not live Postgres evidence.
+
+
 ## Current naming and UI boundary (2026-09-30)
 
 Use 2guys1canvas for new user-visible copy. Preserve CoCreate-prefixed storage keys, environment variables, package names, API paths, and deployed origins pending a compatibility migration. Keep fixed editor-focused Alt+X on Windows/Linux and the established disabled mapping on macOS. Detailed usage belongs in Workflow, with a separate canvas token card. Shared Intent must retain accepted requirements, proposals, conflicts, disagreements, sources, and decision history. Do not describe Resend acceptance as inbox delivery or unknown charges as zero. Keep historical generation counters separate from the partial physical-call ledger; never label their sum a complete project total.

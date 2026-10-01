@@ -4,7 +4,7 @@ export const BYOK_LEASE_MS = 2 * 60 * 60 * 1000;
 export const BYOK_MODEL_VERSION = 'openrouter-mvp-2026-09-28';
 const OPENROUTER = 'https://openrouter.ai/api/v1';
 
-export type LeaseModel = { id: string; name: string; inputPerMillion: number; outputPerMillion: number; contextLength: number };
+export type LeaseModel = { id: string; name: string; inputPerMillion: number; outputPerMillion: number; contextLength: number; maxOutputTokens?: number };
 type Lease = { handle: string; projectId: string; ownerId: string; key: string; expiresAt: number;
   builders: LeaseModel[]; interpreters: LeaseModel[]; spenders: Set<string> };
 
@@ -16,7 +16,7 @@ function modelsFrom(value: unknown): LeaseModel[] {
     const input = Number(model.pricing?.prompt), output = Number(model.pricing?.completion), context = Number(model.context_length);
     if (![input, output, context].every(Number.isFinite) || input < 0 || output < 0 || context < 16_000) return [];
     return [{ id: model.id, name: String(model.name || model.id), inputPerMillion: input * 1_000_000,
-      outputPerMillion: output * 1_000_000, contextLength: context }];
+      outputPerMillion: output * 1_000_000, contextLength: context, ...(Number.isFinite(Number(model.top_provider?.max_completion_tokens))&&Number(model.top_provider?.max_completion_tokens)>0?{maxOutputTokens:Number(model.top_provider.max_completion_tokens)}:{}) }];
   });
 }
 
