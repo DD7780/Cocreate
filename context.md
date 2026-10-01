@@ -1,5 +1,9 @@
 # 2guys1canvas context handoff
 
+## Studio Ivory UI (2026-10-01)
+
+`src/studio-ivory.css` layers the active warm ivory, ink, cobalt, and terracotta palette over the established layouts in `src/styles.css`. One Google Fonts request loads only Inter and DM Serif Display. Local `pnpm build` and all 111 tests passed. Headless Chrome verified the canvas, Workflow, Artifacts, and Builder/API dialog at desktop, tablet, mobile, and 200% zoom widths without horizontal overflow; the canvas has no Shared Intent rail, while Workflow does. The local-mode welcome and hosted-style login screens were visually checked. Authenticated projects and invitation flows were restyled in CSS but were not account-tested in this visual run. No backend or API contract changed. The purple description below is historical.
+
 ## Reference-led UI refresh (2026-09-30)
 
 The three user-provided references guide a purple, dark neubrutalist shell, white gridded full-width canvas, high-contrast workflow cards, and white artifact stage. Shared Intent renders in Workflow and Artifacts, not Canvas. Auth, project, invite, builder, and API setup styling follows the same palette. The older `comic.css` import was removed so it cannot override the theme. Local tests passed 111/111, build passed, and graphify was updated. Browser visual verification was attempted with an older capture script, which assumes a canvas Shared Intent panel; it needs updating before a responsive visual claim. No backend or API contract changed.

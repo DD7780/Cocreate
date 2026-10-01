@@ -1,5 +1,9 @@
 # Harness architecture
 
+## Studio Ivory presentation layer (2026-10-01)
+
+`src/main.tsx` loads `src/styles.css` for layout and `src/studio-ivory.css` for the active palette and component states. The two font families are Inter and DM Serif Display, requested once in the base stylesheet. The new layer styles local and hosted auth, projects, invitation dialogs, Workflow, Canvas, Artifacts, and Builder/API setup without changing component state or server contracts. The purple presentation note below is historical.
+
 ## Reference-led presentation update (2026-09-30)
 
 `src/styles.css` now owns the active purple neubrutalist presentation; `src/main.tsx` does not load the older comic override. `Workspace` renders the collaborative canvas across its content width and places the existing Shared Intent panel in Workflow and Artifacts. The panel and its permissions still use the same room state and endpoints. Authentication and setup changes are presentation-only. No submission, model-dispatch, sharing, or API contract changed.
