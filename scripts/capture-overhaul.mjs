@@ -87,7 +87,7 @@ try {
     await wait(250);
     const measurement = await evaluate(`(()=>{const visible=selector=>{const node=document.querySelector(selector);if(!node)return false;const style=getComputedStyle(node),box=node.getBoundingClientRect();return style.display!=='none'&&style.visibility!=='hidden'&&box.width>0&&box.height>0};const api=[...document.querySelectorAll('button')].find(button=>button.textContent.includes('AI setup'));return{name:${JSON.stringify(name)},viewport:innerWidth,scrollWidth:document.documentElement.scrollWidth,document:visible('.document-layout'),editor:visible('.document-editor'),build:visible('.control-actions .primary'),apiVisible:!!api&&visible('.api-connections'),apiLabel:api?.textContent.trim(),navigation:visible('.tabs'),supportPresent:!!document.querySelector('.agent-panel'),paperWidth:Math.round(document.querySelector('.paper')?.getBoundingClientRect().width||0)}})()`);
     if (measurement.scrollWidth > measurement.viewport) throw new Error(`${name} has horizontal overflow: ${measurement.scrollWidth} > ${measurement.viewport}`);
-    if (!measurement.document || !measurement.editor || !measurement.build || !measurement.apiVisible || !measurement.navigation || !measurement.supportPresent) throw new Error(`${name} hides an essential workspace control: ${JSON.stringify(measurement)}`);
+    if (!measurement.document || !measurement.editor || !measurement.build || !measurement.apiVisible || !measurement.navigation || measurement.supportPresent) throw new Error(`${name} has an unexpected canvas layout: ${JSON.stringify(measurement)}`);
     if (!measurement.apiLabel?.includes('AI setup')) throw new Error(`${name} loses the API connections label`);
     metrics.push(measurement);
     const shot = await call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false });
@@ -124,7 +124,7 @@ try {
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await wait(200);
   const workflow=await evaluate(`!!document.querySelector('.workflow-board') && document.documentElement.scrollWidth<=innerWidth`);
-  if(!workflow)throw new Error('Workflow view failed.');
+  if(!workflow || !await evaluate(`!!document.querySelector('.agent-panel')`))throw new Error('Workflow view or Shared Intent panel failed.');
   const workflowShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
   fs.writeFileSync(path.join(outputDir,label+'-workflow.png'),Buffer.from(workflowShot.data,'base64'));
   const localRecords=await evaluate(`new Promise((resolve,reject)=>{const r=indexedDB.open('cocreate-drafts-v1');r.onsuccess=()=>{const db=r.result;const tx=db.transaction('documents');const count=tx.objectStore('documents').count();tx.oncomplete=()=>{resolve(count.result);db.close()};tx.onerror=()=>reject(tx.error)};r.onerror=()=>reject(r.error)})`);

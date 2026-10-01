@@ -462,10 +462,10 @@
     "semantic_hash": "8b9fe947e81e63d8b184fe78b0840c4b"
   },
   "scripts/capture-overhaul.mjs": {
-    "mtime": 1790615519.230431,
-    "seen": 1790766645.8367126,
-    "ast_hash": "633e00c8ef0b050817159afa99c6e061",
-    "semantic_hash": "633e00c8ef0b050817159afa99c6e061"
+    "mtime": 1790845450.9561145,
+    "seen": 1790845532.845853,
+    "ast_hash": "34641122a3360277e54af5106de9a76e",
+    "semantic_hash": ""
   },
   "scripts/capture-ui.mjs": {
     "mtime": 1789832357.2327182,
@@ -732,9 +732,9 @@
     "semantic_hash": "fe64e45b47e30761a7864aec502be533"
   },
   "src/main.tsx": {
-    "mtime": 1790786850.0986576,
-    "seen": 1790786913.3410175,
-    "ast_hash": "b68838b8acbcd400c1f88280c7bdb360",
+    "mtime": 1790845147.5314739,
+    "seen": 1790845532.8631997,
+    "ast_hash": "fb3133c956b1b8747ad88febd29fb178",
     "semantic_hash": ""
   },
   "src/oauth-callback.ts": {
@@ -972,15 +972,15 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1790765288.23584,
-    "seen": 1790786913.3500242,
-    "ast_hash": "bd83b6a573f35ac25750abee48d0854c",
+    "mtime": 1790845502.4714158,
+    "seen": 1790845532.8792472,
+    "ast_hash": "e4f75cce8bafe5ef612932592069f8d8",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1790765305.540624,
-    "seen": 1790786913.3500242,
-    "ast_hash": "64908ac514c907bf61942e3b86931110",
+    "mtime": 1790845502.4858086,
+    "seen": 1790845532.8792472,
+    "ast_hash": "5513555102b8c7be8fa75d36a932efc7",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -990,9 +990,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1790765320.8281143,
-    "seen": 1790786913.3500242,
-    "ast_hash": "9adcc9b5cc6be75480a7ff3d7a555108",
+    "mtime": 1790845502.4934611,
+    "seen": 1790845532.8792472,
+    "ast_hash": "89ace5c5a36e0777e564cad649aa5e8e",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -1050,9 +1050,9 @@
     "semantic_hash": ""
   },
   "product.md": {
-    "mtime": 1790764577.4606378,
-    "seen": 1790786913.3500242,
-    "ast_hash": "1e5578d41604d3d97ab7f49d0b69c3b2",
+    "mtime": 1790845502.4643185,
+    "seen": 1790845532.8841865,
+    "ast_hash": "6a25a4e29f716594c843ff6c78025240",
     "semantic_hash": ""
   },
   "artifacts/supabase-projects/login.png": {
@@ -1263,6 +1263,72 @@
     "mtime": 1789033860.8602538,
     "seen": 1790786913.3500242,
     "ast_hash": "65d2d7d0b0f2cb5580c3808f8282568d",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-checks.json": {
+    "mtime": 1790845465.740634,
+    "seen": 1790845532.8187249,
+    "ast_hash": "8aea5f5912617368154a41b6a5e3ef6e",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-compact.png": {
+    "mtime": 1790845462.909181,
+    "seen": 1790845532.897878,
+    "ast_hash": "da78cbd26b971a80f6c385759cdba785",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-desktop.png": {
+    "mtime": 1790845462.1682835,
+    "seen": 1790845532.897878,
+    "ast_hash": "42a54d4b94119f7ee5246f8fe39dd06e",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-dialog.png": {
+    "mtime": 1790845465.1193383,
+    "seen": 1790845532.897878,
+    "ast_hash": "5b0dbd05342e0ba05bef852634716236",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-login.png": {
+    "mtime": 1790845401.15038,
+    "seen": 1790845532.897878,
+    "ast_hash": "087163dd51bd0495a1463f856b248fcd",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-mobile.png": {
+    "mtime": 1790845463.6699727,
+    "seen": 1790845532.897878,
+    "ast_hash": "8b234be9a2ae16e13f4abb92b5e96808",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-product.png": {
+    "mtime": 1790845464.7162282,
+    "seen": 1790845532.897878,
+    "ast_hash": "85579eed971b8fef6cc8bd2bb66d6477",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-tablet.png": {
+    "mtime": 1790845463.3206894,
+    "seen": 1790845532.897878,
+    "ast_hash": "c4eea8d961b995cd5d09fe2bcfbf2a74",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-wide.png": {
+    "mtime": 1790845462.5855317,
+    "seen": 1790845532.897878,
+    "ast_hash": "ecf4c1878f85e5aa4a8d8e31eb30fec0",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-workflow.png": {
+    "mtime": 1790845465.732153,
+    "seen": 1790845532.897878,
+    "ast_hash": "9777a176d4ed51546cc7b494f49c83b1",
+    "semantic_hash": ""
+  },
+  "artifacts/ui-redesign/studio-ivory-zoom200.png": {
+    "mtime": 1790845464.0049427,
+    "seen": 1790845532.897878,
+    "ast_hash": "056ec55a6d4f5e0e8eb6498b7c528067",
     "semantic_hash": ""
   }
 }

@@ -1,5 +1,9 @@
 # 2guys1canvas product brief
 
+## Studio Ivory presentation (2026-10-01)
+
+The active visual direction is Studio Ivory: warm ivory surfaces, dark ink, restrained cobalt actions, terracotta highlights, a subtle gridded canvas, and precise hard shadows. Inter handles interface and document text; DM Serif Display is reserved for selected headings. Login, projects, invitations, Workflow, Canvas, Artifacts, and Builder/API setup share this palette. The workflow-first behavior, full-width canvas, Shared Intent placement, BYOK boundary, and submission shortcut below remain active. The earlier purple direction is historical.
+
 ## Active presentation update (2026-09-30)
 
 2guys1canvas remains a multiplayer, workflow-first workspace with the existing BYOK and permission boundaries. The canvas is a full-width gridded writing surface; Shared Intent sits in Workflow and Artifacts. The reference-led visual direction is dark purple neubrutalism, pixel-style accents, white content stages, hard shadows, and compact controls across login, projects, invites, and builder setup. Build my changes uses fixed editor-focused Alt+X on Windows/Linux; the established macOS mapping is disabled. Shared Intent shows accepted requirements, attention items, provenance, and decision history. Workflow holds detailed usage and shows deduplicated recorded physical calls across generation and setup, alongside the older generation counter. Coverage is explicitly partial; unknown usage and missing pre-ledger calls are disclosed. Earlier CoCreate branding, optional shortcut controls, and canvas Shared Intent descriptions below are historical.

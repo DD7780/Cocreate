@@ -1,5 +1,12 @@
 # 2guys1canvas harness implementation checklist
 
+## Studio Ivory conversion (2026-10-01)
+
+- [x] Applied the ivory, ink, cobalt, and terracotta theme across workspace, login, projects, invitations, and Builder/API setup with Inter and DM Serif Display as the only loaded font families.
+- [x] `pnpm build` and all 111 local tests passed. Headless Chrome verified desktop, wide, tablet, mobile, and 200% zoom canvas layout, split view, long-document reachability, Builder/API dialog focus, Workflow, and Shared Intent placement.
+- [x] The local welcome and hosted-style login screens were visually checked in headless Chrome.
+- [ ] Hosted authenticated project and invitation screens need an account-backed visual pass. The older purple refresh below is historical.
+
 ## Reference-led visual refresh (2026-09-30)
 
 - [x] Purple neubrutalist styling applied across the workspace, project navigation, login, invite, builder, and API setup surfaces. The earlier comic stylesheet no longer overrides the theme.
