@@ -1,0 +1,1542 @@
+{
+  "recordedAt": "2026-10-03T13:25:27.814Z",
+  "scope": "Local RoomManager, SQLite and loopback controlled provider; no hosted/live provider",
+  "measurements": "Monotonic capture-to-provider queue and provider-handler elapsed ms; physical-attempt ledger start-to-end wall-clock ms (dispatch persistence and response read included); last durable acceptance-to-product.promoted wall-clock ms, a preview-availability proxy rather than browser paint. Controlled delays/fixture overhead included; not production latency or quality.",
+  "privacy": "Bounded synthetic workload; only scenario names, numeric timing/counts and observation flags; no prompts, source bodies, identities or secrets.",
+  "workload": {
+    "repeats": 3,
+    "slowFirstInterpreterMs": 80,
+    "collectionMs": 20,
+    "maxWaitMs": 100,
+    "continuousArrivals": 5,
+    "candidateRelease": "Barrier after next accepted steering; final barrier released once arrivals stop",
+    "timeoutMs": 10000
+  },
+  "sourceHashes": {
+    "server/rooms.ts": "ed82c8de052ab5c85d43e3b2869b9c8dc1e9333152abb29a32742c1c5cb61334",
+    "server/generator.ts": "5c74c8ed62dcedb92dd63d9ab5c728ae03071111cd85d6fb67b2e12b3f4a00d9",
+    "server/requirements.ts": "ab352fd12bcd8a83098de4e1fd023595148ed303721608d6daae093eea2649b4",
+    "server/event-store.ts": "e0cbc9b1b05c7d1784a71915fec4f14fb242afbfca36fedeb6fbc0232e109ebc",
+    "server/coordinator.ts": "974c1cc479fb55e19ea52a239d73b9cef662a40ef69cd593434e7588cd5d64e2",
+    "server/tool-registry.ts": "99807e55015b861c89db0dff2ee35f16ea4451b131aa960885b2702b6096047e",
+    "server/providers.ts": "6c51ef074cae232ba09ea6728b23820f7f2a3d0b93406f47136c1235975feebc",
+    "server/supabase-platform.ts": "d9fd174de233d32a953981aeed1259d810374034f62e207ff752063ba040f786",
+    "tests/fixtures/multiuser-baseline.ts": "62727c0e3200f7a65a16413b3fa506987da50fad48e02c0c71bcb49c21602b02",
+    "scripts/multiuser-baseline.ts": "be25fc46a4bc2d2ff09755af31467b33ea9a1441d02867d0798fc4e24267237a",
+    "scripts/verify-reliability.ts": "49f4b34fface20fac2974a7acd1befed8d23fe8e42a945ab3a78839c786b20da"
+  },
+  "trials": [
+    {
+      "repeat": 1,
+      "scenario": "simultaneous-slow",
+      "observations": {
+        "failedSubmissions": 0,
+        "acceptedCount": 2,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 347,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 79.93579999999997,
+          "providerMs": 86.90750000000003
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 217.24680000000012,
+          "providerMs": 0.022799999999961074
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.046600000000125874
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 148,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 25,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 13,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 30,
+        "outputTokens": 60,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "failed-interpreter",
+      "observations": {
+        "failedSubmissions": 1,
+        "acceptedCount": 1,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 187,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 62.90599999999995,
+          "providerMs": 0.005700000000160799
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 104.17129999999997,
+          "providerMs": 0.027300000000195723
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.024100000000089494
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 36,
+          "outcome": "failed",
+          "usageStatus": "unknown"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 20,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 27,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 1
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "later-steering",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 2,
+        "arrivals": 2,
+        "staleCandidates": 1,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 361,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 33.61740000000009,
+          "providerMs": 0.028999999999996362
+        },
+        {
+          "phase": "builder",
+          "providerMs": 71.44840000000022
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 23.51399999999967,
+          "providerMs": 0.016200000000026193
+        },
+        {
+          "phase": "builder",
+          "providerMs": 19.74290000000019
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 19,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 103,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 16,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 40,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 4,
+        "inputTokens": 40,
+        "outputTokens": 80,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "continuous-arrivals",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 5,
+        "arrivals": 5,
+        "staleCandidates": 4,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 380,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 28.295200000000023,
+          "providerMs": 0.026799999999639113
+        },
+        {
+          "phase": "builder",
+          "providerMs": 60.19459999999981
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 22.140100000000075,
+          "providerMs": 0.01470000000017535
+        },
+        {
+          "phase": "builder",
+          "providerMs": 67.13490000000002
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 24.546600000000126,
+          "providerMs": 0.01639999999997599
+        },
+        {
+          "phase": "builder",
+          "providerMs": 75.88050000000021
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 23.42300000000023,
+          "providerMs": 0.031099999999696593
+        },
+        {
+          "phase": "builder",
+          "providerMs": 70.78659999999991
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 27.23610000000008,
+          "providerMs": 0.22919999999976426
+        },
+        {
+          "phase": "builder",
+          "providerMs": 6.238599999999678
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 17,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 87,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 13,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 90,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 16,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 96,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 15,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 93,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 19,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 21,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 10,
+        "inputTokens": 100,
+        "outputTokens": 200,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "ambiguous-reference",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "unresolvedReferenceAccepted": true,
+        "lastAcceptedToPromotionMs": 178,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 28.523699999999735,
+          "providerMs": 0.020900000000438013
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.012600000000020373
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 17,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 12,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "invented-passage",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "passageAbsentFromCapturedEdits": true,
+        "lastAcceptedToPromotionMs": 635,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 29.446100000000115,
+          "providerMs": 0.043299999999362626
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.02779999999984284
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 16,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 29,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "incorrect-product",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "filterControlAbsentFromSource": true,
+        "lastAcceptedToPromotionMs": 283,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 66.26109999999971,
+          "providerMs": 0.022100000000136788
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.0040999999991981895
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 40,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 44,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "snapshot-body-gap",
+      "observations": {
+        "referenceRestored": true,
+        "bodyRestored": false,
+        "projectionBytes": 5494,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "projection-growth",
+      "observations": {
+        "bytesAt0": 4942,
+        "historyEventsAt0": 0,
+        "bytesAt10": 9910,
+        "historyEventsAt10": 10,
+        "bytesAt50": 29830,
+        "historyEventsAt50": 50,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "isolation-policy",
+      "observations": {
+        "toolCount": 3,
+        "allHostProcess": true,
+        "allCancellationBeforeStart": true,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 1,
+      "scenario": "restart-budget",
+      "observations": {
+        "executorBudgetRestored": false,
+        "automaticInferenceOnRestart": 0,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "simultaneous-slow",
+      "observations": {
+        "failedSubmissions": 0,
+        "acceptedCount": 2,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 262,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 70.82180000000062,
+          "providerMs": 80.52169999999933
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 192.82989999999972,
+          "providerMs": 0.007900000000518048
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.004299999999602733
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 104,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 37,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 35,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 30,
+        "outputTokens": 60,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "failed-interpreter",
+      "observations": {
+        "failedSubmissions": 1,
+        "acceptedCount": 1,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 277,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 78.34839999999895,
+          "providerMs": 0.006200000001626904
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 129.5155999999988,
+          "providerMs": 0.020899999999528518
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.006999999999607098
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 33,
+          "outcome": "failed",
+          "usageStatus": "unknown"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 28,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 29,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 1
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "later-steering",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 2,
+        "arrivals": 2,
+        "staleCandidates": 1,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 721,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 43.595400000000154,
+          "providerMs": 0.005800000000817818
+        },
+        {
+          "phase": "builder",
+          "providerMs": 96.53879999999845
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 44.34950000000026,
+          "providerMs": 0.010599999999612919
+        },
+        {
+          "phase": "builder",
+          "providerMs": 13.489700000000084
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 22,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 128,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 27,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 262,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 4,
+        "inputTokens": 40,
+        "outputTokens": 80,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "continuous-arrivals",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 5,
+        "arrivals": 5,
+        "staleCandidates": 4,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 481,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 55.147399999999834,
+          "providerMs": 0.02289999999993597
+        },
+        {
+          "phase": "builder",
+          "providerMs": 82.25400000000081
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 40.49109999999928,
+          "providerMs": 0.0169000000005326
+        },
+        {
+          "phase": "builder",
+          "providerMs": 104.13169999999991
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 43.61959999999999,
+          "providerMs": 0.09209999999984575
+        },
+        {
+          "phase": "builder",
+          "providerMs": 122.5
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 48.479699999999866,
+          "providerMs": 0.010099999999511056
+        },
+        {
+          "phase": "builder",
+          "providerMs": 123.57860000000073
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 76.97489999999925,
+          "providerMs": 0.015600000000631553
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.5258000000012544
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 28,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 125,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 24,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 124,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 30,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 155,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 30,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 156,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 35,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 46,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 10,
+        "inputTokens": 100,
+        "outputTokens": 200,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "ambiguous-reference",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "unresolvedReferenceAccepted": true,
+        "lastAcceptedToPromotionMs": 346,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 63.990999999999985,
+          "providerMs": 0.02570000000014261
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.007700000000113505
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 36,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 62,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "invented-passage",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "passageAbsentFromCapturedEdits": true,
+        "lastAcceptedToPromotionMs": 308,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 42.29069999999956,
+          "providerMs": 0.0068000000010215444
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.025499999999738066
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 23,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 29,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "incorrect-product",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "filterControlAbsentFromSource": true,
+        "lastAcceptedToPromotionMs": 292,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 42.78740000000107,
+          "providerMs": 0.009299999999711872
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.005499999999301508
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 21,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 20,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "snapshot-body-gap",
+      "observations": {
+        "referenceRestored": true,
+        "bodyRestored": false,
+        "projectionBytes": 5494,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "projection-growth",
+      "observations": {
+        "bytesAt0": 4942,
+        "historyEventsAt0": 0,
+        "bytesAt10": 9910,
+        "historyEventsAt10": 10,
+        "bytesAt50": 29830,
+        "historyEventsAt50": 50,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "isolation-policy",
+      "observations": {
+        "toolCount": 3,
+        "allHostProcess": true,
+        "allCancellationBeforeStart": true,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "restart-budget",
+      "observations": {
+        "executorBudgetRestored": false,
+        "automaticInferenceOnRestart": 0,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "simultaneous-slow",
+      "observations": {
+        "failedSubmissions": 0,
+        "acceptedCount": 2,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 308,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 58.24699999999939,
+          "providerMs": 93.0589
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 205.62599999999657,
+          "providerMs": 0.008800000003247987
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.01119999999718857
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 117,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 35,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 27,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 30,
+        "outputTokens": 60,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "failed-interpreter",
+      "observations": {
+        "failedSubmissions": 1,
+        "acceptedCount": 1,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 293,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 83.36709999999948,
+          "providerMs": 0.007799999999406282
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 135.45980000000054,
+          "providerMs": 0.007900000000518048
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.02960000000166474
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 42,
+          "outcome": "failed",
+          "usageStatus": "unknown"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 19,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 33,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 1
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "later-steering",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 2,
+        "arrivals": 2,
+        "staleCandidates": 1,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 462,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 69.01559999999881,
+          "providerMs": 0.015800000001036096
+        },
+        {
+          "phase": "builder",
+          "providerMs": 114.73259999999937
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 51.37329999999929,
+          "providerMs": 0.009600000001228182
+        },
+        {
+          "phase": "builder",
+          "providerMs": 1.1402999999991152
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 34,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 171,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 27,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 37,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 4,
+        "inputTokens": 40,
+        "outputTokens": 80,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "continuous-arrivals",
+      "observations": {
+        "promotionsWhileArriving": 0,
+        "callsBeforeFinalRelease": 5,
+        "arrivals": 5,
+        "staleCandidates": 4,
+        "finalPromotions": 1,
+        "lastAcceptedToPromotionMs": 385,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 60.682300000000396,
+          "providerMs": 0.010300000001734588
+        },
+        {
+          "phase": "builder",
+          "providerMs": 101.88899999999921
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 56.85559999999896,
+          "providerMs": 0.018900000002759043
+        },
+        {
+          "phase": "builder",
+          "providerMs": 91.24140000000261
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 41.0698999999986,
+          "providerMs": 0.03750000000218279
+        },
+        {
+          "phase": "builder",
+          "providerMs": 111.47609999999986
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 40.30370000000039,
+          "providerMs": 0.03569999999672291
+        },
+        {
+          "phase": "builder",
+          "providerMs": 132.63810000000012
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 74.56749999999738,
+          "providerMs": 0.015500000001338776
+        },
+        {
+          "phase": "builder",
+          "providerMs": 2.725700000002689
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 30,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 136,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 29,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 111,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 26,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 174,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 25,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 171,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 41,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 29,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 10,
+        "inputTokens": 100,
+        "outputTokens": 200,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "ambiguous-reference",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "unresolvedReferenceAccepted": true,
+        "lastAcceptedToPromotionMs": 240,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 44.73809999999867,
+          "providerMs": 0.0067000000017287675
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.012300000002142042
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 20,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 25,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "invented-passage",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "passageAbsentFromCapturedEdits": true,
+        "lastAcceptedToPromotionMs": 260,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 56.04269999999815,
+          "providerMs": 0.018500000001949957
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.0054000000018277206
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 32,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 46,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "incorrect-product",
+      "observations": {
+        "acceptedCount": 1,
+        "functionalVerified": false,
+        "compilationPassed": true,
+        "filterControlAbsentFromSource": true,
+        "lastAcceptedToPromotionMs": 249,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 40.04320000000007,
+          "providerMs": 0.01299999999901047
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.007299999997485429
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 21,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 23,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 2,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "snapshot-body-gap",
+      "observations": {
+        "referenceRestored": true,
+        "bodyRestored": false,
+        "projectionBytes": 5494,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "projection-growth",
+      "observations": {
+        "bytesAt0": 4942,
+        "historyEventsAt0": 0,
+        "bytesAt10": 9910,
+        "historyEventsAt10": 10,
+        "bytesAt50": 29830,
+        "historyEventsAt50": 50,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "isolation-policy",
+      "observations": {
+        "toolCount": 3,
+        "allHostProcess": true,
+        "allCancellationBeforeStart": true,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "restart-budget",
+      "observations": {
+        "executorBudgetRestored": false,
+        "automaticInferenceOnRestart": 0,
+        "promotedVersions": 0
+      },
+      "attempts": [],
+      "physicalAttempts": [],
+      "reportedUsage": {
+        "calls": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "unknownCalls": 0
+      }
+    }
+  ]
+}

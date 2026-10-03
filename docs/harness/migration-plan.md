@@ -1,5 +1,7 @@
 # Harness migration plan
 
+> Historical local-store rollout plan, not current hosted authority or release instructions. Use [architecture.md](architecture.md), [decisions.md](decisions.md) and [checklist.md](checklist.md). Preserve its backup/rollback rationale; do not apply old steps indiscriminately.
+
 ## Safe rollout
 
 1. Create `data/cocreate.sqlite` with additive, versioned schema migrations. Do not modify existing room JSON or generated projects.

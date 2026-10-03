@@ -1,5 +1,7 @@
 # Collaborative contradiction-resolution plan
 
+> Historical 2026-09-18 plan, not the implemented route contract. Selection is now implemented with groupRevision and expectedUpdatedAt; see [API](../../api.md#room-reads-submissions-and-decisions). Alternative/reopen routes and document highlights remain deferred in the [current checklist](checklist.md). Preserve the rationale below without treating its proposed payloads as active contracts.
+
 Recorded: 2026-09-18. This plan is additive to the canonical architecture and checklist.
 
 ## Migration

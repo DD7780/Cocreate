@@ -1,0 +1,91 @@
+{
+  "scope": "Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference",
+  "participants": 3,
+  "simultaneousSubmissions": true,
+  "selectedRevisionVerified": true,
+  "offlineEditsRecovered": true,
+  "reloadDraftRecovered": true,
+  "noInferenceOnReconnect": true,
+  "noInferenceOnReload": true,
+  "converged": {
+    "revision": 3,
+    "artifact": 2,
+    "usage": {
+      "recorded": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "generation": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "setup": {
+        "requests": 0,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0
+      },
+      "unknownUsageRequests": 0,
+      "recordedFrom": "2026-10-03T13:19:20.913Z",
+      "coverage": "partial"
+    },
+    "accepted": [
+      "req_5b9f2fd90ce8",
+      "req_980895587501",
+      "req_a78566be4eac"
+    ]
+  },
+  "interpreterCalls": 3,
+  "builderCalls": 2,
+  "responsive": [
+    {
+      "width": 1440,
+      "viewport": 1440,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 1024,
+      "viewport": 1024,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 768,
+      "viewport": 768,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "card": true,
+      "selector": true
+    }
+  ],
+  "acceptedToRenderedPreviewMs": 2250,
+  "previewTimingScope": "Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency",
+  "compilingIncorrectCandidatePromoted": true,
+  "functionalVerified": false,
+  "filterControls": 0,
+  "referenceComparison": "Not performed in this baseline; supplied reference is available and comparison remains pending"
+}

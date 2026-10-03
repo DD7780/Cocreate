@@ -1,0 +1,66 @@
+TAP version 13
+# (node:26092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Step 01 baseline observation: simultaneous-slow
+ok 1 - Step 01 baseline observation: simultaneous-slow
+  ---
+  duration_ms: 1363.6844
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: failed-interpreter
+ok 2 - Step 01 baseline observation: failed-interpreter
+  ---
+  duration_ms: 699.6463
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: later-steering
+ok 3 - Step 01 baseline observation: later-steering
+  ---
+  duration_ms: 756.2837
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: continuous-arrivals
+ok 4 - Step 01 baseline observation: continuous-arrivals
+  ---
+  duration_ms: 2083.5527
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: ambiguous-reference
+ok 5 - Step 01 baseline observation: ambiguous-reference
+  ---
+  duration_ms: 463.7586
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: invented-passage
+ok 6 - Step 01 baseline observation: invented-passage
+  ---
+  duration_ms: 480.1041
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: incorrect-product
+ok 7 - Step 01 baseline observation: incorrect-product
+  ---
+  duration_ms: 453.6922
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: snapshot-body-gap
+ok 8 - Step 01 baseline observation: snapshot-body-gap
+  ---
+  duration_ms: 161.0277
+  type: 'test'
+  ...
+# Subtest: Step 01 baseline observation: restart-budget
+ok 9 - Step 01 baseline observation: restart-budget
+  ---
+  duration_ms: 152.9072
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10539.26

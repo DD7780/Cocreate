@@ -1,5 +1,7 @@
 # CoCreate harness assessment
 
+> Historical 2026-09-17 assessment, not current architecture or status. Use [architecture.md](architecture.md) and [checklist.md](checklist.md). Later submission, persistence and coordination changes supersede the gaps below.
+
 Recorded: 2026-09-17. This assessment is based on the repository, not prior progress claims.
 
 ## Existing capabilities preserved

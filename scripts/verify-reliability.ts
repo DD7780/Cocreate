@@ -9,14 +9,14 @@ process.env.NODE_ENV='production';
 process.env.COCREATE_AUTH_MODE='local';
 const { createCoCreateServer }=await import('../server/index.js');
 const { createSession }=await import('../server/auth.js');
-const output=path.resolve('artifacts/reliability');fs.mkdirSync(output,{recursive:true});
+const output=path.resolve(process.env.COCREATE_RELIABILITY_OUTPUT || 'artifacts/reliability');fs.mkdirSync(output,{recursive:true});
 const wait=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
 const until=async(check:()=>Promise<boolean>,label:string)=>{for(let i=0;i<120;i++){if(await check())return;await wait(100);}throw new Error(`Timed out: ${label}`);};
 let interpreterCalls=0,builderCalls=0;
 const fake=http.createServer(async(req,res)=>{
   let raw='';for await(const chunk of req)raw+=chunk;const body=JSON.parse(raw),input=JSON.parse(body.input);let value:unknown;
   if(body.text.format.schema.required.includes('goals')){
-    console.log('AUTHORED', JSON.stringify(input.authenticatedChanges));interpreterCalls++;const text=input.authenticatedChanges.map((change:any)=>change.after).join(' ');
+    interpreterCalls++;const text=input.authenticatedChanges.map((change:any)=>change.after).join(' ');
     value={goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],intents:[{text,category:'goal',classification:'explicit_request',rationale:'Direct request',sourcePassage:text,affectedRequirementIds:[]}]};
   }else{builderCalls++;await wait(100);value={operations:[{type:'write',path:'src/App.tsx',content:'export default function App(){return <main>Shared catalog</main>}'}],summary:'Shared catalog',decisions:[],conflicts:[],specification:{agreed:[],proposed:[],questions:[]}};}
   res.setHeader('content-type','application/json');res.end(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(value)}]}],status:'completed',usage:{input_tokens:100,output_tokens:50}}));
@@ -24,7 +24,7 @@ const fake=http.createServer(async(req,res)=>{
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'reliability-browser-'));
 const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${(fake.address()).port}`});
-const room=service.manager.create('browser-room');
+const room=service.manager.create(`browser-${crypto.randomUUID()}`);
 for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])service.manager.join(room,id,name);
 const connection=(await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${(fake.address() as any).port}`,apiFormat:'responses',apiKey:'synthetic'})).id;
 room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};
@@ -60,8 +60,17 @@ try{
   await until(async()=>room.versions.length===1&&!room.buildTask,'first shared artifact');assert.equal(interpreterCalls,2);assert.equal(builderCalls,1);assert.equal(room.pending.get('cara')?.length,1);
   const callCount=interpreterCalls;await c.call('Network.emulateNetworkConditions',{offline:true,latency:0,downloadThroughput:0,uploadThroughput:0});await c.evaluate('window.__sockets.forEach(socket=>socket.close())');await write(c,'Offline sorting. ');
   await c.call('Network.emulateNetworkConditions',{offline:false,latency:0,downloadThroughput:-1,uploadThroughput:-1});
-  await until(()=>c.evaluate("!document.querySelector('.connection-banner')"),'reconnect');await until(()=>a.evaluate("document.querySelector('.document-editor').textContent.includes('Offline sorting')"),'offline edit restored');assert.equal(interpreterCalls,callCount);await submit(c);
+  await until(()=>c.evaluate("!document.querySelector('.connection-banner')"),'reconnect');await until(()=>a.evaluate("document.querySelector('.document-editor').textContent.includes('Offline sorting')"),'offline edit restored');assert.equal(interpreterCalls,callCount);
+  await c.call('Page.reload');await until(()=>c.evaluate("!!document.querySelector('.document-editor') && !document.querySelector('.connection-banner') && document.querySelector('.document-editor').textContent.includes('Offline sorting')"),'reload recovered draft');
+  assert.equal(interpreterCalls,callCount,'reload must not infer');assert.equal(room.pending.get('cara')?.length,2,'reload retains the caller draft');await submit(c);
   await until(async()=>room.versions.length===2&&!room.buildTask,'third submission');assert.equal(interpreterCalls,3);assert.equal(builderCalls,2);assert.match(room.sharedRequirements.find(item=>item.description.includes('sorting'))?.description||'',/Add filters\./);
+  const previewRun=room.aiRuns.at(-1)!;assert.equal(previewRun.verification.verified,false);assert.equal(previewRun.verification.compilationPassed,true);
+  const acceptedAt=service.manager.eventStore.eventsForWorkspace(room.id).filter(event=>event.eventType==='requirement.registry_reconciled').at(-1)!.occurredAt;
+  const previewToken=createSession('browser-fixture',{roomId:room.id,participantId:'alice',name:'alice'});
+  await a.call('Page.navigate',{url:`${origin}/preview/${room.id}/${room.versions.length}?token=${encodeURIComponent(previewToken)}`});await until(()=>a.evaluate("document.body.innerText.includes('Shared catalog')"),'rendered controlled product');
+  const acceptedToRenderedPreviewMs=Date.now()-Date.parse(acceptedAt);
+  const filterControls=await a.evaluate("document.querySelectorAll('input,select').length");assert.equal(filterControls,0,'controlled product deliberately omits the accepted filter');
+  await a.call('Page.navigate',{url:`${origin}/r/${room.id}`});await until(()=>a.evaluate("!!document.querySelector('.document-editor') && !document.querySelector('.connection-banner')"),'return from preview');
   const states=await Promise.all(browsers.map(browser=>browser.evaluate(`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`)));
   assert.deepEqual(states[0],states[1]);assert.deepEqual(states[1],states[2]);
   await a.evaluate("{const select=document.querySelector('.intent-revision-selector select');select.value='2';select.dispatchEvent(new Event('change',{bubbles:true}))}");await wait(100);assert.equal(await a.evaluate("document.querySelectorAll('.accepted-requirements-card li').length"),2);assert.ok(!await a.evaluate("document.querySelector('.accepted-requirements-card').innerText.includes('Offline sorting')"));await a.evaluate("{const select=document.querySelector('.intent-revision-selector select');select.value='latest';select.dispatchEvent(new Event('change',{bubbles:true}))}");await wait(100);
@@ -69,7 +78,7 @@ try{
   await a.evaluate("[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View usage')).click()");await until(()=>a.evaluate("!!document.querySelector('#workflow-usage')"),'usage action');await snapshot(a,'workflow.png');
   await a.evaluate("[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()");await wait(100);
   const responsive=[];for(const width of [1440,1024,768,390]){await a.call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});await wait(150);const layout=await a.evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,card:!!document.querySelector(".project-token-card"),selector:!!document.querySelector(".intent-revision-selector select")})');assert.ok(layout.width<=width,`Overflow at ${width}: ${JSON.stringify(layout)}`);assert.ok(layout.card&&layout.selector);responsive.push({width,...layout});if(width===390){await a.evaluate("document.querySelector('.agent-panel').scrollIntoView()");await snapshot(a,'mobile.png');await a.evaluate("[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View requirements')).click()");assert.ok(await a.evaluate("!!document.querySelector('.context-drawer')"));await a.evaluate("document.querySelector('[aria-label=\"Close details\"]').click()");}}
-  const report={scope:'Three independent Chrome profiles and signed local participant sessions; controlled provider, no hosted account or paid inference',participants:3,simultaneousSubmissions:true,selectedRevisionVerified:true,offlineEditsRecovered:true,noInferenceOnReconnect:true,converged:states[0],interpreterCalls,builderCalls,responsive,referenceComparison:'Unavailable: screenshot was not attached'};
+  const report={scope:'Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference',participants:3,simultaneousSubmissions:true,selectedRevisionVerified:true,offlineEditsRecovered:true,reloadDraftRecovered:true,noInferenceOnReconnect:true,noInferenceOnReload:true,converged:states[0],interpreterCalls,builderCalls,responsive,acceptedToRenderedPreviewMs,previewTimingScope:'Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency',compilingIncorrectCandidatePromoted:true,functionalVerified:previewRun.verification.verified,filterControls,referenceComparison:'Not performed in this baseline; supplied reference is available and comparison remains pending'};
   fs.writeFileSync(path.join(output,'browser-checks.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
 }finally{
   for(const browser of browsers){browser.socket.close();browser.process.kill();}
