@@ -4,7 +4,7 @@ A multiplayer workflow workspace: co-write a brief, submit your own steering, in
 
 ## Start locally
 
-Requires Node.js 22+ and pnpm.
+Requires Node.js 22.13+ and pnpm. Generated compilation requires Windows AppContainer plus the trusted .NET Framework C# compiler, or Linux Bubblewrap and util-linux/prlimit with usable user namespaces. Unsupported or unavailable isolation fails closed. After install, run `pnpm exec tsx scripts/prepare-isolation.ts` to exercise the actual boundary without inference. Windows is locally verified; Linux deployment validation remains pending.
 
 ```bash
 pnpm install
@@ -51,9 +51,9 @@ pnpm build
 pnpm start
 ```
 
-The [Step 03 handoff](docs/harness/multiuser-step03-handoff.md) records fresh 158/158 local tests, production build and independent controlled Chrome cache-replacement checks. The [2026-10-01 report](docs/harness/reliability-verification.md) remains historical. Live hosted/provider/coordinator SQL and visual reference comparison remain pending.
+The [Step 04 handoff](docs/harness/multiuser-step04-handoff.md) records current isolated-compilation checks, full test/build results and independent controlled Chrome regressions. The [Step 03 handoff](docs/harness/multiuser-step03-handoff.md) retains its dated recovery evidence. The [2026-10-01 report](docs/harness/reliability-verification.md) remains historical. Live hosted/provider/coordinator SQL and visual reference comparison remain pending.
 
-Generated apps are bounded React/TypeScript frontends, with validated room-scoped operations, approved dependencies and restricted style-isolated preview/download. Compile runs in the server process; CSP and tool policy are not a process sandbox. Current product/checkpoint bodies restore by private verified references; newly archived older versions restore on demand. Historical versions discarded before archival remain unavailable, and real deployed container replacement is unverified.
+Generated apps are bounded React/TypeScript frontends, with validated room-scoped operations, approved dependencies and restricted style-isolated preview/download. Compile uses pinned esbuild WASM in an OS-restricted child process; candidate code is never evaluated during compilation. Windows AppContainer/Job Object enforces secret stripping, network denial, memory/CPU/process/wall limits and cancellation. The prepared non-root Docker image adds Bubblewrap/prlimit and mandatory actual-boundary startup preflight; Linux/kernel acceptance is unrun here. Failure retains the previous artifact with no host fallback. See [Step 04 isolation/deployment handoff](docs/harness/multiuser-step04-handoff.md); CSP and tool policy remain additional boundaries. Current product/checkpoint bodies restore by private verified references; newly archived older versions restore on demand. Historical versions discarded before archival remain unavailable, and real deployed container replacement is unverified.
 
 ## Contributor entrypoints
 

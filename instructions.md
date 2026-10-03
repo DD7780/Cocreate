@@ -44,7 +44,7 @@ Cloud saved receipts identify the actual committed immutable revision, insertion
 
 Project invitations are app-level, normalized-email-bound, role-bounded, expiring and hashed at rest. Owner/explicit sharing authority is checked server-side. Request-ID replay and confirmed-account acceptance are idempotent. A resend preserves earlier pending links and roles; explicit revoke is separate. Transactional secrets stay server-only; provider acceptance does not prove delivery.
 
-Generated operations remain room-scoped and deny traversal/cross-room access. Registry policy and preview CSP are not process isolation: compilation currently runs in the host process. Deployments, migrations, external access changes and messages require authorization. Legacy imports remain dry-run-first with a trusted room-to-account map; versioned Supabase SQL is the only current migration authority, not Prisma Migrate.
+Generated operations remain room-scoped and deny traversal/cross-room access. Compilation must use the real isolated process in `server/isolation.ts`; retain operation validation and preview CSP as additional boundaries. Never fall back to host compilation. Preflight the actual boundary before builder dispatch, pass coordinator cancellation through tools, and stop infrastructure/resource failures without provider repairs. Windows AppContainer/Job Object has local evidence; Linux Bubblewrap deployment requires actual kernel/runtime adversity checks before release. Deployments, migrations, external access changes and messages require authorization. Legacy imports remain dry-run-first with a trusted room-to-account map; versioned Supabase SQL is the only current migration authority, not Prisma Migrate.
 
 ## Validation and documentation maintenance
 

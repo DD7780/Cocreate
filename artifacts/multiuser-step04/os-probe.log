@@ -1,0 +1,8 @@
+IsolationError: Generated execution exceeded its wall-time bound and was removed.
+    at ChildProcess.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\isolation.ts:122:47)
+    at Object.onceWrapper (node:events:634:26)
+    at ChildProcess.emit (node:events:519:28)
+    at maybeClose (node:internal/child_process:1101:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:304:5) {
+  code: 'isolation_timeout'
+}

@@ -77,7 +77,7 @@ Workflow activity exposes ordered safe summaries, not raw payloads, private docu
 
 ## Preview and download
 
-GET `/api/rooms/:id/download/:version` requires participant authorization and returns a runnable ZIP, or 404 when legacy source files are unavailable. GET `/preview/:id/:version` requires ticket/current membership in hosted mode; local mode permits URL access. Preview returns no-store/no-referrer and a restrictive CSP. Restricted browser preview is not host-process compilation isolation. Successful compile/promotion has `unverified` functional evidence unless real acceptance establishes more.
+GET `/api/rooms/:id/download/:version` requires participant authorization and returns a runnable ZIP, or 404 when legacy source files are unavailable. GET `/preview/:id/:version` requires ticket/current membership in hosted mode; local mode permits URL access. Preview returns no-store/no-referrer and a restrictive CSP. Compilation uses the isolated process boundary in `server/isolation.ts`; preview restrictions remain separate. Successful compile/promotion has `unverified` functional evidence unless real acceptance establishes more.
 
 There are no public pause/resume/cancel, control-handoff, approval, general rollback, Researcher retrieval or Analyst ingestion routes. Phase/approval schemas are not implemented commands.
 
@@ -134,3 +134,5 @@ Owner-only named connections remain locally implemented: POST `/ai/connections` 
 Local GET/POST `/ai/recommendation` and POST `/ai/effort` are owner-only compatibility configuration. Only Developer activation is accepted; effort values light/medium/high/extra preserve `light` storage despite Low label. They freeze future configuration, not active work. Old `/ai/test`, `/models`, `/connect`, `/disconnect` remain local compatibility too. These routes are retired hosted; managed dispatch is disabled. Exact dormant type details and dated behavior remain in the [historical API snapshot](docs/harness/archive/2026-10-01-pre-consolidation/api.md).
 
 Update this reference with route/type/message changes and actual validation. Source inspection here is not a live session, SQL execution or deployment claim.
+
+Step 04 changes no HTTP command or model tool selection surface. `project.bundle` receives the coordinator AbortSignal and records `isolated-process` plus policy version in tool evidence. Actual OS preflight precedes builder dispatch. Unavailable isolation, cancellation and resource/timeout failures retain the existing artifact and stop without unsafe fallback or provider repair. An explicit retry is required after operator repair. Docker startup also preflights; prepared Linux configuration remains unverified in the intended kernel. See [Step 04 handoff](docs/harness/multiuser-step04-handoff.md).

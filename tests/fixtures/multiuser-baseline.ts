@@ -186,7 +186,10 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       observations.toolCount = tools.length;
       observations.allHostProcess = tools.every(t => t.environment === 'host-process-restricted-api');
       observations.allCancellationBeforeStart = tools.every(t => t.cancellation === 'before-start-only');
-      assert.equal(observations.allHostProcess, true); assert.equal(observations.allCancellationBeforeStart, true);
+      observations.compilerIsolated=tools.find(tool=>tool.name==='project.bundle')?.environment==='isolated-process';
+      observations.compilerCancellable=tools.find(tool=>tool.name==='project.bundle')?.cancellation==='during-execution';
+      assert.equal(observations.allHostProcess, false); assert.equal(observations.allCancellationBeforeStart, false);
+      assert.equal(observations.compilerIsolated,true);assert.equal(observations.compilerCancellable,true);
     } else {
       room.executionBudget = { calls: 23, reservedUsd: 1, maximumUsd: 2 };
       manager.save(room); manager.shutdown(); manager = createManager(); room = manager.get(roomId)!;

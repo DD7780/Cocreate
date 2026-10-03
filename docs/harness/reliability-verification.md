@@ -1,6 +1,6 @@
 # Reliability verification — 2026-10-01
 
-This report remains the historical 2026-10-01 result. Fresh 2026-10-03 evidence is separately recorded in the [Step 01 baseline](multiuser-step01-baseline.md) and [Step 02 handoff](multiuser-step02-handoff.md), with Step 03 recovery evidence in its [handoff](multiuser-step03-handoff.md); completion status remains in the [canonical checklist](checklist.md).
+This report remains the historical 2026-10-01 result. Fresh 2026-10-03 evidence is separately recorded in the [Step 01 baseline](multiuser-step01-baseline.md) and [Step 02 handoff](multiuser-step02-handoff.md), with Step 03 recovery evidence in its [handoff](multiuser-step03-handoff.md); fresh 2026-10-04 isolation evidence is in the [Step 04 handoff](multiuser-step04-handoff.md). Completion status remains in the [canonical checklist](checklist.md).
 
 ## Scope and verified causes
 

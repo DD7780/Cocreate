@@ -1,0 +1,4 @@
+{
+  exitCode: 126,
+  diagnostic: 'ISOLATION_UNAVAILABLE AppContainer process\r\n'
+}

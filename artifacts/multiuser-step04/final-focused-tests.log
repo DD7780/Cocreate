@@ -1,0 +1,162 @@
+TAP version 13
+# Subtest: ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+ok 1 - ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+  ---
+  duration_ms: 7306.8664
+  type: 'test'
+  ...
+# Subtest: AppContainer without Node permissions denies an existing private host file, writes and live loopback network
+ok 2 - AppContainer without Node permissions denies an existing private host file, writes and live loopback network
+  ---
+  duration_ms: 612.8343
+  type: 'test'
+  ...
+# Subtest: restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+ok 3 - restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+  ---
+  duration_ms: 640.9825
+  type: 'test'
+  ...
+# Subtest: candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+ok 4 - candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+  ---
+  duration_ms: 8318.5592
+  type: 'test'
+  ...
+# Subtest: wall timeout terminates a running child and cleans its private input
+ok 5 - wall timeout terminates a running child and cleans its private input
+  ---
+  duration_ms: 726.9454
+  type: 'test'
+  ...
+# Subtest: cancellation waits for real child termination and cleanup; pre-abort starts nothing
+ok 6 - cancellation waits for real child termination and cleanup; pre-abort starts nothing
+  ---
+  duration_ms: 277.6922
+  type: 'test'
+  ...
+# Subtest: memory exhaustion cannot escape the OS bound and leaves no child work
+ok 7 - memory exhaustion cannot escape the OS bound and leaves no child work
+  ---
+  duration_ms: 526.9639
+  type: 'test'
+  ...
+# Subtest: unavailable isolation fails explicitly and cannot fall back to host compilation
+ok 8 - unavailable isolation fails explicitly and cannot fall back to host compilation
+  ---
+  duration_ms: 1.3453
+  type: 'test'
+  ...
+# Subtest: CPU bound stops a busy child before the longer wall deadline
+ok 9 - CPU bound stops a busy child before the longer wall deadline
+  ---
+  duration_ms: 16361.7868
+  type: 'test'
+  ...
+# Subtest: untrusted output is bounded before it reaches application memory or artifacts
+ok 10 - untrusted output is bounded before it reaches application memory or artifacts
+  ---
+  duration_ms: 411.8134
+  type: 'test'
+  ...
+# (node:19212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 11 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 15.5483
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 12 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 172.4505
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 13 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 42.6284
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 14 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 37.868
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 15 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 56.2151
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 16 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 1.3368
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 17 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 148.4659
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 18 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 82.5127
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 19 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 9.871
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 20 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 10.2504
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 21 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 126.4019
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 22 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 4543.8946
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 23 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 7736.0182
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+ok 24 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 3649.8747
+  type: 'test'
+  ...
+# Subtest: unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+ok 25 - unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+  ---
+  duration_ms: 3824.9385
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 56954.201

@@ -15,7 +15,7 @@ Source-audited 2026-10-03 for Step 03. This document describes current boundarie
 | Generation | `server/generator.ts`, `server/build-recovery.ts`: context, schemas, targeted generation and awaited recovery checkpoints |
 | Provider/accounting | `server/providers.ts`, `server/byok-lease.ts`, `server/usage-ledger.ts`: adapters, temporary keys, physical dispatch records and aggregation |
 | Local durable store | `server/event-store.ts`: SQLite events, projections, artifacts and local coordinator leases |
-| Candidate/tools/preview | `server/tool-registry.ts`, `server/project.ts`, `server/preview.ts`: policy, scoped operations, host-process compile and restricted preview |
+| Candidate/tools/preview | `server/tool-registry.ts`, `server/project.ts`, `server/isolation.ts`, `server/preview.ts`: policy, scoped operations, isolated compilation and restricted preview |
 | Deployment | `worker/`, `wrangler.jsonc`, `Dockerfile`: native container proxy/readiness and configured runtime; not a deployment claim |
 
 The application remains a Vite SPA plus Node/Express/Yjs. `app/` is not its active entrypoint. Seven provider adapters and managed/preset modules remain for local compatibility/history; they do not imply seven active hosted setup paths. Current hosted AI policy is [BYOK](../../product.md#hosted-ai-and-limits). Prisma is an optional typed/introspection layer; Supabase SQL remains schema authority.
@@ -88,6 +88,12 @@ Current UI loads Studio Ivory. Shared context is visible in Canvas/Workflow/Arti
 
 ## Policy and deferred boundaries
 
-Tool metadata/schema/role/workspace filters deny unauthorized apply/build/promote operations. Generated paths/capabilities are restricted and previews use CSP/style isolation; host-process compilation is **not a process sandbox**. Real isolation with stripped secrets, timeout, resource limits and cancellation remains required work.
+Tool metadata/schema/role/workspace filters deny unauthorized apply/build/promote operations. `project.bundle` now compiles virtual candidate strings with pinned esbuild WASM in a separate OS-restricted Node process; candidate source is never evaluated by the compiler. The parent reads only the approved trusted React dependency graph. Generated paths/capabilities and preview CSP/style isolation remain additional boundaries.
+
+Windows installs a zero-capability AppContainer and assigns the suspended child to a kill-on-close Job Object before resuming: one process, 512 MiB committed memory, 10 CPU seconds and 20 seconds wall time. Only trusted runtime/job input receives read access; Node permissions additionally deny filesystem writes, workers, subprocesses and addons. Explicit bootstrap path metadata replaces the inherited application/provider/deployment environment; no credential or NODE_OPTIONS passthrough. Input/output are bounded at 4 MiB. Coordinator abort, timeout and abnormal exit remove child work and disposable job/profile state.
+
+The prepared non-root Linux container uses Bubblewrap user/mount/PID/network/IPC namespaces, read-only runtime/job/Node/library mounts, no application/data/secret mounts, a private temporary filesystem and prlimit bounds (2 GiB address space, 128 MiB JS heap, 10 CPU seconds, 64 kernel tasks per UID, 64 descriptors and 4 MiB per file/output). It is **unrun** here: no Docker/WSL/Linux runtime. Kernel permissions and WASM startup within these bounds must be verified in the intended deployment. The container startup performs actual boundary preflight; failure stops startup, never selects host execution.
+
+The build loop preflights the boundary before builder dispatch, passes its AbortSignal to compilation and stops isolation/resource failures without model repairs. Local compile-only checks are the current verification stage; generated functional tests remain Step 07 and must use this boundary. [Step 04 handoff](multiuser-step04-handoff.md) distinguishes kernel-only, supplementary Node and import-policy evidence.
 
 Accepted deferred direction includes structured revision-safe commands, scoped persistent approvals, controller handoff, pause/resume/cancel, dependency scheduling, justified bounded isolated workers, serialized integration, uncertain-side-effect reconciliation, targeted/browser regression evidence and complete durable artifacts. Analyst/Researcher toolchains remain unavailable. None is implied implemented by a schema or label. See the [checklist](checklist.md) for evidence, live verification and remaining work.

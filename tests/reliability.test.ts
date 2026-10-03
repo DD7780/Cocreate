@@ -154,3 +154,26 @@ test('ownership loss after compilation blocks promotion; command replay adds no 
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);
   }finally{release();manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
 });
+
+
+test('unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs',async()=>{
+  let builders=0,interpreters=0;
+  const provider=await fixture(body=>{
+    if(body.text.format.schema.required.includes('goals')){interpreters++;const input=JSON.parse(body.input);return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')))}
+    builders++;return response(plan('src/App.tsx','export default function App(){return <main>Retained isolated product</main>}'));
+  });
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'isolation-build-retention-'));
+  const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  const prior=process.env.COCREATE_ISOLATION_MODE;
+  try{
+    const room=manager.create(`isolated-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
+    edit(manager,room,'Build catalog');await manager.submitChanges(room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);
+    const working=structuredClone(room.versions[0]);assert.equal(builders,1);
+    process.env.COCREATE_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await manager.submitChanges(room,'alice','two');
+    await waitFor(()=>room.status==='Error'&&!room.buildTask);
+    assert.deepEqual(room.versions,[working]);assert.equal(manager.view(room).latestVersion,1);
+    assert.match(room.lastError||'',/isolation is unavailable/);assert.match(room.lastError||'',/explicitly retry/);
+    assert.equal(builders,1,'no builder or repair dispatch after isolation preflight failure');assert.equal(interpreters,2,'only explicit caller submissions interpreted');
+    assert.equal((await manager.submitChanges(room,'alice','two')).submissionId,command.submissionId);assert.equal(builders,1);assert.equal(interpreters,2);
+  }finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
+});

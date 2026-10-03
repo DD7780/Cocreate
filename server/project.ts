@@ -1,9 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import posix from 'node:path/posix';
-import { readFile } from 'node:fs/promises';
-import { createRequire } from 'node:module';
-import { build } from 'esbuild';
+import { compileIsolated } from './isolation.js';
 
 export type ProjectFile={path:string;content:string};
 export type FileOperation={type:'write'|'delete';path:string;content?:string};
@@ -33,24 +31,9 @@ export function loadProject(roomId:string){const root=path.join(generatedRoot,ro
 export function persistProject(roomId:string,files:ProjectFile[]){validateFiles(files);const root=path.resolve(generatedRoot,roomId),expected=path.resolve(generatedRoot)+path.sep;if(!root.startsWith(expected))throw new Error('Invalid project directory.');fs.mkdirSync(root,{recursive:true});const keep=new Set(files.map(file=>file.path));for(const old of loadProject(roomId)||[])if(!keep.has(old.path))fs.rmSync(path.join(root,...old.path.split('/')));for(const file of [...infrastructureFiles,...files]){const target=path.resolve(root,...file.path.split('/'));if(!target.startsWith(root+path.sep))throw new Error('Invalid project file target.');fs.mkdirSync(path.dirname(target),{recursive:true});fs.writeFileSync(target,file.content)}}
 export function budgetProjectFiles(files:ProjectFile[]|undefined,budget=70_000){const ordered=[...(files||starter)].sort((a,b)=>{const rank=(p:string)=>p==='src/App.tsx'?0:p==='src/main.tsx'?1:p.endsWith('.css')?2:3;return rank(a.path)-rank(b.path)||a.path.localeCompare(b.path)}),chosen:ProjectFile[]=[];let used=0;for(const file of ordered){const size=Buffer.byteLength(file.path)+Buffer.byteLength(file.content);if(used+size<=budget){chosen.push(file);used+=size}}return{files:chosen,omitted:ordered.filter(file=>!chosen.includes(file)).map(file=>file.path)}}
 
-export async function bundleProject(files:ProjectFile[]){
+export async function bundleProject(files:ProjectFile[],signal?:AbortSignal){
   validateFiles(files);
-  const map=new Map(files.map(file=>[file.path,file.content]));
-  const resolveProject=(importer:string,specifier:string)=>{const base=posix.normalize(posix.join(posix.dirname(importer),specifier)),candidates=[base,...['.ts','.tsx','.js','.jsx','.css','.json'].map(ext=>base+ext),...['.ts','.tsx','.js','.jsx'].map(ext=>posix.join(base,'index'+ext))];return candidates.find(candidate=>map.has(candidate))};
-  const plugin={name:'cocreate-project',setup(api:any){
-    api.onResolve({filter:/.*/},(args:any)=>{
-      if(args.kind==='entry-point')return{path:'src/main.tsx',namespace:'project'};
-      if(args.namespace==='dependency'){const importer=args.importer&&!args.importer.startsWith('<')?args.importer:import.meta.url;return{path:createRequire(importer).resolve(args.path),namespace:'dependency'}}
-      if(args.namespace==='project'&&args.path.startsWith('.')){const resolved=resolveProject(args.importer,args.path);if(!resolved)throw new Error(`Could not resolve ${args.path} from ${args.importer}`);return{path:resolved,namespace:'project'}}
-      if(args.path==='react'||args.path==='react-dom/client'||args.path==='react/jsx-runtime')return{path:createRequire(import.meta.url).resolve(args.path),namespace:'dependency'};
-      throw new Error(`Dependency is not approved: ${args.path}`)
-    });
-    api.onLoad({filter:/.*/,namespace:'project'},(args:any)=>({contents:map.get(args.path),loader:posix.extname(args.path).slice(1)||'tsx'}));
-    api.onLoad({filter:/.*/,namespace:'dependency'},async(args:any)=>({contents:await readFile(args.path,'utf8'),loader:args.path.endsWith('.json')?'json':'js'}));
-  }};
-  const result=await build({entryPoints:['entry'],plugins:[plugin],define:{'process.env.NODE_ENV':'"production"'},jsx:'automatic',bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',logLevel:'silent',outdir:'out'}),javascript=result.outputFiles.find(file=>file.path.endsWith('.js'))?.text,css=result.outputFiles.find(file=>file.path.endsWith('.css'))?.text||'';
-  if(!javascript)throw new Error('The generated project did not produce a browser bundle.');
-  return{javascript,css};
+  return compileIsolated(files,signal);
 }
 
 export function downloadableFiles(files:ProjectFile[]){return[...infrastructureFiles,...files]}
