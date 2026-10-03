@@ -1,3 +1,4 @@
+import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { verifyAuth } from '@supabase/server/core';
@@ -26,6 +27,7 @@ export const normalizeInviteEmail=(value:string)=>{const email=value.trim().toLo
 
 export class SupabasePlatform {
   readonly admin: SupabaseClient;
+  private verifiedPublications=new Set<string>();
   readonly bucket: string;readonly coordinator:RemoteCoordinator;
   onCoordinatorLost(listener:(projectId:string)=>void){return this.coordinator.onLost(listener)}
   claimCoordinator(projectId:string){return this.coordinator.claim(projectId)}
@@ -152,11 +154,11 @@ export class SupabasePlatform {
 
   async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>) {
     const update=typeof payload.update==='string'?payload.update:'';
-    const harness={...payload};delete harness.update;
+    const harness=await this.publishSnapshotArtifacts(projectId,payload);delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
     const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
     // Project timestamp is committed in the same fenced transaction.
-    return {contentHash};
+    return {contentHash,artifactManifest:harness.artifactManifest};
   }
 
   async recordProviderRequest(record:ProviderRequestRecord){
@@ -184,10 +186,10 @@ export class SupabasePlatform {
       await this.quarantine(projectId,'snapshot',Number(data.revision),raw,error);
       const recovered=await this.recoverDocumentUpdates(projectId);
       if(!recovered)throw new Error('Stored collaboration data is unreadable and no verified update history can recover it. The original bytes were quarantined; contact the project owner before making further edits.');
-      return {...(data.harness_state as Record<string,unknown>),update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
+      return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
     }
     if(decoded.legacyBufferJson&&!await this.quarantine(projectId,'snapshot',Number(data.revision),raw,new Error('Legacy Node Buffer JSON serialization backed up before verified in-memory recovery.')))throw new Error('The collaboration snapshot is recoverable, but its required backup could not be recorded. Apply the persistence-quarantine migration before reopening this project.');
-    return {...(data.harness_state as Record<string,unknown>),update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
+    return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
   }
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {
@@ -254,15 +256,137 @@ export class SupabasePlatform {
     await this.verifyUser(accessToken);const {data,error}=await this.userClient(accessToken).rpc('accept_project_invite',{invite_hash:hashToken(token)});fail('Invite acceptance failed',error);return String(data);
   }
 
+  private async privateArtifactBucket() {
+    const { data, error } = await this.admin.storage.getBucket(this.bucket);
+    if (error || !data || data.public !== false)
+        throw new ArtifactUnavailableError('unavailable');
+}
+  private async uploadVerified(path: string, contents: Uint8Array, mimeType: string) {
+    const storage = this.admin.storage.from(this.bucket);
+    const uploaded = await storage.upload(path, contents, { contentType: mimeType, upsert: false });
+    if (uploaded.error && !/already exists|duplicate|resourcealreadyexists/i.test(uploaded.error.message) && String(uploaded.error.statusCode) !== '409')
+        throw new ArtifactUnavailableError('unavailable');
+    const downloaded = await storage.download(path);
+    if (downloaded.error || !downloaded.data)
+        throw new ArtifactUnavailableError('unavailable');
+    const bytes = Buffer.from(await downloaded.data.arrayBuffer());
+    if (createHash('sha256').update(bytes).digest('hex') !== createHash('sha256').update(contents).digest('hex'))
+        throw new ArtifactUnavailableError('corrupt');
+}
+  async readArtifact(projectId: string, reference: ArtifactReference) {
+    const checked = checkReference(reference);
+    await this.privateArtifactBucket();
+    const { data, error } = await this.admin.storage.from(this.bucket).download(artifactPath(projectId, checked));
+    if (error || !data)
+        throw new ArtifactUnavailableError(error && (/not found|does not exist|nosuchkey/i.test(error.message) || String(error.statusCode) === '404') ? 'missing' : 'unavailable');
+    return verifyArtifact(checked, new Uint8Array(await data.arrayBuffer()));
+}
+  async publishArtifactBodies(projectId: string, bodies: ArtifactBody[]) {
+    this.coordinator.fence(projectId);
+    if (bodies.length)
+        await this.privateArtifactBucket();
+    const references: ArtifactReference[] = [];
+    for (const body of bodies) {
+        const reference = checkReference(body), bytes = decodeArtifactBody(body), path = artifactPath(projectId, reference);
+        if (!this.verifiedPublications.has(path)) {
+            await this.uploadVerified(path, bytes, reference.mimeType);
+            this.verifiedPublications.add(path);
+        }
+        references.push(reference);
+    }
+    if (bodies.length)
+        await this.assertCoordinator(projectId);
+    return references;
+}
+  private async publishSnapshotArtifacts(projectId: string, payload: Record<string, unknown>) {
+    this.coordinator.fence(projectId);
+    const harness = { ...payload };
+    delete harness.artifactBodies;
+    const raw = payload.artifactManifest ?? [];
+    if (!Array.isArray(raw) || !Array.isArray(payload.artifactBodies ?? []))
+        throw new ArtifactUnavailableError('corrupt');
+    const manifest = new Map<string, ArtifactReference>(raw.map(item => { const ref = checkReference(item); return [ref.ref, ref]; }));
+    const bodies = [...((payload.artifactBodies ?? []) as ArtifactBody[])];
+    const versions = (Array.isArray(payload.versions) ? payload.versions : []).map(version => {
+        if (!version || typeof version !== 'object')
+            throw new ArtifactUnavailableError('corrupt');
+        if (version.artifactRef)
+            return version;
+        // Compatibility: explicitly imported legacy inline versions use the same publication gate.
+        const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.cocreate.product+json');
+        bodies.push(body);
+        return { ...version, artifactRef: body.ref };
+    });
+    const history = new Map((Array.isArray(payload.artifactHistory) ? payload.artifactHistory : []).map(version => { if (!version || !Number.isSafeInteger(version.id) || version.id < 1)
+        throw new ArtifactUnavailableError('corrupt'); return [version.id, version]; }));
+    let checkpoint = payload.recoveryCheckpoint as RecoveryCheckpoint | undefined;
+    if (checkpoint && !checkpoint.artifactRef) {
+        const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.cocreate.checkpoint+json');
+        bodies.push(body);
+        checkpoint = { ...checkpoint, artifactRef: body.ref };
+    }
+    for (const version of versions) {
+        const prior = history.get(version.id);
+        if (prior && prior.artifactRef !== version.artifactRef)
+            throw new ArtifactUnavailableError('corrupt');
+        history.set(version.id, versionMetadata(version));
+    }
+    harness.artifactHistory = [...history.values()].sort((a, b) => a.id - b.id);
+    for (const reference of await this.publishArtifactBodies(projectId, bodies))
+        manifest.set(reference.ref, reference);
+    const requireRef = (ref: unknown) => { if (typeof ref !== 'string' || !manifest.has(ref))
+        throw new ArtifactUnavailableError('missing'); };
+    harness.versions = versions.map(version => { requireRef(version.artifactRef); return versionStub(version); });
+    if (checkpoint) {
+        requireRef(checkpoint.artifactRef);
+        harness.recoveryCheckpoint = { ...checkpoint };
+        delete (harness.recoveryCheckpoint as Record<string, unknown>).files;
+    }
+    if (Array.isArray(harness.artifactHistory))
+        for (const version of harness.artifactHistory)
+            requireRef(version.artifactRef);
+    harness.artifactSchemaVersion = 1;
+    harness.artifactManifest = [...manifest.values()].sort((a, b) => a.ref.localeCompare(b.ref));
+    return harness;
+}
+  private async restoreSnapshotArtifacts(projectId: string, harness: Record<string, unknown>) {
+    if (harness.artifactSchemaVersion === undefined)
+        return harness; // Legacy inline versions remain readable; no fabricated older history.
+    if (harness.artifactSchemaVersion !== 1 || !Array.isArray(harness.artifactManifest) || !Array.isArray(harness.versions))
+        throw new ArtifactUnavailableError('corrupt');
+    const manifest = new Map<string, ArtifactReference>(harness.artifactManifest.map(item => { const ref = checkReference(item); return [ref.ref, ref]; }));
+    if (!Array.isArray(harness.artifactHistory) || harness.artifactHistory.some(version => !version || !Number.isSafeInteger(version.id) || version.id < 1 || typeof version.summary !== 'string' || typeof version.createdAt !== 'string' || !manifest.has(version.artifactRef)))
+        throw new ArtifactUnavailableError('corrupt');
+    const bodies = new Map<string, ArtifactBody>();
+    const load = async (ref: unknown) => {
+        if (typeof ref !== 'string' || !manifest.has(ref))
+            throw new ArtifactUnavailableError('missing');
+        let body = bodies.get(ref);
+        if (!body) {
+            const reference = manifest.get(ref)!, bytes = await this.readArtifact(projectId, reference);
+            body = { ...reference, base64: bytes.toString('base64') };
+            bodies.set(ref, body);
+        }
+        return decodeArtifactBody(body);
+    };
+    const versions = [];
+    for (const version of harness.versions) {
+        if (!version || typeof version !== 'object')
+            throw new ArtifactUnavailableError('corrupt');
+        versions.push(restoreVersion(await load(version.artifactRef), projectId, version));
+    }
+    let checkpoint = harness.recoveryCheckpoint;
+    if (checkpoint) {
+        const expected = checkpoint as Record<string, unknown>;
+        checkpoint = restoreCheckpoint(await load(expected.artifactRef), projectId, expected);
+    }
+    return { ...harness, versions, recoveryCheckpoint: checkpoint, artifactBodies: [...bodies.values()] };
+}
   async storeArtifact(projectId:string,revision:number,contents:Uint8Array,metadata:Record<string,unknown>={}) {
     const hash=createHash('sha256').update(contents).digest('hex'),path=`${projectId}/${revision}/${hash}.zip`;
     const pending={project_id:projectId,revision,storage_path:path,content_hash:hash,state:'pending',metadata};
     let result=await this.admin.from('artifact_versions').upsert(pending,{onConflict:'project_id,revision'});fail('Artifact metadata reservation failed',result.error);
-    const uploaded=await this.admin.storage.from(this.bucket).upload(path,contents,{contentType:'application/zip',upsert:false});
-    if(uploaded.error && !/already exists/i.test(uploaded.error.message)){await this.admin.from('artifact_versions').update({state:'failed'}).eq('project_id',projectId).eq('revision',revision);throw new Error(`Artifact upload failed: ${uploaded.error.message}`);}
-    const downloaded=await this.admin.storage.from(this.bucket).download(path);fail('Artifact verification failed',downloaded.error);
-    const verifiedHash=createHash('sha256').update(Buffer.from(await downloaded.data!.arrayBuffer())).digest('hex');
-    if(verifiedHash!==hash)throw new Error('Artifact verification failed: stored hash did not match.');
+    await this.privateArtifactBucket();await this.uploadVerified(path,contents,'application/zip');
     result=await this.admin.from('artifact_versions').update({state:'finalized',finalized_at:new Date().toISOString()}).eq('project_id',projectId).eq('revision',revision);fail('Artifact finalization failed',result.error);
     return {path,hash};
   }

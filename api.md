@@ -1,18 +1,20 @@
 # 2guys1canvas implemented API contracts
 
-Source-inspected 2026-10-03 including Step 02 coordinator/retry boundaries. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-03 including Step 03 artifact recovery boundaries. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 
 HTTP/socket requests use the client host; local default is `http://localhost:5173`. JSON body limit is 40 KB. Prefer `Authorization: Bearer <token>` over the currently supported room-route token query parameter; never log credentials or authenticated URLs.
 
-Hosted project routes use a Supabase access token verified for issuer/audience/signature/expiry. `POST /api/projects/:id/session` verifies account and membership, claims coordinator ownership, hydrates the room if needed and returns a separate five-minute signed project ticket. Participant ID equals account UUID. Room/preview/download middleware requires that ticket, current membership and coordinator authority; mutations require owner/editor. A URL alone grants nothing. Viewers cannot submit edits or room commands.
+Hosted project routes use a Supabase access token verified for issuer/audience/signature/expiry. `POST /api/projects/:id/session` verifies account and membership, claims coordinator ownership, hydrates the room if needed and returns a separate five-minute signed project ticket. Participant ID equals account UUID. Room/preview/download middleware requires that ticket, current membership and coordinator authority; historical artifact reads recheck membership/ownership after awaited retrieval before returning bytes; mutations require owner/editor. A URL alone grants nothing. Viewers cannot submit edits or room commands.
 
 Local mode uses HMAC-SHA256 signed room participant tokens `{roomId, participantId, name}`; local creation/join has no account identity or expiry guarantee. These compatibility sessions are not hosted authorization. Invalid room tickets return 401, missing rooms 404 and denied permission usually 403; caught operation/provider failures commonly return 400 `{error}`. Operation success is not functional acceptance.
 
 Hosted use requires the service-role RPCs in the [original fencing migration](supabase/migrations/20261001104120_workflow_coordinator_fencing.sql) and [Step 02 hardening migration](supabase/migrations/20261003203000_coordinator_dispatch_updates.sql). Both remain prepared/unapplied; real SQL and hosted-account behavior are unverified. Missing RPCs fail closed. Current routing retains the Worker primary-container affinity and returns a bounded retry on non-owner ingress.
 
 Ownership unavailable or lost returns HTTP **503**, `Retry-After: 2`, `Cache-Control: no-store`, and `{code:"coordinator_unavailable", retryAfterMs:2000, retryable:true, error}`. The safe message says to retry with the same request ID and reopen the project if it persists. Membership denial remains 403 and invalid tickets 401; current authorization is checked first. WebSocket rejection uses HTTP 503/Retry-After; an established socket losing ownership closes with 1012, while access revocation closes with 4403. No Location header or owner/credential disclosure is returned. The client retries connection only, then shows a terminal reopen action with page edits retained.
+
+Private artifact restoration failures return HTTP **409**, `Cache-Control: no-store`, and `{code:"artifact_unavailable", reason:"missing"|"corrupt"|"unavailable", error}`. Opening a project with missing/corrupt required current product or checkpoint fails explicitly, rather than hydrating an empty room. Reopen retries reads without inference. Preview `/preview/:id/:version` and download `/api/rooms/:id/download/:version` can fetch archived version bodies lazily; an unknown version remains 404, while membership denial remains 403. The application streams verified preview/ZIP bytes and exposes no Storage credentials, public URLs or signed download URLs. Version metadata/history can include older newly archived versions; current/latest excludes a pending promotion. Legacy history absent from canonical records remains unavailable.
 
 ## Authenticated project routes
 

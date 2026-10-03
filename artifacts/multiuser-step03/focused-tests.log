@@ -1,0 +1,314 @@
+TAP version 13
+# (node:25532) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+ok 1 - empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+  ---
+  duration_ms: 1969.6286
+  type: 'test'
+  ...
+# Subtest: upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+ok 2 - upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+  ---
+  duration_ms: 263.6421
+  type: 'test'
+  ...
+# Subtest: missing/corrupt stored bodies are explicit failures, distinct from an empty project
+ok 3 - missing/corrupt stored bodies are explicit failures, distinct from an empty project
+  ---
+  duration_ms: 373.7619
+  type: 'test'
+  ...
+# Subtest: private bucket and project-bound artifact identity fail closed; no public URL is created
+ok 4 - private bucket and project-bound artifact identity fail closed; no public URL is created
+  ---
+  duration_ms: 103.0426
+  type: 'test'
+  ...
+# Subtest: authenticated lazy historical reads reject revoked users, including revocation during download
+ok 5 - authenticated lazy historical reads reject revoked users, including revocation during download
+  ---
+  duration_ms: 994.4063
+  type: 'test'
+  ...
+# Subtest: an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+ok 6 - an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+  ---
+  duration_ms: 3657.7545
+  type: 'test'
+  ...
+# Subtest: lease loss after private body upload cannot promote or start another physical attempt
+ok 7 - lease loss after private body upload cannot promote or start another physical attempt
+  ---
+  duration_ms: 3445.8777
+  type: 'test'
+  ...
+# Subtest: synchronous publication failure clears the pending gate and preserves the previous product
+ok 8 - synchronous publication failure clears the pending gate and preserves the previous product
+  ---
+  duration_ms: 3574.5022
+  type: 'test'
+  ...
+# Subtest: legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+ok 9 - legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+  ---
+  duration_ms: 117.66
+  type: 'test'
+  ...
+# Subtest: new promotion after a retained-product rollback never overwrites an archived version identity
+ok 10 - new promotion after a retained-product rollback never overwrites an archived version identity
+  ---
+  duration_ms: 3730.2903
+  type: 'test'
+  ...
+# (node:11044) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+ok 11 - remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+  ---
+  duration_ms: 37.5696
+  type: 'test'
+  ...
+# Subtest: closing during a claim releases the late epoch without reviving ownership
+ok 12 - closing during a claim releases the late epoch without reviving ownership
+  ---
+  duration_ms: 4.5753
+  type: 'test'
+  ...
+# Subtest: closing during renewal cannot validate an old worker; malformed epochs fail closed
+ok 13 - closing during renewal cannot validate an old worker; malformed epochs fail closed
+  ---
+  duration_ms: 4.2815
+  type: 'test'
+  ...
+# Subtest: loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+ok 14 - loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+  ---
+  duration_ms: 407.2562
+  type: 'test'
+  ...
+# Subtest: hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+ok 15 - hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+  ---
+  duration_ms: 12.2875
+  type: 'test'
+  ...
+# (node:28960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: event store orders events, redacts secrets, stores artifacts, and enforces run transitions
+ok 16 - event store orders events, redacts secrets, stores artifacts, and enforces run transitions
+  ---
+  duration_ms: 199.7759
+  type: 'test'
+  ...
+# Subtest: tool policy denies personal agents and unknown tools before execution
+ok 17 - tool policy denies personal agents and unknown tools before execution
+  ---
+  duration_ms: 208.5081
+  type: 'test'
+  ...
+# Subtest: append-only snapshot artifacts reconstruct a missing derived workspace view
+ok 18 - append-only snapshot artifacts reconstruct a missing derived workspace view
+  ---
+  duration_ms: 237.8517
+  type: 'test'
+  ...
+# Subtest: room restart reconstructs the last product and interrupts an in-flight run
+ok 19 - room restart reconstructs the last product and interrupts an in-flight run
+  ---
+  duration_ms: 402.6033
+  type: 'test'
+  ...
+# Subtest: legacy workspace migration makes a backup before importing state
+ok 20 - legacy workspace migration makes a backup before importing state
+  ---
+  duration_ms: 229.8608
+  type: 'test'
+  ...
+# Subtest: durable workflow projection records task transitions and supports cursor recovery
+ok 21 - durable workflow projection records task transitions and supports cursor recovery
+  ---
+  duration_ms: 216.2588
+  type: 'test'
+  ...
+# Subtest: restart preserves a pending multi-option conflict group and resolver membership
+ok 22 - restart preserves a pending multi-option conflict group and resolver membership
+  ---
+  duration_ms: 102.0078
+  type: 'test'
+  ...
+# Invitation email rejected by provider { invitationId: 'i3', status: 422 }
+# Invitation email response lacked an acceptance ID { invitationId: 'i4' }
+# Subtest: project tickets are scoped and expire
+ok 23 - project tickets are scoped and expire
+  ---
+  duration_ms: 3.0308
+  type: 'test'
+  ...
+# Subtest: hosted Supabase mode fails closed when the server secret is absent
+ok 24 - hosted Supabase mode fails closed when the server secret is absent
+  ---
+  duration_ms: 0.8314
+  type: 'test'
+  ...
+# Subtest: server Supabase configuration rejects mismatched credentials and JWKS
+ok 25 - server Supabase configuration rejects mismatched credentials and JWKS
+  ---
+  duration_ms: 0.7846
+  type: 'test'
+  ...
+# Subtest: public auth configuration is explicit and derives the Worker callback
+ok 26 - public auth configuration is explicit and derives the Worker callback
+  ---
+  duration_ms: 2.481
+  type: 'test'
+  ...
+# Subtest: Wrangler uses matching server and Vite build-time Supabase configuration
+ok 27 - Wrangler uses matching server and Vite build-time Supabase configuration
+  ---
+  duration_ms: 0.8565
+  type: 'test'
+  ...
+# Subtest: Google callback exchanges once, reports errors, and restores only local destinations
+ok 28 - Google callback exchanges once, reports errors, and restores only local destinations
+  ---
+  duration_ms: 1.205
+  type: 'test'
+  ...
+# Subtest: Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+ok 29 - Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+  ---
+  duration_ms: 16.5194
+  type: 'test'
+  ...
+# Subtest: auth source preserves Google and adds password, confirmation, and recovery flows
+ok 30 - auth source preserves Google and adds password, confirmation, and recovery flows
+  ---
+  duration_ms: 1.2654
+  type: 'test'
+  ...
+# Subtest: project names and invitation emails use canonical validation
+ok 31 - project names and invitation emails use canonical validation
+  ---
+  duration_ms: 1.3927
+  type: 'test'
+  ...
+# Subtest: transactional invitation email is truthful and idempotent at the provider boundary
+ok 32 - transactional invitation email is truthful and idempotent at the provider boundary
+  ---
+  duration_ms: 61.5693
+  type: 'test'
+  ...
+# Subtest: email invitation migration binds recipients and enforces sharing permissions
+ok 33 - email invitation migration binds recipients and enforces sharing permissions
+  ---
+  duration_ms: 1.1544
+  type: 'test'
+  ...
+# Subtest: invite tokens are hashed before persistence
+ok 34 - invite tokens are hashed before persistence
+  ---
+  duration_ms: 0.3328
+  type: 'test'
+  ...
+# Subtest: migration enables RLS and keeps authoritative runtime writes server-only
+ok 35 - migration enables RLS and keeps authoritative runtime writes server-only
+  ---
+  duration_ms: 0.8459
+  type: 'test'
+  ...
+# (node:29348) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 36 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 30.4559
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 37 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 486.2112
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 38 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 87.4292
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 39 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 54.4492
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 40 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 323.563
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 41 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 1.8616
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 42 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 319.2807
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 43 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 152.8686
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 44 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 13.1284
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 45 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 12.8451
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 46 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 128.7244
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 47 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 1096.762
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 48 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 1102.2282
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+ok 49 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 360.9159
+  type: 'test'
+  ...
+1..49
+# tests 49
+# suites 0
+# pass 49
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21637.3971

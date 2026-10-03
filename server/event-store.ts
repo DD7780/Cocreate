@@ -1,3 +1,4 @@
+import { bodyFromBytes, decodeArtifactBody, artifactHash, ArtifactUnavailableError, type ArtifactBody } from './artifacts.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
@@ -151,7 +152,43 @@ export class EventStore{
     return{ref:`sha256:${contentHash}`,contentHash,byteLength:bytes.byteLength};
   }
   writeArtifact(content:string|Uint8Array,mimeType='application/octet-stream'){return this.insertArtifact(content,mimeType)}
-  readArtifact(ref:string){const contentHash=ref.replace(/^sha256:/,'');const row=this.db.prepare('SELECT content FROM artifacts WHERE content_hash=?').get(contentHash) as {content:Uint8Array}|undefined;return row?Buffer.from(row.content):null}
+  readArtifact(ref:string){const contentHash=ref.replace(/^sha256:/,'');const row=this.db.prepare('SELECT content FROM artifacts WHERE content_hash=?').get(contentHash) as {content:Uint8Array}|undefined;if(!row)return null;const bytes=Buffer.from(row.content);if(artifactHash(bytes)!==contentHash)throw new ArtifactUnavailableError('corrupt');return bytes}
+  artifactBodiesForWorkspace(workspaceId: string, extraRefs: string[] = []): ArtifactBody[] {
+    // Canonical workspace snapshots are stored separately in Postgres, not recursively archived.
+    const rows = this.db.prepare("SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type<>'application/vnd.cocreate.workspace+json'").all(workspaceId) as {
+        content: Uint8Array;
+        mime_type: string;
+        content_hash: string;
+    }[];
+    const bodies = new Map(rows.map(row => { if(artifactHash(row.content)!==row.content_hash)throw new ArtifactUnavailableError('corrupt');const body = bodyFromBytes(row.content, row.mime_type); return [body.ref, body]; }));
+    for (const ref of extraRefs) {
+        const row = this.db.prepare('SELECT content,mime_type FROM artifacts WHERE content_hash=?').get(ref.slice(7)) as {
+            content: Uint8Array;
+            mime_type: string;
+        } | undefined;
+        if (!row)
+            throw new Error('Required local artifact body is missing.');
+        const body = bodyFromBytes(row.content, row.mime_type);
+        if(body.ref!==ref)throw new ArtifactUnavailableError('corrupt');
+        bodies.set(body.ref, body);
+    }
+    return [...bodies.values()];
+}
+  restoreArtifactBodies(bodies: ArtifactBody[]) {
+    const verified = bodies.map(body => ({ body, bytes: decodeArtifactBody(body) }));
+    this.db.exec('BEGIN IMMEDIATE');
+    try {
+        for (const { body, bytes } of verified) {
+            this.insertArtifact(bytes, body.mimeType);
+            this.db.prepare('UPDATE artifacts SET content=?,byte_length=?,mime_type=? WHERE content_hash=?').run(bytes, bytes.byteLength, body.mimeType, body.ref.slice(7));
+        }
+        this.db.exec('COMMIT');
+    }
+    catch (error) {
+        this.db.exec('ROLLBACK');
+        throw error;
+    }
+}
   hasWorkspace(workspaceId:string){return!!this.db.prepare("SELECT 1 AS present FROM workspace_state WHERE workspace_id=? UNION SELECT 1 AS present FROM events WHERE workspace_id=? AND artifact_ref IS NOT NULL LIMIT 1").get(workspaceId,workspaceId)}
   saveWorkspaceSnapshot(workspaceId:string,state:unknown,eventType='workspace.snapshot_recorded',actorId='system',actorType:ActorType='system'){
     const stateJson=JSON.stringify(state),stateHash=hash(stateJson),updatedAt=new Date().toISOString();

@@ -1,0 +1,52 @@
+{
+  "measuredAt": "2026-10-03T17:13:38.429Z",
+  "scope": "Synthetic 0/10/50 version+receipt workload; real SDK over controlled loopback Storage/PostgREST; no real SQL, hosted account, provider inference or production capacity measurement",
+  "observations": [
+    {
+      "submittedVersions": 0,
+      "snapshotBytes": 1646,
+      "events": 1,
+      "eventBytes": 645,
+      "receipts": 0,
+      "receiptBytes": 2,
+      "archivedVersions": 0,
+      "manifestBytes": 2,
+      "storageObjects": 0,
+      "storageBytes": 0,
+      "uploads": 0,
+      "downloads": 0,
+      "sqliteBytes": 255448
+    },
+    {
+      "submittedVersions": 10,
+      "snapshotBytes": 18901,
+      "events": 21,
+      "eventBytes": 12054,
+      "receipts": 10,
+      "receiptBytes": 1194,
+      "archivedVersions": 10,
+      "manifestBytes": 1511,
+      "storageObjects": 10,
+      "storageBytes": 16473,
+      "uploads": 10,
+      "downloads": 10,
+      "sqliteBytes": 1376088
+    },
+    {
+      "submittedVersions": 50,
+      "snapshotBytes": 83748,
+      "events": 101,
+      "eventBytes": 57776,
+      "receipts": 50,
+      "receiptBytes": 6074,
+      "archivedVersions": 50,
+      "manifestBytes": 7551,
+      "storageObjects": 50,
+      "storageBytes": 82473,
+      "uploads": 50,
+      "downloads": 50,
+      "sqliteBytes": 5046088
+    }
+  ],
+  "retentionProposal": "Preserve immutable bodies and version manifests; split immutable command receipts/physical outcomes from projection snapshots; use verified projection checkpoints plus append-only event tails. Define cursor/recovery and request-ID guarantees before compaction. Inventory unreferenced private uploads before any separately reviewed cleanup. No data was compacted or deleted."
+}
