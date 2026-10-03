@@ -28,7 +28,7 @@ import type {
   AIProvider,
   AIWorkflowMode,
   LegacyAISpecialty,
-} from "../src/types.js";
+} from "../shared/types.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 type Options = {
   platform?: SupabasePlatform;

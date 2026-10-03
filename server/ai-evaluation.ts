@@ -1,4 +1,4 @@
-import type {AIWorkflowMode} from '../src/types.js';
+import type {AIWorkflowMode} from '../shared/types.js';
 
 export const EVALUATION_PROTOCOL_VERSION='2026-09-20.v1';
 export const representativeTasks:Record<AIWorkflowMode,Array<{id:string;brief:string;checks:string[]}>>={

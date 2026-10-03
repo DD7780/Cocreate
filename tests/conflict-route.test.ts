@@ -1,6 +1,6 @@
 import test from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import os from'node:os';import path from'node:path';
 import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';
-import type{ConflictGroup}from'../src/types.js';
+import type{ConflictGroup}from'../shared/types.js';
 
 test('conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity',async()=>{
   const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflicts-')),secret='test-conflict-secret';

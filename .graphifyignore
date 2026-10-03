@@ -1,0 +1,12 @@
+# Index project source and steering, not Graphify's own instructions or outputs.
+.codex/
+graphify-out/
+
+# Generated browser evidence and transient logs are linked from verification docs.
+artifacts/
+
+# Dependency lock entries are not application entities; package.json stays indexed.
+pnpm-lock.yaml
+
+# Dated steering snapshots remain linked from current docs, outside default context.
+docs/harness/history/

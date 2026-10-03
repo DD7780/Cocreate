@@ -8,7 +8,7 @@ import type {
   ModelChecks,
   SharedRequirement,
   TaskComplexity,
-} from '../src/types.js';
+} from '../shared/types.js';
 import{maximumAllowanceCharge}from'./ai-accounting.js';
 
 export const PRESET_VERSION = '2026-09-22.v3';
@@ -143,7 +143,7 @@ export function classifyTaskComplexity(requirements:SharedRequirement[]):TaskCom
   if(requirements.length<=2&&criteria<=3)return'simple';return'standard';
 }
 
-export function routeBuilderForRun(setup:NonNullable<import('../src/types.js').AISetupPolicy>,requirements:SharedRequirement[],remainingBudgetUsd:number){
+export function routeBuilderForRun(setup:NonNullable<import('../shared/types.js').AISetupPolicy>,requirements:SharedRequirement[],remainingBudgetUsd:number){
   const complexity=classifyTaskComplexity(requirements),baseline=setup.resolved?.builder;
   if(!baseline)throw new Error('The frozen setup has no builder assignment.');
   const required=estimateLayerMaximum(baseline)||0;

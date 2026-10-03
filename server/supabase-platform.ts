@@ -5,7 +5,7 @@ import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as Y from 'yjs';
 import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
 import { encryptSecret, decryptSecret, type EncryptedSecret } from './credentials.js';
-import type { ProviderRequestRecord } from '../src/types.js';
+import type { ProviderRequestRecord } from '../shared/types.js';
 
 export type ProjectRole = 'owner' | 'editor' | 'viewer';
 export type ProjectSummary = {

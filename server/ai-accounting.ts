@@ -1,4 +1,4 @@
-import type{AIRate,AIRunCall,AIRunRecord,AIEffort,AIWorkflowMode,LegacyAISpecialty,NormalizedAIUsage,TaskComplexity}from'../src/types.js';
+import type{AIRate,AIRunCall,AIRunRecord,AIEffort,AIWorkflowMode,LegacyAISpecialty,NormalizedAIUsage,TaskComplexity}from'../shared/types.js';
 
 export const VERIFICATION_POLICY_VERSION='compile-only.v1';
 const million=1_000_000;

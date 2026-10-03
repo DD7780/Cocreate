@@ -12,4 +12,5 @@ generated
 .pnpm-store
 .runtime
 .tmp-test-build
+artifacts/codebase-audit/
 *.log

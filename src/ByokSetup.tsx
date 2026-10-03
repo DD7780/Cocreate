@@ -1,6 +1,6 @@
 import {useEffect, useState} from 'react';
 import {Eye, EyeOff, Plug, X} from 'lucide-react';
-import type {AIConnection} from './types';
+import type {AIConnection} from '../shared/types';
 
 type Lease = NonNullable<AIConnection['temporary']>;
 

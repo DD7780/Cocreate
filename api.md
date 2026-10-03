@@ -21,9 +21,9 @@ Invitation routes retain their existing paths and authorization. The server read
 
 ## Active hosted OpenRouter BYOK (2026-09-28)
 
-Hosted routes require a signed project ticket and membership. `POST /api/rooms/:id/ai/openrouter/connect` accepts `{apiKey}`, validates through OpenRouter `/key` and discovers `/models` without generation, and returns redacted lease metadata. `POST /api/rooms/:id/ai/openrouter/models` accepts `{handle,interpreterModel,builderModel}` and validates both exact IDs. `PUT /api/rooms/:id/ai/openrouter/spenders/:memberId` accepts `{authorized:boolean}` for a project editor or owner. `POST /api/rooms/:id/ai/openrouter/disconnect` revokes the lease. The project owner controls these mutations. `/api/rooms/:id/submit` remains the hosted generation entry. Obsolete hosted `/ai` routes return 410, and managed dispatch is rejected even for historical assignments. The key is never serialized into room state or snapshots. `POST /api/rooms/:id/retry-build` with a unique `{requestId}` explicitly retries accepted requirements after a failed build using the currently selected BYOK models; it does not reinterpret edits. BYOK has no CoCreate dollar or call-count gate. Room state exposes recent physical provider requests and their reported token usage; incomplete usage stays marked. Lease expiry or restart requires reconnecting. Historical API sections below are superseded for the active hosted MVP.
+Hosted routes require a signed project ticket and membership. `POST /api/rooms/:id/ai/openrouter/connect` accepts `{apiKey}`, validates through OpenRouter `/key` and discovers `/models` without generation, and returns redacted lease metadata. `POST /api/rooms/:id/ai/openrouter/models` accepts `{handle,interpreterModel,builderModel}` and validates both exact IDs. `PUT /api/rooms/:id/ai/openrouter/spenders/:memberId` accepts `{authorized:boolean}` for a project editor or owner. `POST /api/rooms/:id/ai/openrouter/disconnect` revokes the lease. The project owner controls these mutations. `/api/rooms/:id/submit` remains the hosted generation entry. Obsolete hosted `/ai` routes return 410, and managed dispatch is rejected even for historical assignments. The key is never serialized into room state or snapshots. `POST /api/rooms/:id/retry-build` with a unique `{requestId}` explicitly retries accepted requirements after a failed build using the currently selected BYOK models; it does not reinterpret edits. BYOK has no managed-credit gate; the October 1 shared 24-physical-call recovery ceiling and configured spending limits apply. Room state exposes recent physical provider requests and their reported token usage; incomplete usage stays marked. Lease expiry or restart requires reconnecting. Historical API sections below are superseded for the active hosted MVP.
 
-Source-inspected 2026-09-30. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `src/types.ts`.
+Source-inspected 2026-09-30. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `shared/types.ts`.
 
 ## Historical hosted managed AI
 
@@ -144,7 +144,7 @@ No current route exposes managed platform credentials, accounts, balances, purch
 
 ## Shared response models
 
-Import exact contracts from `src/types.ts`; do not maintain a second application type definition from this prose.
+Import exact contracts from `shared/types.ts`; do not maintain a second application type definition from this prose.
 
 RoomView includes:
 - `roomId`, `ownerId`, `participants`, `ai`.

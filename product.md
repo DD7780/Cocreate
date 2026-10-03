@@ -1,152 +1,41 @@
 # 2guys1canvas product brief
 
-## Current reliability and shared context requirement (2026-10-01)
+Current intent, 2026-10-04. Implementation evidence belongs in [the checklist](docs/harness/checklist.md) and [context.md](context.md). [Historical product directions](docs/harness/history/product-before-cleanup.md) are retained for reference; they do not override this brief.
 
-This request supersedes the older no-canvas-rail presentation rule and the earlier prohibition on a bounded BYOK recovery call ceiling. Shared context appears beside Canvas and remains reachable in Workflow/Artifacts. Its Shared Intent selector displays accepted-count and revision; the selected durable snapshot drives the Accepted requirements card and View requirements action. Unsubmitted drafts remain separate. A bordered Recorded usage · partial card displays reported tokens and View usage, followed by the workflow stage. The existing Studio Ivory shell is retained pending the missing screenshot; reference fidelity is unverified.
+## Mission and core loop
 
-Output-exhausted builders decompose the accepted change into at most eight coherent one-file tasks. Complete envelopes, source validation, durable checkpoints, serialized compilation/integration and promotion are required. A shared 24-physical-call executor ceiling includes recovery and retries; any configured spending limit also applies. Provider output allowance is bounded by reported completion metadata when available. Higher effort does not imply a higher provider output ceiling. Failure retains the compiled artifact and names the task/call bound and next action.
+Help a team direct one durable agent workflow together with attributable evidence and shared artifacts. The workflow, its commands, tasks, events, decisions and versioned artifacts are authoritative. A document or model conversation is supporting context.
 
-Typing and reconnect never invoke inference. Authenticated submissions capture only the caller's pending steering, retain request IDs across uncertain replies, and reconcile in durable capture order. Later accepted steering supersedes an active fixed-revision candidate and stays queued for subsequent processing. Coordinator leases and fenced snapshot commits reject stale promotion; hosted application depends on the additive migration and still needs account-backed verification.
+Collaborative brief → authenticated steering submission → accepted requirements and conflict gate → coordinator task plan → bounded execution → verification → revision-safe artifact promotion. Real-time writing stays free of inference.
 
+## Active MVP
 
-## Studio Ivory presentation (2026-10-01)
+Developer is the only activatable workflow. Researchers/Analysts and historical managed records remain readable where needed, but new activation is rejected. People sign in, create/open a project, write and collaborate, then explicitly Build my changes. Capture only the authenticated participant's unsubmitted steering; never flush another participant's draft. Alt+X is editor-focused on Windows/Linux and disabled on macOS.
 
-The active visual direction is Studio Ivory: warm ivory surfaces, dark ink, restrained cobalt actions, terracotta highlights, a subtle gridded canvas, and precise hard shadows. Inter handles interface and document text; DM Serif Display is reserved for selected headings. Login, projects, invitations, Workflow, Canvas, Artifacts, and Builder/API setup share this palette. The workflow-first behavior, full-width canvas, Shared Intent placement, BYOK boundary, and submission shortcut below remain active. The earlier purple direction is historical.
+New hosted projects have no AI assignment. The owner connects an OpenRouter key with generation-free validation, explicitly chooses builder and Interpretation models, and saves. Keys live only in a two-hour server-memory lease. Editors require owner spending authorization; expiry/restart requires reconnecting. No managed/founder funding, credits, presets, old wizard or silent fallback in the active hosted UI. Local compatibility APIs and historical billing/project data remain distinct from the active setup surface.
 
-## Active presentation update (2026-09-30)
+Settings changes, writing and reconnecting do not invoke inference. Explicit model tests may consume provider usage and must say so. Provider account limits, requested output/context capacity, configured spending and the executor's recovery bound are separate concepts.
 
-2guys1canvas remains a multiplayer, workflow-first workspace with the existing BYOK and permission boundaries. The canvas is a full-width gridded writing surface; Shared Intent sits in Workflow and Artifacts. The reference-led visual direction is dark purple neubrutalism, pixel-style accents, white content stages, hard shadows, and compact controls across login, projects, invites, and builder setup. Build my changes uses fixed editor-focused Alt+X on Windows/Linux; the established macOS mapping is disabled. Shared Intent shows accepted requirements, attention items, provenance, and decision history. Workflow holds detailed usage and shows deduplicated recorded physical calls across generation and setup, alongside the older generation counter. Coverage is explicitly partial; unknown usage and missing pre-ledger calls are disclosed. Earlier CoCreate branding, optional shortcut controls, and canvas Shared Intent descriptions below are historical.
+## Collaboration, decisions and recovery
 
-## Active MVP (2026-09-28)
+Interpret caller-owned captured batches in durable capture order against an accepted baseline. Distinguish proposals, questions, explicit requests, decisions, ambiguities and withdrawals. Preserve source identities and provenance. Do not silently resolve consequential conflict by recency, model voting or majority; affected contributors explicitly decide at the current revision.
 
-Developer only. New hosted projects have no AI connection or assigned models. People can write and collaborate first. The owner validates an OpenRouter key without generation, explicitly selects a builder and Interpretation model from compatible models, and saves. The key lives only in a two-hour server-memory lease; expiry or restart requires reconnecting. Editors need explicit owner authorization to spend on that key. Managed/founder funding, credits, presets, recommended combinations, and the old connection wizard are inactive. Historical projects and billing remain intact. No silent key, funding or model fallback is allowed. 2guys1canvas does not impose a BYOK dollar or physical-call budget. The workspace shows reported input and output tokens from recent physical provider requests, marks incomplete usage, and offers an explicit retry for a failed accepted build. The key owner's OpenRouter account remains the spending authority. Earlier managed-default sections below are superseded history.
+Persist pending batches, replay receipts and accepted revision snapshots. A save acknowledgement represents an actual immutable cloud commit and covers both insertion clocks and deletion ranges. Device caching complements shared authority and never replaces membership, billing or server-confirmed save state.
 
-## Historical workspace visual slice — 2026-09-28
+Use one logical coordinator, bounded independent workers only when justified, and serialized integration/promotion. Output-exhausted generation plans at most eight coherent one-file tasks; validate complete envelopes and await checkpoints. A shared 24-physical-call executor ceiling includes initial generation, recovery, repairs, transport retries and superseded candidates. Keep any configured spending limit. Failed candidates retain the last compiled artifact and offer an explicit retry; compilation is not functional verification.
 
-The workspace keeps Workflow, Canvas and Artifacts as primary views. Workflow displays persisted task states and evidence; the compact Shared Intent rail previews accepted instructions and keeps conflict details discoverable. AI setup is deliberately opened by the user, and changing the managed builder is free of inference; insufficient credit blocks execution, not selection.
+## Workspace experience
 
-Use dark neubrutalist framing with original comic accents on calls to action and calm, readable document text. Respect reduced motion and preserve mobile navigation. Keep local device recovery and cloud synchronization status separate. Browser persistence improves resilience but does not make project access, permissions, shared intent or billing local-authoritative.
+Workflow, Canvas and Artifacts are the primary views. Canvas includes a compact Shared context rail: accepted-count/revision selector, selected Accepted requirements/View requirements, a bordered Recorded usage · partial card/View usage, and workflow stage. Unsubmitted drafts remain separate. Workflow/Artifacts retain accepted requirements, proposals, conflict alternatives, disagreements, sources and decision history.
 
+Workflow displays real durable tasks, evidence states and ordered activity. Usage separates reported physical calls, setup tests, and historical generation counters. Deduplicate physical records; never describe unknown usage as zero or combine historical counters into a complete project total.
 
-## Active MVP (2026-09-28)
-
-Developer only. New hosted projects have no AI connection or assigned models. People can write and collaborate first. The owner validates an OpenRouter key without generation, explicitly selects a builder and Interpretation model from compatible models, and saves. The key lives only in a two-hour server-memory lease; expiry or restart requires reconnecting. Editors need explicit owner authorization to spend on that key. Managed/founder funding, credits, presets, recommended combinations, and the old connection wizard are inactive. Historical projects and billing remain intact. No silent key, funding or model fallback is allowed. CoCreate does not impose a BYOK dollar or physical-call budget. The workspace shows reported input and output tokens from recent physical provider requests, marks incomplete usage, and offers an explicit retry for a failed accepted build. The key owner's OpenRouter account remains the spending authority. Earlier managed-default sections below are superseded history.
-
-## Historical workspace visual slice — 2026-09-28
-
-This describes an unmerged visual prototype. The active MVP retains the existing `main` project and workspace presentation.
-
-The workspace keeps Workflow, Canvas and Artifacts as primary views. Workflow displays persisted task states and evidence; the compact Shared Intent rail previews accepted instructions and keeps conflict details discoverable. AI setup is deliberately opened by the user, and changing the managed builder is free of inference; insufficient credit blocks execution, not selection.
-
-Use dark neubrutalist framing with original comic accents on calls to action and calm, readable document text. Respect reduced motion and preserve mobile navigation. Keep local device recovery and cloud synchronization status separate. Browser persistence improves resilience but does not make project access, permissions, shared intent or billing local-authoritative.
-
-
-## Historical managed-model product brief
-
-The following managed-default and Advanced setup paragraphs describe superseded plans. CoCreate is a multiplayer agent-workflow workspace. Multiple authorized people collaborate on one durable workflow: they contribute briefs and evidence, submit explicit steering, inspect execution, resolve requirement decisions, and share versioned artifacts. The workflow—not the shared document or a model conversation—is the primary object. Documents, code, previews, reports, datasets, and charts are artifacts of that workflow.
-
-CoCreate currently exposes Developer only. The normal hosted path is sign in, create or open a project, write, then **Build my changes**. New projects preselect a shared managed builder and use a fixed economical personal interpreter. Advanced preserves own API connections, discovery, manual model IDs, explicit tests, custom role assignments, and supported effort controls. Researcher and Analyst are absent from active setup and navigation; historical records remain readable.
-
-Provider usage is presented by scope. Connection discovery/capability-test usage is separate from the latest build and cumulative project generation usage. A physical provider retry or structured-output repair is a separate request, even when the user initiated one logical action; missing usage remains unknown rather than zero.
-
-Hosted collaboration must preserve original Yjs bytes end to end. Stored snapshots and updates are validated before entering a live document; unreadable records are quarantined without replacement, and verified update history is the only automatic recovery source. Authentication has explicit initializing, authenticated, unauthenticated, and actionable-error states. A failed or cancelled new login never hides an existing session or grants access through dialog dismissal; continuing that session or switching accounts is explicit, and backend membership remains authoritative.
-
-The user spending limit bounds aggregate cost; it is not a token allowance. Developer effort controls the per-call input/output limits. CoCreate may locally normalize narrowly defined JSON-envelope defects such as raw control characters inside strings or trailing commas, but the result must still pass the exact schema and project-operation validators. Incomplete structured output receives one bounded compact retry with both attempts accounted; repeated failure asks the owner to select a higher effort or compatible model instead of silently upgrading.
-
-Developer uses the bounded app-building pipeline. Managed dispatch requires the server-only founder credential, authenticated project membership, an explicit funding account and authorized spender, credit, and an atomic reservation for each physical provider call. Unknown external outcomes retain their reservation. Failed BYOK never falls back to founder funds, and managed mode never borrows a personal key. Existing BYOK projects retain their settings until explicit opt-in; changing to managed preserves those settings for later reuse. The versioned managed catalog is capped at 15 enabled builders; Gemini 3.8 Flash is provisional pending comparative qualification. Missing credentials or accounting fail closed.
-
-Created: 2026-09-18. This file defines product intent, not proof of implementation.
-
-## Mission
-
-Help a team direct one durable agent workflow together without collapsing authority into a single chat. People can inspect the task plan and ordered activity, contribute context, steer future work, resolve conflicts, and promote shared artifacts with attributable evidence.
-
-Core loop: collaborative brief -> authenticated steering submission -> accepted shared requirements and conflict gate -> coordinator task plan -> bounded worker execution -> verification -> revision-safe shared artifact promotion. Writing and comments remain real-time; execution is submission-driven, not triggered by every edit.
-
-## Users
-
-- Collaborator: contributes ideas and tests the product without needing to operate a coding environment.
-- Workspace owner: chooses the shared builder, authorizes project spenders, and optionally manages Advanced provider connections.
-- Initial market hypothesis: small product teams and agencies prototyping with clients. Willingness to pay and market fit are not yet validated.
-
-## Priorities
-
-1. Preserve intent and attribution; resolve consequential contradictions.
-2. Produce working changes supported by evidence rather than model claims.
-3. Minimize total cost per accepted change, including retries and repairs.
-4. Keep writing responsive while interpretation and generation run.
-5. Stay within model context budgets through retrieval and durable state.
-6. Recover without inventing missing execution history.
-
-## Required experience
-
-- One Docs-like collaborative canvas with rich text, presence, and persistent edits.
-- One logical personal interpreter per participant; invoke it only when that participant explicitly submits authenticated changes.
-- One active shared coding agent per room. Agent sessions can restart; durable project state must survive.
-- Distinguish ideas, questions, explicit requests, decisions, and withdrawals.
-- Keep writing free of model calls. Provide **Build my changes** to capture one participant's unsubmitted edits, briefly batch nearby submissions, and run one shared builder without including another participant's draft.
-- Product shows the generated interactive application, not a generic progress tracker or canned demo.
-- Keep the last successful preview when a candidate fails.
-- Compact managed Builder selector with three featured choices, further catalog candidates, credit visibility, and an Advanced entry. Opening or changing settings never invokes inference.
-- Advanced API connections preserve add/edit/disconnect, discovery/manual model testing, and personal/builder assignments. Tests are explicit and may consume provider usage.
-- For every assigned layer, show source-linked, date-verified input, cached-input when supported, output, and reasoning billing terms. Do not render unavailable cache rates as zero.
-- Keep per-interpreter allowances distinct from the number of submitted participants and count the one shared builder once. After a build, show normalized provider usage, interpretation/builder/repair charges, outcome, and verification status; unknown usage remains unknown.
-- Use a clean dark editorial workspace with restrained neubrutalist accents: expressive serif brand/headings, calm high-contrast writing surfaces, compact controls, and fine structural borders. Do not use liquid-metal, metallic, glassmorphism, or decorative shader effects. The document remains the primary surface; supporting panels must not compete with it.
-- Hide effort selection from the normal managed path. Advanced retains supported detailed effort controls for future submissions.
+Studio Ivory is the active visual direction: warm ivory, dark ink, restrained cobalt and terracotta, a subtle canvas grid and precise hard shadows. Inter is the interface/document face; DM Serif Display is for selected headings. Keep accessible controls, participant colors, calm writing typography, reduced motion, responsive navigation and preview style isolation. A match to the missing reference image is not verified.
 
 ## Scope and non-goals
 
-The first generated-product scope is small React/TypeScript frontend applications. Arbitrary backends, unrestricted package installation, production systems, and unsandboxed shell access are outside that scope.
+The generated-product scope is small React/TypeScript frontend applications. Arbitrary backends, unrestricted package installation, production systems and unsandboxed shell execution are outside this scope. Do not introduce autonomous swarms, another framework, new hosting or unrelated integrations as cleanup.
 
-The managed credit entitlement boundary is in scope; payment checkout is separate work. Do not add enterprise administration, autonomous developer swarms, new hosting, or unrelated integrations. Do not replace real generation with simulated output. Test fixtures may simulate providers but must be identified as such.
+Auth and membership are server-verified. Invitations bind to the intended verified email/account and preserve roles; deliberate resends create another valid link without revoking earlier pending links. Provider email acceptance is not delivery confirmation.
 
-Shared preview means everyone sees the same application version; shared end-user data inside that generated application is a separate capability.
-
-## Roadmap
-
-The authoritative implementation checklist is [docs/harness/checklist.md](docs/harness/checklist.md). Do not maintain a competing completion list here.
-
-1. Reliable attributed collaboration, shared intent, and recorded build flow.
-2. Real execution isolation, durable coordination, and recoverable approvals.
-3. Acceptance evidence, bounded repair, and safe preview promotion.
-4. Model-aware context budgets, usage limits, and cost/latency evaluation.
-5. Production persistence and deployment hardening only after core behavior is demonstrated.
-
-## Product acceptance example
-
-Three people describe a recipe browser, ingredient filters, and favorites. Their contributions remain attributed; accepted requirements reach one builder; Product shows the requested working application. Adding sorting should preserve filtering and favorites. A proposal must not silently become an instruction. A consequential contradiction should be visible. A failed update must retain the working preview.
-
-## Measures
-
-Measure missed requirements, attribution mistakes, unwanted changes, false/missed contradictions, regressions, cost per verified accepted update, queue delay, and time from accepted intent to preview. Establish baselines before claiming improvement. Compare personal interpreters with a shared attributed interpreter rather than assuming more agents are cheaper.
-
-## Related records
-
-- [Architecture](docs/harness/architecture.md)
-- [Implementation progress](docs/harness/checklist.md)
-- [API contract](api.md)
-- [AI coding instructions](instructions.md)
-- [Context handoff](context.md)
-
-## Accepted workflow pivot (2026-09-19)
-
-These are product requirements; implementation evidence and remaining gaps belong in the canonical checklist.
-
-- Keep a vertically scrollable canvas usable for long documents, keyboard navigation, and continued writing during builds.
-- **Build my changes** submits the caller's captured unsubmitted edits. Ram's submission does not authorize Sham's draft. Previously accepted shared requirements remain the baseline: everyone develops one application, not a separate product per participant.
-- Use a short, configurable collection window (initial default three seconds, not a compulsory twenty-second delay). Combine nearby eligible submissions with attribution. Freeze each build's inputs; later submissions wait for the next serialized build.
-- Invoke logical personal agents only on explicit submission or targeted reinterpretation. Typing, saving, presence, reconnect, and polling must not invoke a model. Submitting a speculative idea does not change its classification into an accepted requirement.
-- **Alt+X** is the Windows/Linux editor-focused shortcut for the same Build my changes action. No Enter binding. Ignore repeat, composition, AltGraph, and additional modifiers; support disabling/remapping and retain focus. macOS defaults to no shortcut to preserve Option text input.
-- Show accepted-requirement contradictions as highlights and multi-option decision cards below Shared intent. Only affected contributors resolve a round; silence stays pending. Unanimous explicit choices resolve; differing completed choices move the group to **Disagreements** without deleting the alternatives. Preserve the last agreed baseline and block dependent changes while safe independent work continues. A compromise or changed alternative requires fresh confirmation.
-- **Recommended** setup is available as an owner opt-in: choose Developer, Analyst, or Researcher, then Light, Medium, High, or Extra and a spending limit. Only Developer is currently runnable. The server resolves exact personal/shared-executor assignments only on an existing capability-checked connection. Mode changes executor workflow, tools, output, and verification—not accepted requirements or agent count. Medium is the default. Collaborators reuse the room configuration. Existing manual assignments and participant overrides remain available as Custom in Advanced. The estimated one-pass maximum explicitly covers one submitted participant interpretation and one shared executor call, excludes repairs/additional participants, and assumes no cache hits; the separately labeled bounded maximum remains incomplete where provider charges cannot be bounded. Recommendations are provisional; do not imply universal compatibility, free provider access, platform-funded usage, arbitrary backends, or unavailable Analyst/Researcher execution.
-
-Launch readiness requires durable deployed records/artifacts across container replacement and honest verification/permission boundaries. A fixed launch date does not convert an unchecked criterion into a completed feature.
-## Authenticated saved projects (2026-09-24)
-
-CoCreate's hosted product begins with Google or confirmed email/password sign-in and a private, searchable project list. Email signup, confirmation resend, password recovery, authenticated password update, logout, and safe same-origin return destinations use Supabase Auth; passwords never enter application tables or logs. One project maps to one existing room/workflow. Creating, opening, switching, renaming, archiving, or inviting never invokes a model. Project names are trimmed, required, limited to 120 characters, and persist on the stable project ID. Owner, editor, and viewer memberships are explicit; a URL alone grants nothing.
-
-Project sharing is an application-level, email-bound invitation flow. An owner or a member with explicit `can_share` permission chooses recipients and an editor/viewer role. The server stores only a hash of each expiring random token, sends the recipient-specific link through configured transactional email, and reports provider acceptance separately from confirmed delivery. Acceptance requires an authenticated, email-confirmed account whose normalized email matches the invitation; it is transactional and idempotent. Pending invitations can be resent without invalidating earlier links, or explicitly revoked; a stable request ID makes a retry reuse the same new link. Existing membership roles remain unchanged when another valid link is accepted. Owners control members' sharing permission. Supabase Auth SMTP remains responsible only for account confirmation/recovery email.
-
-The canvas keeps submission-first execution, the existing Developer/Analyst/Researcher availability, Alt+X, and the last working artifact. Its four-position Low/Medium/High/Extra radio group changes only future submission configuration, makes no inference request, preserves manual assignments and spending limits, and keeps published model rates plus this-project provider usage immediately below it.
-
-The desktop shell uses a compact 240–280px context rail. Shared intent, conflicts, disagreements, and workflow are collapsible; an active conflict opens automatically; long records open in a drawer; the full rail can collapse. This is implemented presentation over authoritative room state, not a second intent source.
+Maintain precise source/contract boundaries and smaller feature context as described in [the cleanup plan](docs/harness/codebase-cleanup-plan.md). Offline Jev assistance is development tooling, not a change to participant inference or product authority.

@@ -1,5 +1,31 @@
 # 2guys1canvas harness implementation checklist
 
+## Codebase cleanup (2026-10-04)
+
+- [x] Restored a pinned pnpm toolchain; fresh baseline passed 129 tests and production build. Preserved earlier Graphify work and existing persistence/migrations.
+- [x] Removed 68 verified inactive scaffold/CSS/config files and unmounted setup/obsolete renderer functions. Retained current ByokSetup, supported server APIs, ambient declarations and historical accounting.
+- [x] Moved shared contracts/receipts to `shared/`; extracted workspace context/accounting, display/request helpers, pure steering and server room-state declarations. Coordinator authority and public runtime contracts are unchanged.
+- [x] Deduplicated current steering with linked dated snapshots; added a [feature packet](feature-change-template.md), scope/import checks, report-only Jev CLI and GitHub verification workflow.
+- [x] Final removal/extraction slice: 133/133 tests passed; strict compilation and both local/default production builds passed; import audit reports 94 files with zero candidates/boundary violations. Three-profile controlled-provider browser reliability and responsive checks passed after the final runtime extraction. Evidence is recorded in [cleanup verification](codebase-cleanup-verification.md).
+- [x] Updated structural and semantic Graphify mapping after removals, shared-boundary moves and steering cleanup; coverage/projection limits remain explicit in [SOURCE_MAP.md](../../graphify-out/SOURCE_MAP.md).
+- [ ] TypeSafe rejected the configured credential with HTTP 401. No Jev judgments were returned; one request has unknown usage and retained estimated reservation. Correct the local key and complete the proposed comparative evaluation before relying on ranking.
+- Current local evidence does not prove live hosted accounts, SQL fencing, email delivery, real provider behavior or deployment. October 1 and earlier results below remain dated history.
+
+## Historical cleanup planning (2026-10-03)
+
+The entries below describe the plan before implementation; use the October 4 section for current completion and verification.
+
+- [x] Used Graphify and TypeSafe AI guidance to prepare a [source-backed cleanup plan](codebase-cleanup-plan.md), distinguishing import-unreachable candidates from proven dead code and retaining compatibility/persistence boundaries.
+- [x] Documented phased removals/refactoring, required verification, and a report-only Jev pilot with current pricing and explicit budget assumptions. No paid inference or application changes were performed.
+- [ ] Restore the pnpm/TypeScript environment, establish a fresh test/build baseline, and reproduce a concrete UI/backend regression before implementing cleanup. Older successful test runs are historical.
+- [ ] Deduplicate current steering context, verify obsolete scaffold, evaluate Jev context ranking, and implement subsequent slices only with their stated gates. The plan is proposed, not completed behavior.
+
+## Graphify maintenance (2026-10-03)
+
+- [x] Refreshed structural and semantic project mapping using the bundled Windows instructions; added SQL extraction support in the local Graphify environment, file coverage for unsupported source/configuration formats, and explicit current versus historical steering concepts.
+- [x] Excluded generated browser evidence, Graphify tooling/output and lockfile entries from the corpus. Coverage, graph integrity and extraction limitations are recorded in [SOURCE_MAP.md](../../graphify-out/SOURCE_MAP.md).
+- Application code, API contracts and deployed services are unchanged. Graph integrity/query checks are maintenance evidence; the application test suite and build were not rerun.
+
 ## Reliability verification slice (2026-10-01)
 
 - [x] Final full suite passed **129/129**, production build passed, git diff --check passed and graphify update completed (SQL AST dependency absent).

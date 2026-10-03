@@ -6,6 +6,8 @@ Preserve the workflow-first, submission-first pivot: the durable workflow is the
 
 ## graphify
 
+For feature edits, prepare a bounded [change packet](docs/harness/feature-change-template.md). Public contracts/receipt helpers live in `shared/`; client and server implementation imports must remain separate. Run `pnpm check:boundaries` and use the audit's scope check for UI-only work. Optional offline Jev rankings are advisory and cannot authorize deletion or alter participant inference.
+
 This project has a knowledge graph at graphify-out/ with god nodes, community structure, and cross-file relationships.
 
 When the user types `/graphify`, use the installed graphify skill or instructions before doing anything else.

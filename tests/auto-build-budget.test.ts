@@ -122,7 +122,9 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     const bobDoc=new Y.Doc(),bobParagraph=new Y.XmlElement('paragraph'),bobText=new Y.XmlText();bobDoc.transact(()=>{bobDoc.getXmlFragment('default').push([bobParagraph]);bobParagraph.push([bobText]);bobText.insert(0,'Bob private unsubmitted proposal')});manager.handleMessage(room,{participantId:bob.id,readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(bobDoc))]),true);
     const first=await manager.submitChanges(room,participant.id,'first-submission');
     assert.equal(first.status,'queued');
-    await waitFor(() => room.versions.length === 1);
+    await waitFor(() => room.versions.length === 1).catch(error => {
+      throw new Error(`${error.message}; workflow=${room.status}; lastError=${room.lastError || 'none'}; interpreter=${personalCalls}; builder=${builderCalls}`);
+    });
     assert.equal(personalCalls, 1, 'one submission should produce one personal-agent call');
     assert.equal(builderCalls, 1, 'one submission should produce one shared build');
     assert.equal(JSON.parse(personalBodies[0].input).participantName,'Alice');

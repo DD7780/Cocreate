@@ -1,4 +1,23 @@
-import { deletionSignature } from "../src/document-state.js";
+import type {
+  ProjectRole,
+  DurableStore,
+  ClientSocket,
+  StoredVersion,
+  EditRecord,
+  StoredSubmission,
+  StoredConnection,
+  BudgetReservation,
+  UsageMeta,
+  Room,
+} from "./room-state.js";
+export type { Room } from "./room-state.js";
+import {
+  documentText,
+  authenticatedDelta,
+  kindOf,
+  requirementFingerprint,
+} from "./steering-text.js";
+import { deletionSignature } from "../shared/document-state.js";
 import { applySteeringUpdate } from "./steering-edits.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -10,7 +29,6 @@ import {
   encodeAwarenessUpdate,
   removeAwarenessStates,
 } from "y-protocols/awareness";
-import type { WebSocket } from "ws";
 import type {
   AgentAssignment,
   AIConnection,
@@ -18,26 +36,17 @@ import type {
   AIRunRecord,
   AIEffort,
   AIFormat,
-  AIModel,
   AIProvider,
   AISetupPolicy,
   AIUsage,
   AIWorkflowMode,
-  ChangeKind,
-  ConflictGroup,
-  Contradiction,
   ModelChecks,
   Participant,
-  ProductSource,
   ProviderRequestPurpose,
   ProviderRequestRecord,
-  Requirement,
   RoomView,
-  RequirementRevision,
-  SharedRequirement,
-  Version,
   WorkflowPhase,
-} from "../src/types.js";
+} from "../shared/types.js";
 import {
   extractRequirement,
   generateProjectPlan,
@@ -45,20 +54,10 @@ import {
   projectSchema,
   reqSchema,
   testOpenAIConnection,
-  type AgentChange,
   type AIConfig,
 } from "./generator.js";
-import {
-  loadProject,
-  persistProject,
-  type ProjectFile,
-  type ProjectSpec,
-} from "./project.js";
-import {
-  decryptSecret,
-  encryptSecret,
-  type EncryptedSecret,
-} from "./credentials.js";
+import { loadProject, persistProject } from "./project.js";
+import { decryptSecret, encryptSecret } from "./credentials.js";
 import { shouldPromoteRevision } from "./orchestration.js";
 import {
   generateStructured,
@@ -105,200 +104,6 @@ import {
 } from "./managed-catalog.js";
 import { BYOK_MODEL_VERSION, OpenRouterLeases } from "./byok-lease.js";
 import { aggregatePhysicalUsage } from "./usage-ledger.js";
-type ProjectRole = "owner" | "editor" | "viewer";
-type DurableStore = {
-  saveSnapshot: (
-    projectId: string,
-    revision: number,
-    payload: Record<string, unknown>,
-  ) => Promise<unknown>;
-  appendDocumentUpdate: (
-    projectId: string,
-    sequence: number,
-    actorId: string,
-    update: Uint8Array,
-  ) => Promise<unknown>;
-  assertCoordinator?: (projectId: string) => Promise<void>;
-  recordProviderRequest?: (record: ProviderRequestRecord) => Promise<void>;
-  reserveManagedRequest?: (input: {
-    callId: string;
-    projectId: string;
-    actorId: string;
-    modelId: string;
-    catalogVersion: string;
-    reservedUsd: number;
-  }) => Promise<void>;
-  settleManagedRequest?: (input: {
-    callId: string;
-    actualUsd: number | null;
-    providerRequestId?: string;
-    usage: Record<string, unknown>;
-  }) => Promise<void>;
-};
-type ClientSocket = WebSocket & {
-  authorizeRead?: () => Promise<void>;
-  deliveryQueue?: Promise<void>;
-  participantId?: string;
-  awarenessClientId?: number;
-  role?: ProjectRole;
-  ticketExpiresAt?: number;
-};
-type StoredVersion = Version & {
-  source?: ProductSource;
-  files?: ProjectFile[];
-  bundle: string;
-  css?: string;
-  decisions?: string[];
-  specification?: ProjectSpec;
-};
-type EditRecord = AgentChange & {
-  participantId: string;
-  at: string;
-  update: string;
-};
-type SubmissionStatus =
-  | "submitted"
-  | "interpreting"
-  | "queued"
-  | "built"
-  | "failed";
-type StoredSubmission = {
-  capturedChanges?: EditRecord[];
-  id: string;
-  requestId: string;
-  participantId: string;
-  editSeqs: number[];
-  documentRevision: number;
-  snapshot: string;
-  previousInterpretationId?: string;
-  createdAt: string;
-  status: SubmissionStatus;
-  error?: string;
-  assignment?: AgentAssignment;
-  setup?: AISetupPolicy;
-};
-type StoredConnection = {
-  id: string;
-  name: string;
-  provider: AIProvider;
-  baseUrl: string;
-  apiFormat: AIFormat;
-  encryptedKey?: EncryptedSecret;
-  models: AIModel[];
-  checks: Record<string, ModelChecks>;
-  status: "saved" | "reachable" | "error";
-  lastError?: string;
-};
-type AISettings = {
-  mode: "disconnected" | "demo" | "openai" | "managed" | "byok_lease";
-  connections?: StoredConnection[];
-  personal?: AgentAssignment;
-  builder?: AgentAssignment;
-  participantOverrides?: Record<string, AgentAssignment>;
-  savedCustom?: {
-    personal: AgentAssignment;
-    builder: AgentAssignment;
-    participantOverrides: Record<string, AgentAssignment>;
-  };
-  setup?: AISetupPolicy;
-  provider?: AIProvider;
-  baseUrl?: string;
-  apiFormat?: AIFormat;
-  personalModel?: string;
-  builderModel?: string;
-  encryptedKey?: EncryptedSecret;
-};
-type BudgetWindow = {
-  id: string;
-  startedAt: number;
-  maximumUsd: number;
-  reservedUsd: number;
-  actualUsd: number;
-  uncertainUsd: number;
-  inputTokens: number;
-  outputTokens: number;
-  physicalCalls?: number;
-  physicalReservedUsd?: number;
-  presetVersion: string;
-  pricingVersion: string;
-  setup: AISetupPolicy;
-};
-type BudgetReservation = {
-  amount: number;
-  layer: NonNullable<NonNullable<AISetupPolicy["resolved"]>["personal"]>;
-};
-type RunWindow = { id: string; startedAt: number; calls: AIRunCall[] };
-type UsageMeta = {
-  phase: "interpretation" | "builder" | "repair";
-  participantId?: string;
-  provider: AIProvider;
-  model: string;
-};
-export type Room = {
-  id: string;
-  coordinatorEpoch: number;
-  doc: Y.Doc;
-  awareness: Awareness;
-  clients: Set<ClientSocket>;
-  participants: Map<string, Participant>;
-  ownerId: string | null;
-  requirements: Requirement[];
-  sharedRequirements: SharedRequirement[];
-  requirementRevisions?: RequirementRevision[];
-  commandReceipts?: Record<
-    string,
-    {
-      id: string;
-      participantId: string;
-      requestId: string;
-      status: SubmissionStatus;
-    }
-  >;
-  recoveryCheckpoint?: {
-    fingerprint: string;
-    revision: number;
-    files: ProjectFile[];
-    task: string;
-    index: number;
-    total: number;
-  };
-  executionBudget?: { calls: number; reservedUsd: number; maximumUsd?: number };
-  conflictGroups: ConflictGroup[];
-  contradictions: Contradiction[];
-  specificationRevision: number;
-  versions: StoredVersion[];
-  ai: AISettings;
-  status: RoomView["status"];
-  lastError?: string;
-  pending: Map<string, EditRecord[]>;
-  steeringQueue?: Promise<unknown>;
-  persistQueue?: Promise<unknown>;
-  documentQueue?: Promise<unknown>;
-  submissions: StoredSubmission[];
-  editHistory: EditRecord[];
-  agentRevisions: Map<string, number>;
-  agentTasks: Map<string, Promise<void>>;
-  agentControllers: Map<string, AbortController>;
-  timers: Map<string, NodeJS.Timeout>;
-  requestedRevision: number;
-  buildTask?: Promise<void>;
-  buildTimer?: NodeJS.Timeout;
-  buildController?: AbortController;
-  pendingBuildSince?: number;
-  lastEditAt?: number;
-  lastBuildAt?: number;
-  lastBuiltFingerprint?: string;
-  lastBuiltRequirements?: SharedRequirement[];
-  usage: AIUsage;
-  providerCalls: ProviderRequestRecord[];
-  providerLedger?: Map<string, ProviderRequestRecord>;
-  budgetWindow?: BudgetWindow;
-  runWindow?: RunWindow;
-  aiRuns: AIRunRecord[];
-  saveTimer?: NodeJS.Timeout;
-  persistRevision: number;
-  savedAt?: string;
-};
 const colors = [
     "#5B6BE1",
     "#E05D7B",
@@ -309,43 +114,8 @@ const colors = [
   ],
   defaultDataDir = path.join(process.cwd(), "data"),
   now = () => new Date().toISOString();
-const documentText = (doc: Y.Doc) =>
-  doc
-    .getXmlFragment("default")
-    .toJSON()
-    .replace(/<[^>]*>/g, " ")
-    .replace(/&nbsp;/g, " ")
-    .replace(/\s+/g, " ")
-    .trim()
-    .slice(0, 12_000);
 const equalBytes = (a: Uint8Array, b: Uint8Array) =>
   Buffer.from(a).equals(Buffer.from(b));
-const authenticatedDelta = (before: string, after: string) => {
-  let start = 0;
-  while (
-    start < before.length &&
-    start < after.length &&
-    before[start] === after[start]
-  )
-    start++;
-  let end = 0;
-  while (
-    end < before.length - start &&
-    end < after.length - start &&
-    before[before.length - 1 - end] === after[after.length - 1 - end]
-  )
-    end++;
-  return {
-    before: before.slice(start, before.length - end),
-    after: after.slice(start, after.length - end),
-  };
-};
-const kindOf = (before: string, after: string): ChangeKind =>
-  after.length > before.length
-    ? "insert"
-    : after.length < before.length
-      ? "delete"
-      : "modify";
 const emptyUsage = (): AIUsage => ({
   requests: 0,
   personalRequests: 0,
@@ -353,19 +123,6 @@ const emptyUsage = (): AIUsage => ({
   inputTokens: 0,
   outputTokens: 0,
 });
-const requirementFingerprint = (requirement: Requirement | undefined) =>
-  requirement
-    ? JSON.stringify({
-        goals: requirement.goals,
-        features: requirement.features,
-        design: requirement.design,
-        constraints: requirement.constraints,
-        questions: requirement.questions,
-        additions: requirement.additions,
-        modifications: requirement.modifications,
-        withdrawals: requirement.withdrawals,
-      })
-    : "";
 const retainSubmissions = (items: StoredSubmission[]) =>
   items.filter(
     (item, index) =>
@@ -2312,8 +2069,8 @@ export class RoomManager {
       runId: string;
       setup?: AISetupPolicy;
       routing?: {
-        complexity?: import("../src/types.js").TaskComplexity;
-        evidenceStatus?: import("../src/types.js").AIRoutingEvidenceStatus;
+        complexity?: import("../shared/types.js").TaskComplexity;
+        evidenceStatus?: import("../shared/types.js").AIRoutingEvidenceStatus;
         reason?: string;
       };
       builderModel: string;
@@ -2359,16 +2116,6 @@ export class RoomManager {
     room.aiRuns = room.aiRuns.slice(-50);
     room.runWindow = undefined;
     return record;
-  }
-  private scheduleAgent(room: Room, participantId: string) {
-    clearTimeout(room.timers.get(participantId));
-    room.timers.set(
-      participantId,
-      setTimeout(() => {
-        room.timers.delete(participantId);
-        void this.runAgent(room, participantId);
-      }, this.config.debounceMs),
-    );
   }
   private queueEdit(room: Room, p: Participant, record: EditRecord) {
     room.pending.set(p.id, [...(room.pending.get(p.id) || []), record]);
@@ -2860,8 +2607,6 @@ export class RoomManager {
                 ),
               ),
         runId = randomUUID(),
-        runStartedAt = Date.now(),
-        usageAtStart = { ...room.usage },
         controller = new AbortController(),
         configuration = {
           presetVersion: frozenSetup?.presetVersion,

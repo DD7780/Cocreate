@@ -1,6 +1,6 @@
 import{spawn}from'node:child_process';import fs from'node:fs';import os from'node:os';import path from'node:path';
 import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';
-import type{ConflictGroup}from'../src/types.js';
+import type{ConflictGroup}from'../shared/types.js';
 
 const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflict-ui-')),secret='conflict-ui-test';
 const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:secret});

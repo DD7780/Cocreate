@@ -1,7 +1,7 @@
 import test from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import os from'node:os';import path from'node:path';
 import{aggregatePhysicalUsage}from'../server/usage-ledger.js';
 import{EventStore}from'../server/event-store.js';
-import type{ProviderRequestRecord}from'../src/types.js';
+import type{ProviderRequestRecord}from'../shared/types.js';
 const call=(callId:string,overrides:Partial<ProviderRequestRecord>={}):ProviderRequestRecord=>({callId,workspaceId:'room',purpose:'builder',provider:'openrouter',configurationVersion:'test',startedAt:'2026-09-30T00:00:00Z',outcome:'succeeded',estimatedInputTokens:0,usage:{inputTokens:10,outputTokens:5},usageStatus:'measured',...overrides});
 test('physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible',()=>{
   const result=aggregatePhysicalUsage([call('one',{outcome:'dispatching',usage:{}}),call('one'),call('two',{purpose:'capability_text',usage:{inputTokens:2,outputTokens:3}}),call('three',{outcome:'unknown',usage:{},usageStatus:'unknown'})]);

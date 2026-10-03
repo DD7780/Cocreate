@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import type { ProviderRequestRecord, WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../src/types.js';
+import type { ProviderRequestRecord, WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../shared/types.js';
 
 export type ActorType='user'|'personal_agent'|'builder'|'system'|'tool';
 export type RunState='queued'|'interpreting'|'planning'|'awaiting_approval'|'executing'|'verifying'|'repairing'|'ready'|'failed'|'cancelled'|'interrupted';

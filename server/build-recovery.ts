@@ -1,4 +1,4 @@
-import type { SharedRequirement } from '../src/types.js';
+import type { SharedRequirement } from '../shared/types.js';
 import { applyOperations, budgetProjectFiles, validateProjectPath, type ProjectFile, type ProjectPlan } from './project.js';
 import { generateStructured, ProviderError, type ProviderConfig, type Usage } from './providers.js';
 

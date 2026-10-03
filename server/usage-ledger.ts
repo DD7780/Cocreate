@@ -1,4 +1,4 @@
-import type{AIUsage,ProviderRequestRecord}from'../src/types.js';
+import type{AIUsage,ProviderRequestRecord}from'../shared/types.js';
 
 const setupPurposes=new Set(['connection_test','capability_text','capability_personal','capability_builder']);
 const empty=():AIUsage=>({requests:0,personalRequests:0,builderRequests:0,inputTokens:0,outputTokens:0,estimatedCostUsd:0,uncertainCostUsd:0});

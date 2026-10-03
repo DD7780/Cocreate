@@ -1,7 +1,7 @@
-import { deletionSignature } from './document-state';
+import { deletionSignature } from '../shared/document-state';
 import * as Y from 'yjs';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
-import type { RoomView } from './types';
+import type { RoomView } from '../shared/types';
 
 export type ConnectionStatus =
   | { state: 'connecting' | 'connected'; message: string }

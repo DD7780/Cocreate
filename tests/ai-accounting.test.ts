@@ -2,7 +2,7 @@ import test from'node:test';
 import assert from'node:assert/strict';
 import{aggregateCalls,calculateCharge,effectiveness,maximumAllowanceCharge,VERIFICATION_POLICY_VERSION}from'../server/ai-accounting.js';
 import{resolveRecommendation}from'../server/ai-presets.js';
-import type{AIRate,AIRunCall,AIRunRecord}from'../src/types.js';
+import type{AIRate,AIRunCall,AIRunRecord}from'../shared/types.js';
 
 // Synthetic test data only. These values do not describe a live provider invoice.
 const rate=(version='test-pricing-v1',overrides:Partial<AIRate>={}):AIRate=>({currency:'USD',inputPerMillion:2,cachedInputPerMillion:.2,cacheWrite5mPerMillion:2.5,outputPerMillion:10,reasoningBilling:'included_in_output',reasoningNote:'Synthetic reasoning tokens are already included in output.',sourceUrl:`https://example.test/${version}`,verifiedAt:'2099-01-01',...overrides});

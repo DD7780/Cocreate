@@ -1,4 +1,4 @@
-import type { AIRate, AISetupPolicy } from '../src/types.js';
+import type { AIRate, AISetupPolicy } from '../shared/types.js';
 
 /** Metadata snapshot from OpenRouter's public /api/v1/models on 2026-09-27.
  * Published rates are informational; live quality qualification is pending.

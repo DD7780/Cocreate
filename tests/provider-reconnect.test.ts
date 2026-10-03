@@ -1,7 +1,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Y from 'yjs';
-import { deletionSignature } from '../src/document-state.js';
+import { deletionSignature } from '../shared/document-state.js';
 import {CoCreateProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
 
 class FakeWebSocket {

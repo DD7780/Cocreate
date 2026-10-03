@@ -2,9 +2,6 @@ import {
   recoverProjectPlan,
   type RecoveryCheckpoint,
 } from "./build-recovery.js";
-import { readFile } from "node:fs/promises";
-import { createRequire } from "node:module";
-import { build } from "esbuild";
 import type {
   AIFormat,
   AIProvider,
@@ -12,14 +9,14 @@ import type {
   ProductSource,
   Requirement,
   SharedRequirement,
-} from "../src/types.js";
+} from "../shared/types.js";
 import {
   applyOperations,
   budgetProjectFiles,
   type ProjectFile,
   type ProjectPlan,
 } from "./project.js";
-import { demoExtract, demoOrchestrate } from "./demo.js";
+import { demoExtract } from "./demo.js";
 import {
   INTERPRETATION_CLASSIFIER_VERSION,
   normalizeInterpretation,
@@ -71,45 +68,6 @@ export function validateSource(source: ProductSource) {
   if (/\bimport\s|\brequire\s*\(/.test(source.app))
     throw new Error("Generated source used an unapproved dependency.");
   return source;
-}
-export async function bundleSource(source: ProductSource) {
-  validateSource(source);
-  const dependencyPlugin = {
-    name: "cocreate-dependencies",
-    setup(api: any) {
-      api.onResolve({ filter: /.*/ }, (args: any) => {
-        if (args.kind === "entry-point") return;
-        const importer =
-          args.importer && !args.importer.startsWith("<")
-            ? args.importer
-            : import.meta.url;
-        return {
-          path: createRequire(importer).resolve(args.path),
-          namespace: "cocreate-dependency",
-        };
-      });
-      api.onLoad(
-        { filter: /.*/, namespace: "cocreate-dependency" },
-        async (args: any) => ({
-          contents: await readFile(args.path, "utf8"),
-          loader: args.path.endsWith(".json") ? "json" : "js",
-        }),
-      );
-    },
-  };
-  const entry = `import React from 'react';import{createRoot}from'react-dom/client';globalThis.React=React;${source.app};createRoot(document.getElementById('root')).render(React.createElement(App));`;
-  const result = await build({
-    stdin: { contents: entry, loader: "tsx" },
-    plugins: [dependencyPlugin],
-    define: { "process.env.NODE_ENV": '"production"' },
-    bundle: true,
-    write: false,
-    format: "iife",
-    platform: "browser",
-    target: "es2022",
-    logLevel: "silent",
-  });
-  return result.outputFiles[0].text;
 }
 const boundedInput = (input: string) => {
   if (Buffer.byteLength(input) > 140_000)
@@ -281,18 +239,6 @@ export const reqSchema = {
     intents: { type: "array", maxItems: 16, items: intentSchema },
   },
 };
-const productSchema = {
-  type: "object",
-  additionalProperties: false,
-  required: ["app", "css", "summary", "decisions", "conflicts"],
-  properties: {
-    app: { type: "string" },
-    css: { type: "string" },
-    summary: { type: "string" },
-    decisions: strings(8),
-    conflicts: strings(8),
-  },
-};
 export const projectSchema = {
   type: "object",
   additionalProperties: false,
@@ -366,14 +312,12 @@ const compactSharedRequirement = (requirement: SharedRequirement) => ({
     .slice(0, 6)
     .map((item) => compactText(item, 360)),
   status: requirement.status,
-  sources: requirement.sources
-    .slice(-6)
-    .map((source) => ({
-      participantId: source.participantId,
-      participantName: source.participantName,
-      documentRevision: source.documentRevision,
-      editSeqs: source.editSeqs.slice(-12),
-    })),
+  sources: requirement.sources.slice(-6).map((source) => ({
+    participantId: source.participantId,
+    participantName: source.participantName,
+    documentRevision: source.documentRevision,
+    editSeqs: source.editSeqs.slice(-12),
+  })),
 });
 export async function extractRequirement(
   config: AIConfig,
@@ -446,43 +390,6 @@ export async function extractRequirement(
       classifierVersion: INTERPRETATION_CLASSIFIER_VERSION,
     };
   return { value: normalizeInterpretation(stamped), usage: result.usage };
-}
-export async function generateProduct(
-  config: AIConfig,
-  requirements: Requirement[],
-  previous?: ProductSource,
-  sharedCanvas = "",
-  signal?: AbortSignal,
-): Promise<ModelResult<ProductSource>> {
-  if (config.mode === "demo")
-    return { value: demoOrchestrate(requirements), usage: {} };
-  if (!config.apiKey)
-    throw new Error(
-      "AI connection is unavailable. Ask the workspace owner to reconnect it.",
-    );
-  const result = await callOpenAI<ProductSource>(
-    config.apiKey,
-    config.model,
-    "You are the room’s single product builder. The team is collaboratively brainstorming and co-writing in one shared canvas—not tracking personal progress. Synthesize the whole current canvas with the attributed contribution summaries into one coherent working product. Incrementally update the previous successful React frontend. Resolve overlapping ideas constructively; withdrawn ideas must not remain unless another collaborator still supports them. Preserve unaffected behavior. App must declare exactly export default function App(), use globalThis.React for hooks, and contain no imports, network or browser-storage access, eval, or parent-window access. Return CSS separately and no private reasoning.",
-    JSON.stringify({
-      sharedBrainstormCanvas: compactText(sharedCanvas, 8_000),
-      currentAttributedContributions: requirements.map(compactRequirement),
-      previousSuccessfulProduct: previous
-        ? {
-            ...previous,
-            app: compactText(previous.app, 18_000),
-            css: compactText(previous.css, 8_000),
-          }
-        : null,
-    }),
-    productSchema,
-    config.baseUrl,
-    config.apiFormat,
-    config.provider,
-    signal,
-    6_000,
-  );
-  return { value: validateSource(result.value), usage: result.usage };
 }
 const mergeUsage = (first: Usage, second: Usage): Usage => {
   const sum = (key: keyof Usage) =>
@@ -627,5 +534,3 @@ export async function generateProjectPlan(
     };
   }
 }
-export const previewHtml = (bundle: string, css: string) =>
-  `<!doctype html><html><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta http-equiv="Content-Security-Policy" content="default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'; form-action 'none'; base-uri 'none'"><style>${css.replace(/<\/style/gi, "<\\/style")}</style></head><body><div id="root"></div><script>(function(){var values={},started=false;Object.defineProperty(globalThis,'localStorage',{value:{get length(){return Object.keys(values).length},key:function(i){return Object.keys(values)[i]||null},getItem:function(k){return Object.prototype.hasOwnProperty.call(values,k)?values[k]:null},setItem:function(k,v){values[String(k)]=String(v);parent.postMessage({type:'cocreate-storage-set',key:String(k),value:String(v)},'*')},removeItem:function(k){delete values[String(k)];parent.postMessage({type:'cocreate-storage-remove',key:String(k)},'*')},clear:function(){values={};parent.postMessage({type:'cocreate-storage-clear'},'*')}}});function start(){if(started)return;started=true;try{globalThis.__cocreateRun()}catch(error){parent.postMessage({type:'cocreate-preview-error',message:String(error&&error.message||error)},'*')}}addEventListener('message',function(event){if(event.source!==parent||event.data&&event.data.type!=='cocreate-storage-init')return;values=event.data.values||{};start()});addEventListener('error',function(e){parent.postMessage({type:'cocreate-preview-error',message:e.message},'*')});parent.postMessage({type:'cocreate-storage-ready'},'*');setTimeout(start,700)})();</script><script>globalThis.__cocreateRun=function(){${bundle.replace(/<\/script/gi, "<\\/script")}}</script></body></html>`;

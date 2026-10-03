@@ -10,7 +10,7 @@ import { EventStore } from '../server/event-store.js';
 import { RoomManager } from '../server/rooms.js';
 import { ToolRegistry } from '../server/tool-registry.js';
 import { reconcileRequirements } from '../server/requirements.js';
-import type { Requirement } from '../src/types.js';
+import type { Requirement } from '../shared/types.js';
 
 const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));
 

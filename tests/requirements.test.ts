@@ -1,6 +1,6 @@
 import test from'node:test';
 import assert from'node:assert/strict';
-import type{InterpretationClassification,Requirement}from'../src/types.js';
+import type{InterpretationClassification,Requirement}from'../shared/types.js';
 import{acceptedRequirements,detectConflictGroups,eligibleRequirements,hasOpenContradictions,migrateLegacyContradictions,reconcileRequirements,submitConflictSelection}from'../server/requirements.js';
 
 const interpretation=(participantId:string,feature:string,classification:InterpretationClassification='explicit_request',overrides:Partial<Requirement>={}):Requirement=>({id:`interpretation-${participantId}-${crypto.randomUUID()}`,participantId,participantName:participantId==='alice'?'Alice':'Bob',goals:[],features:feature?[feature]:[],design:[],constraints:[],questions:[],additions:feature?[feature]:[],modifications:[],withdrawals:[],classification,affectedRequirementIds:[],sourceRevision:1,sourceEditSeqs:[1],sourcePassages:feature?[feature]:[],revision:1,createdAt:new Date().toISOString(),...overrides});

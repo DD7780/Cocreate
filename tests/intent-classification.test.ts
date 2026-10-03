@@ -6,7 +6,7 @@ import os from 'node:os';
 import path from 'node:path';
 import { RoomManager } from '../server/rooms.js';
 import { classifyIntentText, normalizeInterpretation, reconcileRequirements, supersedeInterpretationSources } from '../server/requirements.js';
-import type { Requirement } from '../src/types.js';
+import type { Requirement } from '../shared/types.js';
 
 const legacyInterpretation=(text:string,classification:Requirement['classification']):Requirement=>({
   id:'restaurant-interpretation',participantId:'alice',participantName:'Alice',goals:[],features:[text],design:[],constraints:[],questions:[],additions:[text],modifications:[],withdrawals:[],classification,affectedRequirementIds:[],sourceRevision:1,sourceEditSeqs:[1],sourcePassages:[text],revision:1,createdAt:'2026-09-18T00:00:00.000Z',

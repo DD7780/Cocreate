@@ -1,5 +1,5 @@
 import{createHash}from'node:crypto';
-import type{ConflictAlternative,ConflictDecisionRecord,ConflictGroup,ConflictSelection,Contradiction,InterpretationClassification,InterpretationIntent,InterpretationIntentCategory,Requirement,SharedRequirement,SharedRequirementCategory,SharedRequirementSource}from'../src/types.js';
+import type{ConflictAlternative,ConflictDecisionRecord,ConflictGroup,ConflictSelection,Contradiction,InterpretationClassification,InterpretationIntent,InterpretationIntentCategory,Requirement,SharedRequirement,SharedRequirementCategory,SharedRequirementSource}from'../shared/types.js';
 
 const clean=(value:string)=>value.replace(/\s+/g,' ').trim();
 const normalized=(value:string)=>clean(value).toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();

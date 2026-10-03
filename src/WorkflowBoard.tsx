@@ -1,4 +1,4 @@
-import type { RoomView } from './types';
+import type { RoomView } from '../shared/types';
 export function WorkflowBoard({state, onCanvas, onArtifacts}: {state: RoomView; onCanvas: () => void; onArtifacts: () => void}) {
   const tasks = state.workflow.tasks;
   const lastBuild=state.aiRuns.at(-1);

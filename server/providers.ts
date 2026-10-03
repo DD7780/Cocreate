@@ -6,7 +6,7 @@ import type {
   AIProvider,
   ProviderRequestPurpose,
   ProviderRequestRecord,
-} from "../src/types.js";
+} from "../shared/types.js";
 
 export type ErrorKind =
   | "invalid_credentials"
