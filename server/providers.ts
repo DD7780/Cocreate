@@ -1,100 +1,1344 @@
-import{AsyncLocalStorage}from'node:async_hooks';import{randomUUID}from'node:crypto';import type{AIFormat,AIModel,AIProvider,ProviderRequestPurpose,ProviderRequestRecord}from'../src/types.js';
+import { AsyncLocalStorage } from "node:async_hooks";
+import { randomUUID } from "node:crypto";
+import type {
+  AIFormat,
+  AIModel,
+  AIProvider,
+  ProviderRequestPurpose,
+  ProviderRequestRecord,
+} from "../src/types.js";
 
-export type ErrorKind='invalid_credentials'|'permission'|'balance'|'context_limit'|'model'|'unsupported'|'rate_limit'|'network'|'timeout'|'cancelled'|'refusal'|'empty'|'truncated'|'invalid_output';
-export class ProviderError extends Error{constructor(public kind:ErrorKind,message:string,public retryable=false,public retryAfterMs?:number,public usage?:Usage){super(message);this.name='ProviderError'}}
-export class ProviderAccountingError extends Error{constructor(message:string){super(message);this.name='ProviderAccountingError'}}
-export type Usage={inputTokens?:number;cachedInputTokens?:number;cacheWriteTokens?:number;outputTokens?:number;reasoningTokens?:number;reasoningIncludedInOutput?:boolean;rateLimitRemaining?:number;rateLimitReset?:string};
-export type ProviderConfig={provider:AIProvider;baseUrl:string;apiKey?:string;apiFormat?:AIFormat};
-export type GenerateRequest={model:string;instructions:string;input:string;schema?:Record<string,unknown>;maxOutputTokens?:number;timeoutMs?:number;signal?:AbortSignal;retryTruncated?:boolean};
-export type GenerateResult={text:string;usage:Usage;finishReason?:string};
-export type ProviderAdapter={id:AIProvider;requiresCredential:boolean;defaultBaseUrl:string;discover(config:ProviderConfig,signal?:AbortSignal):Promise<AIModel[]>;generate(config:ProviderConfig,request:GenerateRequest):Promise<GenerateResult>};
-export type ProviderAccountingContext=Omit<ProviderRequestRecord,'callId'|'startedAt'|'endedAt'|'outcome'|'providerRequestId'|'estimatedInputTokens'|'usage'|'usageStatus'|'errorKind'>&{managed?:boolean;maxInputTokens?:number;maxPrice?:{prompt:number;completion:number};record:(entry:ProviderRequestRecord)=>void|Promise<void>};
-const accounting=new AsyncLocalStorage<ProviderAccountingContext>();
-export const withProviderAccounting=<T>(context:ProviderAccountingContext,action:()=>Promise<T>)=>accounting.run(context,action);
-export const withProviderRetryReason=<T>(purpose:ProviderRequestPurpose,retryReason:string,action:()=>Promise<T>)=>{const current=accounting.getStore();return current?accounting.run({...current,purpose,retryReason,parentCallId:current.parentCallId},action):action()};
+export type ErrorKind =
+  | "invalid_credentials"
+  | "permission"
+  | "balance"
+  | "context_limit"
+  | "model"
+  | "unsupported"
+  | "rate_limit"
+  | "network"
+  | "timeout"
+  | "cancelled"
+  | "refusal"
+  | "empty"
+  | "truncated"
+  | "invalid_output";
+export class ProviderError extends Error {
+  constructor(
+    public kind: ErrorKind,
+    message: string,
+    public retryable = false,
+    public retryAfterMs?: number,
+    public usage?: Usage,
+  ) {
+    super(message);
+    this.name = "ProviderError";
+  }
+}
+export class ProviderAccountingError extends Error {
+  constructor(message: string) {
+    super(message);
+    this.name = "ProviderAccountingError";
+  }
+}
+export type Usage = {
+  inputTokens?: number;
+  cachedInputTokens?: number;
+  cacheWriteTokens?: number;
+  outputTokens?: number;
+  reasoningTokens?: number;
+  reasoningIncludedInOutput?: boolean;
+  rateLimitRemaining?: number;
+  rateLimitReset?: string;
+};
+export type ProviderConfig = {
+  provider: AIProvider;
+  baseUrl: string;
+  apiKey?: string;
+  apiFormat?: AIFormat;
+};
+export type GenerateRequest = {
+  model: string;
+  instructions: string;
+  input: string;
+  schema?: Record<string, unknown>;
+  maxOutputTokens?: number;
+  timeoutMs?: number;
+  signal?: AbortSignal;
+  retryTruncated?: boolean;
+};
+export type GenerateResult = {
+  text: string;
+  usage: Usage;
+  finishReason?: string;
+};
+export type ProviderAdapter = {
+  id: AIProvider;
+  requiresCredential: boolean;
+  defaultBaseUrl: string;
+  discover(config: ProviderConfig, signal?: AbortSignal): Promise<AIModel[]>;
+  generate(
+    config: ProviderConfig,
+    request: GenerateRequest,
+  ): Promise<GenerateResult>;
+};
+export type ProviderAccountingContext = Omit<
+  ProviderRequestRecord,
+  | "callId"
+  | "startedAt"
+  | "endedAt"
+  | "outcome"
+  | "providerRequestId"
+  | "estimatedInputTokens"
+  | "usage"
+  | "usageStatus"
+  | "errorKind"
+> & {
+  managed?: boolean;
+  maxInputTokens?: number;
+  maxPrice?: { prompt: number; completion: number };
+  record: (entry: ProviderRequestRecord) => void | Promise<void>;
+};
+const accounting = new AsyncLocalStorage<ProviderAccountingContext>();
+export const withProviderAccounting = <T>(
+  context: ProviderAccountingContext,
+  action: () => Promise<T>,
+) => accounting.run(context, action);
+export const withProviderRetryReason = <T>(
+  purpose: ProviderRequestPurpose,
+  retryReason: string,
+  action: () => Promise<T>,
+) => {
+  const current = accounting.getStore();
+  return current
+    ? accounting.run(
+        {
+          ...current,
+          purpose,
+          retryReason,
+          parentCallId: current.parentCallId,
+        },
+        action,
+      )
+    : action();
+};
 
-const localHosts=new Set(['localhost','127.0.0.1','::1']);
-export function validateProviderUrl(value:string,provider:AIProvider,hosted=process.env.COCREATE_HOSTED==='true'){let url:URL;try{url=new URL(value)}catch{throw new Error('Enter a valid provider API URL.')}if(url.username||url.password)throw new Error('Do not put credentials in the API URL.');const local=localHosts.has(url.hostname);if(url.protocol!=='https:'&&!(url.protocol==='http:'&&local))throw new Error('Provider URLs must use HTTPS. HTTP is allowed only for a local runtime.');if(hosted&&local)throw new Error('Localhost providers are disabled on hosted 2guys1canvas servers.');if(hosted&&(/^(10\.|127\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(url.hostname)||url.hostname==='::1'))throw new Error('Private network provider addresses are disabled on hosted 2guys1canvas servers.');if(provider==='ollama'&&!local&&hosted)throw new Error('Ollama must be explicitly exposed over an approved HTTPS endpoint.');return url.toString().replace(/\/$/,'')}
-const nestedProviderMessage=(value:any):string|undefined=>{const raw=value?.error?.metadata?.raw||value?.metadata?.raw;if(typeof raw!=='string'||!raw.trim())return;try{const nested=JSON.parse(raw);return String(nested?.error?.message||nested?.message||'').trim()||undefined}catch{return raw.trim().slice(0,220)||undefined}};
-const parseMessage=(raw:string,status:number)=>{try{const value=JSON.parse(raw),top=String(value.error?.message||value.error?.details?.[0]?.reason||value.message||'').trim(),nested=nestedProviderMessage(value);return nested&&(!top||/provider returned error/i.test(top))?nested:top||nested||`Provider returned HTTP ${status}`}catch{return`Provider returned HTTP ${status}${raw?`: ${raw.slice(0,160)}`:''}`}};
-const classify=(status:number,message:string,retryAfter?:string|null)=>{const lower=message.toLowerCase(),retryMs=retryAfter?Math.min(10_000,Number(retryAfter)*1000||Date.parse(retryAfter)-Date.now()):undefined;if(status===401)return new ProviderError('invalid_credentials','The provider rejected the credential.',false);if(status===403)return new ProviderError('permission','The credential does not have permission for this request.',false);if(/context.*(length|window|exceed)|maximum context|too many tokens|prompt.*too long/i.test(message))return new ProviderError('context_limit','The request exceeds the model context capacity. Reduce the supplied context.',false);if(status===402||/balance|credit|quota.*exceed|insufficient/.test(lower))return new ProviderError('balance','The provider reports insufficient balance or quota.',false);if(status===404||/model.*(not found|unavailable|does not exist)/.test(lower))return new ProviderError('model','The selected model is unavailable to this connection.',false);if(status===429)return new ProviderError('rate_limit','The provider rate limit was reached.',true,Math.max(0,retryMs||500));if(status===400&&/unsupported|unknown parameter|not support|invalid.*parameter/.test(lower))return new ProviderError('unsupported',`The provider rejected a request feature: ${message.slice(0,180)}`,false);if(status>=500)return new ProviderError('network',`The provider is temporarily unavailable (HTTP ${status}).`,true,retryMs);return new ProviderError('network',message.slice(0,220)||`Provider returned HTTP ${status}`,false)};
-const sleep=(ms:number,signal?:AbortSignal)=>new Promise<void>((resolve,reject)=>{const timer=setTimeout(resolve,ms);signal?.addEventListener('abort',()=>{clearTimeout(timer);reject(new ProviderError('cancelled','Provider request was cancelled.'))},{once:true})});
-async function request(url:string,init:RequestInit,timeoutMs:number,signal?:AbortSignal,retries=2){for(let attempt=0;;attempt++){const controller=new AbortController(),timer=setTimeout(()=>controller.abort(),timeoutMs),abort=()=>controller.abort(),context=accounting.getStore(),callId=randomUUID(),startedAt=new Date().toISOString(),body=typeof init.body==='string'?init.body:'',estimatedInputTokens=Buffer.byteLength(body),base=context&&{callId,workspaceId:context.workspaceId,workflowRunId:context.workflowRunId,submissionId:context.submissionId,parentCallId:context.parentCallId,purpose:context.purpose,retryReason:attempt?`transport retry ${attempt}`:context.retryReason,provider:context.provider,model:context.model,configurationVersion:context.configurationVersion,startedAt,estimatedInputTokens,estimatedOutputTokens:context.estimatedOutputTokens,usage:{},usageStatus:'estimated' as const};if(context?.maxInputTokens&&estimatedInputTokens>context.maxInputTokens)throw new ProviderError('context_limit','The complete provider request exceeds this model’s input budget.');signal?.addEventListener('abort',abort,{once:true});if(base)try{await context!.record({...base,outcome:'dispatching'})}catch(error){clearTimeout(timer);signal?.removeEventListener('abort',abort);throw error}try{const response=await fetch(url,{...init,signal:controller.signal}),raw=await response.text();if(!response.ok){const error=classify(response.status,parseMessage(raw,response.status),response.headers.get('retry-after'));if(base)await context!.record({...base,endedAt:new Date().toISOString(),outcome:'failed',usageStatus:'unknown',errorKind:error.kind,providerRequestId:response.headers.get('x-request-id')||response.headers.get('request-id')||undefined});if(error.retryable&&attempt<retries){await sleep(error.retryAfterMs??Math.min(2000,250*2**attempt),signal);continue}throw error}let json:any;try{json=raw?JSON.parse(raw):{}}catch{throw new ProviderError('invalid_output','The provider returned a non-JSON API response.')}if(base){const terminationReason=json.choices?.[0]?.finish_reason??json.incomplete_details?.reason??json.stop_reason??json.candidates?.[0]?.finishReason??json.done_reason??json.status;const reported=usage(json.usage??json.usageMetadata??json,response.headers),hasUsage=Object.values(reported).some(value=>typeof value==='number');await context!.record({...base,endedAt:new Date().toISOString(),outcome:/length|max_tokens|max_output_tokens/i.test(terminationReason||'')?'failed':'succeeded',terminationReason,errorKind:/length|max_tokens|max_output_tokens/i.test(terminationReason||'')?'truncated':undefined,providerRequestId:response.headers.get('x-request-id')||response.headers.get('request-id')||response.headers.get('openai-request-id')||undefined,usage:reported,providerCostUsd:Number.isFinite(Number(json.usage?.cost))?Number(json.usage.cost):undefined,usageStatus:hasUsage?(reported.inputTokens!==undefined&&reported.outputTokens!==undefined?'measured':'incomplete'):'unknown'})}return{json,headers:response.headers}}catch(error){if(error instanceof ProviderAccountingError)throw error;const normalized=error instanceof ProviderError?error:signal?.aborted?new ProviderError('cancelled','Provider request was cancelled.'):controller.signal.aborted?new ProviderError('timeout','The provider request timed out.'):new ProviderError('network','Could not reach the provider endpoint.');if(base&&!(error instanceof ProviderError&&error.kind!=='invalid_output'))await context!.record({...base,endedAt:new Date().toISOString(),outcome:normalized.kind==='cancelled'?'cancelled':normalized.kind==='timeout'||normalized.kind==='network'?'unknown':'failed',usage:normalized.usage||{},usageStatus:normalized.usage?'incomplete':'unknown',errorKind:normalized.kind});if((normalized.kind==='network'||normalized.kind==='timeout')&&attempt<retries){await sleep(Math.min(2000,250*2**attempt),signal);continue}throw normalized}finally{clearTimeout(timer);signal?.removeEventListener('abort',abort)}}}
-const usage=(input:any,headers?:Headers):Usage=>{const baseInput=Number(input?.input_tokens??input?.prompt_tokens??input?.prompt_eval_count??input?.promptTokenCount),cached=Number(input?.input_tokens_details?.cached_tokens??input?.prompt_tokens_details?.cached_tokens??input?.cache_read_input_tokens??input?.cached_content_token_count??input?.cachedContentTokenCount),writes=Number(input?.cache_creation_input_tokens),reasoning=Number(input?.output_tokens_details?.reasoning_tokens??input?.completion_tokens_details?.reasoning_tokens??input?.reasoning_tokens??input?.thoughtsTokenCount),candidateOutput=Number(input?.candidatesTokenCount),baseOutput=Number(input?.output_tokens??input?.completion_tokens??input?.eval_count??(Number.isFinite(candidateOutput)?candidateOutput+(Number.isFinite(reasoning)?reasoning:0):undefined)),anthropicSeparated=input?.cache_read_input_tokens!==undefined||input?.cache_creation_input_tokens!==undefined;return{inputTokens:Number.isFinite(baseInput)?baseInput+(anthropicSeparated?(cached||0)+(writes||0):0):undefined,cachedInputTokens:Number.isFinite(cached)?cached:undefined,cacheWriteTokens:Number.isFinite(writes)?writes:undefined,outputTokens:Number.isFinite(baseOutput)?baseOutput:undefined,reasoningTokens:Number.isFinite(reasoning)?reasoning:undefined,reasoningIncludedInOutput:Number.isFinite(reasoning)?true:undefined,rateLimitRemaining:Number(headers?.get('x-ratelimit-remaining-requests'))||undefined,rateLimitReset:headers?.get('x-ratelimit-reset-requests')||undefined}};
-const mergeUsage=(...items:Usage[]):Usage=>{const sum=(key:keyof Usage)=>items.some(item=>typeof item[key]==='number')?items.reduce((total,item)=>total+(typeof item[key]==='number'?item[key] as number:0),0):undefined,inputTokens=sum('inputTokens'),cachedInputTokens=sum('cachedInputTokens'),cacheWriteTokens=sum('cacheWriteTokens'),outputTokens=sum('outputTokens'),reasoningTokens=sum('reasoningTokens'),reasoningIncludedInOutput=items.some(item=>item.reasoningIncludedInOutput)?true:undefined,rateLimitRemaining=items.at(-1)?.rateLimitRemaining,rateLimitReset=items.at(-1)?.rateLimitReset;return{...(inputTokens!==undefined?{inputTokens}:{}),...(cachedInputTokens!==undefined?{cachedInputTokens}:{}),...(cacheWriteTokens!==undefined?{cacheWriteTokens}:{}),...(outputTokens!==undefined?{outputTokens}:{}),...(reasoningTokens!==undefined?{reasoningTokens}:{}),...(reasoningIncludedInOutput!==undefined?{reasoningIncludedInOutput}:{}),rateLimitRemaining,rateLimitReset}};
-const contentText=(content:any)=>typeof content==='string'?content:Array.isArray(content)?content.map(part=>typeof part==='string'?part:part?.text||'').join(''):'';
-const openAIText=(value:any)=>value.output_text||value.output?.flatMap((item:any)=>item.content||[]).filter((part:any)=>part.type==='output_text').map((part:any)=>part.text||'').join('')||'';
-const ensure=(text:string,finishReason?:string,reportedUsage?:Usage)=>{if(/length|max_tokens|max_output_tokens/i.test(finishReason||''))throw new ProviderError('truncated','The model hit this call’s output-token allowance.',false,undefined,reportedUsage);if(!text.trim())throw new ProviderError('empty','The model returned no usable text.');return text};
-const commonModels=(data:any[])=>data.map(model=>{const textOutput=model.architecture?.output_modalities?model.architecture.output_modalities.includes('text'):model.type==='embedding'?false:undefined;return{id:String(model.id||model.name||''),name:String(model.display_name||model.name||model.id||''),contextLength:Number(model.context_length||model.context_window)||undefined,...(textOutput===undefined?{}:{textOutput})}}).filter(model=>model.id&&model.textOutput!==false).slice(0,800);
-const bearer=(config:ProviderConfig,extra:Record<string,string>={})=>{if(!config.apiKey?.trim())throw new ProviderError('invalid_credentials','This provider requires an API key.');return{Authorization:`Bearer ${config.apiKey.trim()}`,'Content-Type':'application/json',...extra}};
-const openAICompatible=(id:AIProvider,defaultBaseUrl:string,requiresCredential=true):ProviderAdapter=>({id,requiresCredential,defaultBaseUrl,async discover(config,signal){const headers=requiresCredential?bearer(config,id==='openrouter'?{'HTTP-Referer':'http://localhost:5173','X-OpenRouter-Title':'2guys1canvas'}:{}):{'Content-Type':'application/json'},result=await request(`${config.baseUrl}/models`,{headers},20_000,signal);const models=commonModels(Array.isArray(result.json.data)?result.json.data:[]);if(!models.length)throw new ProviderError('invalid_output','Model discovery returned no known text models. You can still enter a model ID manually.');return models},async generate(config,req){const headers=requiresCredential?bearer(config,id==='openrouter'?{'HTTP-Referer':'http://localhost:5173','X-OpenRouter-Title':'2guys1canvas'}:{}):{'Content-Type':'application/json'},format=config.apiFormat||(id==='openai'?'responses':'chat-completions'),timeout=req.timeoutMs??60_000;if(format==='responses'){const body:any={model:req.model,instructions:req.instructions,input:req.input,max_output_tokens:req.maxOutputTokens??(req.schema?12_000:256)};if(req.schema)body.text={format:{type:'json_schema',name:'cocreate_output',strict:true,schema:req.schema}};const result=await request(`${config.baseUrl}/responses`,{method:'POST',headers,body:JSON.stringify(body)},timeout,req.signal),finish=result.json.status==='incomplete'?result.json.incomplete_details?.reason:result.json.status,reported=usage(result.json.usage,result.headers);if(result.json.refusal)throw new ProviderError('refusal','The model refused this request.');return{text:ensure(openAIText(result.json),finish,reported),usage:reported,finishReason:finish}}const body:any={model:req.model,messages:[{role:'system',content:req.instructions+(req.schema?' Return only JSON matching the supplied schema.':'')},{role:'user',content:req.input}],max_tokens:req.maxOutputTokens??(req.schema?12_000:256)};if(req.schema)body.response_format={type:'json_schema',json_schema:{name:'cocreate_output',strict:true,schema:req.schema}};if(id==='openrouter'&&accounting.getStore()?.managed){body.provider={allow_fallbacks:false,data_collection:'deny',zdr:true,require_parameters:true,max_price:accounting.getStore()!.maxPrice};body.usage={include:true}}let result;try{result=await request(`${config.baseUrl}/chat/completions`,{method:'POST',headers,body:JSON.stringify(body)},timeout,req.signal)}catch(error){if(!(error instanceof ProviderError)||error.kind!=='unsupported'||!req.schema)throw error;delete body.response_format;body.messages[0].content+=` Schema: ${JSON.stringify(req.schema)}`;result=await request(`${config.baseUrl}/chat/completions`,{method:'POST',headers,body:JSON.stringify(body)},timeout,req.signal)}const choice=result.json.choices?.[0],text=contentText(choice?.message?.content),reported=usage(result.json.usage,result.headers);if(choice?.message?.refusal)throw new ProviderError('refusal','The model refused this request.');return{text:ensure(text,choice?.finish_reason,reported),usage:reported,finishReason:choice?.finish_reason}}});
-
-const anthropic:ProviderAdapter={id:'anthropic',requiresCredential:true,defaultBaseUrl:'https://api.anthropic.com/v1',async discover(config,signal){const result=await request(`${config.baseUrl}/models`,{headers:{'x-api-key':config.apiKey||'','anthropic-version':'2023-06-01'}},20_000,signal);return commonModels(result.json.data||[])},async generate(config,req){if(!config.apiKey)throw new ProviderError('invalid_credentials','Anthropic requires an API key.');const body:any={model:req.model,max_tokens:req.maxOutputTokens??(req.schema?12_000:256),system:req.instructions,messages:[{role:'user',content:req.input}]};if(req.schema)body.output_config={format:{type:'json_schema',schema:req.schema}};const result=await request(`${config.baseUrl}/messages`,{method:'POST',headers:{'x-api-key':config.apiKey||'','anthropic-version':'2023-06-01','content-type':'application/json'},body:JSON.stringify(body)},req.timeoutMs??60_000,req.signal),refusal=(result.json.content||[]).find((item:any)=>item.type==='refusal'),reported=usage(result.json.usage,result.headers);if(refusal)throw new ProviderError('refusal','The model refused this request.');return{text:ensure(contentText(result.json.content),result.json.stop_reason,reported),usage:reported,finishReason:result.json.stop_reason}}};
-const gemini:ProviderAdapter={id:'gemini',requiresCredential:true,defaultBaseUrl:'https://generativelanguage.googleapis.com/v1beta',async discover(config,signal){if(!config.apiKey)throw new ProviderError('invalid_credentials','Gemini requires an API key.');const result=await request(`${config.baseUrl}/models`,{headers:{'x-goog-api-key':config.apiKey}},20_000,signal);return commonModels((result.json.models||[]).filter((m:any)=>!m.supportedGenerationMethods||m.supportedGenerationMethods.includes('generateContent')).map((m:any)=>({...m,id:String(m.name||'').replace(/^models\//,'')})))},async generate(config,req){if(!config.apiKey)throw new ProviderError('invalid_credentials','Gemini requires an API key.');const generationConfig:any={maxOutputTokens:req.maxOutputTokens??(req.schema?12_000:256)};if(req.schema){generationConfig.responseMimeType='application/json';generationConfig.responseSchema=req.schema}const body={systemInstruction:{parts:[{text:req.instructions}]},contents:[{role:'user',parts:[{text:req.input}]}],generationConfig};const result=await request(`${config.baseUrl}/models/${encodeURIComponent(req.model.replace(/^models\//,''))}:generateContent`,{method:'POST',headers:{'x-goog-api-key':config.apiKey,'content-type':'application/json'},body:JSON.stringify(body)},req.timeoutMs??60_000,req.signal),candidate=result.json.candidates?.[0],meta=result.json.usageMetadata||{},thoughts=Number(meta.thoughtsTokenCount)||0,candidates=Number(meta.candidatesTokenCount),reported=usage({input_tokens:meta.promptTokenCount,cached_content_token_count:meta.cachedContentTokenCount,output_tokens:Number.isFinite(candidates)?candidates+thoughts:undefined,reasoning_tokens:thoughts||undefined},result.headers);if(candidate?.finishReason==='SAFETY')throw new ProviderError('refusal','Gemini blocked this request for safety reasons.');return{text:ensure(contentText(candidate?.content?.parts),candidate?.finishReason,reported),usage:reported,finishReason:candidate?.finishReason}}};
-const ollama:ProviderAdapter={id:'ollama',requiresCredential:false,defaultBaseUrl:'http://localhost:11434',async discover(config,signal){const result=await request(`${config.baseUrl}/api/tags`,{},20_000,signal);return commonModels((result.json.models||[]).map((m:any)=>({...m,id:m.model||m.name})))},async generate(config,req){const body:any={model:req.model,stream:false,messages:[{role:'system',content:req.instructions},{role:'user',content:req.input}],options:{num_predict:req.maxOutputTokens??(req.schema?12_000:256)}};if(req.schema)body.format=req.schema;const result=await request(`${config.baseUrl}/api/chat`,{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify(body)},req.timeoutMs??90_000,req.signal),reported=usage(result.json,result.headers);return{text:ensure(contentText(result.json.message?.content),result.json.done_reason,reported),usage:reported,finishReason:result.json.done_reason}}};
-const deepseek:ProviderAdapter={id:'deepseek',requiresCredential:true,defaultBaseUrl:'https://api.deepseek.com',discover:openAICompatible('deepseek','https://api.deepseek.com').discover,async generate(config,req){const system=req.instructions+(req.schema?` Return one complete JSON object matching this schema: ${JSON.stringify(req.schema)}`:''),body:any={model:req.model,messages:[{role:'system',content:system},{role:'user',content:req.input}],max_tokens:req.maxOutputTokens??(req.schema?12_000:256)};if(req.schema)body.response_format={type:'json_object'};const result=await request(`${config.baseUrl}/chat/completions`,{method:'POST',headers:bearer(config),body:JSON.stringify(body)},req.timeoutMs??70_000,req.signal),choice=result.json.choices?.[0],reported=usage(result.json.usage,result.headers);return{text:ensure(contentText(choice?.message?.content),choice?.finish_reason,reported),usage:reported,finishReason:choice?.finish_reason}}};
-const adapters:Record<AIProvider,ProviderAdapter>={openai:openAICompatible('openai','https://api.openai.com/v1'),openrouter:openAICompatible('openrouter','https://openrouter.ai/api/v1'),deepseek,custom:openAICompatible('custom','',true),anthropic,gemini,ollama};
-export const providerDefaults=Object.fromEntries(Object.values(adapters).map(adapter=>[adapter.id,{baseUrl:adapter.defaultBaseUrl,requiresCredential:adapter.requiresCredential}]))as Record<AIProvider,{baseUrl:string;requiresCredential:boolean}>;
-export function adapterFor(provider:AIProvider){const adapter=adapters[provider];if(!adapter)throw new Error('Unsupported provider.');return adapter}
-export async function discoverModels(config:ProviderConfig,signal?:AbortSignal){return adapterFor(config.provider).discover(config,signal)}
-
-function validate(value:any,schema:any,path='$'):string[]{const errors:string[]=[];if(schema.type==='object'){if(!value||typeof value!=='object'||Array.isArray(value))return[`${path} must be an object`];for(const key of schema.required||[])if(!(key in value))errors.push(`${path}.${key} is required`);if(schema.additionalProperties===false)for(const key of Object.keys(value))if(!schema.properties?.[key])errors.push(`${path}.${key} is not allowed`);for(const[key,child]of Object.entries<any>(schema.properties||{}))if(key in value)errors.push(...validate(value[key],child,`${path}.${key}`))}else if(schema.type==='array'){if(!Array.isArray(value))return[`${path} must be an array`];if(schema.minItems!==undefined&&value.length<schema.minItems)errors.push(`${path} needs at least ${schema.minItems} items`);if(schema.maxItems!==undefined&&value.length>schema.maxItems)errors.push(`${path} has too many items`);value.forEach((item,index)=>errors.push(...validate(item,schema.items,`${path}[${index}]`)))}else if(schema.type==='string'&&typeof value!=='string')errors.push(`${path} must be a string`);if(schema.enum&&!schema.enum.includes(value))errors.push(`${path} has an unsupported value`);return errors}
-const upgradeLegacyIntents=(value:any,schema:any)=>{if(!schema?.properties?.intents||Array.isArray(value?.intents))return value;const classification=value?.classification,affectedRequirementIds=Array.isArray(value?.affectedRequirementIds)?value.affectedRequirementIds:[],sourcePassages=Array.isArray(value?.sourcePassages)?value.sourcePassages:[],groups:[string,string[]][]=[['goal',value?.goals],['feature',value?.features],['design',value?.design],['constraint',value?.constraints],['question',value?.questions]];return{...value,intents:groups.flatMap(([category,items])=>Array.isArray(items)?items.filter(item=>typeof item==='string'&&item.trim()).map(text=>({text,category,classification,rationale:'Migrated from the contribution-level structured response.',sourcePassage:sourcePassages.find((passage:string)=>passage.includes(text)||text.includes(passage))||text,affectedRequirementIds})):[])}};
-function normalizeJsonSerialization(text:string){
-  let escaped='',inString=false,escape=false;
-  for(const character of text){
-    if(inString){
-      if(escape){escaped+=character;escape=false;continue}
-      if(character==='\\'){escaped+=character;escape=true;continue}
-      if(character==='"'){escaped+=character;inString=false;continue}
-      if(character==='\n'){escaped+='\\n';continue}
-      if(character==='\r'){escaped+='\\r';continue}
-      if(character==='\t'){escaped+='\\t';continue}
-      escaped+=character;continue
+const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
+export function validateProviderUrl(
+  value: string,
+  provider: AIProvider,
+  hosted = process.env.COCREATE_HOSTED === "true",
+) {
+  let url: URL;
+  try {
+    url = new URL(value);
+  } catch {
+    throw new Error("Enter a valid provider API URL.");
+  }
+  if (url.username || url.password)
+    throw new Error("Do not put credentials in the API URL.");
+  const local = localHosts.has(url.hostname);
+  if (url.protocol !== "https:" && !(url.protocol === "http:" && local))
+    throw new Error(
+      "Provider URLs must use HTTPS. HTTP is allowed only for a local runtime.",
+    );
+  if (hosted && local)
+    throw new Error(
+      "Localhost providers are disabled on hosted 2guys1canvas servers.",
+    );
+  if (
+    hosted &&
+    (/^(10\.|127\.|169\.254\.|192\.168\.|172\.(1[6-9]|2\d|3[01])\.)/.test(
+      url.hostname,
+    ) ||
+      url.hostname === "::1")
+  )
+    throw new Error(
+      "Private network provider addresses are disabled on hosted 2guys1canvas servers.",
+    );
+  if (provider === "ollama" && !local && hosted)
+    throw new Error(
+      "Ollama must be explicitly exposed over an approved HTTPS endpoint.",
+    );
+  return url.toString().replace(/\/$/, "");
+}
+const nestedProviderMessage = (value: any): string | undefined => {
+  const raw = value?.error?.metadata?.raw || value?.metadata?.raw;
+  if (typeof raw !== "string" || !raw.trim()) return;
+  try {
+    const nested = JSON.parse(raw);
+    return (
+      String(nested?.error?.message || nested?.message || "").trim() ||
+      undefined
+    );
+  } catch {
+    return raw.trim().slice(0, 220) || undefined;
+  }
+};
+const parseMessage = (raw: string, status: number) => {
+  try {
+    const value = JSON.parse(raw),
+      top = String(
+        value.error?.message ||
+          value.error?.details?.[0]?.reason ||
+          value.message ||
+          "",
+      ).trim(),
+      nested = nestedProviderMessage(value);
+    return nested && (!top || /provider returned error/i.test(top))
+      ? nested
+      : top || nested || `Provider returned HTTP ${status}`;
+  } catch {
+    return `Provider returned HTTP ${status}${raw ? `: ${raw.slice(0, 160)}` : ""}`;
+  }
+};
+const classify = (
+  status: number,
+  message: string,
+  retryAfter?: string | null,
+) => {
+  const lower = message.toLowerCase(),
+    retryMs = retryAfter
+      ? Math.min(
+          10_000,
+          Number(retryAfter) * 1000 || Date.parse(retryAfter) - Date.now(),
+        )
+      : undefined;
+  if (status === 401)
+    return new ProviderError(
+      "invalid_credentials",
+      "The provider rejected the credential.",
+      false,
+    );
+  if (status === 403)
+    return new ProviderError(
+      "permission",
+      "The credential does not have permission for this request.",
+      false,
+    );
+  if (
+    /context.*(length|window|exceed)|maximum context|too many tokens|prompt.*too long/i.test(
+      message,
+    )
+  )
+    return new ProviderError(
+      "context_limit",
+      "The request exceeds the model context capacity. Reduce the supplied context.",
+      false,
+    );
+  if (status === 402 || /balance|credit|quota.*exceed|insufficient/.test(lower))
+    return new ProviderError(
+      "balance",
+      "The provider reports insufficient balance or quota.",
+      false,
+    );
+  if (
+    status === 404 ||
+    /model.*(not found|unavailable|does not exist)/.test(lower)
+  )
+    return new ProviderError(
+      "model",
+      "The selected model is unavailable to this connection.",
+      false,
+    );
+  if (status === 429)
+    return new ProviderError(
+      "rate_limit",
+      "The provider rate limit was reached.",
+      true,
+      Math.max(0, retryMs || 500),
+    );
+  if (
+    status === 400 &&
+    /unsupported|unknown parameter|not support|invalid.*parameter/.test(lower)
+  )
+    return new ProviderError(
+      "unsupported",
+      `The provider rejected a request feature: ${message.slice(0, 180)}`,
+      false,
+    );
+  if (status >= 500)
+    return new ProviderError(
+      "network",
+      `The provider is temporarily unavailable (HTTP ${status}).`,
+      true,
+      retryMs,
+    );
+  return new ProviderError(
+    "network",
+    message.slice(0, 220) || `Provider returned HTTP ${status}`,
+    false,
+  );
+};
+const sleep = (ms: number, signal?: AbortSignal) =>
+  new Promise<void>((resolve, reject) => {
+    const timer = setTimeout(resolve, ms);
+    signal?.addEventListener(
+      "abort",
+      () => {
+        clearTimeout(timer);
+        reject(
+          new ProviderError("cancelled", "Provider request was cancelled."),
+        );
+      },
+      { once: true },
+    );
+  });
+async function request(
+  url: string,
+  init: RequestInit,
+  timeoutMs: number,
+  signal?: AbortSignal,
+  retries = 2,
+) {
+  for (let attempt = 0; ; attempt++) {
+    const controller = new AbortController(),
+      timer = setTimeout(() => controller.abort(), timeoutMs),
+      abort = () => controller.abort(),
+      context = accounting.getStore(),
+      callId = randomUUID(),
+      startedAt = new Date().toISOString(),
+      body = typeof init.body === "string" ? init.body : "",
+      estimatedInputTokens = Buffer.byteLength(body),
+      base = context && {
+        callId,
+        workspaceId: context.workspaceId,
+        workflowRunId: context.workflowRunId,
+        submissionId: context.submissionId,
+        parentCallId: context.parentCallId,
+        purpose: context.purpose,
+        retryReason: attempt
+          ? `transport retry ${attempt}`
+          : context.retryReason,
+        provider: context.provider,
+        model: context.model,
+        configurationVersion: context.configurationVersion,
+        startedAt,
+        estimatedInputTokens,
+        estimatedOutputTokens: context.estimatedOutputTokens,
+        usage: {},
+        usageStatus: "estimated" as const,
+      };
+    if (
+      context?.maxInputTokens &&
+      estimatedInputTokens > context.maxInputTokens
+    )
+      throw new ProviderError(
+        "context_limit",
+        "The complete provider request exceeds this model’s input budget.",
+      );
+    signal?.addEventListener("abort", abort, { once: true });
+    if (base)
+      try {
+        await context!.record({ ...base, outcome: "dispatching" });
+      } catch (error) {
+        clearTimeout(timer);
+        signal?.removeEventListener("abort", abort);
+        throw error;
+      }
+    try {
+      const response = await fetch(url, { ...init, signal: controller.signal }),
+        raw = await response.text();
+      if (!response.ok) {
+        const error = classify(
+          response.status,
+          parseMessage(raw, response.status),
+          response.headers.get("retry-after"),
+        );
+        if (base)
+          await context!.record({
+            ...base,
+            endedAt: new Date().toISOString(),
+            outcome: "failed",
+            usageStatus: "unknown",
+            errorKind: error.kind,
+            providerRequestId:
+              response.headers.get("x-request-id") ||
+              response.headers.get("request-id") ||
+              undefined,
+          });
+        if (error.retryable && attempt < retries) {
+          await sleep(
+            error.retryAfterMs ?? Math.min(2000, 250 * 2 ** attempt),
+            signal,
+          );
+          continue;
+        }
+        throw error;
+      }
+      let json: any;
+      try {
+        json = raw ? JSON.parse(raw) : {};
+      } catch {
+        throw new ProviderError(
+          "invalid_output",
+          "The provider returned a non-JSON API response.",
+        );
+      }
+      if (base) {
+        const terminationReason =
+          json.choices?.[0]?.finish_reason ??
+          json.incomplete_details?.reason ??
+          json.stop_reason ??
+          json.candidates?.[0]?.finishReason ??
+          json.done_reason ??
+          json.status;
+        const reported = usage(
+            json.usage ?? json.usageMetadata ?? json,
+            response.headers,
+          ),
+          hasUsage = Object.values(reported).some(
+            (value) => typeof value === "number",
+          );
+        await context!.record({
+          ...base,
+          endedAt: new Date().toISOString(),
+          outcome: /length|max_tokens|max_output_tokens/i.test(
+            terminationReason || "",
+          )
+            ? "failed"
+            : "succeeded",
+          terminationReason,
+          errorKind: /length|max_tokens|max_output_tokens/i.test(
+            terminationReason || "",
+          )
+            ? "truncated"
+            : undefined,
+          providerRequestId:
+            response.headers.get("x-request-id") ||
+            response.headers.get("request-id") ||
+            response.headers.get("openai-request-id") ||
+            undefined,
+          usage: reported,
+          providerCostUsd: Number.isFinite(Number(json.usage?.cost))
+            ? Number(json.usage.cost)
+            : undefined,
+          usageStatus: hasUsage
+            ? reported.inputTokens !== undefined &&
+              reported.outputTokens !== undefined
+              ? "measured"
+              : "incomplete"
+            : "unknown",
+        });
+      }
+      return { json, headers: response.headers };
+    } catch (error) {
+      if (error instanceof ProviderAccountingError) throw error;
+      const normalized =
+        error instanceof ProviderError
+          ? error
+          : signal?.aborted
+            ? new ProviderError("cancelled", "Provider request was cancelled.")
+            : controller.signal.aborted
+              ? new ProviderError("timeout", "The provider request timed out.")
+              : new ProviderError(
+                  "network",
+                  "Could not reach the provider endpoint.",
+                );
+      if (
+        base &&
+        !(error instanceof ProviderError && error.kind !== "invalid_output")
+      )
+        await context!.record({
+          ...base,
+          endedAt: new Date().toISOString(),
+          outcome:
+            normalized.kind === "cancelled"
+              ? "cancelled"
+              : normalized.kind === "timeout" || normalized.kind === "network"
+                ? "unknown"
+                : "failed",
+          usage: normalized.usage || {},
+          usageStatus: normalized.usage ? "incomplete" : "unknown",
+          errorKind: normalized.kind,
+        });
+      if (
+        (normalized.kind === "network" || normalized.kind === "timeout") &&
+        attempt < retries
+      ) {
+        await sleep(Math.min(2000, 250 * 2 ** attempt), signal);
+        continue;
+      }
+      throw normalized;
+    } finally {
+      clearTimeout(timer);
+      signal?.removeEventListener("abort", abort);
     }
-    if(character==='"')inString=true;
-    escaped+=character
   }
-  let normalized='';inString=false;escape=false;
-  for(let index=0;index<escaped.length;index++){
-    const character=escaped[index];
-    if(inString){normalized+=character;if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
-    if(character==='"'){inString=true;normalized+=character;continue}
-    if(character===','){
-      let next=index+1;while(/\s/.test(escaped[next]||''))next++;
-      if(escaped[next]==='}'||escaped[next]===']')continue
+}
+const usage = (input: any, headers?: Headers): Usage => {
+  const baseInput = Number(
+      input?.input_tokens ??
+        input?.prompt_tokens ??
+        input?.prompt_eval_count ??
+        input?.promptTokenCount,
+    ),
+    cached = Number(
+      input?.input_tokens_details?.cached_tokens ??
+        input?.prompt_tokens_details?.cached_tokens ??
+        input?.cache_read_input_tokens ??
+        input?.cached_content_token_count ??
+        input?.cachedContentTokenCount,
+    ),
+    writes = Number(input?.cache_creation_input_tokens),
+    reasoning = Number(
+      input?.output_tokens_details?.reasoning_tokens ??
+        input?.completion_tokens_details?.reasoning_tokens ??
+        input?.reasoning_tokens ??
+        input?.thoughtsTokenCount,
+    ),
+    candidateOutput = Number(input?.candidatesTokenCount),
+    baseOutput = Number(
+      input?.output_tokens ??
+        input?.completion_tokens ??
+        input?.eval_count ??
+        (Number.isFinite(candidateOutput)
+          ? candidateOutput + (Number.isFinite(reasoning) ? reasoning : 0)
+          : undefined),
+    ),
+    anthropicSeparated =
+      input?.cache_read_input_tokens !== undefined ||
+      input?.cache_creation_input_tokens !== undefined;
+  return {
+    inputTokens: Number.isFinite(baseInput)
+      ? baseInput + (anthropicSeparated ? (cached || 0) + (writes || 0) : 0)
+      : undefined,
+    cachedInputTokens: Number.isFinite(cached) ? cached : undefined,
+    cacheWriteTokens: Number.isFinite(writes) ? writes : undefined,
+    outputTokens: Number.isFinite(baseOutput) ? baseOutput : undefined,
+    reasoningTokens: Number.isFinite(reasoning) ? reasoning : undefined,
+    reasoningIncludedInOutput: Number.isFinite(reasoning) ? true : undefined,
+    rateLimitRemaining:
+      Number(headers?.get("x-ratelimit-remaining-requests")) || undefined,
+    rateLimitReset: headers?.get("x-ratelimit-reset-requests") || undefined,
+  };
+};
+const mergeUsage = (...items: Usage[]): Usage => {
+  const sum = (key: keyof Usage) =>
+      items.some((item) => typeof item[key] === "number")
+        ? items.reduce(
+            (total, item) =>
+              total +
+              (typeof item[key] === "number" ? (item[key] as number) : 0),
+            0,
+          )
+        : undefined,
+    inputTokens = sum("inputTokens"),
+    cachedInputTokens = sum("cachedInputTokens"),
+    cacheWriteTokens = sum("cacheWriteTokens"),
+    outputTokens = sum("outputTokens"),
+    reasoningTokens = sum("reasoningTokens"),
+    reasoningIncludedInOutput = items.some(
+      (item) => item.reasoningIncludedInOutput,
+    )
+      ? true
+      : undefined,
+    rateLimitRemaining = items.at(-1)?.rateLimitRemaining,
+    rateLimitReset = items.at(-1)?.rateLimitReset;
+  return {
+    ...(inputTokens !== undefined ? { inputTokens } : {}),
+    ...(cachedInputTokens !== undefined ? { cachedInputTokens } : {}),
+    ...(cacheWriteTokens !== undefined ? { cacheWriteTokens } : {}),
+    ...(outputTokens !== undefined ? { outputTokens } : {}),
+    ...(reasoningTokens !== undefined ? { reasoningTokens } : {}),
+    ...(reasoningIncludedInOutput !== undefined
+      ? { reasoningIncludedInOutput }
+      : {}),
+    rateLimitRemaining,
+    rateLimitReset,
+  };
+};
+const contentText = (content: any) =>
+  typeof content === "string"
+    ? content
+    : Array.isArray(content)
+      ? content
+          .map((part) => (typeof part === "string" ? part : part?.text || ""))
+          .join("")
+      : "";
+const openAIText = (value: any) =>
+  value.output_text ||
+  value.output
+    ?.flatMap((item: any) => item.content || [])
+    .filter((part: any) => part.type === "output_text")
+    .map((part: any) => part.text || "")
+    .join("") ||
+  "";
+const ensure = (text: string, finishReason?: string, reportedUsage?: Usage) => {
+  if (/length|max_tokens|max_output_tokens/i.test(finishReason || ""))
+    throw new ProviderError(
+      "truncated",
+      "The model hit this call’s output-token allowance.",
+      false,
+      undefined,
+      reportedUsage,
+    );
+  if (!text.trim())
+    throw new ProviderError("empty", "The model returned no usable text.");
+  return text;
+};
+const commonModels = (data: any[]) =>
+  data
+    .map((model) => {
+      const textOutput = model.architecture?.output_modalities
+        ? model.architecture.output_modalities.includes("text")
+        : model.type === "embedding"
+          ? false
+          : undefined;
+      return {
+        id: String(model.id || model.name || ""),
+        name: String(model.display_name || model.name || model.id || ""),
+        contextLength:
+          Number(model.context_length || model.context_window) || undefined,
+        ...(textOutput === undefined ? {} : { textOutput }),
+      };
+    })
+    .filter((model) => model.id && model.textOutput !== false)
+    .slice(0, 800);
+const bearer = (config: ProviderConfig, extra: Record<string, string> = {}) => {
+  if (!config.apiKey?.trim())
+    throw new ProviderError(
+      "invalid_credentials",
+      "This provider requires an API key.",
+    );
+  return {
+    Authorization: `Bearer ${config.apiKey.trim()}`,
+    "Content-Type": "application/json",
+    ...extra,
+  };
+};
+const openAICompatible = (
+  id: AIProvider,
+  defaultBaseUrl: string,
+  requiresCredential = true,
+): ProviderAdapter => ({
+  id,
+  requiresCredential,
+  defaultBaseUrl,
+  async discover(config, signal) {
+    const headers = requiresCredential
+        ? bearer(
+            config,
+            id === "openrouter"
+              ? {
+                  "HTTP-Referer": "http://localhost:5173",
+                  "X-OpenRouter-Title": "2guys1canvas",
+                }
+              : {},
+          )
+        : { "Content-Type": "application/json" },
+      result = await request(
+        `${config.baseUrl}/models`,
+        { headers },
+        20_000,
+        signal,
+      );
+    const models = commonModels(
+      Array.isArray(result.json.data) ? result.json.data : [],
+    );
+    if (!models.length)
+      throw new ProviderError(
+        "invalid_output",
+        "Model discovery returned no known text models. You can still enter a model ID manually.",
+      );
+    return models;
+  },
+  async generate(config, req) {
+    const headers = requiresCredential
+        ? bearer(
+            config,
+            id === "openrouter"
+              ? {
+                  "HTTP-Referer": "http://localhost:5173",
+                  "X-OpenRouter-Title": "2guys1canvas",
+                }
+              : {},
+          )
+        : { "Content-Type": "application/json" },
+      format =
+        config.apiFormat ||
+        (id === "openai" ? "responses" : "chat-completions"),
+      timeout = req.timeoutMs ?? 60_000;
+    if (format === "responses") {
+      const body: any = {
+        model: req.model,
+        instructions: req.instructions,
+        input: req.input,
+        max_output_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+      };
+      if (req.schema)
+        body.text = {
+          format: {
+            type: "json_schema",
+            name: "cocreate_output",
+            strict: true,
+            schema: req.schema,
+          },
+        };
+      const result = await request(
+          `${config.baseUrl}/responses`,
+          { method: "POST", headers, body: JSON.stringify(body) },
+          timeout,
+          req.signal,
+        ),
+        finish =
+          result.json.status === "incomplete"
+            ? result.json.incomplete_details?.reason
+            : result.json.status,
+        reported = usage(result.json.usage, result.headers);
+      if (result.json.refusal)
+        throw new ProviderError("refusal", "The model refused this request.");
+      return {
+        text: ensure(openAIText(result.json), finish, reported),
+        usage: reported,
+        finishReason: finish,
+      };
     }
-    normalized+=character
+    const body: any = {
+      model: req.model,
+      messages: [
+        {
+          role: "system",
+          content:
+            req.instructions +
+            (req.schema
+              ? " Return only JSON matching the supplied schema."
+              : ""),
+        },
+        { role: "user", content: req.input },
+      ],
+      max_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+    };
+    if (req.schema)
+      body.response_format = {
+        type: "json_schema",
+        json_schema: {
+          name: "cocreate_output",
+          strict: true,
+          schema: req.schema,
+        },
+      };
+    if (id === "openrouter" && accounting.getStore()?.managed) {
+      body.provider = {
+        allow_fallbacks: false,
+        data_collection: "deny",
+        zdr: true,
+        require_parameters: true,
+        max_price: accounting.getStore()!.maxPrice,
+      };
+      body.usage = { include: true };
+    }
+    let result;
+    try {
+      result = await request(
+        `${config.baseUrl}/chat/completions`,
+        { method: "POST", headers, body: JSON.stringify(body) },
+        timeout,
+        req.signal,
+      );
+    } catch (error) {
+      if (
+        !(error instanceof ProviderError) ||
+        error.kind !== "unsupported" ||
+        !req.schema
+      )
+        throw error;
+      delete body.response_format;
+      body.messages[0].content += ` Schema: ${JSON.stringify(req.schema)}`;
+      result = await request(
+        `${config.baseUrl}/chat/completions`,
+        { method: "POST", headers, body: JSON.stringify(body) },
+        timeout,
+        req.signal,
+      );
+    }
+    const choice = result.json.choices?.[0],
+      text = contentText(choice?.message?.content),
+      reported = usage(result.json.usage, result.headers);
+    if (choice?.message?.refusal)
+      throw new ProviderError("refusal", "The model refused this request.");
+    return {
+      text: ensure(text, choice?.finish_reason, reported),
+      usage: reported,
+      finishReason: choice?.finish_reason,
+    };
+  },
+});
+
+const anthropic: ProviderAdapter = {
+  id: "anthropic",
+  requiresCredential: true,
+  defaultBaseUrl: "https://api.anthropic.com/v1",
+  async discover(config, signal) {
+    const result = await request(
+      `${config.baseUrl}/models`,
+      {
+        headers: {
+          "x-api-key": config.apiKey || "",
+          "anthropic-version": "2023-06-01",
+        },
+      },
+      20_000,
+      signal,
+    );
+    return commonModels(result.json.data || []);
+  },
+  async generate(config, req) {
+    if (!config.apiKey)
+      throw new ProviderError(
+        "invalid_credentials",
+        "Anthropic requires an API key.",
+      );
+    const body: any = {
+      model: req.model,
+      max_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+      system: req.instructions,
+      messages: [{ role: "user", content: req.input }],
+    };
+    if (req.schema)
+      body.output_config = {
+        format: { type: "json_schema", schema: req.schema },
+      };
+    const result = await request(
+        `${config.baseUrl}/messages`,
+        {
+          method: "POST",
+          headers: {
+            "x-api-key": config.apiKey || "",
+            "anthropic-version": "2023-06-01",
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+        req.timeoutMs ?? 60_000,
+        req.signal,
+      ),
+      refusal = (result.json.content || []).find(
+        (item: any) => item.type === "refusal",
+      ),
+      reported = usage(result.json.usage, result.headers);
+    if (refusal)
+      throw new ProviderError("refusal", "The model refused this request.");
+    return {
+      text: ensure(
+        contentText(result.json.content),
+        result.json.stop_reason,
+        reported,
+      ),
+      usage: reported,
+      finishReason: result.json.stop_reason,
+    };
+  },
+};
+const gemini: ProviderAdapter = {
+  id: "gemini",
+  requiresCredential: true,
+  defaultBaseUrl: "https://generativelanguage.googleapis.com/v1beta",
+  async discover(config, signal) {
+    if (!config.apiKey)
+      throw new ProviderError(
+        "invalid_credentials",
+        "Gemini requires an API key.",
+      );
+    const result = await request(
+      `${config.baseUrl}/models`,
+      { headers: { "x-goog-api-key": config.apiKey } },
+      20_000,
+      signal,
+    );
+    return commonModels(
+      (result.json.models || [])
+        .filter(
+          (m: any) =>
+            !m.supportedGenerationMethods ||
+            m.supportedGenerationMethods.includes("generateContent"),
+        )
+        .map((m: any) => ({
+          ...m,
+          id: String(m.name || "").replace(/^models\//, ""),
+        })),
+    );
+  },
+  async generate(config, req) {
+    if (!config.apiKey)
+      throw new ProviderError(
+        "invalid_credentials",
+        "Gemini requires an API key.",
+      );
+    const generationConfig: any = {
+      maxOutputTokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+    };
+    if (req.schema) {
+      generationConfig.responseMimeType = "application/json";
+      generationConfig.responseSchema = req.schema;
+    }
+    const body = {
+      systemInstruction: { parts: [{ text: req.instructions }] },
+      contents: [{ role: "user", parts: [{ text: req.input }] }],
+      generationConfig,
+    };
+    const result = await request(
+        `${config.baseUrl}/models/${encodeURIComponent(req.model.replace(/^models\//, ""))}:generateContent`,
+        {
+          method: "POST",
+          headers: {
+            "x-goog-api-key": config.apiKey,
+            "content-type": "application/json",
+          },
+          body: JSON.stringify(body),
+        },
+        req.timeoutMs ?? 60_000,
+        req.signal,
+      ),
+      candidate = result.json.candidates?.[0],
+      meta = result.json.usageMetadata || {},
+      thoughts = Number(meta.thoughtsTokenCount) || 0,
+      candidates = Number(meta.candidatesTokenCount),
+      reported = usage(
+        {
+          input_tokens: meta.promptTokenCount,
+          cached_content_token_count: meta.cachedContentTokenCount,
+          output_tokens: Number.isFinite(candidates)
+            ? candidates + thoughts
+            : undefined,
+          reasoning_tokens: thoughts || undefined,
+        },
+        result.headers,
+      );
+    if (candidate?.finishReason === "SAFETY")
+      throw new ProviderError(
+        "refusal",
+        "Gemini blocked this request for safety reasons.",
+      );
+    return {
+      text: ensure(
+        contentText(candidate?.content?.parts),
+        candidate?.finishReason,
+        reported,
+      ),
+      usage: reported,
+      finishReason: candidate?.finishReason,
+    };
+  },
+};
+const ollama: ProviderAdapter = {
+  id: "ollama",
+  requiresCredential: false,
+  defaultBaseUrl: "http://localhost:11434",
+  async discover(config, signal) {
+    const result = await request(
+      `${config.baseUrl}/api/tags`,
+      {},
+      20_000,
+      signal,
+    );
+    return commonModels(
+      (result.json.models || []).map((m: any) => ({
+        ...m,
+        id: m.model || m.name,
+      })),
+    );
+  },
+  async generate(config, req) {
+    const body: any = {
+      model: req.model,
+      stream: false,
+      messages: [
+        { role: "system", content: req.instructions },
+        { role: "user", content: req.input },
+      ],
+      options: {
+        num_predict: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+      },
+    };
+    if (req.schema) body.format = req.schema;
+    const result = await request(
+        `${config.baseUrl}/api/chat`,
+        {
+          method: "POST",
+          headers: { "content-type": "application/json" },
+          body: JSON.stringify(body),
+        },
+        req.timeoutMs ?? 90_000,
+        req.signal,
+      ),
+      reported = usage(result.json, result.headers);
+    return {
+      text: ensure(
+        contentText(result.json.message?.content),
+        result.json.done_reason,
+        reported,
+      ),
+      usage: reported,
+      finishReason: result.json.done_reason,
+    };
+  },
+};
+const deepseek: ProviderAdapter = {
+  id: "deepseek",
+  requiresCredential: true,
+  defaultBaseUrl: "https://api.deepseek.com",
+  discover: openAICompatible("deepseek", "https://api.deepseek.com").discover,
+  async generate(config, req) {
+    const system =
+        req.instructions +
+        (req.schema
+          ? ` Return one complete JSON object matching this schema: ${JSON.stringify(req.schema)}`
+          : ""),
+      body: any = {
+        model: req.model,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: req.input },
+        ],
+        max_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+      };
+    if (req.schema) body.response_format = { type: "json_object" };
+    const result = await request(
+        `${config.baseUrl}/chat/completions`,
+        { method: "POST", headers: bearer(config), body: JSON.stringify(body) },
+        req.timeoutMs ?? 70_000,
+        req.signal,
+      ),
+      choice = result.json.choices?.[0],
+      reported = usage(result.json.usage, result.headers);
+    return {
+      text: ensure(
+        contentText(choice?.message?.content),
+        choice?.finish_reason,
+        reported,
+      ),
+      usage: reported,
+      finishReason: choice?.finish_reason,
+    };
+  },
+};
+const adapters: Record<AIProvider, ProviderAdapter> = {
+  openai: openAICompatible("openai", "https://api.openai.com/v1"),
+  openrouter: openAICompatible("openrouter", "https://openrouter.ai/api/v1"),
+  deepseek,
+  custom: openAICompatible("custom", "", true),
+  anthropic,
+  gemini,
+  ollama,
+};
+export const providerDefaults = Object.fromEntries(
+  Object.values(adapters).map((adapter) => [
+    adapter.id,
+    {
+      baseUrl: adapter.defaultBaseUrl,
+      requiresCredential: adapter.requiresCredential,
+    },
+  ]),
+) as Record<AIProvider, { baseUrl: string; requiresCredential: boolean }>;
+export function adapterFor(provider: AIProvider) {
+  const adapter = adapters[provider];
+  if (!adapter) throw new Error("Unsupported provider.");
+  return adapter;
+}
+export async function discoverModels(
+  config: ProviderConfig,
+  signal?: AbortSignal,
+) {
+  return adapterFor(config.provider).discover(config, signal);
+}
+
+function validate(value: any, schema: any, path = "$"): string[] {
+  const errors: string[] = [];
+  if (schema.type === "object") {
+    if (!value || typeof value !== "object" || Array.isArray(value))
+      return [`${path} must be an object`];
+    for (const key of schema.required || [])
+      if (!(key in value)) errors.push(`${path}.${key} is required`);
+    if (schema.additionalProperties === false)
+      for (const key of Object.keys(value))
+        if (!schema.properties?.[key])
+          errors.push(`${path}.${key} is not allowed`);
+    for (const [key, child] of Object.entries<any>(schema.properties || {}))
+      if (key in value)
+        errors.push(...validate(value[key], child, `${path}.${key}`));
+  } else if (schema.type === "array") {
+    if (!Array.isArray(value)) return [`${path} must be an array`];
+    if (schema.minItems !== undefined && value.length < schema.minItems)
+      errors.push(`${path} needs at least ${schema.minItems} items`);
+    if (schema.maxItems !== undefined && value.length > schema.maxItems)
+      errors.push(`${path} has too many items`);
+    value.forEach((item, index) =>
+      errors.push(...validate(item, schema.items, `${path}[${index}]`)),
+    );
+  } else if (schema.type === "string" && typeof value !== "string")
+    errors.push(`${path} must be a string`);
+  if (schema.enum && !schema.enum.includes(value))
+    errors.push(`${path} has an unsupported value`);
+  return errors;
+}
+const upgradeLegacyIntents = (value: any, schema: any) => {
+  if (!schema?.properties?.intents || Array.isArray(value?.intents))
+    return value;
+  const classification = value?.classification,
+    affectedRequirementIds = Array.isArray(value?.affectedRequirementIds)
+      ? value.affectedRequirementIds
+      : [],
+    sourcePassages = Array.isArray(value?.sourcePassages)
+      ? value.sourcePassages
+      : [],
+    groups: [string, string[]][] = [
+      ["goal", value?.goals],
+      ["feature", value?.features],
+      ["design", value?.design],
+      ["constraint", value?.constraints],
+      ["question", value?.questions],
+    ];
+  return {
+    ...value,
+    intents: groups.flatMap(([category, items]) =>
+      Array.isArray(items)
+        ? items
+            .filter((item) => typeof item === "string" && item.trim())
+            .map((text) => ({
+              text,
+              category,
+              classification,
+              rationale:
+                "Migrated from the contribution-level structured response.",
+              sourcePassage:
+                sourcePassages.find(
+                  (passage: string) =>
+                    passage.includes(text) || text.includes(passage),
+                ) || text,
+              affectedRequirementIds,
+            }))
+        : [],
+    ),
+  };
+};
+function normalizeJsonSerialization(text: string) {
+  let escaped = "",
+    inString = false,
+    escape = false;
+  for (const character of text) {
+    if (inString) {
+      if (escape) {
+        escaped += character;
+        escape = false;
+        continue;
+      }
+      if (character === "\\") {
+        escaped += character;
+        escape = true;
+        continue;
+      }
+      if (character === '"') {
+        escaped += character;
+        inString = false;
+        continue;
+      }
+      if (character === "\n") {
+        escaped += "\\n";
+        continue;
+      }
+      if (character === "\r") {
+        escaped += "\\r";
+        continue;
+      }
+      if (character === "\t") {
+        escaped += "\\t";
+        continue;
+      }
+      escaped += character;
+      continue;
+    }
+    if (character === '"') inString = true;
+    escaped += character;
   }
-  return normalized
-}
-function balancedObject(text:string){
-  let start=-1,depth=0,inString=false,escape=false;
-  for(let index=0;index<text.length;index++){
-    const character=text[index];
-    if(inString){if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
-    if(character==='"'){inString=true;continue}
-    if(character==='{'){if(depth===0)start=index;depth++;continue}
-    if(character==='}'&&depth>0&&--depth===0)return text.slice(start,index+1)
+  let normalized = "";
+  inString = false;
+  escape = false;
+  for (let index = 0; index < escaped.length; index++) {
+    const character = escaped[index];
+    if (inString) {
+      normalized += character;
+      if (escape) escape = false;
+      else if (character === "\\") escape = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') {
+      inString = true;
+      normalized += character;
+      continue;
+    }
+    if (character === ",") {
+      let next = index + 1;
+      while (/\s/.test(escaped[next] || "")) next++;
+      if (escaped[next] === "}" || escaped[next] === "]") continue;
+    }
+    normalized += character;
   }
-  return undefined
+  return normalized;
 }
-function looksIncompleteJson(text:string){
-  const start=text.indexOf('{');if(start<0)return false;
-  let depth=0,inString=false,escape=false;
-  for(const character of text.slice(start)){
-    if(inString){if(escape)escape=false;else if(character==='\\')escape=true;else if(character==='"')inString=false;continue}
-    if(character==='"')inString=true;else if(character==='{')depth++;else if(character==='}')depth--
+function balancedObject(text: string) {
+  let start = -1,
+    depth = 0,
+    inString = false,
+    escape = false;
+  for (let index = 0; index < text.length; index++) {
+    const character = text[index];
+    if (inString) {
+      if (escape) escape = false;
+      else if (character === "\\") escape = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') {
+      inString = true;
+      continue;
+    }
+    if (character === "{") {
+      if (depth === 0) start = index;
+      depth++;
+      continue;
+    }
+    if (character === "}" && depth > 0 && --depth === 0)
+      return text.slice(start, index + 1);
   }
-  return depth>0||inString||escape
+  return undefined;
 }
-function parseStructured(text:string,schema:Record<string,unknown>){
-  const cleaned=text.trim().replace(/^```(?:json)?\s*/i,'').replace(/\s*```$/,'');
-  const balanced=balancedObject(cleaned),candidates=[cleaned,...(balanced&&balanced!==cleaned?[balanced]:[])];
-  let value:any,parsed=false;
-  for(const candidate of candidates){for(const attempt of [candidate,normalizeJsonSerialization(candidate)]){try{value=JSON.parse(attempt);parsed=true;break}catch{}}if(parsed)break}
-  if(!parsed)throw new ProviderError(looksIncompleteJson(normalizeJsonSerialization(cleaned))?'truncated':'invalid_output',looksIncompleteJson(normalizeJsonSerialization(cleaned))?'The model returned an incomplete JSON object.':'The model returned malformed JSON.');
-  value=upgradeLegacyIntents(value,schema);const errors=validate(value,schema);if(errors.length)throw new ProviderError('invalid_output',`The model output did not match the required schema: ${errors.slice(0,3).join('; ')}`);return value
+function looksIncompleteJson(text: string) {
+  const start = text.indexOf("{");
+  if (start < 0) return false;
+  let depth = 0,
+    inString = false,
+    escape = false;
+  for (const character of text.slice(start)) {
+    if (inString) {
+      if (escape) escape = false;
+      else if (character === "\\") escape = true;
+      else if (character === '"') inString = false;
+      continue;
+    }
+    if (character === '"') inString = true;
+    else if (character === "{") depth++;
+    else if (character === "}") depth--;
+  }
+  return depth > 0 || inString || escape;
 }
-export async function generateStructured(config:ProviderConfig,request:GenerateRequest){const adapter=adapterFor(config.provider),prepared=/^\s*[\[{]/.test(request.input)?request:{...request,input:JSON.stringify({request:request.input})};let first:GenerateResult;try{first=await adapter.generate(config,prepared);return{value:parseStructured(first.text,request.schema!),...first}}catch(error){if(!(error instanceof ProviderError)||!['invalid_output','truncated'].includes(error.kind))throw error;if(error.kind==='truncated'&&request.retryTruncated===false)throw error;const truncated=error.kind==='truncated',firstUsage=error.usage||first!?.usage||{},repairRequest={...prepared,instructions:truncated?`${request.instructions}\nThe previous response hit the output-token allowance or ended with an incomplete JSON object. Return one compact, complete JSON object matching the schema. Include only essential changed-file operations, keep code concise, and do not repeat unchanged files.`:`${request.instructions}\nThe previous response had invalid JSON serialization. Return only one complete JSON object matching the schema. Escape every newline, tab, backslash, and quote inside string values. Do not use Markdown fences.`,input:truncated?request.input:JSON.stringify({request:request.input,invalidResponse:(first!?.text||'').slice(0,8000)}),maxOutputTokens:request.maxOutputTokens};try{const repaired=await withProviderRetryReason('structured_output_repair',truncated?'truncated output':'invalid structured output',()=>adapter.generate(config,repairRequest));return{value:parseStructured(repaired.text,request.schema!),...repaired,usage:mergeUsage(firstUsage,repaired.usage)}}catch(repairError){if(repairError instanceof ProviderError&&repairError.kind==='truncated'){repairError.usage=mergeUsage(firstUsage,repairError.usage||{});repairError.message='The response exhausted the per-call output allowance twice. The last working artifact is retained. Split the submitted work or choose a model with a verified larger output allowance; the spending limit controls cost but does not expand output or context capacity.'}else if(repairError instanceof ProviderError&&repairError.kind==='invalid_output'){repairError.usage=mergeUsage(firstUsage,repairError.usage||{});repairError.message='The model returned invalid structured JSON twice. The last working artifact is retained. Retry with a model that supports the Builder file schema.'}throw repairError}}}
-export async function generateText(config:ProviderConfig,request:GenerateRequest){const prepared=request.maxOutputTokens===64?{...request,instructions:`${request.instructions} Return only the word OK.`}:request;return adapterFor(config.provider).generate(config,prepared)}
+function parseStructured(text: string, schema: Record<string, unknown>) {
+  const cleaned = text
+    .trim()
+    .replace(/^```(?:json)?\s*/i, "")
+    .replace(/\s*```$/, "");
+  const balanced = balancedObject(cleaned),
+    candidates = [
+      cleaned,
+      ...(balanced && balanced !== cleaned ? [balanced] : []),
+    ];
+  let value: any,
+    parsed = false;
+  for (const candidate of candidates) {
+    for (const attempt of [candidate, normalizeJsonSerialization(candidate)]) {
+      try {
+        value = JSON.parse(attempt);
+        parsed = true;
+        break;
+      } catch {}
+    }
+    if (parsed) break;
+  }
+  if (!parsed)
+    throw new ProviderError(
+      looksIncompleteJson(normalizeJsonSerialization(cleaned))
+        ? "truncated"
+        : "invalid_output",
+      looksIncompleteJson(normalizeJsonSerialization(cleaned))
+        ? "The model returned an incomplete JSON object."
+        : "The model returned malformed JSON.",
+    );
+  value = upgradeLegacyIntents(value, schema);
+  const errors = validate(value, schema);
+  if (errors.length)
+    throw new ProviderError(
+      "invalid_output",
+      `The model output did not match the required schema: ${errors.slice(0, 3).join("; ")}`,
+    );
+  return value;
+}
+export async function generateStructured(
+  config: ProviderConfig,
+  request: GenerateRequest,
+) {
+  const adapter = adapterFor(config.provider),
+    prepared = /^\s*[\[{]/.test(request.input)
+      ? request
+      : { ...request, input: JSON.stringify({ request: request.input }) };
+  let first: GenerateResult;
+  try {
+    first = await adapter.generate(config, prepared);
+    return { value: parseStructured(first.text, request.schema!), ...first };
+  } catch (error) {
+    if (
+      !(error instanceof ProviderError) ||
+      !["invalid_output", "truncated"].includes(error.kind)
+    )
+      throw error;
+    if (error.kind === "truncated" && request.retryTruncated === false)
+      throw error;
+    const truncated = error.kind === "truncated",
+      firstUsage = error.usage || first!?.usage || {},
+      repairRequest = {
+        ...prepared,
+        instructions: truncated
+          ? `${request.instructions}\nThe previous response hit the output-token allowance or ended with an incomplete JSON object. Return one compact, complete JSON object matching the schema. Include only essential changed-file operations, keep code concise, and do not repeat unchanged files.`
+          : `${request.instructions}\nThe previous response had invalid JSON serialization. Return only one complete JSON object matching the schema. Escape every newline, tab, backslash, and quote inside string values. Do not use Markdown fences.`,
+        input: truncated
+          ? request.input
+          : JSON.stringify({
+              request: request.input,
+              invalidResponse: (first!?.text || "").slice(0, 8000),
+            }),
+        maxOutputTokens: request.maxOutputTokens,
+      };
+    try {
+      const repaired = await withProviderRetryReason(
+        "structured_output_repair",
+        truncated ? "truncated output" : "invalid structured output",
+        () => adapter.generate(config, repairRequest),
+      );
+      return {
+        value: parseStructured(repaired.text, request.schema!),
+        ...repaired,
+        usage: mergeUsage(firstUsage, repaired.usage),
+      };
+    } catch (repairError) {
+      if (
+        repairError instanceof ProviderError &&
+        repairError.kind === "truncated"
+      ) {
+        repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
+        repairError.message =
+          "The response exhausted the per-call output allowance twice. The last working artifact is retained. Split the submitted work or choose a model with a verified larger output allowance; the spending limit controls cost but does not expand output or context capacity.";
+      } else if (
+        repairError instanceof ProviderError &&
+        repairError.kind === "invalid_output"
+      ) {
+        repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
+        repairError.message =
+          "The model returned invalid structured JSON twice. The last working artifact is retained. Retry with a model that supports the Builder file schema.";
+      }
+      throw repairError;
+    }
+  }
+}
+export async function generateText(
+  config: ProviderConfig,
+  request: GenerateRequest,
+) {
+  const prepared =
+    request.maxOutputTokens === 64
+      ? {
+          ...request,
+          instructions: `${request.instructions} Return only the word OK.`,
+        }
+      : request;
+  return adapterFor(config.provider).generate(config, prepared);
+}

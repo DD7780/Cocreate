@@ -85,15 +85,15 @@ test('Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buf
 
 test('auth source preserves Google and adds password, confirmation, and recovery flows',()=>{
   const source=fs.readFileSync(new URL('../src/ProjectApp.tsx',import.meta.url),'utf8');
-  assert.match(source,/signInWithOAuth\(\{provider:'google'/);
-  assert.match(source,/redirectTo:supabaseAuthCallbackUrl\(returnTo\)/);
+  assert.match(source,/signInWithOAuth\(\s*\{\s*provider:\s*["']google["']/);
+  assert.match(source,/redirectTo:\s*supabaseAuthCallbackUrl\(returnTo\)/);
   assert.match(source,/signInWithPassword/);
   assert.match(source,/auth\.signUp/);
   assert.match(source,/auth\.resend/);
   assert.match(source,/resetPasswordForEmail/);
-  assert.match(source,/updateUser\(\{password/);
-  assert.match(source,/location\.pathname==='\/api\/auth\/callback'/);
-  assert.doesNotMatch(source,/provider:'twitch'|cocreate\.pages\.dev|amygxtdgjlphxaetqzkk/);
+  assert.match(source,/updateUser\(\s*\{\s*password/);
+  assert.match(source,/location\.pathname\s*===\s*["']\/api\/auth\/callback["']/);
+  assert.doesNotMatch(source,/provider:\s*["']twitch["']|cocreate\.pages\.dev|amygxtdgjlphxaetqzkk/);
 });
 
 test('project names and invitation emails use canonical validation',()=>{
