@@ -140,17 +140,18 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
     } else if (scenario === 'ambiguous-reference' || scenario === 'invented-passage' || scenario === 'incorrect-product') {
       const text = scenario === 'ambiguous-reference' ? 'Make that blue' : scenario === 'invented-passage' ?
         'How should we discuss styling?' : 'Build a catalog with a working filter';
-      edit('alice', text); await submit('alice', 'request-one'); await drain();
+      edit('alice', text); await submit('alice', 'request-one');
+      if(scenario==='incorrect-product')await drain();else await until(()=>!room!.buildTask&&!room!.buildTimer,'unverified intent stays outside build');
       observations.acceptedCount = room.sharedRequirements.filter(r => r.status === 'accepted').length;
-      observations.functionalVerified = room.aiRuns.at(-1)!.verification.verified;
-      observations.compilationPassed = room.aiRuns.at(-1)!.verification.compilationPassed;
-      assert.equal(observations.acceptedCount, 1); assert.equal(observations.functionalVerified, false);
+      observations.functionalVerified = room.aiRuns.at(-1)?.verification.verified||false;
+      observations.compilationPassed = room.aiRuns.at(-1)?.verification.compilationPassed||false;
+      assert.equal(observations.acceptedCount, scenario==='incorrect-product'?1:0); assert.equal(observations.functionalVerified, false);
       if (scenario === 'ambiguous-reference') {
-        observations.unresolvedReferenceAccepted = room.sharedRequirements[0].description === text;
-        assert.equal(observations.unresolvedReferenceAccepted, true);
+        observations.unresolvedReferenceAccepted = room.sharedRequirements.some(item=>item.description===text&&item.status==='accepted');
+        assert.equal(observations.unresolvedReferenceAccepted, false);assert.equal(builderCount,0);assert.equal(room.participants.get('alice')?.latest?.intents?.[0].validation?.status,'needs_clarification');
       } else if (scenario === 'invented-passage') {
         observations.passageAbsentFromCapturedEdits = !text.includes(room.sharedRequirements[0].sources[0].passages[0]);
-        assert.equal(observations.passageAbsentFromCapturedEdits, true);
+        assert.equal(observations.passageAbsentFromCapturedEdits, true);assert.equal(builderCount,0);assert.equal(room.sharedRequirements[0].status,'proposed');
         assert.ok(room.sharedRequirements[0].sources.every(s => s.participantId === 'alice'), 'provider cannot invent another author');
       } else {
         observations.filterControlAbsentFromSource = !room.versions.at(-1)!.files!.some(f => /<input|<select/.test(f.content));

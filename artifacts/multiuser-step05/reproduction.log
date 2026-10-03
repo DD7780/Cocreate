@@ -1,0 +1,9 @@
+{
+  "scope": "Local registry reproduction before Step 5; no inference",
+  "coauthoredOriginal": "Make the header red",
+  "afterCallerOnlyModelAffectedId": "Make the header blue",
+  "remainingAuthors": [
+    "bob"
+  ],
+  "teammateDescriptionPreserved": false
+}

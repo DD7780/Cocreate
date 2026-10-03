@@ -1,3 +1,4 @@
+import fs from 'node:fs';import os from 'node:os';import path from 'node:path';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import http from 'node:http';
@@ -32,6 +33,8 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     if (required.includes('goals')) {
       personalCalls++;
       personalBodies.push(body);
+      const source=JSON.parse(body.input).authenticatedChanges.map((change:any)=>change.after).join('');
+      const passage=personalCalls===1?source:JSON.parse(body.input).previousContributionSummary?.intents?.[0]?.sourcePassage||source;
       reply.end(JSON.stringify(response({
         goals: ['Build a calm shared workspace'],
         features: ['Live collaborative canvas'],
@@ -43,8 +46,8 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
         withdrawals: [],
         classification: 'explicit_request',
         affectedRequirementIds: [],
-        sourcePassages: ['Build a calm shared workspace'],
-        intents: [{text:'Build a calm shared workspace',category:'goal',classification:'explicit_request',rationale:'Direct build instruction.',sourcePassage:'Build a calm shared workspace',affectedRequirementIds:[]}],
+        sourcePassages: [passage],
+        intents: [{text:'Build a calm shared workspace',category:'goal',classification:'explicit_request',rationale:'Direct build instruction.',sourcePassage:passage,affectedRequirementIds:[]}],
       }, 13, 3)));
       return;
     }
@@ -64,7 +67,8 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
   });
   await new Promise<void>(resolve => fake.listen(0, '127.0.0.1', resolve));
   const port = (fake.address() as { port: number }).port;
-  const manager = new RoomManager({
+  const testDataDir=fs.mkdtempSync(path.join(os.tmpdir(),'typed-submission-'));
+  const manager = new RoomManager({dataDir:testDataDir,
     debounceMs: 80,
     buildDebounceMs: 100,
     buildCooldownMs: 0,
@@ -112,7 +116,7 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
   };
 
   try {
-    for (const letter of 'automatic') {
+    for (const letter of 'Build a calm shared workspace') {
       typeLetter(letter);
       await new Promise(resolve => setTimeout(resolve, 10));
     }
@@ -122,7 +126,7 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     const bobDoc=new Y.Doc(),bobParagraph=new Y.XmlElement('paragraph'),bobText=new Y.XmlText();bobDoc.transact(()=>{bobDoc.getXmlFragment('default').push([bobParagraph]);bobParagraph.push([bobText]);bobText.insert(0,'Bob private unsubmitted proposal')});manager.handleMessage(room,{participantId:bob.id,readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(bobDoc))]),true);
     const first=await manager.submitChanges(room,participant.id,'first-submission');
     assert.equal(first.status,'queued');
-    await waitFor(() => room.versions.length === 1);
+    await waitFor(() => room.versions.length === 1).catch(error=>{console.log(JSON.stringify({phase:'controlled-first-build',personalCalls,builderCalls,status:room.status,error:room.lastError,intents:participant.latest?.intents}));throw error});
     assert.equal(personalCalls, 1, 'one submission should produce one personal-agent call');
     assert.equal(builderCalls, 1, 'one submission should produce one shared build');
     assert.equal(JSON.parse(personalBodies[0].input).participantName,'Alice');
@@ -136,7 +140,7 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     assert.equal(personalCalls,1,'duplicate and empty submissions must not invoke a model');
     assert.equal(personalBodies[0].max_output_tokens, 2_400);
     assert.equal(builderBodies[0].max_output_tokens, 12_000);
-    assert.ok(JSON.parse(personalBodies[0].input).sharedBrainstormCanvas.length <= 6_000);
+    assert.equal(JSON.parse(personalBodies[0].input).sharedBrainstormCanvas,undefined);assert.ok(Array.isArray(JSON.parse(personalBodies[0].input).acceptedContext));
     assert.ok(JSON.parse(builderBodies[0].input).acceptedRequirements.length > 0);
 
     typeLetter('!');
@@ -159,7 +163,7 @@ test('submitted builds ignore typing alone, preserve idempotency, and expose tok
     assert.equal(room.versions.length, 2);
     assert.equal(room.usage.builderRequests, 2);
   } finally {
-    manager.shutdown();
+    manager.shutdown();if(path.dirname(path.resolve(testDataDir))!==path.resolve(os.tmpdir()))throw new Error('Unsafe fixture cleanup');fs.rmSync(testDataDir,{recursive:true,force:true});
     local.destroy();
     await new Promise<void>(resolve => fake.close(() => resolve()));
   }

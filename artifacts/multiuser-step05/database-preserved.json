@@ -1,0 +1,8 @@
+{
+  "scope": "Read-only SQLite integrity and canonical/legacy mirror comparison after reversible NTFS compression",
+  "quickCheck": "ok",
+  "canonicalMirrorIdentical": true,
+  "workspaceCountPreserved": true,
+  "projectRecordsDeleted": 0,
+  "prePostWholeFileHash": "Incomplete: post-read failed at zero free space; no byte-hash equality claim"
+}

@@ -1,6 +1,6 @@
 # 2guys1canvas current handoff
 
-Updated 2026-10-04 after Step 04 isolated generated compilation implementation and local Windows verification. Explicit user instructions take precedence. Local completion and hosted readiness remain separate.
+Updated 2026-10-04 after Step 05 intent correction implementation and local verification. Explicit user instructions take precedence. Local completion and hosted readiness remain separate.
 
 Standing user instruction: commit and push each completed multi-user roadmap step to GitHub, with its verification evidence and handoff; report the destination branch/commit. Continue to execute only the step requested in each task.
 
@@ -22,7 +22,7 @@ Step 03 local implementation and verification are complete: **158/158 tests**, p
 
 Step 04 routes compilation through AppContainer/Job Object on Windows, strips secrets, enforces limits and cancels/cleans child work. The build loop preflights before builder dispatch and retains the prior artifact without repairs or host fallback on infrastructure failure. Read the [Step 04 handoff](docs/harness/multiuser-step04-handoff.md) for fresh checks and scope. The Linux Bubblewrap/non-root Docker configuration is prepared but unrun; intended kernel/container acceptance remains required.
 
-Next task is **Step 05 only when requested**: intent inspection/correction/contextual references. Step 05 was not started. Carry prepared coordinator SQL, the guarded disposable-database runner and hosted rollout checks forward; passing mocks and browser transport fixtures does not establish hosted readiness.
+Step 05 local implementation and verification are complete: explicit inference-free author-scoped correction/withdrawal, permanent revision/payload receipts, preserved coauthor/history, independent source/context validation and an accessible modal review UI. **186/186 tests**, production build, strict script types and three independent controlled Chrome profiles passed. Read the [Step 05 handoff](docs/harness/multiuser-step05-handoff.md) for evidence, retained failed attempts and recovery scope. Next task is **Step 06 only when requested**: stable build progress under ongoing steering. Step 06 was not started. Carry prepared coordinator SQL, the guarded disposable-database runner and hosted rollout checks forward; passing mocks and browser transport fixtures does not establish hosted readiness.
 
 Use the [canonical checklist](docs/harness/checklist.md). Outstanding checks include reference comparison, real Postgres fencing contention, independent hosted accounts, authorized live BYOK/invitation delivery, production snapshot scale, real private Storage/RLS recovery and restoration of legacy history absent from canonical records. Migration, deployment, email sending and provider spending require separate authorization. Linux deployment isolation acceptance, requirement-linked functional acceptance and durable workflow budgets remain outstanding.
 

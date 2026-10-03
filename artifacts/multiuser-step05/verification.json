@@ -1,0 +1,93 @@
+{
+  "scope": "Step 05 local Windows tests and three signed local Chrome profiles, loopback controlled provider, real SQLite and Windows compiler isolation; no paid inference, hosted account, SQL migration or deployment",
+  "fullTests": {
+    "passed": 186,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 169262.3441
+  },
+  "focusedTests": {
+    "passed": 16,
+    "failed": 0,
+    "log": "final-focused-tests.log"
+  },
+  "productionBuild": "passed",
+  "standaloneScriptTypes": "passed",
+  "browserReport": "browser/checks.json",
+  "browserScreenshotsInspected": [
+    "desktop.png",
+    "mobile.png",
+    "corrected-history.png",
+    "stale-correction.png"
+  ],
+  "graphify": {
+    "scope": "AST only; no LLM calls; optional SQL parser unavailable; semantic labels not refreshed",
+    "nodes": 2191,
+    "edges": 4346,
+    "communities": 136
+  },
+  "documentation": {
+    "files": [
+      "README.md",
+      "api.md",
+      "context.md",
+      "product.md",
+      "instructions.md",
+      "docs/harness/architecture.md",
+      "docs/harness/checklist.md",
+      "docs/harness/decisions.md",
+      "docs/harness/reliability-verification.md",
+      "docs/harness/multiuser-step05-handoff.md"
+    ],
+    "checkedLocalLinks": 192,
+    "missing": [],
+    "uniqueDecisionIds": 48
+  },
+  "databasePreservation": "database-preserved.json",
+  "localPreview": {
+    "health": 200,
+    "client": 200,
+    "url": "http://localhost:5173"
+  },
+  "sourceSha256": {
+    "server/intent-authority.ts": "d3a41612c68d7f5deff013d63f1e30420b589375cbc1ed9d23ba8b6cb953a6e0",
+    "server/intent-commands.ts": "b965dc7777acbfc32331465c27deda6e331fab0397cfe2e48aa2460951cc1d0b",
+    "server/generator.ts": "4cabcb98b3f1faa54e4e2d02160a48ea8a0305e8ca913e9e067da7be6b94f946",
+    "server/index.ts": "0047bd69d1c37b6ee8632fa6dbb5aa12a451307c55b8403ebac61bffb0701db3",
+    "server/requirements.ts": "3a0957328b28d47d742d814ea9da085d6f10978c8ea7b4e9fb209dc43eabdf2f",
+    "server/rooms.ts": "004e130077c9d9c9209aae18ea8bda9c96397f3d8322084a7f57a05886219d64",
+    "src/IntentReview.tsx": "3153b5133f5d8780d3732641b643bd3f4eb19c9071bbba819159b08a0b24357f",
+    "src/intent-review.css": "92d726960dd33ddda9c34d1fb46184f3838205d4d135fe10d6f06beb64442375",
+    "src/App.tsx": "91cc955826ff4e9323793b6e11f545804990329acb5f3fba11eaaec35ec03a7b",
+    "src/types.ts": "92b0ad6627bd6ca876171e5a9c3b48866a61a1cfa2f602ecaf8b0b718aa5a096",
+    "scripts/verify-intent-ui.ts": "465f1c47b7f552385d798e4df95a51c7ba556e1acc6dce863e81ae4ac83b607c",
+    "scripts/verify-reliability.ts": "ec2c33549d382711afa794bf22e2d3bd8a32bcf9cb9f0f922934380b4bc5e35d",
+    "tests/intent-corrections.test.ts": "0ca299a1243a5dc7c4b245735a046aa3ab955a2654a28f4eb814b2654966806f",
+    "tests/artifact-restoration.test.ts": "6fb4d27cd692bbe1e3df3ea545bbf2a1a1db3ef16e5ebf31ec789c0775f6bc10",
+    "tests/auto-build-budget.test.ts": "c1f6547df974606510d59054bc9f1bc9f2bbce85996fc4019a5e1c2a797e4d20",
+    "tests/integration.test.ts": "a96c6b677179a4c5c06c5ef851e3a2a84eadf120dcdf938f44a356cf90e4b42e",
+    "tests/reliability.test.ts": "0552e21a441d92ad345afa65531e8d6e58420186b9d6e1cfba86a6f745e5e282",
+    "tests/multiuser-baseline.test.ts": "00783bb6b0f6f6103f0339a3083a966874e5426624cff869348930ce0efcc34d",
+    "tests/fixtures/multiuser-baseline.ts": "00c90a58d4408f70b07d21010101b06488aab5c05ba2a071b678c6cc87da7966"
+  },
+  "retainedFailedAttempts": [
+    "focused-tests.log",
+    "full-tests-first.log",
+    "full-tests-disk-full.log",
+    "full-tests-deadline.log",
+    "archive-deadline-rerun.log",
+    "regression-tests.log",
+    "browser.log",
+    "browser-second.log",
+    "browser-third.log",
+    "browser-fourth.log"
+  ],
+  "pending": [
+    "Real hosted account/membership and canonical SQL uncertainty/takeover/replay acceptance",
+    "Both unapplied coordinator migrations and real Postgres contention",
+    "Real private Storage/RLS/deployed replacement",
+    "Linux isolation kernel/container adversity",
+    "Production history/receipt scale and reference comparison",
+    "Step 06 onwards; generated functional evidence remains unverified"
+  ]
+}

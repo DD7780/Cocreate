@@ -351,7 +351,9 @@ test('new promotion after a retained-product rollback never overwrites an archiv
     context.room.versions.push(version(2));await context.item.value.save(context.room);
     context.room.versions.pop();await context.item.value.save(context.room);
     const entered=deferred();context.fixture.controls.beforeCommit=async body=>{if(body.target_harness_state.versions.some((value:any)=>value.id===3))entered.resolve()};
-    await context.item.value.submitChanges(context.room,'alice','after-retained-product-rollback');await gateEntered(entered.promise);await context.room.buildTask;await context.room.persistQueue;
+    await context.item.value.submitChanges(context.room,'alice','after-retained-product-rollback');
+    try{await gateEntered(entered.promise)}catch(error){console.error('Retained-product fixture diagnostics',JSON.stringify({status:context.room.status,lastError:context.room.lastError,requirements:context.room.sharedRequirements.map(item=>({description:item.description,status:item.status})),activeBuild:!!context.room.buildTask,versions:context.room.versions.map(item=>item.id),calls:context.calls()}));throw error}
+    await context.room.buildTask;await context.room.persistQueue;
     assert.equal(context.item.value.view(context.room).latestVersion,3);
     assert.equal((await context.item.value.restoredVersion(context.room,2))!.bundle,version(2).bundle);
     assert.deepEqual(context.room.artifactHistory!.map(version=>version.id),[1,2,3]);

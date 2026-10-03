@@ -1,6 +1,6 @@
 # 2guys1canvas product brief
 
-This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-03 with Step 03 durable artifact recovery; other accepted human product decisions are preserved.
+This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 with Step 05 attributable intent correction; other accepted human product decisions are preserved.
 
 ## Mission, users and scope
 
@@ -13,6 +13,11 @@ Priorities are intent and attribution, conflict resolution, evidence of working 
 One Docs-like, vertically scrollable rich-text canvas supports presence, persistent edits, long documents and writing during builds. Typing, saving, navigation, project operations, presence, reconnect and polling never trigger inference.
 
 **Build my changes** captures only the authenticated participant's pending changes, with a flush acknowledgement and replay-safe request ID. Ram's submission does not authorize Sham's draft. Keep one logical personal interpreter per participant and one active shared builder; mode or effort does not change agent count. Personal interpreters classify individual ideas, questions, explicit requests, decisions and withdrawals; only explicit requests and decisions enter the accepted registry. Submission alone does not turn a proposal into an instruction. Accepted requirements remain the baseline for one shared application.
+
+Participants can inspect current requirements and individual interpretations, including proposals, ambiguity, attributable passages and revisions, then explicitly correct or withdraw their own support. A coauthor's correction preserves teammates' wording and sources and retains history. Current revision and actor/request-ID checks reject stale or conflicting commands. Human correction is inference-free and uses the author's explicit request/proposal/question choice. Deletion alone remains distinct from withdrawal. Accepted context supplied to an interpreter is frozen and separately attributed; raw shared drafts cannot confer another participant's steering authority. Known references and exact captured sources are checked outside prompts. Consequential unclear “that/it” targets require clarification; ordinary explicit requests do not require a universal approval round.
+
+Changing accepted intent invalidates affected candidate assumptions and retains the previous product. Saving intent does not authorize spending. **Build accepted changes** explicitly builds the revised accepted baseline under existing membership/BYOK authorization, without reinterpreting edits. A later authorized caller submission can also build that baseline. The old process/reinterpret HTTP shortcuts are retired. Uncertain save replies require canonical coordinator recovery and replay with the same request ID.
+
 
 Nearby eligible submissions use a short configurable collection window, initially three seconds. Capture order determines reconciliation; each candidate uses a fixed accepted revision. Later accepted steering remains pending for the next serialized build and can supersede the current candidate. Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot dispatch or promote after ownership loss. Owner unavailability has bounded connection retries and a clear reopen action, with the current page retaining edits. Reconnect never resubmits inference; explicit command retries preserve their request ID. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
 

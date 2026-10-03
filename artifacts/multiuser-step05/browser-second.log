@@ -1,0 +1,63 @@
+(node:6488) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"407812be-fb7b-42bf-ae46-c15a25fc85e2","correlationId":"d5680abc-aa27-4549-b3a6-c049662dcdab"}
+{"event":"collaboration.connected","connectionId":"a6fc6f50-5c0e-49b0-9de0-1e7ce2cc652d","correlationId":"cb7113e2-3e74-4cca-b7ab-ee437c508822"}
+{"event":"collaboration.connected","connectionId":"0591da66-8263-4358-a7c1-bac83050878c","correlationId":"d03c1608-5e23-421c-baab-453a340323db"}
+{
+  active: '<button>View requirements →</button>',
+  dialogs: [],
+  text: '2guys1canvas\n' +
+    'Shared product document\n' +
+    'WORKFLOW\n' +
+    'CANVAS\n' +
+    'ARTIFACTS\n' +
+    'A\n' +
+    'B\n' +
+    'C\n' +
+    '3 here\n' +
+    'AI SETUP\n' +
+    'INVITE\n' +
+    'Product updated\n' +
+    'Custom OpenAI-compatible · builder\n' +
+    'SPLIT VIEW\n' +
+    'Alt + X\n' +
+    'BUILD MY CHANGES\n' +
+    'Changes accepted and queued for the shared build.\n' +
+    'SHARED CANVAS\n' +
+    'SAVED ON THIS DEVICE\n' +
+    'SYNCED 02:15 AM\n' +
+    '\n' +
+    'Add catalog history.\n' +
+    'Bob\n' +
+    'Add catalog history.\n' +
+    '\n' +
+    'WORKSPACE\n' +
+    'Shared context\n' +
+    'Shared Intent\n' +
+    'r2 · 1 accepted\n' +
+    'r1 · 1 accepted\n' +
+    'r0 · 0 accepted\n' +
+    'Accepted requirements\n' +
+    'Add catalog history.\n' +
+    'View requirements →\n' +
+    'Recorded usage · partial\n' +
+    '450\n' +
+    'reported tokens\n' +
+    'Workflow total · 0 calls with incomplete usage; earlier history may be missing.\n' +
+    'View usage →\n' +
+    'Workflow · completed\n' +
+    '▸'
+}
+{"event":"collaboration.disconnected","connectionId":"0591da66-8263-4358-a7c1-bac83050878c","code":1006}
+{"event":"collaboration.disconnected","connectionId":"a6fc6f50-5c0e-49b0-9de0-1e7ce2cc652d","code":1006}
+{"event":"collaboration.disconnected","connectionId":"407812be-fb7b-42bf-ae46-c15a25fc85e2","code":1006}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:14
+const until=async(check:()=>Promise<boolean>,label:string)=>{for(let i=0;i<120;i++){if(await check())return;await wait(100);}throw new Error(`Timed out: ${label}`);};
+                                                                                                                                   ^
+
+Error: Timed out: intent dialog opened by Enter
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:14:132)
+    at async review (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:60:403)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:70:3)
+
+Node.js v22.23.2
