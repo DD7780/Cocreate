@@ -4,6 +4,8 @@ Plan prepared 2026-10-03 and implementation authorized 2026-10-04. The findings 
 
 Correction from implementation call-site checks: `AdvancedAISetup` and its parent setup components were defined but unmounted. Current `Workspace` opens `ByokSetup`; the unused UI chain can be removed while preserving supported server APIs and historical data. The earlier instruction below to retain that component was based on an incomplete parent-call check.
 
+Follow-up: the supplied credential was Vercel-issued, so the implemented CLI now supports Vercel AI Gateway's TypeSafe-compatible endpoint and model ID as well as direct TypeSafe. A 20-file historical triage succeeded; one protected migration tool was incorrectly flagged at low confidence and retained. The 20-feature comparative/holdout evaluation below remains proposed; see [actual evidence](codebase-cleanup-verification.md).
+
 ## Recommendation
 
 Reduce misleading context first, remove proven unused scaffold second, and extract responsibilities from the largest modules in small verified changes. Use Graphify to retrieve relevant relationships, deterministic tools to establish usage and enforce boundaries, and Jev optionally to rank ambiguous candidates and feature context. Keep the coding agent responsible for proposing edits and the compiler/tests responsible for verification.

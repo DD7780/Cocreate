@@ -24,6 +24,8 @@ Active browser entry: `src/main.tsx`; hosted project navigation: `src/ProjectApp
 
 Use Graphify first for code questions, then verify against source. [SOURCE_MAP.md](graphify-out/SOURCE_MAP.md) describes extraction limits. `pnpm audit:code` reports static usage and import boundaries; optional Jev mode reviews candidates without editing them. Credentials/cache/request evidence remain local.
 
+The offline audit supports Vercel AI Gateway through AI_GATEWAY_API_KEY and direct TypeSafe through TYPESAFE_API_KEY, with explicit provider selection. The Vercel 20-file historical triage succeeded at a reported $0.001711374. It wrongly flagged one protected migration tool as obsolete at low confidence; that file remains protected. This is file-triage evidence, not the proposed 20-feature context-recall evaluation.
+
 ## Verification and remaining work
 
 October 1 local reliability evidence: 129 tests and production build passed; controlled providers and independent browser profiles exercised durable submission/reconnect/recovery. See [reliability-verification.md](docs/harness/reliability-verification.md). These are historical results, separate from the cleanup run.

@@ -8,7 +8,8 @@
 - [x] Deduplicated current steering with linked dated snapshots; added a [feature packet](feature-change-template.md), scope/import checks, report-only Jev CLI and GitHub verification workflow.
 - [x] Final removal/extraction slice: 133/133 tests passed; strict compilation and both local/default production builds passed; import audit reports 94 files with zero candidates/boundary violations. Three-profile controlled-provider browser reliability and responsive checks passed after the final runtime extraction. Evidence is recorded in [cleanup verification](codebase-cleanup-verification.md).
 - [x] Updated structural and semantic Graphify mapping after removals, shared-boundary moves and steering cleanup; coverage/projection limits remain explicit in [SOURCE_MAP.md](../../graphify-out/SOURCE_MAP.md).
-- [ ] TypeSafe rejected the configured credential with HTTP 401. No Jev judgments were returned; one request has unknown usage and retained estimated reservation. Correct the local key and complete the proposed comparative evaluation before relying on ranking.
+- [x] Corrected the Vercel credential/direct-TypeSafe routing mismatch; added explicit isolated providers, gateway cost accounting and alias-cache expiry. Vercel reviewed 20 historical files: 40,747 input tokens and $0.001711374 reported cost. All 134 tests and strict build pass.
+- [ ] Complete the proposed 20-feature comparative/holdout evaluation before relying on optional context ranking. The file smoke run wrongly flagged one protected migration tool at low confidence; it was retained. Prior failed requests retain unknown usage/reservations.
 - Current local evidence does not prove live hosted accounts, SQL fencing, email delivery, real provider behavior or deployment. October 1 and earlier results below remain dated history.
 
 ## Historical cleanup planning (2026-10-03)

@@ -5,6 +5,10 @@ import {
   validateReview,
   JEV_MODEL,
   scopeViolations,
+  reviewService,
+  requestReview,
+  VERCEL_JEV_MODEL,
+  cachedReview,
 } from "../scripts/codebase-audit.js";
 
 test("UI scope rejects backend authority, shared contracts and migrations", () => {
@@ -43,6 +47,36 @@ test("UI scope rejects backend authority, shared contracts and migrations", () =
     ),
     ["supabase/migrations/change.sql", "Dockerfile", "package.json"],
   );
+});
+
+test("Vercel and direct TypeSafe reviews use separate endpoints and credentials without retries", async () => {
+  const gateway = reviewService("vercel");
+  assert.equal(gateway.credentialEnv, "AI_GATEWAY_API_KEY");
+  assert.equal(gateway.model, VERCEL_JEV_MODEL);
+  assert.equal(gateway.modelVersionPinned, false);
+  const direct = reviewService("typesafe");
+  assert.equal(direct.endpoint, "https://api.typesafe.ai/v1/systemone");
+  assert.equal(direct.credentialEnv, "TYPESAFE_API_KEY");
+  assert.equal(direct.model, JEV_MODEL);
+  assert.equal(direct.modelVersionPinned, true);
+  assert.throws(() => reviewService("https://untrusted.example"));
+  let calls = 0;
+  const mockFetch: typeof fetch = async (url, options) => {
+    calls++;
+    assert.equal(url, "https://ai-gateway.vercel.sh/typesafe/v1/systemone");
+    assert.equal(options?.redirect, "error");
+    assert.equal(
+      (options?.headers as Record<string, string>).Authorization,
+      "Bearer fixture-only",
+    );
+    assert.equal(JSON.parse(options?.body as string).model, VERCEL_JEV_MODEL);
+    return new Response(null, { status: 403 });
+  };
+  await assert.rejects(
+    requestReview(gateway, "fixture-only", { model: gateway.model }, mockFetch),
+    /vercel HTTP 403/,
+  );
+  assert.equal(calls, 1);
 });
 
 test("audit retains literal dynamic and type imports, ambient declarations and tooling roots", () => {
@@ -107,6 +141,68 @@ test("untrusted Jev output cannot introduce unknown options, invalid probabiliti
     usage: { input_tokens: 123 },
   };
   assert.equal(validateReview(valid).inputTokens, 123);
+  const gatewayResponse = {
+    ...valid,
+    model: VERCEL_JEV_MODEL,
+    provider_metadata: { gateway: { cost: "0.00001155" } },
+  };
+  assert.equal(
+    validateReview(gatewayResponse, VERCEL_JEV_MODEL).reportedCostUsd,
+    0.00001155,
+  );
+  const now = Date.parse("2026-10-04T00:00:00Z");
+  assert.equal(
+    cachedReview(
+      { ...gatewayResponse, evaluatedAt: new Date(now).toISOString() },
+      reviewService("vercel"),
+      now,
+    ).inputTokens,
+    123,
+  );
+  assert.throws(() =>
+    cachedReview(gatewayResponse, reviewService("vercel"), now),
+  );
+  assert.throws(() =>
+    cachedReview(
+      { ...gatewayResponse, evaluatedAt: "2026-10-02T00:00:00Z" },
+      reviewService("vercel"),
+      now,
+    ),
+  );
+  assert.throws(() =>
+    cachedReview(
+      { ...gatewayResponse, evaluatedAt: "2026-10-05T00:00:00Z" },
+      reviewService("vercel"),
+      now,
+    ),
+  );
+  assert.equal(
+    cachedReview(valid, reviewService("typesafe"), now).inputTokens,
+    123,
+  );
+  assert.throws(() => validateReview(gatewayResponse));
+  assert.throws(() =>
+    validateReview(
+      { ...gatewayResponse, model: "openai/other" },
+      VERCEL_JEV_MODEL,
+    ),
+  );
+  assert.throws(() =>
+    validateReview(
+      {
+        ...gatewayResponse,
+        provider_metadata: { gateway: { cost: "unknown" } },
+      },
+      VERCEL_JEV_MODEL,
+    ),
+  );
+  assert.equal(
+    validateReview(
+      { ...gatewayResponse, provider_metadata: { gateway: { cost: "0" } } },
+      VERCEL_JEV_MODEL,
+    ).reportedCostUsd,
+    0,
+  );
   assert.throws(() => validateReview({ ...valid, model: "other-model" }));
   assert.throws(() =>
     validateReview({ ...valid, usage: { input_tokens: -1 } }),

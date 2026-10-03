@@ -227,14 +227,79 @@ export type ReviewAnswer = {
   };
   relevance: { type: "score"; score: number; confidence: number };
 };
-export function validateReview(value: unknown): {
+export const VERCEL_JEV_MODEL = "typesafe-ai/jev";
+export function reviewService(provider: string) {
+  if (provider === "vercel")
+    return {
+      provider,
+      endpoint: "https://ai-gateway.vercel.sh/typesafe/v1/systemone",
+      model: VERCEL_JEV_MODEL,
+      credentialEnv: "AI_GATEWAY_API_KEY",
+      modelVersionPinned: false,
+    } as const;
+  if (provider === "typesafe")
+    return {
+      provider,
+      endpoint: "https://api.typesafe.ai/v1/systemone",
+      model: JEV_MODEL,
+      credentialEnv: "TYPESAFE_API_KEY",
+      modelVersionPinned: true,
+    } as const;
+  throw new Error("Use --jev-provider vercel or typesafe.");
+}
+
+export async function requestReview(
+  service: ReturnType<typeof reviewService>,
+  credential: string,
+  packet: object,
+  fetchRequest: typeof fetch = fetch,
+) {
+  const response = await fetchRequest(service.endpoint, {
+    method: "POST",
+    redirect: "error",
+    headers: {
+      Authorization: `Bearer ${credential}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify(packet),
+    signal: AbortSignal.timeout(30_000),
+  });
+  if (!response.ok)
+    throw new Error(
+      `Jev ${service.provider} HTTP ${response.status}; no automatic retry.`,
+    );
+  return response.json() as Promise<unknown>;
+}
+
+export function cachedReview(
+  value: unknown,
+  service: ReturnType<typeof reviewService>,
+  now = Date.now(),
+) {
+  if (!service.modelVersionPinned) {
+    const evaluatedAt = (value as { evaluatedAt?: string } | null)?.evaluatedAt;
+    const age = evaluatedAt ? now - Date.parse(evaluatedAt) : NaN;
+    if (!Number.isFinite(age) || age < 0 || age > 24 * 60 * 60 * 1000)
+      throw new Error(
+        "Invalid Jev response cache age; gateway aliases expire after 24 hours.",
+      );
+  }
+  return validateReview(value, service.model);
+}
+
+export function validateReview(
+  value: unknown,
+  expectedModel: string = JEV_MODEL,
+): {
   answers: ReviewAnswer;
   inputTokens: number;
+  reportedCostUsd?: number;
 } {
   const body = value as {
     model?: unknown;
     answers?: ReviewAnswer;
     usage?: { input_tokens?: number };
+    provider_metadata?: { gateway?: { cost?: unknown } };
   };
   const answers = body?.answers;
   const options = Object.keys(reviewQuestions().purpose.criteria);
@@ -244,7 +309,7 @@ export function validateReview(value: unknown): {
     value >= 0 &&
     value <= 1;
   if (
-    body?.model !== JEV_MODEL ||
+    body?.model !== expectedModel ||
     !answers ||
     answers.purpose?.type !== "choice" ||
     !options.includes(answers.purpose.choice) ||
@@ -270,6 +335,20 @@ export function validateReview(value: unknown): {
   ) {
     throw new Error("Invalid Jev response; retain candidate for review.");
   }
+  const rawCost = body.provider_metadata?.gateway?.cost;
+  const reportedCostUsd =
+    rawCost === undefined
+      ? undefined
+      : typeof rawCost === "number"
+        ? rawCost
+        : typeof rawCost === "string" && /^\d+(?:\.\d+)?$/.test(rawCost)
+          ? Number(rawCost)
+          : NaN;
+  if (
+    reportedCostUsd !== undefined &&
+    (!Number.isFinite(reportedCostUsd) || reportedCostUsd < 0)
+  )
+    throw new Error("Invalid Jev response cost; retain candidate for review.");
   return {
     answers: {
       purpose: {
@@ -290,6 +369,7 @@ export function validateReview(value: unknown): {
       },
     },
     inputTokens: body.usage!.input_tokens!,
+    reportedCostUsd,
   };
 }
 
@@ -322,6 +402,13 @@ async function main() {
     return args[index + 1];
   };
   const useJev = args.includes("--jev");
+  const service = reviewService(
+    option(
+      "--jev-provider",
+      process.env.AI_GATEWAY_API_KEY?.trim() ? "vercel" : "typesafe",
+    ),
+  );
+  const credential = process.env[service.credentialEnv]?.trim();
   const limit = Number(option("--limit", "20"));
   const budget = Number(option("--budget-usd", "0.10"));
   if (
@@ -449,15 +536,23 @@ async function main() {
   let calls = 0;
   let inputTokens = 0;
   let reservedCost = 0;
+  let reportedCostUsd = 0;
+  let reportedCostRequests = 0;
   let reviewFailure: string | undefined;
-  if (useJev && !process.env.TYPESAFE_API_KEY?.trim())
+  if (useJev && !credential)
+    reviewFailure = `${service.credentialEnv} is missing. Static report written; no Jev requests made.`;
+  if (
+    useJev &&
+    service.provider === "typesafe" &&
+    credential?.startsWith("vck_")
+  )
     reviewFailure =
-      "TYPESAFE_API_KEY is missing. Static report written; no Jev requests made.";
+      "This is a Vercel credential. Set AI_GATEWAY_API_KEY and use --jev-provider vercel; no request made.";
   if (useJev && !reviewFailure)
     for (const file of selected) {
       const candidate = inventory.files.find((item) => item.file === file)!;
       const packet = {
-        model: JEV_MODEL,
+        model: service.model,
         state: {
           changeBrief,
           snapshotCommit,
@@ -479,11 +574,18 @@ async function main() {
         questions: reviewQuestions(),
       };
       const serialized = JSON.stringify(packet);
-      const fingerprint = hash(serialized);
+      const fingerprint = hash(
+        JSON.stringify({
+          provider: service.provider,
+          endpoint: service.endpoint,
+          packet,
+        }),
+      );
       const cachePath = path.join(outputDir, "cache", `${fingerprint}.json`);
       try {
-        const cached = validateReview(
+        const cached = cachedReview(
           JSON.parse(await readFile(cachePath, "utf8")),
+          service,
         );
         reviews.push({ file, cached: true, answers: cached.answers });
         continue;
@@ -509,8 +611,13 @@ async function main() {
       const ledger = (record: object) =>
         appendFile(
           path.join(outputDir, "requests.jsonl"),
-          JSON.stringify({ requestId, file, model: JEV_MODEL, ...record }) +
-            "\n",
+          JSON.stringify({
+            requestId,
+            file,
+            provider: service.provider,
+            model: service.model,
+            ...record,
+          }) + "\n",
         );
       await ledger({
         status: "dispatch",
@@ -521,36 +628,39 @@ async function main() {
       calls++;
       let raw: unknown;
       let knownInputTokens: number | undefined;
+      let knownReportedCost: number | undefined;
       try {
-        const response = await fetch("https://api.typesafe.ai/v1/systemone", {
-          method: "POST",
-          headers: {
-            Authorization: `Bearer ${process.env.TYPESAFE_API_KEY}`,
-            "Content-Type": "application/json",
-          },
-          body: serialized,
-          signal: AbortSignal.timeout(30_000),
-        });
-        if (!response.ok)
-          throw new Error(`Jev HTTP ${response.status}; no automatic retry.`);
-        raw = await response.json();
-        const result = validateReview(raw);
+        raw = await requestReview(service, credential!, packet);
+        const result = validateReview(raw, service.model);
         knownInputTokens = result.inputTokens;
+        knownReportedCost = result.reportedCostUsd;
         inputTokens += result.inputTokens;
-        reservedCost += inputCost(result.inputTokens) - reservation;
+        if (knownReportedCost !== undefined) {
+          reportedCostUsd += knownReportedCost;
+          reportedCostRequests++;
+        }
+        reservedCost +=
+          (knownReportedCost ?? inputCost(result.inputTokens)) - reservation;
         reviews.push({ file, cached: false, answers: result.answers });
         await ledger({
           status: "complete",
           inputTokens: result.inputTokens,
           estimatedUsd: inputCost(result.inputTokens),
+          reportedCostUsd: knownReportedCost,
         });
         await writeFile(
           cachePath,
           JSON.stringify(
             {
-              model: JEV_MODEL,
+              model: service.model,
+              evaluatedAt: new Date().toISOString(),
               answers: result.answers,
               usage: { input_tokens: result.inputTokens },
+              ...(knownReportedCost === undefined
+                ? {}
+                : {
+                    provider_metadata: { gateway: { cost: knownReportedCost } },
+                  }),
             },
             null,
             2,
@@ -565,6 +675,7 @@ async function main() {
                 usageKnown: true,
                 inputTokens: knownInputTokens,
                 estimatedUsd: inputCost(knownInputTokens),
+                reportedCostUsd: knownReportedCost,
               },
         );
         reviewFailure =
@@ -591,10 +702,15 @@ async function main() {
         reviews,
         jev: {
           requested: useJev,
-          model: JEV_MODEL,
+          provider: service.provider,
+          endpoint: service.endpoint,
+          model: service.model,
+          modelVersionPinned: service.modelVersionPinned,
           calls,
           inputTokens,
           estimatedUsd: inputCost(inputTokens),
+          reportedCostUsd,
+          reportedCostRequests,
           reservedIncludingUnknownUsd: reservedCost,
           runBudgetUsd: budget,
           reviewFailure,
@@ -615,6 +731,10 @@ async function main() {
   console.log(
     `Jev: ${calls} physical requests, ${inputTokens} input tokens with known usage, known-usage estimate $${inputCost(inputTokens).toFixed(6)}; unknown requests retain their reservation.`,
   );
+  if (reportedCostRequests)
+    console.log(
+      `Gateway-reported cost: $${reportedCostUsd.toFixed(6)} across ${reportedCostRequests} requests.`,
+    );
   console.log(
     `Report: artifacts/codebase-audit/${snapshotCommit ? `report-${snapshotCommit.slice(0, 7)}.json` : "report.json"}`,
   );

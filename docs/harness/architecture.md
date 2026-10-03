@@ -19,6 +19,8 @@ Current source map, 2026-10-04. [Historical architecture](history/architecture-b
 | Providers/accounting | `server/providers.ts`, `server/byok-lease.ts`, `server/usage-ledger.ts` | Adapted physical requests, temporary credentials, reported partial usage |
 | Developer audit | `scripts/codebase-audit.ts` | Static usage/boundaries and optional advisory Jev review; never participant runtime inference |
 
+Offline Jev dispatch selects direct TypeSafe or Vercel explicitly with separate credential variables and fixed endpoints. Vercel's TypeSafe-compatible route uses `typesafe-ai/jev`, an unpinned gateway alias; direct calls retain `jev-1.13.0`. Provider/endpoint fingerprints isolate caches, gateway aliases expire after 24 hours, and gateway-reported costs are distinct from token estimates. There is no automatic retry, credential crossover or provider/model fallback. The 20-file Vercel smoke run is recorded in [cleanup verification](codebase-cleanup-verification.md).
+
 The cleanup moves contracts and pure helpers without changing request/event shapes or coordinator authority. Historical managed accounting/catalog modules remain for compatibility, tests and persisted data; inactive UI does not prove the corresponding storage contracts are removable.
 
 ## Workflow and submission

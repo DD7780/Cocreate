@@ -34,7 +34,7 @@ Keys remain server-side; use the established encrypted-at-rest path where applic
 
 Count each physical request at the lowest shared HTTP boundary, including repair/retry/fallback attempts, with ID and purpose. Separate setup tests and generation, retain uncertain external outcomes, and never convert unknown charges/tokens to zero. Historical counters are separate from the partial deduplicated physical ledger. Catalog rates require current official evidence/versioning; metadata is not paid quality qualification.
 
-Offline Jev audits use a local TYPESAFE_API_KEY, pinned model, small evidence packets, typed validation, hash-based caching, bounded requests and a usage ledger. Judgments are advisory and never authorize deletion, side effects or promotion. No Jev inference is added to participant typing/submissions.
+Offline Jev audits use local AI_GATEWAY_API_KEY for Vercel or TYPESAFE_API_KEY for direct TypeSafe, explicit provider selection, small evidence packets, typed validation, provider/source/policy caching, bounded requests and a usage ledger. Vercel uses the typesafe-ai/jev gateway alias; direct TypeSafe pins jev-1.13.0. Record gateway-reported cost separately from estimates; never silently switch providers or models. Judgments are advisory and never authorize deletion, side effects or promotion. No Jev inference is added to participant typing/submissions.
 
 ## Hosted, storage and UI invariants
 
