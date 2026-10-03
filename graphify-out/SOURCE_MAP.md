@@ -1,13 +1,13 @@
-﻿# Current repository source map
+# Current repository source map
 
 Refreshed 2026-10-04 with Graphify 0.9.61 and its Windows workflow after the authorized codebase cleanup. Graph coverage is separate from application, hosted-provider and deployment verification.
 
 ## Coverage
 
 - **144/144 project files in scope** have graph representation and current SHA-256 fingerprints. The native corpus includes 111 code/configuration files, 22 project documents and one SVG. Ten additional files receive explicit file/schema/reference coverage, including CSS, Dockerfile, Wrangler JSONC and Prisma declarations. Graphify also reinjects one dated planning-memory document, which is marked historical.
-- **1,493 nodes, 3,791 projected edges, 78 named communities.** The prior full map contained 2,017 nodes, 4,792 edges and 199 project files. Removed scaffold is pruned; shared contracts, extracted UI/room helpers, audit tooling, CI and current steering are mapped.
+- **1,511 nodes, 3,830 projected edges, 92 named communities.** The prior full map contained 2,017 nodes, 4,792 edges and 199 project files. Removed scaffold is pruned; shared contracts, extracted UI/room helpers, audit tooling, CI and current steering are mapped.
 - Full AST extraction completed without failed sources. Semantic fragments and source hashes match current files. At completion, incremental detection reports zero changed/deleted supported files.
-- [source-inventory.json](source-inventory.json) records project source fingerprints. [relationships.json](relationships.json) preserves all **4,612 raw relationships**, with direction, source location and confidence, before graph projection.
+- [source-inventory.json](source-inventory.json) records project source fingerprints. [relationships.json](relationships.json) preserves all **4,681 raw relationships**, with direction, source location and confidence, before graph projection.
 
 `.graphifyignore` excludes `.codex/`, graph outputs, generated `artifacts/`, lockfile entries and dated `docs/harness/history/` snapshots. Current steering links to complete historical snapshots when needed. Dependency declarations remain indexed through `package.json`. Ignored local data, dependencies, builds and environment secrets stay outside the corpus. `.env.example` has template file representation only; environment values are not graph content. The credential scan passed.
 
@@ -34,7 +34,7 @@ Historical managed accounting/modules, SQL migrations and accepted decisions rem
 
 [diagnostics.json](diagnostics.json) records **zero missing/dangling endpoints and zero exact duplicate edges**. External modules remain marked external. Five known false member self-calls were corrected using their source (`response.json`, hash `.digest`, store `.merge`, and container `.fetch`). One false dynamic import from the audit test's source-text fixture was removed; it never loaded a real `tests/App` module.
 
-Six genuine recursive self-links remain. There are 332 raw parallel relationships sharing endpoints in the undirected projection. Graphify consolidates file representations and suppresses some import/containment edges. The refresh removes 39 containment self-loops created during consolidation. Use `relationships.json` for individual call sites, relation variants and direction. Static call resolution remains approximate; these corrections do not prove every call edge exact.
+Six genuine recursive self-links remain. There are 347 raw parallel relationships sharing endpoints in the undirected projection. Graphify consolidates file representations and suppresses some import/containment edges. The refresh removes 40 containment self-loops created during consolidation. Use `relationships.json` for individual call sites, relation variants and direction. Static call resolution remains approximate; these corrections do not prove every call edge exact.
 
 SQL extraction covers seven migrations and the RLS test with local `tree-sitter-sql==0.3.11`; this is a Graphify tooling dependency. Prisma coverage describes models/enums and referenced field types, not live database state. Unsupported configuration and CSS have file/reference coverage rather than full language ASTs. The prepared coordinator-fencing migration remains unapplied and live-unverified.
 
@@ -42,6 +42,6 @@ SQL extraction covers seven migrations and the RLS test with local `tree-sitter-
 
 Ran `graphify update . --force`, full AST extraction, parallel host-agent semantic refresh, supplementary source links, named community export, HTML generation, source/semantic hash checks, diagnostics and representative queries. Application cleanup evidence—133 tests, strict compilation, local/default builds and controlled three-profile browser checks—is in [cleanup verification](../docs/harness/codebase-cleanup-verification.md). Live hosted/provider/deployment claims remain limited there.
 
-AST extraction used no model tokens or provider API. Host semantic token telemetry is unavailable; [cost.json](cost.json) records it as unknown and preserves earlier known totals. Jev's separate failed authentication request is recorded in ignored audit evidence, not counted as a Graphify provider call. Graphify's sample benchmark estimated about 4.5x fewer query tokens; this is a corpus-sizing estimate, not measured billing or answer quality.
+AST extraction used no model tokens or provider API. Host semantic token telemetry is unavailable; [cost.json](cost.json) records it as unknown and preserves earlier known totals. Jev's separate successful 20-file Vercel triage and earlier failed dispatches are recorded in audit evidence, not counted as Graphify provider calls. The adapter uses separate credential/endpoint/model identities; the gateway alias is explicitly unpinned and has a bounded cache lifetime. Graphify's sample benchmark estimated about 4.5x fewer query tokens; this is a corpus-sizing estimate, not measured billing or answer quality.
 
 After later edits, `graphify update .` refreshes supported structure. It does not recreate document meaning or supplementary CSS/Prisma/configuration links. Whole-repository refreshes must update those layers, diagnostics and fingerprints together.

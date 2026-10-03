@@ -25,6 +25,16 @@
       "token_usage_available": false,
       "local_ast_tokens": 0,
       "separate_provider_calls": 0
+    },
+    {
+      "date": "2026-10-04",
+      "mode": "windows_vercel_adapter_source_refresh",
+      "files": 144,
+      "input_tokens": null,
+      "output_tokens": null,
+      "token_usage_available": false,
+      "local_ast_tokens": 0,
+      "separate_provider_calls": 0
     }
   ],
   "total_input_tokens": 23800,

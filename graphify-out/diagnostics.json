@@ -1,25 +1,25 @@
 {
-  "node_count": 1532,
+  "node_count": 1551,
   "unverified_node_count": 0,
-  "raw_edge_count": 4612,
+  "raw_edge_count": 4681,
   "non_object_edges": 0,
   "missing_endpoint_edges": 0,
   "dangling_endpoint_edges": 0,
   "self_loop_edges": 6,
-  "valid_candidate_edges": 4612,
+  "valid_candidate_edges": 4681,
   "exact_duplicate_edges": 0,
-  "directed_unique_endpoint_pairs": 4330,
-  "directed_same_endpoint_collapsed_edges": 282,
-  "undirected_unique_endpoint_pairs": 4280,
-  "undirected_same_endpoint_collapsed_edges": 332,
-  "same_endpoint_group_count": 270,
-  "relation_variant_groups": 231,
+  "directed_unique_endpoint_pairs": 4384,
+  "directed_same_endpoint_collapsed_edges": 297,
+  "undirected_unique_endpoint_pairs": 4334,
+  "undirected_same_endpoint_collapsed_edges": 347,
+  "same_endpoint_group_count": 284,
+  "relation_variant_groups": 245,
   "source_file_variant_groups": 0,
   "source_location_variant_groups": 39,
   "context_variant_groups": 2,
   "post_build_graph_type": "Graph",
-  "post_build_node_count": 1493,
-  "post_build_edge_count": 3830,
+  "post_build_node_count": 1511,
+  "post_build_edge_count": 3870,
   "post_build_error": "",
   "producer_suppression": {
     "path": "C:\\Users\\Administrator\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
@@ -184,7 +184,7 @@
     },
     {
       "source": "docs_harness_codebase_cleanup_plan_file",
-      "target": "docs_harness_architecture_file",
+      "target": "docs_harness_codebase_cleanup_verification_file",
       "edge_count": 3,
       "relations": [
         "references"
@@ -193,18 +193,18 @@
         "docs/harness/codebase-cleanup-plan.md"
       ],
       "source_locations": [
-        "L26",
-        "L35",
-        "lines 35"
+        "L3",
+        "L7",
+        "lines 3"
       ],
       "contexts": [
         ""
       ]
     }
   ],
-  "projected_contains_self_loops_removed": 39,
-  "final_node_count": 1493,
-  "final_edge_count": 3791,
-  "final_community_count": 78,
+  "projected_contains_self_loops_removed": 40,
+  "final_node_count": 1511,
+  "final_edge_count": 3830,
+  "final_community_count": 92,
   "final_recursive_self_links": 6
 }

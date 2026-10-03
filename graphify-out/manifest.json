@@ -522,10 +522,10 @@
     "semantic_hash": "894d3d5b0c1262d2e7fd79e51a724e97"
   },
   "README.md": {
-    "mtime": 1791053143.3043094,
-    "seen": 1791054626.3790934,
-    "ast_hash": "63e56d0b6ebe9fb94ae0127e3f5a81d4",
-    "semantic_hash": "63e56d0b6ebe9fb94ae0127e3f5a81d4"
+    "mtime": 1791055784.8974018,
+    "seen": 1791056036.9795713,
+    "ast_hash": "ac5f96d9786520ddde0cd25130fad274",
+    "semantic_hash": "ac5f96d9786520ddde0cd25130fad274"
   },
   "api.md": {
     "mtime": 1791053143.3062868,
@@ -534,16 +534,16 @@
     "semantic_hash": "d60a8099d9f28e3a0f8690301bfc3d6f"
   },
   "context.md": {
-    "mtime": 1791051843.1728308,
-    "seen": 1791054626.3790934,
-    "ast_hash": "d1b8aa78756fd1081adaed45c54f8ac3",
-    "semantic_hash": "d1b8aa78756fd1081adaed45c54f8ac3"
+    "mtime": 1791055784.8974018,
+    "seen": 1791056036.9795713,
+    "ast_hash": "f7784777e59cb61817ad3cbdca6462b4",
+    "semantic_hash": "f7784777e59cb61817ad3cbdca6462b4"
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791051843.1728308,
-    "seen": 1791054626.3790934,
-    "ast_hash": "a2caeb41e87f3d8e153b837efa890453",
-    "semantic_hash": "a2caeb41e87f3d8e153b837efa890453"
+    "mtime": 1791055784.8974018,
+    "seen": 1791056036.9795713,
+    "ast_hash": "98010ed54f256241d7c12df7a09b4bbe",
+    "semantic_hash": "98010ed54f256241d7c12df7a09b4bbe"
   },
   "docs/harness/assessment.md": {
     "mtime": 1791045225.8976135,
@@ -552,10 +552,10 @@
     "semantic_hash": "b00ce1e23b6e2bd077b98f31d7b87554"
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791054491.2616472,
-    "seen": 1791054626.3790934,
-    "ast_hash": "1f0d0df59f2d6164f9a05b32949c39c2",
-    "semantic_hash": "1f0d0df59f2d6164f9a05b32949c39c2"
+    "mtime": 1791055784.9130383,
+    "seen": 1791056036.9795713,
+    "ast_hash": "14f3b5a4d4ba4ce6798cff6e46934c23",
+    "semantic_hash": "14f3b5a4d4ba4ce6798cff6e46934c23"
   },
   "docs/harness/contradiction-resolution-plan.md": {
     "mtime": 1791045225.8976135,
@@ -564,10 +564,10 @@
     "semantic_hash": "29043882584f0d83cd8684b727b92212"
   },
   "docs/harness/decisions.md": {
-    "mtime": 1791053542.6296148,
-    "seen": 1791054626.3790934,
-    "ast_hash": "bb37dbcf2a439bc47f64f59fae9bd56b",
-    "semantic_hash": "bb37dbcf2a439bc47f64f59fae9bd56b"
+    "mtime": 1791055784.9130383,
+    "seen": 1791056036.9795713,
+    "ast_hash": "03ef03c8c247203a159d6efc399bffb1",
+    "semantic_hash": "03ef03c8c247203a159d6efc399bffb1"
   },
   "docs/harness/migration-plan.md": {
     "mtime": 1791045225.8976135,
@@ -600,10 +600,10 @@
     "semantic_hash": "95c22307038019e494bdd0e4cb25546d"
   },
   "instructions.md": {
-    "mtime": 1791051843.1728308,
-    "seen": 1791054626.3790934,
-    "ast_hash": "1c9f310737527442ff0fbef67ec112c1",
-    "semantic_hash": "1c9f310737527442ff0fbef67ec112c1"
+    "mtime": 1791055567.7509847,
+    "seen": 1791056036.9795713,
+    "ast_hash": "4b4aa849c89ce1e511b0ce32e0097560",
+    "semantic_hash": "4b4aa849c89ce1e511b0ce32e0097560"
   },
   "pnpm-workspace.yaml": {
     "mtime": 1791052389.5789137,
@@ -714,10 +714,10 @@
     "semantic_hash": "9d830310032080749a8dad2c9ead9f49"
   },
   "scripts/codebase-audit.ts": {
-    "mtime": 1791054413.5521545,
-    "seen": 1791054626.3790934,
-    "ast_hash": "12eb814c19941f66c7cc597d2201a5b3",
-    "semantic_hash": "12eb814c19941f66c7cc597d2201a5b3"
+    "mtime": 1791055785.927994,
+    "seen": 1791056036.9795713,
+    "ast_hash": "f7bdb22645433e1a085a445cfd705f52",
+    "semantic_hash": "f7bdb22645433e1a085a445cfd705f52"
   },
   "server/room-state.ts": {
     "mtime": 1791053402.357952,
@@ -774,10 +774,10 @@
     "semantic_hash": "b721ae096978af64727e8ae0c34af74c"
   },
   "tests/codebase-audit.test.ts": {
-    "mtime": 1791054355.0353172,
-    "seen": 1791054626.3790934,
-    "ast_hash": "d090b87be9646e5ac788343e0629988f",
-    "semantic_hash": "d090b87be9646e5ac788343e0629988f"
+    "mtime": 1791055785.9712665,
+    "seen": 1791056036.9795713,
+    "ast_hash": "10b5573f559bd6af011903c2f5fcc8e5",
+    "semantic_hash": "10b5573f559bd6af011903c2f5fcc8e5"
   },
   ".github/workflows/code-checks.yml": {
     "mtime": 1791052599.6893408,
@@ -786,16 +786,16 @@
     "semantic_hash": "87cfd7b094a4711fe37efb943bc9140e"
   },
   "docs/harness/codebase-cleanup-plan.md": {
-    "mtime": 1791054177.897092,
-    "seen": 1791054626.3790934,
-    "ast_hash": "d3c91b010eb3729addf5776559b216ce",
-    "semantic_hash": "d3c91b010eb3729addf5776559b216ce"
+    "mtime": 1791055784.9130383,
+    "seen": 1791056036.9795713,
+    "ast_hash": "ab23ec0e53dcde9708a97d486d02b88e",
+    "semantic_hash": "ab23ec0e53dcde9708a97d486d02b88e"
   },
   "docs/harness/codebase-cleanup-verification.md": {
-    "mtime": 1791054491.2616472,
-    "seen": 1791054626.3790934,
-    "ast_hash": "1bd74d377623ffc85d6b61afb1ab82d9",
-    "semantic_hash": "1bd74d377623ffc85d6b61afb1ab82d9"
+    "mtime": 1791055784.9130383,
+    "seen": 1791056036.9795713,
+    "ast_hash": "c0e45f1d64860f8acd87e6a236f48b52",
+    "semantic_hash": "c0e45f1d64860f8acd87e6a236f48b52"
   },
   "docs/harness/feature-change-template.md": {
     "mtime": 1791053274.5390778,
