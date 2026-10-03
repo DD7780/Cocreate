@@ -1,0 +1,8 @@
+{
+  "health": {
+    "status": "ok",
+    "service": "cocreate-app"
+  },
+  "pageStatus": 200,
+  "developmentClientServed": true
+}

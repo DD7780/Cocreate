@@ -1,6 +1,6 @@
 # Reliability verification — 2026-10-01
 
-This report remains the historical 2026-10-01 result. Fresh 2026-10-03 audit/scenario evidence is separately recorded in the [multi-user Step 01 baseline and handoff](multiuser-step01-baseline.md); completion status remains in the [canonical checklist](checklist.md).
+This report remains the historical 2026-10-01 result. Fresh 2026-10-03 evidence is separately recorded in the [Step 01 baseline](multiuser-step01-baseline.md) and [Step 02 handoff](multiuser-step02-handoff.md); completion status remains in the [canonical checklist](checklist.md).
 
 ## Scope and verified causes
 

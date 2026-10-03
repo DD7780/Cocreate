@@ -1,4 +1,4 @@
-import { RemoteCoordinator } from './coordinator.js';
+import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
 import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
@@ -27,6 +27,7 @@ export const normalizeInviteEmail=(value:string)=>{const email=value.trim().toLo
 export class SupabasePlatform {
   readonly admin: SupabaseClient;
   readonly bucket: string;readonly coordinator:RemoteCoordinator;
+  onCoordinatorLost(listener:(projectId:string)=>void){return this.coordinator.onLost(listener)}
   claimCoordinator(projectId:string){return this.coordinator.claim(projectId)}
   assertCoordinator(projectId:string){return this.coordinator.assert(projectId)}
 
@@ -153,13 +154,13 @@ export class SupabasePlatform {
     const update=typeof payload.update==='string'?payload.update:'';
     const harness={...payload};delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
-    const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
+    const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
     // Project timestamp is committed in the same fenced transaction.
     return {contentHash};
   }
 
   async recordProviderRequest(record:ProviderRequestRecord){
-    const {error}=await this.admin.rpc('record_project_provider_request',{target_project_id:record.workspaceId,target_call_id:record.callId,request_record:record});
+    const dispatch=record.outcome==='dispatching';const {error}=await this.admin.rpc(dispatch?'record_workflow_provider_dispatch':'record_project_provider_request',{target_project_id:record.workspaceId,target_call_id:record.callId,request_record:record,...(dispatch?this.coordinator.fence(record.workspaceId):{})});if(dispatch)this.checkFenceError(record.workspaceId,error);
     fail('Durable provider accounting failed',error);
   }
 
@@ -191,10 +192,11 @@ export class SupabasePlatform {
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {
     const bytes=Buffer.from(update),digest=createHash('sha256').update(bytes).digest('hex');
-    const {error}=await this.admin.from('project_document_updates').upsert({project_id:projectId,sequence,actor_id:actorId,update_bytes:encodePostgresBytea(bytes),update_hash:digest},{onConflict:'project_id,sequence',ignoreDuplicates:true});
+    const {error}=await this.admin.rpc('append_workflow_document_update',{target_project_id:projectId,...this.coordinator.fence(projectId),target_sequence:sequence,target_actor_id:actorId,target_update_bytes:encodePostgresBytea(bytes),target_update_hash:digest});this.checkFenceError(projectId,error);
     fail('Durable document update failed',error);
   }
 
+  private checkFenceError(projectId:string,error:{code?:string}|null){if(error?.code==='40001'){this.coordinator.invalidate(projectId);throw new CoordinatorUnavailableError()}}
   private async quarantine(projectId:string,kind:'snapshot'|'update',sourceRevision:number,raw:unknown,error:unknown){
     try{const{error:storageError}=await this.admin.from('project_persistence_quarantine').upsert({project_id:projectId,record_kind:kind,source_revision:sourceRevision,raw_bytes:encodePostgresBytea(persistedRawBytes(raw)),reason:error instanceof Error?error.message.slice(0,500):'Invalid persisted Yjs data'},{onConflict:'project_id,record_kind,source_revision',ignoreDuplicates:true});return!storageError}catch{return false}
   }

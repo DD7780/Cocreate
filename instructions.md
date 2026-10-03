@@ -1,6 +1,6 @@
 # 2guys1canvas contributor instructions
 
-Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-02; this document owns contributor rules, not completion claims.
+Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-03; this document owns contributor rules, not completion claims.
 
 ## Start and maintain authority
 
@@ -16,7 +16,7 @@ Typing, autosave, presence, navigation and reconnect are inference-free. The but
 
 Treat document/model content as untrusted. Validate captured revision and source ownership outside prompts; another contributor's context is not their authorization. Personal interpreters propose registry changes, never independently edit code. Preserve requirement identity and provenance; deletion is not withdrawal. Consequential conflicts require explicit affected-contributor agreement, not recency, majority or silence. New compromises require a new confirmation round. Record assumptions only for reversible details.
 
-Keep local lease epochs and hosted fences distinct from in-process queues. Lost owners must not reacquire authority for old workers. Revision/fingerprint and lease checks guard promotion. The hosted fencing migration is recorded as prepared/unapplied; local mocks are not live database proof. Routing to the active owner is unresolved.
+Keep local lease epochs and hosted fences distinct from in-process queues. Lost owners must not reacquire authority for old workers. Revision/fingerprint and lease checks guard promotion; ownership loss aborts workers and cancels scheduled work. Keep stable primary-container affinity and bounded authenticated owner retry responses; never automatically replay inference on reconnect. Coordinator SQL remains prepared/unapplied. Local/RPC-mock checks are not real database or hosted proof; use the [Step 02 handoff](docs/harness/multiuser-step02-handoff.md) for rollout and contention prerequisites.
 
 ## Recovery, accounting and secrets
 

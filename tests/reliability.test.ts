@@ -9,7 +9,7 @@ import { generateProjectPlan, extractRequirement } from '../server/generator.js'
 import { ProviderError } from '../server/providers.js';
 import { RoomManager } from '../server/rooms.js';
 import { EventStore } from '../server/event-store.js';
-import { RemoteCoordinator } from '../server/coordinator.js';
+import { CoordinatorUnavailableError, RemoteCoordinator } from '../server/coordinator.js';
 import { applySteeringUpdate } from '../server/steering-edits.js';
 
 const plan=(name:string,content:string)=>({operations:[{type:'write',path:name,content}],summary:'Updated',decisions:[],conflicts:[],specification:{agreed:[],proposed:[],questions:[]}});
@@ -77,7 +77,7 @@ test('remote coordinator renewal cannot silently reacquire ownership for an old 
   let owner='',epoch=0,expired=false;
   const rpc=async(_name:string,input:Record<string,unknown>)=>{if(input.expected_epoch===null){if(owner&&owner!==input.target_owner_id&&!expired)return{data:null,error:{message:'owned'}};owner=String(input.target_owner_id);epoch++;expired=false;return{data:epoch,error:null};}return owner===input.target_owner_id&&epoch===input.expected_epoch&&!expired?{data:epoch,error:null}:{data:null,error:{message:'stale'}};};
   const a=new RemoteCoordinator(rpc),b=new RemoteCoordinator(rpc);
-  try{await a.claim('room');await assert.rejects(()=>b.claim('room'),/owned/);expired=true;await b.claim('room');await assert.rejects(()=>a.assert('room'),/stale/);await assert.rejects(()=>a.claim('room'),/ownership was lost/);assert.throws(()=>a.fence('room'),/unavailable/);}finally{await a.close();await b.close();}
+  try{await a.claim('room');await assert.rejects(()=>b.claim('room'),CoordinatorUnavailableError);expired=true;await b.claim('room');await assert.rejects(()=>a.assert('room'),CoordinatorUnavailableError);await assert.rejects(()=>a.claim('room'),CoordinatorUnavailableError);assert.throws(()=>a.fence('room'),/unavailable/);}finally{await a.close();await b.close();}
 });
 
 test('remote saves commit in revision order and acknowledge the actual snapshot',async()=>{
@@ -137,4 +137,20 @@ test('independent participants submit in durable capture order, retain later bui
   try{for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])manager.join(room,id,name);const connection=(await manager.saveConnection(room,{name:'Synthetic',provider:'custom',baseUrl:provider.baseUrl,apiFormat:'responses',apiKey:'synthetic'})).id;room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};await manager.assignAI(room,{connectionId:connection,model:'builder'},{connectionId:connection,model:'builder'});
     write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');releaseFirstBuild();await waitFor(()=>room.versions.length===1&&!room.buildTask);assert.ok(builds>=2,'the fixed active build is superseded and later accepted steering is processed');assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
   }finally{releaseFirstBuild();manager.shutdown();for(const doc of docs)doc?.destroy();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('ownership loss after compilation blocks promotion; command replay adds no physical call',async()=>{
+  let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0;
+  const gate=new Promise<void>(resolve=>{release=resolve}),bundling=new Promise<void>(resolve=>{entered=resolve});
+  const provider=await fixture(body=>{calls++;return response(body.text.format.schema.required.includes('goals')?interpreted('Build catalog'):plan('src/App.tsx','export default function App(){return <main>Compiled fixture</main>}'))});
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lost-promotion-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{canonicalVersions=(payload.versions as any[]).length},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},recordProviderRequest:async()=>{},onCoordinatorLost:callback=>{lose=callback;return()=>{}}}});
+  const execute=manager.tools.execute.bind(manager.tools);
+  manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
+  try{
+    const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
+    const first=await manager.submitChanges(room,'alice','same-command');await bundling;const before=calls;
+    assert.equal((await manager.submitChanges(room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
+    lose(room.id);release();await room.buildTask;await room.persistQueue;
+    assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);
+  }finally{release();manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
 });

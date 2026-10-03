@@ -1,0 +1,61 @@
+{
+  "verifiedAt": "2026-10-03T15:42:55.764286+00:00",
+  "scope": "Step 02 local implementation and controlled/RPC mock/browser verification; real coordinator SQL and hosted release unverified",
+  "fullTests": 148,
+  "focusedTests": 31,
+  "productionBuild": "passed",
+  "verificationScriptTypes": "passed",
+  "browserParticipants": 3,
+  "ownerRetry": {
+    "scope": "Chrome with controlled WebSocket failure and HTTP 503 diagnosis; no hosted account or SQL",
+    "terminal": true,
+    "diagnoses": 7,
+    "retainedDraft": true,
+    "extraInterpreterCalls": 0,
+    "extraBuilderCalls": 0
+  },
+  "graph": {
+    "mode": "AST only; no LLM calls; SQL parser unavailable",
+    "nodes": 1943,
+    "edges": 3652,
+    "communities": 115
+  },
+  "documentationLinksChecked": 139,
+  "uniqueDecisionIds": 45,
+  "diffCheck": "passed",
+  "sourceSha256": {
+    "server/coordinator.ts": "45c63618c518a576f7c5a0d790c7ab9801ff8a65807e8ba08931b4cc98318075",
+    "server/coordinator-response.ts": "f29cadecac7830ae34df4ea9a659b421a50c998fd93c29d0a8806eb3c82e18f3",
+    "server/index.ts": "427c51273a426adf23e1a523d1a33916a4c01044cbd150d045c09e32ac81042b",
+    "server/project-routes.ts": "c6f23669963f549a6785948af9dbab81d66f37d9c70b48b0c57f53c3163a5125",
+    "server/rooms.ts": "e032c60c7859fe095c5edb8fa4165ec1b473c531c11441e3995ee9743aee05a5",
+    "server/supabase-platform.ts": "1c8df45520e05ca4064a6a69ab1cff80d421520b2537ef5c08b6f6c868a79296",
+    "src/provider.ts": "15d81b6189cac6201b937628bc4112bbcb88e91a8433798d46a36438eb821817",
+    "scripts/verify-coordinator-postgres.ts": "634cc7e7d705934c0385ed82cea0f8acbdf2aaa0b717e535cd3b661fa0032872",
+    "scripts/verify-reliability.ts": "66017167e8b359d52ca7d4f4d14e739c6621447df759cc4b1ffb895be7d4c053",
+    "tests/coordinator-fencing.test.ts": "c1b8ef37b9f822a31fb145799ceb65ed924272bdf3163a0cad59e75696130ab7",
+    "tests/reliability.test.ts": "3bdc3533dca076d711d8a11494687a4c433961900cbcb29b599ef86260b18913",
+    "tests/hosted-reliability.test.ts": "6d29aeccf757670b5c5c0d0540d4ce50019e0ef7956e9f90134def71866e9be3",
+    "tests/provider-reconnect.test.ts": "cc800a069c0ca2a782eb8d538ebf50e9fcae5eb555866013502602852d6e034a",
+    "supabase/migrations/20261003203000_coordinator_dispatch_updates.sql": "369be1a32cc916c6e20c84ae05e4bab11370260d2c8d9beeff8a34469d6f677c"
+  },
+  "screenshotsInspected": [
+    "desktop.png",
+    "mobile.png",
+    "owner-reconnecting.png",
+    "owner-unavailable.png"
+  ],
+  "database": "not executed; guarded disposable environment prerequisite refused",
+  "migration": "both coordinator migrations prepared/unapplied",
+  "deployment": "not performed",
+  "paidInference": "none; controlled local HTTP only",
+  "localPreview": {
+    "health": {
+      "status": "ok",
+      "service": "cocreate-app"
+    },
+    "pageStatus": 200,
+    "developmentClientServed": true
+  },
+  "nextStep": "Step 03 not started"
+}

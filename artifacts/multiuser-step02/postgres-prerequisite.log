@@ -1,0 +1,11 @@
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-coordinator-postgres.ts:9
+    throw new Error('Set COCREATE_COORDINATOR_TEST_DATABASE_URL and COCREATE_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.');
+          ^
+
+Error: Set COCREATE_COORDINATOR_TEST_DATABASE_URL and COCREATE_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-coordinator-postgres.ts:9:11)
+    at ModuleJob.run (node:internal/modules/esm/module_job:343:25)
+    at async onImport.tracePromise.__proto__ (node:internal/modules/esm/loader:681:26)
+    at async asyncRunEntryPointWithESMLoader (node:internal/modules/run_main:117:5)
+
+Node.js v22.23.2

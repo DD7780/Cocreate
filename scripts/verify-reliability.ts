@@ -22,11 +22,13 @@ const fake=http.createServer(async(req,res)=>{
   res.setHeader('content-type','application/json');res.end(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(value)}]}],status:'completed',usage:{input_tokens:100,output_tokens:50}}));
 });
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
+const providerAddress=fake.address();
+if(!providerAddress||typeof providerAddress==='string')throw new Error('Controlled provider did not bind a TCP port.');
 const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'reliability-browser-'));
-const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${(fake.address()).port}`});
+const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${providerAddress.port}`});
 const room=service.manager.create(`browser-${crypto.randomUUID()}`);
 for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])service.manager.join(room,id,name);
-const connection=(await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${(fake.address() as any).port}`,apiFormat:'responses',apiKey:'synthetic'})).id;
+const connection=(await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${providerAddress.port}`,apiFormat:'responses',apiKey:'synthetic'})).id;
 room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};
 await service.manager.assignAI(room,{connectionId:connection,model:'builder'},{connectionId:connection,model:'builder'});
 const {url:origin}=await service.start();
@@ -43,7 +45,7 @@ async function open(id:string,index:number){
   const evaluate=async(expression:string)=>{const result=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(result.exceptionDetails)throw new Error(JSON.stringify(result.exceptionDetails));return result.result.value;};
   const instance={call,evaluate,socket,process:browser,profile};browsers.push(instance);
   await call('Page.enable');await call('Network.enable');await call('Runtime.enable');
-  await call('Page.addScriptToEvaluateOnNewDocument',{source:'window.__sockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__sockets.push(this)}};'});
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:`window.__sockets=[];window.__ownerRetryDiagnoses=0;const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){if(window.__ownerRetryFixture){const url=new URL(args[0]);url.pathname='/fixture-unavailable-ws';args[0]=url.href}super(...args);window.__sockets.push(this)}};const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(window.__ownerRetryFixture&&String(args[0]).includes('/state')){window.__ownerRetryDiagnoses++;return Promise.resolve(new Response('{}',{status:503,headers:{'Retry-After':'2'}}))}return nativeFetch(...args)};`});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:origin});await wait(200);
   const token=createSession('browser-fixture',{roomId:room.id,participantId:id,name:id});await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`);
   await call('Page.navigate',{url:`${origin}/r/${room.id}`});await until(()=>evaluate("!!document.querySelector('.document-editor') && !document.querySelector('.connection-banner')"),'workspace connection');return instance;
@@ -78,7 +80,22 @@ try{
   await a.evaluate("[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View usage')).click()");await until(()=>a.evaluate("!!document.querySelector('#workflow-usage')"),'usage action');await snapshot(a,'workflow.png');
   await a.evaluate("[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()");await wait(100);
   const responsive=[];for(const width of [1440,1024,768,390]){await a.call('Emulation.setDeviceMetricsOverride',{width,height:900,deviceScaleFactor:1,mobile:width<600});await wait(150);const layout=await a.evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,card:!!document.querySelector(".project-token-card"),selector:!!document.querySelector(".intent-revision-selector select")})');assert.ok(layout.width<=width,`Overflow at ${width}: ${JSON.stringify(layout)}`);assert.ok(layout.card&&layout.selector);responsive.push({width,...layout});if(width===390){await a.evaluate("document.querySelector('.agent-panel').scrollIntoView()");await snapshot(a,'mobile.png');await a.evaluate("[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View requirements')).click()");assert.ok(await a.evaluate("!!document.querySelector('.context-drawer')"));await a.evaluate("document.querySelector('[aria-label=\"Close details\"]').click()");}}
-  const report={scope:'Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference',participants:3,simultaneousSubmissions:true,selectedRevisionVerified:true,offlineEditsRecovered:true,reloadDraftRecovered:true,noInferenceOnReconnect:true,noInferenceOnReload:true,converged:states[0],interpreterCalls,builderCalls,responsive,acceptedToRenderedPreviewMs,previewTimingScope:'Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency',compilingIncorrectCandidatePromoted:true,functionalVerified:previewRun.verification.verified,filterControls,referenceComparison:'Not performed in this baseline; supplied reference is available and comparison remains pending'};
+  let ownerRetry:Record<string,unknown>|undefined;
+  if(process.env.COCREATE_COORDINATOR_BROWSER_RETRY==='true'){
+    // Controlled browser transport failure; hosted authorization/SQL are separate fixtures.
+    const beforeCalls={interpreterCalls,builderCalls};
+    await a.call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
+    await a.evaluate('window.__ownerRetryFixture=true;window.__sockets.forEach(socket=>socket.close())');
+    await until(()=>a.evaluate("document.querySelector('.connection-banner')?.textContent.includes('Waiting for the workflow owner')"),'owner retry banner');
+    await write(a,'Retained during owner outage. ');await snapshot(a,'owner-reconnecting.png');
+    let terminal=false;for(let attempt=0;attempt<100;attempt++){terminal=await a.evaluate("!!document.querySelector('.connection-banner.terminal')");if(terminal)break;await wait(500)}
+    assert.ok(terminal,'owner retry reaches its terminal bound');
+    const message=await a.evaluate("document.querySelector('.connection-banner').textContent");assert.match(message,/workflow owner.*Reopen/);
+    assert.ok(await a.evaluate("document.querySelector('.document-editor').textContent.includes('Retained during owner outage')"));
+    assert.deepEqual({interpreterCalls,builderCalls},beforeCalls);await snapshot(a,'owner-unavailable.png');
+    ownerRetry={scope:'Chrome with controlled WebSocket failure and HTTP 503 diagnosis; no hosted account or SQL',terminal,diagnoses:await a.evaluate('window.__ownerRetryDiagnoses'),retainedDraft:true,extraInterpreterCalls:interpreterCalls-beforeCalls.interpreterCalls,extraBuilderCalls:builderCalls-beforeCalls.builderCalls};
+  }
+  const report={scope:'Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference',participants:3,ownerRetry,simultaneousSubmissions:true,selectedRevisionVerified:true,offlineEditsRecovered:true,reloadDraftRecovered:true,noInferenceOnReconnect:true,noInferenceOnReload:true,converged:states[0],interpreterCalls,builderCalls,responsive,acceptedToRenderedPreviewMs,previewTimingScope:'Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency',compilingIncorrectCandidatePromoted:true,functionalVerified:previewRun.verification.verified,filterControls,referenceComparison:'Not performed in this baseline; supplied reference is available and comparison remains pending'};
   fs.writeFileSync(path.join(output,'browser-checks.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report,null,2));
 }finally{
   for(const browser of browsers){browser.socket.close();browser.process.kill();}

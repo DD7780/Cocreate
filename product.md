@@ -1,6 +1,6 @@
 # 2guys1canvas product brief
 
-This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-02 from actual human requests and repository decisions, not an assistant-generated follow-up prompt.
+This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-03 with Step 02 owner retry; other accepted human product decisions are preserved.
 
 ## Mission, users and scope
 
@@ -14,7 +14,7 @@ One Docs-like, vertically scrollable rich-text canvas supports presence, persist
 
 **Build my changes** captures only the authenticated participant's pending changes, with a flush acknowledgement and replay-safe request ID. Ram's submission does not authorize Sham's draft. Keep one logical personal interpreter per participant and one active shared builder; mode or effort does not change agent count. Personal interpreters classify individual ideas, questions, explicit requests, decisions and withdrawals; only explicit requests and decisions enter the accepted registry. Submission alone does not turn a proposal into an instruction. Accepted requirements remain the baseline for one shared application.
 
-Nearby eligible submissions use a short configurable collection window, initially three seconds. Capture order determines reconciliation; each candidate uses a fixed accepted revision. Later accepted steering remains pending for the next serialized build and can supersede the current candidate. Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot promote after ownership changes. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
+Nearby eligible submissions use a short configurable collection window, initially three seconds. Capture order determines reconciliation; each candidate uses a fixed accepted revision. Later accepted steering remains pending for the next serialized build and can supersede the current candidate. Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot dispatch or promote after ownership loss. Owner unavailability has bounded connection retries and a clear reopen action, with the current page retaining edits. Reconnect never resubmits inference; explicit command retries preserve their request ID. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
 
 Consequential contradictions retain faithful alternatives, attribution, history and the last agreed baseline. Only affected contributors resolve a round: silence is pending, unanimous explicit selections resolve, differing completed choices become Disagreements. Changed options or compromises need fresh confirmation. Block dependent disputed changes while safe independent work remains eligible. Conflict highlights, richer compromise/reopen controls and dependency precision remain accepted targets where not implemented.
 

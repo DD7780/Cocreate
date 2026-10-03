@@ -1,6 +1,6 @@
 # 2guys1canvas implemented API contracts
 
-Source-inspected 2026-10-02 against `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/byok-lease.ts`, `server/supabase-platform.ts` and `src/types.ts`. This reference records implemented contracts, not live API verification. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns remaining checks.
+Source-inspected 2026-10-03 including Step 02 coordinator/retry boundaries. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 
@@ -10,7 +10,9 @@ Hosted project routes use a Supabase access token verified for issuer/audience/s
 
 Local mode uses HMAC-SHA256 signed room participant tokens `{roomId, participantId, name}`; local creation/join has no account identity or expiry guarantee. These compatibility sessions are not hosted authorization. Invalid room tickets return 401, missing rooms 404 and denied permission usually 403; caught operation/provider failures commonly return 400 `{error}`. Operation success is not functional acceptance.
 
-Hosted use requires the service-role coordinator RPCs in [20261001104120_workflow_coordinator_fencing.sql](supabase/migrations/20261001104120_workflow_coordinator_fencing.sql). This migration is recorded as prepared/unapplied; live SQL/account behavior is unverified. Missing RPCs fail closed and non-owner instances are not automatically routed to the owner.
+Hosted use requires the service-role RPCs in the [original fencing migration](supabase/migrations/20261001104120_workflow_coordinator_fencing.sql) and [Step 02 hardening migration](supabase/migrations/20261003203000_coordinator_dispatch_updates.sql). Both remain prepared/unapplied; real SQL and hosted-account behavior are unverified. Missing RPCs fail closed. Current routing retains the Worker primary-container affinity and returns a bounded retry on non-owner ingress.
+
+Ownership unavailable or lost returns HTTP **503**, `Retry-After: 2`, `Cache-Control: no-store`, and `{code:"coordinator_unavailable", retryAfterMs:2000, retryable:true, error}`. The safe message says to retry with the same request ID and reopen the project if it persists. Membership denial remains 403 and invalid tickets 401; current authorization is checked first. WebSocket rejection uses HTTP 503/Retry-After; an established socket losing ownership closes with 1012, while access revocation closes with 4403. No Location header or owner/credential disclosure is returned. The client retries connection only, then shows a terminal reopen action with page edits retained.
 
 ## Authenticated project routes
 

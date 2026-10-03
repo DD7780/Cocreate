@@ -1,0 +1,119 @@
+(node:13296) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"35e9462d-76c4-46b1-9fd3-1fcc2abc29fc","correlationId":"d763904e-2e52-4df1-b9d2-75be8daf5c32"}
+{"event":"collaboration.connected","connectionId":"cf6ce9d8-5ba0-4ff5-999e-548c8b0d42fc","correlationId":"4e5a019c-259d-418b-b445-11d82604ad49"}
+{"event":"collaboration.connected","connectionId":"5f08ebd8-4c18-459c-9d19-9ab8b1ae6aac","correlationId":"72b2c26f-ccec-4b5a-a135-8bfea252a97f"}
+{"event":"collaboration.disconnected","connectionId":"5f08ebd8-4c18-459c-9d19-9ab8b1ae6aac","code":1005}
+{"event":"collaboration.connected","connectionId":"230c6508-451d-4e1f-80be-3be9c46eb85c","correlationId":"bcbefbd7-8f3f-427d-829f-334efe5713b7"}
+{"event":"collaboration.disconnected","connectionId":"230c6508-451d-4e1f-80be-3be9c46eb85c","code":1001}
+{"event":"collaboration.connected","connectionId":"c503661d-4f06-4236-a096-319cc5a39c72","correlationId":"1ba24527-3a06-4197-8ed1-370d00d02c16"}
+{"event":"collaboration.connected","connectionId":"893c4c0e-4396-4233-a9aa-6d8afc80c800","correlationId":"f7d18463-730c-49fa-a86e-c2755f4e2457"}
+{"event":"collaboration.disconnected","connectionId":"893c4c0e-4396-4233-a9aa-6d8afc80c800","code":1005}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"b92568c4-5661-445b-9ca2-9a4867e16d43"}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"1b6a44e8-1151-45a6-944c-731d30381c4d"}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"abb96422-512c-4b44-9951-fe887d5b42a9"}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"132e90c0-42a1-42a8-a2e2-ab9e4a457227"}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"9dfa11c8-a336-43cc-94cd-89956215466d"}
+{"event":"collaboration.upgrade_rejected","category":"unknown_path","correlationId":"80082bb4-1d20-46d8-bcc2-22dd7557c102"}
+{
+  "scope": "Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference",
+  "participants": 3,
+  "ownerRetry": {
+    "scope": "Chrome with controlled WebSocket failure and HTTP 503 diagnosis; no hosted account or SQL",
+    "terminal": true,
+    "diagnoses": 7,
+    "retainedDraft": true,
+    "extraInterpreterCalls": 0,
+    "extraBuilderCalls": 0
+  },
+  "simultaneousSubmissions": true,
+  "selectedRevisionVerified": true,
+  "offlineEditsRecovered": true,
+  "reloadDraftRecovered": true,
+  "noInferenceOnReconnect": true,
+  "noInferenceOnReload": true,
+  "converged": {
+    "revision": 3,
+    "artifact": 2,
+    "usage": {
+      "recorded": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "generation": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "setup": {
+        "requests": 0,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0
+      },
+      "unknownUsageRequests": 0,
+      "recordedFrom": "2026-10-03T15:25:07.120Z",
+      "coverage": "partial"
+    },
+    "accepted": [
+      "req_5b9f2fd90ce8",
+      "req_980895587501",
+      "req_a78566be4eac"
+    ]
+  },
+  "interpreterCalls": 3,
+  "builderCalls": 2,
+  "responsive": [
+    {
+      "width": 1440,
+      "viewport": 1440,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 1024,
+      "viewport": 1024,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 768,
+      "viewport": 768,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "card": true,
+      "selector": true
+    }
+  ],
+  "acceptedToRenderedPreviewMs": 1919,
+  "previewTimingScope": "Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency",
+  "compilingIncorrectCandidatePromoted": true,
+  "functionalVerified": false,
+  "filterControls": 0,
+  "referenceComparison": "Not performed in this baseline; supplied reference is available and comparison remains pending"
+}
+{"event":"collaboration.disconnected","connectionId":"c503661d-4f06-4236-a096-319cc5a39c72","code":1006}
+{"event":"collaboration.disconnected","connectionId":"cf6ce9d8-5ba0-4ff5-999e-548c8b0d42fc","code":1006}
+{"event":"collaboration.disconnected","connectionId":"35e9462d-76c4-46b1-9fd3-1fcc2abc29fc","code":1006}

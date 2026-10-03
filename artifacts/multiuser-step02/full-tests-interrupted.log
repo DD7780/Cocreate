@@ -1,0 +1,379 @@
+$ cross-env COCREATE_AUTH_MODE=local tsx --test tests/*.test.ts
+TAP version 13
+# Subtest: calculates uncached, cached, and cache-write charges without assuming cache hits
+ok 1 - calculates uncached, cached, and cache-write charges without assuming cache hits
+  ---
+  duration_ms: 6.9629
+  type: 'test'
+  ...
+# Subtest: reasoning usage is informational and never billed twice
+ok 2 - reasoning usage is informational and never billed twice
+  ---
+  duration_ms: 0.3702
+  type: 'test'
+  ...
+# Subtest: aggregates multiple interpreters and one shared builder exactly once
+ok 3 - aggregates multiple interpreters and one shared builder exactly once
+  ---
+  duration_ms: 0.8623
+  type: 'test'
+  ...
+# Subtest: repairs and failures remain in totals while missing usage remains unknown
+ok 4 - repairs and failures remain in totals while missing usage remains unknown
+  ---
+  duration_ms: 0.4607
+  type: 'test'
+  ...
+# Subtest: applies long-context tiers and preserves pricing-version changes per call
+ok 5 - applies long-context tiers and preserves pricing-version changes per call
+  ---
+  duration_ms: 1.667
+  type: 'test'
+  ...
+# Subtest: estimates stay distinct from the user spending limit
+ok 6 - estimates stay distinct from the user spending limit
+  ---
+  duration_ms: 1.4859
+  type: 'test'
+  ...
+# Subtest: effectiveness requires comparable samples and includes failed repairs in cost
+ok 7 - effectiveness requires comparable samples and includes failed repairs in cost
+  ---
+  duration_ms: 2.3215
+  type: 'test'
+  ...
+# (node:28264) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Developer / Medium resolves one validated connection and exposes honest rates
+ok 8 - Developer / Medium resolves one validated connection and exposes honest rates
+  ---
+  duration_ms: 109.3727
+  type: 'test'
+  ...
+# Subtest: Developer effort levels expose distinct bounded executor output allowances
+ok 9 - Developer effort levels expose distinct bounded executor output allowances
+  ---
+  duration_ms: 1.5474
+  type: 'test'
+  ...
+# Subtest: complexity is deterministic and does not spend a model call
+ok 10 - complexity is deterministic and does not spend a model call
+  ---
+  duration_ms: 0.7754
+  type: 'test'
+  ...
+# Subtest: evaluation requires repeated task evidence and counts repairs in total cost
+ok 11 - evaluation requires repeated task evidence and counts repairs in total cost
+  ---
+  duration_ms: 0.892
+  type: 'test'
+  ...
+# Subtest: Developer routing respects the remaining budget
+ok 12 - Developer routing respects the remaining budget
+  ---
+  duration_ms: 21.2425
+  type: 'test'
+  ...
+# Subtest: all three modes are explicit and unimplemented workflows remain unavailable
+ok 13 - all three modes are explicit and unimplemented workflows remain unavailable
+  ---
+  duration_ms: 0.545
+  type: 'test'
+  ...
+# Subtest: discovery without passed capability checks is unavailable and actionable
+ok 14 - discovery without passed capability checks is unavailable and actionable
+  ---
+  duration_ms: 0.5281
+  type: 'test'
+  ...
+# Subtest: applying a preset is opt-in, preserves Advanced overrides, and reserves atomically
+ok 15 - applying a preset is opt-in, preserves Advanced overrides, and reserves atomically
+  ---
+  duration_ms: 844.8079
+  type: 'test'
+  ...
+# Subtest: legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history
+ok 16 - legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history
+  ---
+  duration_ms: 198.2401
+  type: 'test'
+  ...
+# Subtest: manual assignments remain Custom after migration and activation
+ok 17 - manual assignments remain Custom after migration and activation
+  ---
+  duration_ms: 92.9374
+  type: 'test'
+  ...
+# (node:20204) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: personal and builder roles can use different encrypted provider connections
+ok 18 - personal and builder roles can use different encrypted provider connections
+  ---
+  duration_ms: 175.5079
+  type: 'test'
+  ...
+# Subtest: unverified models cannot be activated for an agent layer
+ok 19 - unverified models cannot be activated for an agent layer
+  ---
+  duration_ms: 70.0729
+  type: 'test'
+  ...
+# Subtest: known providers normalize a pasted operation URL to their official API base
+ok 20 - known providers normalize a pasted operation URL to their official API base
+  ---
+  duration_ms: 281.4882
+  type: 'test'
+  ...
+# Subtest: legacy placeholder previews are not exposed as the current generated product
+ok 21 - legacy placeholder previews are not exposed as the current generated product
+  ---
+  duration_ms: 84.1282
+  type: 'test'
+  ...
+# Subtest: canvas effort changes Custom allowances without changing manual assignments
+ok 22 - canvas effort changes Custom allowances without changing manual assignments
+  ---
+  duration_ms: 149.5061
+  type: 'test'
+  ...
+# Subtest: session refresh boundary refreshes missing and near-expiry access tokens
+ok 23 - session refresh boundary refreshes missing and near-expiry access tokens
+  ---
+  duration_ms: 1.9208
+  type: 'test'
+  ...
+# (node:1888) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+ok 24 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 7257.6809
+  type: 'test'
+  ...
+# Subtest: Alt+X is exact and ignores repeats, composition, AltGraph and extra modifiers
+ok 25 - Alt+X is exact and ignores repeats, composition, AltGraph and extra modifiers
+  ---
+  duration_ms: 2.139
+  type: 'test'
+  ...
+# Subtest: legacy preferences cannot override the fixed platform shortcut
+ok 26 - legacy preferences cannot override the fixed platform shortcut
+  ---
+  duration_ms: 0.467
+  type: 'test'
+  ...
+# Subtest: builder schema and planning repair missing or invalid file operations before tool execution
+ok 27 - builder schema and planning repair missing or invalid file operations before tool execution
+  ---
+  duration_ms: 412.6115
+  type: 'test'
+  ...
+# Subtest: builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry
+ok 28 - builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry
+  ---
+  duration_ms: 59.6398
+  type: 'test'
+  ...
+# (node:26476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the application exposes a container readiness endpoint
+ok 29 - the application exposes a container readiness endpoint
+  ---
+  duration_ms: 269.7794
+  type: 'test'
+  ...
+# Subtest: the Cloudflare container uses the native WebSocket-aware proxy
+ok 30 - the Cloudflare container uses the native WebSocket-aware proxy
+  ---
+  duration_ms: 28.4448
+  type: 'test'
+  ...
+# Subtest: server-signed attribution cannot be changed by the client
+ok 31 - server-signed attribution cannot be changed by the client
+  ---
+  duration_ms: 6.487
+  type: 'test'
+  ...
+# Subtest: independent concurrent Yjs edits merge without lost text
+ok 32 - independent concurrent Yjs edits merge without lost text
+  ---
+  duration_ms: 15.7714
+  type: 'test'
+  ...
+# Subtest: only the newest orchestration revision can be promoted
+ok 33 - only the newest orchestration revision can be promoted
+  ---
+  duration_ms: 0.2771
+  type: 'test'
+  ...
+# Subtest: generation errors retain the last success and block unsafe code
+ok 34 - generation errors retain the last success and block unsafe code
+  ---
+  duration_ms: 2.6337
+  type: 'test'
+  ...
+# Subtest: custom provider URLs require HTTPS except for local testing
+ok 35 - custom provider URLs require HTTPS except for local testing
+  ---
+  duration_ms: 1.1402
+  type: 'test'
+  ...
+# Subtest: provider model discovery returns exact account model IDs
+ok 36 - provider model discovery returns exact account model IDs
+  ---
+  duration_ms: 256.1731
+  type: 'test'
+  ...
+# Subtest: multi-file project compiles to an isolated React preview
+ok 37 - multi-file project compiles to an isolated React preview
+  ---
+  duration_ms: 4913.1329
+  type: 'test'
+  ...
+# (node:28292) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"dc704a77-567a-4a73-b458-8e52a6683377"}
+# {"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"9e057518-c013-4f38-a9ea-b8dea96a86f5"}
+# {"event":"collaboration.upgrade_rejected","category":"missing_room","correlationId":"60a0c07f-8166-42bc-87b2-0e6836a6c05e"}
+# Subtest: collaboration upgrades expose safe authentication and room failures
+ok 38 - collaboration upgrades expose safe authentication and room failures
+  ---
+  duration_ms: 561.8887
+  type: 'test'
+  ...
+# (node:25112) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity
+ok 39 - conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity
+  ---
+  duration_ms: 686.9948
+  type: 'test'
+  ...
+# (node:25304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: workspace owner discovers account models and activates the shared connection
+ok 40 - workspace owner discovers account models and activates the shared connection
+  ---
+  duration_ms: 928.4293
+  type: 'test'
+  ...
+# Subtest: collaborators receive redacted connection status and cannot manage owner credentials
+ok 41 - collaborators receive redacted connection status and cannot manage owner credentials
+  ---
+  duration_ms: 182.1517
+  type: 'test'
+  ...
+# Subtest: AI effort endpoint is owner-only and validates the requested level
+ok 42 - AI effort endpoint is owner-only and validates the requested level
+  ---
+  duration_ms: 167.1317
+  type: 'test'
+  ...
+# Subtest: owner effort mutation updates a connected Custom room without a provider call
+ok 43 - owner effort mutation updates a connected Custom room without a provider call
+  ---
+  duration_ms: 156.563
+  type: 'test'
+  ...
+# (node:9812) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+ok 44 - remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+  ---
+  duration_ms: 84.976
+  type: 'test'
+  ...
+# Subtest: closing during a claim releases the late epoch without reviving ownership
+ok 45 - closing during a claim releases the late epoch without reviving ownership
+  ---
+  duration_ms: 6.666
+  type: 'test'
+  ...
+# Subtest: closing during renewal cannot validate an old worker; malformed epochs fail closed
+ok 46 - closing during renewal cannot validate an old worker; malformed epochs fail closed
+  ---
+  duration_ms: 5.574
+  type: 'test'
+  ...
+# Subtest: loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+ok 47 - loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+  ---
+  duration_ms: 518.2254
+  type: 'test'
+  ...
+# Subtest: hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+ok 48 - hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+  ---
+  duration_ms: 18.7564
+  type: 'test'
+  ...
+# (node:25104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: event store orders events, redacts secrets, stores artifacts, and enforces run transitions
+ok 49 - event store orders events, redacts secrets, stores artifacts, and enforces run transitions
+  ---
+  duration_ms: 151.0435
+  type: 'test'
+  ...
+# Subtest: tool policy denies personal agents and unknown tools before execution
+ok 50 - tool policy denies personal agents and unknown tools before execution
+  ---
+  duration_ms: 112.0441
+  type: 'test'
+  ...
+# Subtest: append-only snapshot artifacts reconstruct a missing derived workspace view
+ok 51 - append-only snapshot artifacts reconstruct a missing derived workspace view
+  ---
+  duration_ms: 114.887
+  type: 'test'
+  ...
+# Subtest: room restart reconstructs the last product and interrupts an in-flight run
+ok 52 - room restart reconstructs the last product and interrupts an in-flight run
+  ---
+  duration_ms: 353.7144
+  type: 'test'
+  ...
+# Subtest: legacy workspace migration makes a backup before importing state
+ok 53 - legacy workspace migration makes a backup before importing state
+  ---
+  duration_ms: 98.0457
+  type: 'test'
+  ...
+# Subtest: durable workflow projection records task transitions and supports cursor recovery
+ok 54 - durable workflow projection records task transitions and supports cursor recovery
+  ---
+  duration_ms: 133.9334
+  type: 'test'
+  ...
+# Subtest: restart preserves a pending multi-option conflict group and resolver membership
+ok 55 - restart preserves a pending multi-option conflict group and resolver membership
+  ---
+  duration_ms: 231.7435
+  type: 'test'
+  ...
+# (node:23964) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"fd1397c3-a12d-4941-adc2-e354dd1ce052"}
+# {"event":"collaboration.connected","connectionId":"73dec43e-6557-4b9b-a702-31bb0a3f9339","correlationId":"6991c320-ea5d-4b32-b552-885d9cdef23a"}
+# {"event":"collaboration.disconnected","connectionId":"73dec43e-6557-4b9b-a702-31bb0a3f9339","code":4403}
+# Subtest: hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+ok 56 - hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+  ---
+  duration_ms: 753.0421
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"00b4f0ce-32d4-4ade-8333-212bed9f2610"}
+# Subtest: non-owner ingress retries without hydrating a second writer or bypassing membership
+ok 57 - non-owner ingress retries without hydrating a second writer or bypassing membership
+  ---
+  duration_ms: 424.7403
+  type: 'test'
+  ...
+# (node:24092) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.connected","connectionId":"9ad42170-d32a-4866-b4bc-49ef5e94174a","correlationId":"86a66ebf-5961-4bdc-8e5f-e7aaedf54279"}
+# {"event":"collaboration.connected","connectionId":"d7b8ba42-399e-4baa-9976-ab84f63f0123","correlationId":"ba08dfd0-093e-42f2-bdd3-71c93e1dd85d"}
+# {"event":"collaboration.connected","connectionId":"7cc6b7eb-e18f-4d47-a75a-04a96202fabc","correlationId":"629c6b34-81c0-40a0-a880-2b2389c2ecc9"}
+# {"event":"collaboration.disconnected","connectionId":"7cc6b7eb-e18f-4d47-a75a-04a96202fabc","code":1006}
+# {"event":"collaboration.disconnected","connectionId":"d7b8ba42-399e-4baa-9976-ab84f63f0123","code":1006}
+# {"event":"collaboration.disconnected","connectionId":"9ad42170-d32a-4866-b4bc-49ef5e94174a","code":1006}
