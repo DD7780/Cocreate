@@ -1,0 +1,210 @@
+{
+  "node_count": 1532,
+  "unverified_node_count": 0,
+  "raw_edge_count": 4612,
+  "non_object_edges": 0,
+  "missing_endpoint_edges": 0,
+  "dangling_endpoint_edges": 0,
+  "self_loop_edges": 6,
+  "valid_candidate_edges": 4612,
+  "exact_duplicate_edges": 0,
+  "directed_unique_endpoint_pairs": 4330,
+  "directed_same_endpoint_collapsed_edges": 282,
+  "undirected_unique_endpoint_pairs": 4280,
+  "undirected_same_endpoint_collapsed_edges": 332,
+  "same_endpoint_group_count": 270,
+  "relation_variant_groups": 231,
+  "source_file_variant_groups": 0,
+  "source_location_variant_groups": 39,
+  "context_variant_groups": 2,
+  "post_build_graph_type": "Graph",
+  "post_build_node_count": 1493,
+  "post_build_edge_count": 3830,
+  "post_build_error": "",
+  "producer_suppression": {
+    "path": "C:\\Users\\Administrator\\AppData\\Roaming\\uv\\tools\\graphifyy\\Lib\\site-packages\\graphify\\extract.py",
+    "total_sites": 12,
+    "sites": [
+      {
+        "line": 1336,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 1869,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 1871,
+        "name": "seen_doc_refs",
+        "tuple_arity": 0,
+        "sample": "seen_doc_refs: set[str] = set()"
+      },
+      {
+        "line": 2241,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = {n[\"id\"] for n in nodes}"
+      },
+      {
+        "line": 2388,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids = {n.get(\"id\") for n in nodes}"
+      },
+      {
+        "line": 3026,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 3195,
+        "name": "seen_keys",
+        "tuple_arity": 0,
+        "sample": "seen_keys: set[tuple] = set()"
+      },
+      {
+        "line": 4887,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 4995,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 5074,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 5589,
+        "name": "seen_ids",
+        "tuple_arity": 0,
+        "sample": "seen_ids: set[str] = set()"
+      },
+      {
+        "line": 5590,
+        "name": "seen_edges",
+        "tuple_arity": 4,
+        "sample": "seen_edges: set[tuple[str, str, str, str | None]] = set()"
+      }
+    ],
+    "error": ""
+  },
+  "examples": [
+    {
+      "source": "supabase_migrations_202609300001_preserve_invites_and_idempotent_delivery_public_create_project_invite_v2",
+      "target": "supabase_migrations_202609300001_preserve_invites_and_idempotent_delivery_sql_public_project_invites",
+      "edge_count": 5,
+      "relations": [
+        "reads_from"
+      ],
+      "source_files": [
+        "supabase/migrations/202609300001_preserve_invites_and_idempotent_delivery.sql"
+      ],
+      "source_locations": [
+        "L31",
+        "L39",
+        "L48",
+        "L64",
+        "L82"
+      ],
+      "contexts": [
+        ""
+      ]
+    },
+    {
+      "source": "server_supabase_platform_file",
+      "target": "supabase_migrations_202609240001_projects_auth_persistence_public_project_invites",
+      "edge_count": 4,
+      "relations": [
+        "references"
+      ],
+      "source_files": [
+        "server/supabase-platform.ts"
+      ],
+      "source_locations": [
+        "L214",
+        "L232",
+        "L240",
+        "L244"
+      ],
+      "contexts": [
+        ""
+      ]
+    },
+    {
+      "source": "server_rooms",
+      "target": "server_room_state",
+      "edge_count": 3,
+      "relations": [
+        "imports_from",
+        "re_exports"
+      ],
+      "source_files": [
+        "server/rooms.ts"
+      ],
+      "source_locations": [
+        "L1",
+        "L13"
+      ],
+      "contexts": [
+        "export",
+        "import",
+        "re-export"
+      ]
+    },
+    {
+      "source": "tests_local_drafts_test",
+      "target": "tests_local_drafts_test_merge",
+      "edge_count": 3,
+      "relations": [
+        "contains"
+      ],
+      "source_files": [
+        "tests/local-drafts.test.ts"
+      ],
+      "source_locations": [
+        "L21",
+        "L26",
+        "L31"
+      ],
+      "contexts": [
+        ""
+      ]
+    },
+    {
+      "source": "docs_harness_codebase_cleanup_plan_file",
+      "target": "docs_harness_architecture_file",
+      "edge_count": 3,
+      "relations": [
+        "references"
+      ],
+      "source_files": [
+        "docs/harness/codebase-cleanup-plan.md"
+      ],
+      "source_locations": [
+        "L26",
+        "L35",
+        "lines 35"
+      ],
+      "contexts": [
+        ""
+      ]
+    }
+  ],
+  "projected_contains_self_loops_removed": 39,
+  "final_node_count": 1493,
+  "final_edge_count": 3791,
+  "final_community_count": 78,
+  "final_recursive_self_links": 6
+}
