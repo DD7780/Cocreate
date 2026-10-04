@@ -1,0 +1,60 @@
+TAP version 13
+# (node:23984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+ok 1 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 8214.2109
+  type: 'test'
+  ...
+# Subtest: collection deadline closes admission despite an interpretation backlog
+ok 2 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 3359.989
+  type: 'test'
+  ...
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 3 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 358.0828
+  type: 'test'
+  ...
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+ok 4 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 4892.8315
+  type: 'test'
+  ...
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 5 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 3548.8587
+  type: 'test'
+  ...
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 6 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 3525.1666
+  type: 'test'
+  ...
+# Subtest: sustained captures make revision-labelled progress each cycle without a quiet global queue
+ok 7 - sustained captures make revision-labelled progress each cycle without a quiet global queue
+  ---
+  duration_ms: 13918.3381
+  type: 'test'
+  ...
+# Subtest: attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+ok 8 - attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+  ---
+  duration_ms: 3463.04
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 41894.5579

@@ -1,0 +1,95 @@
+{
+  "recordedAt": "2026-10-04T08:01:33.066Z",
+  "scope": "Step 06 local Windows, real disposable SQLite, loopback controlled providers and three signed local Chrome profiles; no hosted accounts, paid inference, SQL execution, migration or deployment",
+  "fullTests": {
+    "passed": 194,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 202791.9421,
+    "log": "full-tests-final.log"
+  },
+  "focusedTests": {
+    "passed": 23,
+    "failed": 0,
+    "newOutcomeTests": 8,
+    "log": "progress-reliability.log"
+  },
+  "productionBuild": "passed",
+  "standaloneScriptTypes": "passed",
+  "browserReport": "browser/checks.json",
+  "browserScreenshotsInspected": [
+    "pending-desktop.png",
+    "available-during-build.png",
+    "desktop.png",
+    "mobile.png"
+  ],
+  "comparison": "comparison.json",
+  "graphify": {
+    "scope": "AST only; no LLM calls; optional SQL parser unavailable; semantic labels not refreshed",
+    "nodes": 2251,
+    "edges": 4482,
+    "communities": 140
+  },
+  "documentation": {
+    "files": [
+      "context.md",
+      "product.md",
+      "instructions.md",
+      "api.md",
+      "README.md",
+      "docs/harness/architecture.md",
+      "docs/harness/checklist.md",
+      "docs/harness/decisions.md",
+      "docs/harness/reliability-verification.md",
+      "docs/harness/multiuser-step06-handoff.md"
+    ],
+    "checkedLocalLinks": 188,
+    "missing": [],
+    "uniqueDecisionIds": 49
+  },
+  "localPreview": {
+    "health": 200,
+    "client": 200,
+    "url": "http://localhost:5173"
+  },
+  "sourceSha256": {
+    "server/rooms.ts": "79491a4b9eb82c9fcdca5c7919dadd6676307ac64bb9ea045a7739ba09cd4378",
+    "server/build-progress.ts": "708ecdce021d7a3e611908a0fc15dc89768a65c354e9b01512b6f935e969395d",
+    "server/index.ts": "9f8d4d7f6b1142baf8e88d789fb16d8084e7c3a226ff51c5fff811be746a7671",
+    "server/artifacts.ts": "1ce161e8ee876a6ece1b12db084332ed70e3108e72b2996d4b8881f80dded560",
+    "src/App.tsx": "8d5eac17a544772b1eb891be2da182a45a3143167d34f52a6e9b7aab9af671fb",
+    "src/types.ts": "5553d8f42eb39abde4f6fe355d72b8b44d83232277fd12be52077504cb3b2a3f",
+    "src/BuildProgress.tsx": "603aaa424b78054cdf771a0a74ed3208ae9e3ccd8aa3455a5d6f43d1604b7d2a",
+    "src/build-progress.css": "f769949dd046bda03939048bdf7ff5c88d98b61e8f9a5f32b32a60a18d16bc75",
+    "vite.config.ts": "51e4b7a2ea7dc31761948c2c7c72a1c1b72383395bab0303381e65f5dc1ad800",
+    "tests/build-progress.test.ts": "0129ec98871b61c33432fbf0e4537f293351a152428af0d45879f685ff6e2dec",
+    "tests/fixtures/build-progress.ts": "738f4150635af97bb9777a94bde1953202dc1242873559f78b95677448ff28c8",
+    "tests/fixtures/multiuser-baseline.ts": "b6b2c479b8bd5000fe141e7cb61aef620d630138c6fdb41606e105515f6e31f1",
+    "tests/reliability.test.ts": "1c2dbcd1b8dd2bafc8f571bc5191e01aa294c67d631aeb00f04c55c35680cc4d",
+    "scripts/verify-build-progress.ts": "9d693657983c353f78ee4ae909b4526a02251f87fbe4cf475b806b7e403ab96d",
+    "artifacts/multiuser-step06/reproduce.ts": "e9f7ca2ae8c8d48d064d802cece4858b2628854511f57d885ce08c5320d96ca4"
+  },
+  "retainedFailedAttempts": [
+    "before-runner-first.log",
+    "types-first.log",
+    "script-types-first.log",
+    "focused-first.log",
+    "focused-second.log",
+    "focused-third.log",
+    "browser-first.log",
+    "full-tests.log"
+  ],
+  "limits": [
+    "Single controlled latency sample; total calls unchanged",
+    "Compilation remains functionally unverified",
+    "Executor budget is in memory and excludes interpretation/setup; durable restart scope deferred to Step 08"
+  ],
+  "pending": [
+    "Step 07 unstarted: requirement-linked functional evidence through Step 04 isolation",
+    "Real hosted membership/funding/load and canonical SQL uncertainty/replay acceptance",
+    "Both unapplied coordinator migrations and real Postgres contention",
+    "Private Storage/RLS/deployed cache replacement",
+    "Linux kernel/container isolation adversity",
+    "Production projection scale and appearance-reference comparison"
+  ]
+}

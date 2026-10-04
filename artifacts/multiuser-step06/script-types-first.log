@@ -1,0 +1,1 @@
+scripts/verify-build-progress.ts(130,564): error TS2339: Property 'requests' does not exist on type 'PhysicalUsage'.

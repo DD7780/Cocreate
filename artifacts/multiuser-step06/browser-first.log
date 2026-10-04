@@ -1,0 +1,30 @@
+(node:4908) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"b1b7d280-370e-410d-8b1c-b478108da596","correlationId":"071b2a59-e645-49da-a923-7a750a41e37c"}
+{"event":"collaboration.connected","connectionId":"f2714b69-7c40-4a70-8df4-a5b13e81fc05","correlationId":"7ddef0a0-ffc2-4b17-9564-b3412bdad9d3"}
+{"event":"collaboration.connected","connectionId":"1060cab0-7877-4da1-8722-b6061e091303","correlationId":"663938b4-6dcb-423e-a07b-f5a35426dbc8"}
+{"event":"collaboration.disconnected","connectionId":"f2714b69-7c40-4a70-8df4-a5b13e81fc05","code":1001}
+{"event":"collaboration.connected","connectionId":"d390d140-420e-4e64-9ebf-3ae7844537d8","correlationId":"f456ec55-8764-4b29-8f6f-95b530135655"}
+{"event":"collaboration.disconnected","connectionId":"d390d140-420e-4e64-9ebf-3ae7844537d8","code":1006}
+{"event":"collaboration.disconnected","connectionId":"1060cab0-7877-4da1-8722-b6061e091303","code":1006}
+{"event":"collaboration.disconnected","connectionId":"b1b7d280-370e-410d-8b1c-b478108da596","code":1006}
+Error: database is not open
+    at EventStore.hasWorkspace (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:192:52)
+    at RoomManager.exists (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:44)
+    at RoomManager.get (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:361)
+    at authorize (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\index.ts:14:583)
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\index.ts:19:57)
+    at Layer.handleRequest (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\router@2.2.0_supports-color@10.2.2\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\router@2.2.0_supports-color@10.2.2\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\router@2.2.0_supports-color@10.2.2\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\router@2.2.0_supports-color@10.2.2\node_modules\router\index.js:435:11)
+    at Layer.handleRequest (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\router@2.2.0_supports-color@10.2.2\node_modules\router\lib\layer.js:152:17)
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-build-progress.ts:17
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: first artifact with next candidate
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-build-progress.ts:17:9)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-build-progress.ts:114:19)
+
+Node.js v22.23.2

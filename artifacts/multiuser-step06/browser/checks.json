@@ -1,0 +1,19 @@
+{
+  "scope": "Three independent signed local owner/editor/viewer Chrome profiles, real SQLite, controlled loopback provider and Windows isolated compiler; no hosted accounts, paid inference or SQL execution",
+  "participants": 3,
+  "capturedPendingDurable": true,
+  "reloadDuringBuild": true,
+  "replayAddsNoInference": true,
+  "viewerDenied": true,
+  "convergedRevisionLabels": true,
+  "progressWithFurtherCaptures": true,
+  "promotedRevisions": [
+    1,
+    3,
+    4
+  ],
+  "interpreterCalls": 4,
+  "builderCalls": 3,
+  "physicalCalls": 7,
+  "functionalVerified": false
+}

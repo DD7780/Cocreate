@@ -1,0 +1,123 @@
+TAP version 13
+# (node:25420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+not ok 1 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 127.3516
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:5:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:6:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: collection deadline closes admission despite an interpretation backlog
+not ok 2 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 43.603
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:32:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:33:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+not ok 3 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 42.8895
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:46:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:47:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+not ok 4 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 38.0925
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:59:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:60:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+not ok 5 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 48.7882
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:75:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:77:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+not ok 6 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 36.415
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:86:1'
+  failureType: 'testCodeFailure'
+  error: 'Provided value cannot be bound to SQLite parameter 1.'
+  code: 'ERR_INVALID_ARG_TYPE'
+  name: 'TypeError'
+  stack: |-
+    EventStore.claimCoordinator (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:126:142)
+    RoomManager.makeRoom (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:61:75)
+    RoomManager.create (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\rooms.ts:49:168)
+    createProgressFixture (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:48:22)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:87:11)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...

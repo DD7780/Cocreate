@@ -125,8 +125,8 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       for (let i = 1; i < arrivals; i++) {
         edit('bob', `Add feature number ${i}`); await submit('bob', `request-${i}`);
         const before: number = room.versions.length; gates.get(i)!();
-        await until(() => gates.has(i + 1), 'superseding candidate started');
-        assert.equal(room.versions.length, before, 'stale candidates cannot promote');
+        await until(() => gates.has(i + 1), 'next collected candidate started');
+        assert.equal(room.versions.length, before + 1, 'captured later steering waits until the fixed accepted candidate promotes');
       }
       observations.promotionsWhileArriving = room.versions.length;
       observations.callsBeforeFinalRelease = room.executionBudget?.calls || 0;
@@ -135,7 +135,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       const tasks = manager.view(room).workflow.tasks;
       observations.arrivals = arrivals; observations.staleCandidates = tasks.filter(t => t.state === 'stale').length;
       observations.finalPromotions = room.versions.length;
-      assert.equal(observations.staleCandidates, arrivals - 1); assert.equal(room.versions.length, 1);
+      assert.equal(observations.staleCandidates, 0); assert.equal(room.versions.length, arrivals);
       assert.equal(room.submissions.filter(s => s.status === 'built').length, arrivals);
     } else if (scenario === 'ambiguous-reference' || scenario === 'invented-passage' || scenario === 'incorrect-product') {
       const text = scenario === 'ambiguous-reference' ? 'Make that blue' : scenario === 'invented-passage' ?

@@ -1,0 +1,38 @@
+node:internal/process/promises:394
+    triggerUncaughtException(err, true /* fromPromise */);
+    ^
+
+Error: Transform failed with 1 error:
+/eval.ts:1:28: ERROR: Expected string but found "."
+    at failureErrorWithLog (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\esbuild@0.28.2\node_modules\esbuild\lib\main.js:1752:15)
+    at C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\esbuild@0.28.2\node_modules\esbuild\lib\main.js:1019:50
+    at responseCallbacks.<computed> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\esbuild@0.28.2\node_modules\esbuild\lib\main.js:886:9)
+    at handleIncomingPacket (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\esbuild@0.28.2\node_modules\esbuild\lib\main.js:941:12)
+    at Socket.readFromStdout (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\node_modules\.pnpm\esbuild@0.28.2\node_modules\esbuild\lib\main.js:864:7)
+    at Socket.emit (node:events:519:28)
+    at addChunk (node:internal/streams/readable:561:12)
+    at readableAddChunkPushByteMode (node:internal/streams/readable:512:3)
+    at Readable.push (node:internal/streams/readable:392:5)
+    at Pipe.onStreamRead (node:internal/stream_base_commons:189:23) {
+  errors: [
+    {
+      detail: undefined,
+      id: '',
+      location: {
+        column: 28,
+        file: '/eval.ts',
+        length: 1,
+        line: 1,
+        lineText: 'import { runScenario } from ./tests/fixtures/multiuser-baseline.ts; (async()=>console.log(JSON.stringify(await runScenario(continuous-arrivals),null,2)))().catch(error=>{console.error(error);process.exitCode=1});',
+        namespace: '',
+        suggestion: ''
+      },
+      notes: [],
+      pluginName: '',
+      text: 'Expected string but found "."'
+    }
+  ],
+  warnings: []
+}
+
+Node.js v22.23.2

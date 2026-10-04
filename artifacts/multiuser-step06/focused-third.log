@@ -1,0 +1,237 @@
+TAP version 13
+# (node:9412) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+not ok 1 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 16490.8019
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:5:1'
+  failureType: 'testCodeFailure'
+  error: 'Progress fixture timed out: first promotion while submissions wait'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:14:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:17:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: collection deadline closes admission despite an interpretation backlog
+ok 2 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 4644.8993
+  type: 'test'
+  ...
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 3 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 437.5196
+  type: 'test'
+  ...
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+ok 4 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 4801.6541
+  type: 'test'
+  ...
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 5 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 4374.4454
+  type: 'test'
+  ...
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 6 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 4855.7095
+  type: 'test'
+  ...
+# (node:23680) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: coauthor correction preserves teammate wording and exact sources, audit and previous revision
+ok 7 - coauthor correction preserves teammate wording and exact sources, audit and previous revision
+  ---
+  duration_ms: 138.0818
+  type: 'test'
+  ...
+# Subtest: withdrawal removes only caller support and survives restart; same request replays before stale checks
+ok 8 - withdrawal removes only caller support and survives restart; same request replays before stale checks
+  ---
+  duration_ms: 124.8477
+  type: 'test'
+  ...
+# Subtest: unauthorized, stale and forged targets cannot mutate accepted intent
+ok 9 - unauthorized, stale and forged targets cannot mutate accepted intent
+  ---
+  duration_ms: 97.0232
+  type: 'test'
+  ...
+# Subtest: concurrent stale corrections serialize and only one current revision commits
+ok 10 - concurrent stale corrections serialize and only one current revision commits
+  ---
+  duration_ms: 112.3793
+  type: 'test'
+  ...
+# Subtest: ambiguous current intent can be corrected explicitly as proposal, question or request without inference
+ok 11 - ambiguous current intent can be corrected explicitly as proposal, question or request without inference
+  ---
+  duration_ms: 113.0461
+  type: 'test'
+  ...
+# Subtest: correction of one current intent preserves other entries and their independently withdrawable attribution
+ok 12 - correction of one current intent preserves other entries and their independently withdrawable attribution
+  ---
+  duration_ms: 110.7103
+  type: 'test'
+  ...
+# Subtest: accepted change aborts an old candidate but proposal-only change leaves independent work running
+ok 13 - accepted change aborts an old candidate but proposal-only change leaves independent work running
+  ---
+  duration_ms: 115.9455
+  type: 'test'
+  ...
+# Subtest: canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt
+ok 14 - canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt
+  ---
+  duration_ms: 146.5626
+  type: 'test'
+  ...
+# Subtest: provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted
+ok 15 - provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted
+  ---
+  duration_ms: 2.7631
+  type: 'test'
+  ...
+# Subtest: accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not
+ok 16 - accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not
+  ---
+  duration_ms: 1.152
+  type: 'test'
+  ...
+# Subtest: model cannot forge human authority, decision references, or withdraw teammates via deleted source
+ok 17 - model cannot forge human authority, decision references, or withdraw teammates via deleted source
+  ---
+  duration_ms: 0.6796
+  type: 'test'
+  ...
+# Subtest: affected model IDs do not overwrite a teammate or silently withdraw the caller
+ok 18 - affected model IDs do not overwrite a teammate or silently withdraw the caller
+  ---
+  duration_ms: 0.6089
+  type: 'test'
+  ...
+# Subtest: unverified/proposed matching descriptions never confer accepted teammate attribution
+ok 19 - unverified/proposed matching descriptions never confer accepted teammate attribution
+  ---
+  duration_ms: 0.341
+  type: 'test'
+  ...
+# Subtest: queued intent commands recheck current membership before any durable mutation
+ok 20 - queued intent commands recheck current membership before any durable mutation
+  ---
+  duration_ms: 70.6056
+  type: 'test'
+  ...
+# Subtest: a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution
+ok 21 - a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution
+  ---
+  duration_ms: 2.3121
+  type: 'test'
+  ...
+# Subtest: typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent
+ok 22 - typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent
+  ---
+  duration_ms: 1.1349
+  type: 'test'
+  ...
+# (node:2224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Current outcome of Step 01 scenario: simultaneous-slow
+ok 23 - Current outcome of Step 01 scenario: simultaneous-slow
+  ---
+  duration_ms: 5141.6503
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: failed-interpreter
+ok 24 - Current outcome of Step 01 scenario: failed-interpreter
+  ---
+  duration_ms: 4161.067
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: later-steering
+ok 25 - Current outcome of Step 01 scenario: later-steering
+  ---
+  duration_ms: 12391.4619
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: continuous-arrivals
+not ok 26 - Current outcome of Step 01 scenario: continuous-arrivals
+  ---
+  duration_ms: 30151.7358
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\multiuser-baseline.test.ts:6:39'
+  failureType: 'testTimeoutFailure'
+  error: 'test timed out after 30000ms'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# Subtest: Current outcome of Step 01 scenario: ambiguous-reference
+ok 27 - Current outcome of Step 01 scenario: ambiguous-reference
+  ---
+  duration_ms: 363.9345
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: invented-passage
+ok 28 - Current outcome of Step 01 scenario: invented-passage
+  ---
+  duration_ms: 738.3627
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: incorrect-product
+not ok 29 - Current outcome of Step 01 scenario: incorrect-product
+  ---
+  duration_ms: 11301.7198
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\multiuser-baseline.test.ts:6:39'
+  failureType: 'testCodeFailure'
+  error: 'Baseline observation timed out: finite workload drain'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\multiuser-baseline.ts:25:9)
+    async runScenario (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\multiuser-baseline.ts:144:41)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\multiuser-baseline.test.ts:7:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Current outcome of Step 01 scenario: snapshot-body-gap
+ok 30 - Current outcome of Step 01 scenario: snapshot-body-gap
+  ---
+  duration_ms: 283.9074
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: projection-growth
+ok 31 - Current outcome of Step 01 scenario: projection-growth
+  ---
+  duration_ms: 451.4687
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: isolation-policy
+ok 32 - Current outcome of Step 01 scenario: isolation-policy
+  ---
+  duration_ms: 181.1358
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: restart-budget
+ok 33 - Current outcome of Step 01 scenario: restart-budget
+  ---
+  duration_ms: 285.4577
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 30
+# fail 2
+# cancelled 1
+# skipped 0
+# todo 0
+# duration_ms 104528.5894

@@ -1,6 +1,6 @@
 # 2guys1canvas implemented API contracts
 
-Source-inspected 2026-10-03 including Step 03 artifact recovery boundaries. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-04 including Step 06 captured admission and build progress. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 
@@ -69,7 +69,7 @@ Named-connection/preset/effort routes under `/api/rooms/:id/ai` are 410 in hoste
 | POST `/api/rooms/:id/reinterpret` | Authenticated participant | Retired HTTP 410; explicit intent review/correction replaces inference |
 | POST `/api/rooms/:id/runtime-error` | Participant/current hosted owner/editor | `{message, version}`; latest-version failure can restore previous preview |
 
-Primary submissions persist complete captured author batches, accepted-baseline context, frozen model/setup, source revision and lifecycle before inference. Reconciliation follows capture order. Active submissions survive the recent-history cutoff; receipts keyed by participant/request ID remain independently persisted. Replay never consumes new edits; empty draft returns `No new changes to submit` without inference. Failure/interruption restores edits for explicit new submission. Later accepted work supersedes an obsolete fixed-revision candidate and remains queued for the next build. Internal `buildNow` is a local harness helper, not callable public all-draft authorization.
+Primary submissions persist complete captured author batches, accepted-baseline context, frozen model/setup, source revision and lifecycle before inference. Reconciliation follows capture order. Active submissions survive the recent-history cutoff; receipts keyed by participant/request ID remain independently persisted. Replay never consumes new edits; empty draft returns `No new changes to submit` without inference. During closed admission/building, submit returns HTTP 200 with `status:"submitted"` and `Changes saved; interpretation waits for the current build to finish.` It acknowledges durable capture, not accepted intent or a product. After completion, captures interpret serially; hosted current owner/editor membership is rechecked at deferred physical dispatch, alongside existing BYOK authorization and coordinator checks. Failure/interruption restores edits for explicit new submission. Explicit intent/conflict changes still invalidate affected candidates; ordinary captured arrivals cannot supersede them. Internal `buildNow` is a local harness helper, not callable public all-draft authorization.
 
 Retry build does not reinterpret edits. It uses current selected models/accepted requirements and can reuse a checkpoint only for the same fingerprint. Public reinterpretation is retired. The internal diagnostic method reuses only recorded caller edits and frozen accepted metadata on the steering queue, checks coordinator ownership, independently validates output, and rejects settled decisions/withdrawals. It is not a public correction or funding path.
 
@@ -90,6 +90,8 @@ Import exact types from `src/types.ts`; prose is not a second schema.
 | `RoomView` | Room/owner/participants, safe AI, status, requirements/conflicts, specification/requirements revision, versions/latestVersion/error, timing, workflow, save metadata and usage |
 | `requirementRevisions` | Durable `{revision, accepted}` snapshots; selected UI revision excludes unsubmitted drafts |
 | `status` | Waiting for ideas, Collecting submissions, Understanding edits, Decision needed, Building, Updated, Error |
+| `buildProgress` | Optional projection: policy bounded-collection-v1; phase collecting/building/pending/idle/failed; acceptedRevision, optional buildingRevision/queuedRevision, availableVersion (nullable), optional availableRevision/collectionEndsAt (ISO), pendingSubmissions |
+| `Version.specificationRevision` | Optional accepted revision frozen when this product was promoted; retained in archived metadata. Older artifacts omit it rather than inventing a revision |
 | `workflow` | Workflow ID/schema/phase/revision/controller/epoch/tasks, recent activity/cursor and last artifact evidence |
 | `SharedRequirement` | Stable ID/revision/category/description/acceptance criteria/status/authority/sources/timestamps; statuses proposed/accepted/withdrawn/superseded |
 | Attributed intent | Classification proposal/question/explicit_request/decision/ambiguity, rationale/passage/source revision/edit sequences; invalid labels fail closed to ambiguity |

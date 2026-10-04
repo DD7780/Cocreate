@@ -1,22 +1,22 @@
 # Graph Report - Devoffice  (2026-10-04)
 
 ## Corpus Check
-- 246 files · ~360,469 words
+- 257 files · ~375,151 words
 - Verdict: corpus is large enough that graph structure adds value.
-- Unclassified: 114 file(s) not represented in the graph (top: .log 102, .css 5, (none) 4)
+- Unclassified: 139 file(s) not represented in the graph (top: .log 126, .css 6, (none) 4)
 
 ## Summary
-- 2191 nodes · 4346 edges · 136 communities (105 shown, 31 thin omitted)
-- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 133 edges (avg confidence: 0.86)
+- 2251 nodes · 4482 edges · 140 communities (108 shown, 32 thin omitted)
+- Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 143 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `663519c7`
+- Built from commit: `472698a1`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
 ## Community Hubs (Navigation)
-- rooms.ts
+- RoomManager
 - ref_node_assert_strict
 - requirements.ts
 - providers.ts
@@ -29,27 +29,27 @@
 - package.json
 - generator.ts
 - ref_lib_utils
-- usage-ledger.ts
+- SupabasePlatform
 - ai-presets.ts
 - dependencies
 - App.tsx
-- lucide-react
+- pagination.tsx
 - react
 - components.json
 - ProjectApp.tsx
-- supabase-platform.ts
-- verify-evidence.cjs
+- artifacts.ts
+- multiuser-step05/verify-evidence.cjs
 - index.ts
-- Shared response models
+- types.ts
 - combobox.tsx
 - Harness decision log
 - compilerOptions
 - context-menu.tsx
 - event-store.ts
-- types.ts
+- intent-commands.ts
 - drawer.tsx
 - IsolationRunner
-- ref_class_variance_authority
+- toggle-group.tsx
 - carousel.tsx
 - tool-registry.ts
 - provider-reconnect.test.ts
@@ -59,7 +59,7 @@
 - toast.tsx
 - live-collaboration-check.mjs
 - Harness architecture
-- OpenRouterLeases
+- supabase-platform.ts
 - artifact-restoration.test.ts
 - field.tsx
 - item.tsx
@@ -67,19 +67,21 @@
 - attachment.tsx
 - dialog.tsx
 - migrate-legacy-to-supabase.ts
-- command.tsx
-- managed-catalog.ts
+- registerProjectRoutes
+- managed-ai.test.ts
 - navigation-menu.tsx
 - select.tsx
 - 2guys1canvas context handoff
 - devDependencies
 - providers.test.ts
 - layout.tsx
-- ai-presets.test.ts
+- rooms.ts
+- breadcrumb.tsx
 - 2guys1canvas product brief
 - avatar.tsx
 - harness/architecture.md
 - empty.tsx
+- multiuser-step06/verify-evidence.cjs
 - supabase.ts
 - verify-intent-ui.ts
 - safeLocalDestination
@@ -93,12 +95,12 @@
 - live-browser-collaboration-check.mjs
 - ai-accounting.ts
 - auth-config.ts
-- alert.tsx
+- ref_class_variance_authority
 - button-group.tsx
 - reliability.test.ts
 - .oxfmtrc.json
 - collapsible.tsx
-- input-otp.tsx
+- lucide-react
 - container.js
 - page.tsx
 - utils.ts
@@ -109,8 +111,7 @@
 - direction.tsx
 - .mcp.json
 - 2guys1canvas AI coding instructions
-- generated-isolation.test.ts
-- harness/checklist.md
+- coordinator-fencing.test.ts
 - Responsiveness evidence
 - popover.tsx
 - 2guys1canvas API reference
@@ -121,38 +122,41 @@
 - input-group.tsx
 - Multi-user harness improvement prompts
 - isolation.ts
-- .ensureWorkflow
+- .insert
 - Harness status and outstanding work
 - 2guys1canvas contributor instructions
 - reproduce.ts
 - RoomView
-- bubble.tsx
-- hover-card.tsx
+- verify-build-progress.ts
+- dropdown-menu.tsx
 - CoCreate harness assessment
-- accordion.tsx
 - Reliability verification — 2026-10-01
 - 2guys1canvas
 - project.ts
-- Harness migration plan
+- tooltip.tsx
 - Multi-user Step 01 evidence and handoff
-- radio-group.tsx
-- build-recovery.ts
-- bundleProject
+- Step 06 handoff — stable progress under ongoing steering
+- cocreate.test.ts
+- Multi-user Step 04 handoff - 2026-10-04
 - documentation-cleanup.md
 - measure-responsiveness.ts
 - main.tsx
 - ui-assets.md
 - ByokSetup.tsx
-- ProjectFile
+- marker.tsx
 - 2guys1canvas current handoff
-- Supabase identity and persistence boundary (2026-09-24)
+- Collaborative contradiction-resolution plan
+- BuildProgress.tsx
+- prisma7.config.ts
+- model-evaluation.md
+- engines
 
 ## God Nodes (most connected - your core abstractions)
-1. `RoomManager` - 102 edges
+1. `RoomManager` - 107 edges
 2. `createCoCreateServer()` - 58 edges
 3. `EventStore` - 53 edges
-4. `SupabasePlatform` - 49 edges
-5. `Harness decision log` - 49 edges
+4. `Harness decision log` - 50 edges
+5. `SupabasePlatform` - 49 edges
 6. `react` - 44 edges
 7. `2guys1canvas harness implementation checklist` - 40 edges
 8. `registerProjectRoutes()` - 34 edges
@@ -160,49 +164,45 @@
 10. `lucide-react` - 25 edges
 
 ## Surprising Connections (you probably didn't know these)
+- `Bounded context and cost target` --references--> `AIRunRecord`  [INFERRED]
+  docs/harness/archive/2026-10-01-pre-consolidation/architecture.md → src/types.ts
 - `Server contracts` --references--> `RoomView`  [INFERRED]
   docs/harness/contradiction-resolution-plan.md → src/types.ts
-- `Coordinator and immutable saves` --references--> `RemoteCoordinator`  [INFERRED]
-  docs/harness/architecture.md → server/coordinator.ts
-- `Outcome and boundaries` --references--> `RemoteCoordinator`  [INFERRED]
-  docs/harness/multiuser-step02-handoff.md → server/coordinator.ts
-- `Outcome and responsible boundary` --references--> `bundleProject()`  [INFERRED]
-  docs/harness/multiuser-step04-handoff.md → server/project.ts
-- `Reference-led presentation update (2026-09-30)` --references--> `Workspace()`  [INFERRED]
-  docs/harness/archive/2026-10-01-pre-consolidation/architecture.md → src/App.tsx
+- `BYOK-only MVP slice (2026-09-28)` --references--> `main()`  [INFERRED]
+  docs/harness/archive/2026-10-01-pre-consolidation/checklist.md → artifacts/multiuser-step06/verify-evidence.cjs
+- `Cloudflare availability and collaboration repair evidence (2026-09-18)` --references--> `main()`  [INFERRED]
+  docs/harness/archive/2026-10-01-pre-consolidation/checklist.md → artifacts/multiuser-step06/verify-evidence.cjs
+- `Historical workspace visual slice — 2026-09-28` --references--> `main()`  [INFERRED]
+  docs/harness/archive/2026-10-01-pre-consolidation/product.md → artifacts/multiuser-step06/verify-evidence.cjs
 
 ## Import Cycles
 - None detected.
 
-## Communities (136 total, 31 thin omitted)
+## Communities (140 total, 32 thin omitted)
 
-### Community 0 - "rooms.ts"
-Cohesion: 0.05
-Nodes (60): Room reads, submissions and decisions, Building and preview, Submission scheduling: current implementation and required hardening, Later-step source audit, ref_node_stream, calculateCharge(), catalogRate(), effortAllowance() (+52 more)
+### Community 0 - "RoomManager"
+Cohesion: 0.07
+Nodes (27): Later-step source audit, ref_node_stream, catalogRate(), effortAllowance(), buildProgressFor(), AIConfig, createCoCreateServer(), acceptedContext() (+19 more)
 
 ### Community 1 - "ref_node_assert_strict"
-Cohesion: 0.09
-Nodes (10): ref_node_assert_strict, ref_node_http, ref_node_os, ref_node_test, yjs, Room, Requirement, browser (+2 more)
+Cohesion: 0.15
+Nodes (6): ref_node_assert_strict, ref_node_os, Room, Requirement, pause(), waitFor()
 
 ### Community 2 - "requirements.ts"
-Cohesion: 0.09
-Nodes (32): acceptanceFor(), acceptedClassification(), acceptedRequirements(), alternativeSignature(), blockedRequirementIds(), candidateEntries(), categories, classifications (+24 more)
+Cohesion: 0.12
+Nodes (31): acceptanceFor(), acceptedClassification(), acceptedRequirements(), alternativeSignature(), blockedRequirementIds(), candidateEntries(), categories, classifications (+23 more)
 
 ### Community 3 - "providers.ts"
 Cohesion: 0.08
-Nodes (29): ref_node_async_hooks, accounting, adapters, anthropic, balancedObject(), bearer(), classify(), deepseek (+21 more)
-
-### Community 4 - "menubar.tsx"
-Cohesion: 0.06
-Nodes (3): ref_base_ui_react_menu, ref_base_ui_react_menubar, ref_components_ui_dropdown_menu
+Nodes (32): ref_node_async_hooks, accounting, adapters, anthropic, balancedObject(), bearer(), classify(), deepseek (+24 more)
 
 ### Community 5 - "ref_node_fs"
 Cohesion: 0.08
-Nodes (26): ref_node_child_process, ref_node_fs, ref_node_path, browser, output, profile, browser, outputDir (+18 more)
+Nodes (23): ref_node_child_process, ref_node_fs, ref_node_path, browser, output, profile, browser, outputDir (+15 more)
 
 ### Community 6 - "2guys1canvas harness implementation checklist"
 Cohesion: 0.05
-Nodes (39): 2guys1canvas harness implementation checklist, BYOK-only MVP slice (2026-09-28), BYOK-only MVP slice (2026-09-28), Collaboration persistence and auth callback repair (2026-09-26), Collaboration reconnect repair (2026-09-19), Dark editorial presentation slice (2026-09-19), Developer-only managed-model slice — 2026-09-27, Draggable effort toggle and visible project naming (2026-09-25) (+31 more)
+Nodes (38): 2guys1canvas harness implementation checklist, BYOK-only MVP slice (2026-09-28), Collaboration persistence and auth callback repair (2026-09-26), Collaboration reconnect repair (2026-09-19), Dark editorial presentation slice (2026-09-19), Developer-only managed-model slice — 2026-09-27, Draggable effort toggle and visible project naming (2026-09-25), Email invitations, complete auth, project names, and segmented effort (2026-09-25) (+30 more)
 
 ### Community 7 - "rules"
 Cohesion: 0.06
@@ -213,24 +213,24 @@ Cohesion: 0.07
 Nodes (12): Sidebar(), SidebarContext, SidebarContextProps, SidebarMenuButton(), sidebarMenuButtonVariants, SidebarRail(), SidebarTrigger(), useSidebar() (+4 more)
 
 ### Community 10 - "package.json"
-Cohesion: 0.06
-Nodes (33): engines, node, name, private, type, version, cross-env, dotenv (+25 more)
+Cohesion: 0.07
+Nodes (29): name, private, type, version, cross-env, esbuild, esbuild-wasm, prisma (+21 more)
 
 ### Community 11 - "generator.ts"
-Cohesion: 0.12
-Nodes (16): ref_node_module, bundleSource(), classification, compactRequirement(), compactSharedRequirement(), compactText(), DEFAULT_PROJECT_OUTPUT_TOKENS, generateProduct() (+8 more)
+Cohesion: 0.10
+Nodes (27): clean(), demoExtract(), demoOrchestrate(), shell(), AgentChange, boundedInput(), bundleSource(), callOpenAI() (+19 more)
 
 ### Community 12 - "ref_lib_utils"
-Cohesion: 0.07
-Nodes (6): ref_base_ui_react_separator, ref_base_ui_react_slider, ref_base_ui_react_switch, ref_base_ui_react_tooltip, ref_lib_utils, ref_react_resizable_panels
+Cohesion: 0.06
+Nodes (8): ref_base_ui_react_preview_card, ref_base_ui_react_radio, ref_base_ui_react_radio_group, ref_base_ui_react_separator, ref_base_ui_react_slider, ref_base_ui_react_switch, ref_lib_utils, ref_react_resizable_panels
 
-### Community 13 - "usage-ledger.ts"
-Cohesion: 0.40
-Nodes (5): aggregatePhysicalUsage(), empty(), PhysicalUsage, setupPurposes, AIUsage
+### Community 13 - "SupabasePlatform"
+Cohesion: 0.15
+Nodes (5): fail(), hashToken(), normalizeProjectTitle(), SupabasePlatform, ProviderRequestRecord
 
 ### Community 14 - "ai-presets.ts"
-Cohesion: 0.11
-Nodes (24): Named AI connections (preferred API), maximumAllowanceCharge(), CatalogEntry, classifyTaskComplexity(), cost(), effortLevels, estimateLayerMaximum(), layer() (+16 more)
+Cohesion: 0.09
+Nodes (30): Named AI connections (preferred API), EVALUATION_PROTOCOL_VERSION, EvaluationSummary, EvaluationTrial, qualifiesModeMapping(), representativeTasks, summarizeTrials(), CatalogEntry (+22 more)
 
 ### Community 15 - "dependencies"
 Cohesion: 0.08
@@ -240,13 +240,13 @@ Nodes (25): dependencies, @cloudflare/containers, cross-env, dotenv, esbuild, es
 Cohesion: 0.08
 Nodes (31): AgentPanel(), changeEffort(), AISetup(), api(), BuildAccounting(), comparableMetrics(), ConflictChoice(), submit() (+23 more)
 
-### Community 17 - "lucide-react"
-Cohesion: 0.08
-Nodes (6): PaginationLinkProps, ref_base_ui_react_checkbox, ref_components_ui_button, lucide-react, ref_react_day_picker, ref_shadcn_react_message_scroller
+### Community 17 - "pagination.tsx"
+Cohesion: 0.09
+Nodes (4): PaginationLinkProps, ref_components_ui_button, ref_react_day_picker, ref_shadcn_react_message_scroller
 
 ### Community 18 - "react"
-Cohesion: 0.07
-Nodes (4): NativeSelectProps, ref_base_ui_react_input, ref_base_ui_react_scroll_area, react
+Cohesion: 0.10
+Nodes (3): ref_base_ui_react_input, ref_base_ui_react_scroll_area, react
 
 ### Community 19 - "components.json"
 Cohesion: 0.09
@@ -256,37 +256,41 @@ Nodes (21): aliases, components, hooks, lib, ui, utils, iconLibrary, menuAccent 
 Cohesion: 0.09
 Nodes (9): InviteResult, PendingInvite, Project, ProjectList, ProjectMember, ProjectRole, ShareState, Workspace (+1 more)
 
-### Community 21 - "supabase-platform.ts"
-Cohesion: 0.05
-Nodes (56): ref_supabase_server_core, ArtifactBody, artifactHash(), artifactPath(), ArtifactReference, artifactResponse(), ArtifactUnavailableError, ArtifactVersion (+48 more)
+### Community 21 - "artifacts.ts"
+Cohesion: 0.16
+Nodes (21): ArtifactBody, artifactHash(), artifactPath(), ArtifactReference, ArtifactUnavailableError, ArtifactVersion, bodyFromBytes(), canonicalJson() (+13 more)
 
-### Community 22 - "verify-evidence.cjs"
+### Community 22 - "multiuser-step05/verify-evidence.cjs"
 Cohesion: 0.11
 Nodes (15): assert, browser, crypto, decisions, documents, fs, full, graph (+7 more)
 
 ### Community 23 - "index.ts"
-Cohesion: 0.10
-Nodes (22): express, ws, b64(), createSession(), participantId(), roomToken(), Session, verifySession() (+14 more)
+Cohesion: 0.13
+Nodes (19): ref_node_crypto, ref_node_test, ws, browser, dataDir, group, profile, room (+11 more)
 
-### Community 24 - "Shared response models"
-Cohesion: 0.17
-Nodes (11): Shared response models, Acceptance tests, Collaborative contradiction-resolution plan, Migration, Server contracts, UI, AIRate, ConflictGroup (+3 more)
+### Community 24 - "types.ts"
+Cohesion: 0.07
+Nodes (30): Shared response models, Migration, aggregatePhysicalUsage(), empty(), PhysicalUsage, setupPurposes, AgentStatus, AIRate (+22 more)
+
+### Community 25 - "combobox.tsx"
+Cohesion: 0.06
+Nodes (4): ref_base_ui_react, ref_cmdk, ref_components_ui_dialog, ref_components_ui_input_group
 
 ### Community 26 - "Harness decision log"
 Cohesion: 0.04
-Nodes (49): D-0001 — Preserve the existing application while migrating additively, D-0002 — Personal interpretations are proposals, not builder authority, D-0003 — Build from the accepted registry, not the raw canvas, D-0004 — Deletion is not withdrawal, D-0005 — Pause on consequential accepted contradictions, D-0006 — Conflict groups and explicit affected-contributor agreement, D-0007 — Classify per intent and reprocess only by explicit participant action, D-0008 — Submit intent explicitly; collaborate continuously (+41 more)
+Nodes (50): D-0001 — Preserve the existing application while migrating additively, D-0002 — Personal interpretations are proposals, not builder authority, D-0003 — Build from the accepted registry, not the raw canvas, D-0004 — Deletion is not withdrawal, D-0005 — Pause on consequential accepted contradictions, D-0006 — Conflict groups and explicit affected-contributor agreement, D-0007 — Classify per intent and reprocess only by explicit participant action, D-0008 — Submit intent explicitly; collaborate continuously (+42 more)
 
 ### Community 27 - "compilerOptions"
 Cohesion: 0.11
 Nodes (17): compilerOptions, allowSyntheticDefaultImports, esModuleInterop, forceConsistentCasingInFileNames, isolatedModules, jsx, lib, module (+9 more)
 
 ### Community 29 - "event-store.ts"
-Cohesion: 0.17
-Nodes (11): ref_node_sqlite, EventInput, json(), redact(), RunState, StoredEvent, StoredRun, StoredWorkflow (+3 more)
+Cohesion: 0.14
+Nodes (13): ref_node_sqlite, EventInput, json(), redact(), RunState, StoredEvent, StoredRun, StoredWorkflow (+5 more)
 
-### Community 30 - "types.ts"
-Cohesion: 0.08
-Nodes (25): categories, intentCommandHash(), src_intent_review, caption(), Edit, IntentReview(), AgentStatus, AIRateTier (+17 more)
+### Community 30 - "intent-commands.ts"
+Cohesion: 0.12
+Nodes (15): applyIntentCommand(), categories, fail(), intentCommandHash(), parseIntentCommand(), src_intent_review, caption(), Edit (+7 more)
 
 ### Community 31 - "drawer.tsx"
 Cohesion: 0.13
@@ -296,16 +300,16 @@ Nodes (5): DrawerContent(), DrawerContext, DrawerContextProps, useDrawer(), ref_
 Cohesion: 0.09
 Nodes (28): BASIC_LIMIT, DllImport, EXTENDED_LIMIT, FileSystemRights, IntPtr, IO_COUNTERS, PROCESS_INFORMATION, SecurityIdentifier (+20 more)
 
-### Community 33 - "ref_class_variance_authority"
-Cohesion: 0.16
-Nodes (10): Button(), buttonVariants, ToggleGroupContext, Toggle(), toggleVariants, ref_base_ui_react_button, ref_base_ui_react_toggle, ref_base_ui_react_toggle_group (+2 more)
+### Community 33 - "toggle-group.tsx"
+Cohesion: 0.22
+Nodes (6): ToggleGroupContext, Toggle(), toggleVariants, ref_base_ui_react_toggle, ref_base_ui_react_toggle_group, ref_components_ui_toggle
 
 ### Community 34 - "carousel.tsx"
 Cohesion: 0.17
 Nodes (13): CarouselApi, CarouselContent(), CarouselContext, CarouselContextProps, CarouselItem(), CarouselNext(), CarouselOptions, CarouselPlugin (+5 more)
 
 ### Community 35 - "tool-registry.ts"
-Cohesion: 0.14
+Cohesion: 0.13
 Nodes (13): ActorType, definitions, digest(), inputSummary(), outputSummary(), stable(), ToolBehavior, ToolContext (+5 more)
 
 ### Community 36 - "provider-reconnect.test.ts"
@@ -325,16 +329,16 @@ Cohesion: 0.19
 Nodes (12): binary(), connect(), createSession(), json(), origin, ramConnection, ramDoc, rejectedConnection() (+4 more)
 
 ### Community 42 - "Harness architecture"
-Cohesion: 0.12
-Nodes (16): Active hosted BYOK boundary (2026-09-28), Browser recovery and transport batching — 2026-09-28, Connection and managed-access boundary, Deployment constraint, Evidence-based routing boundary, Execution flow, Harness architecture, Historical managed-model boundary (2026-09-27) (+8 more)
+Cohesion: 0.10
+Nodes (20): Active hosted BYOK boundary (2026-09-28), Authentication, project naming, and sharing extension (2026-09-25), Bounded context and cost target, Browser recovery and transport batching — 2026-09-28, Connection and managed-access boundary, Deployment constraint, Evidence-based routing boundary, Execution flow (+12 more)
 
-### Community 43 - "OpenRouterLeases"
-Cohesion: 0.22
-Nodes (6): BYOK_LEASE_MS, BYOK_MODEL_VERSION, Lease, LeaseModel, modelsFrom(), OpenRouterLeases
+### Community 43 - "supabase-platform.ts"
+Cohesion: 0.11
+Nodes (20): ref_supabase_server_core, RecoveryCheckpoint, decryptSecret(), EncryptedSecret, encryptSecret(), keyFor(), AuthenticatedUser, normalizeInviteEmail() (+12 more)
 
 ### Community 44 - "artifact-restoration.test.ts"
-Cohesion: 0.16
-Nodes (12): count(), ref_node_crypto, dir, manager, observations, platform, project, buildFixture() (+4 more)
+Cohesion: 0.27
+Nodes (6): yjs, buildFixture(), files, manager(), version(), createArtifactFixture()
 
 ### Community 45 - "field.tsx"
 Cohesion: 0.17
@@ -356,13 +360,13 @@ Nodes (4): Attachment(), AttachmentMedia(), attachmentMediaVariants, attachmentV
 Cohesion: 0.17
 Nodes (10): ref_dotenv_config, apply, args, backup, client, dataArg, dataDir, mapping (+2 more)
 
-### Community 51 - "command.tsx"
-Cohesion: 0.15
-Nodes (3): ref_cmdk, ref_components_ui_dialog, ref_components_ui_input_group
+### Community 51 - "registerProjectRoutes"
+Cohesion: 0.11
+Nodes (19): express, artifactResponse(), coordinatorRetry, coordinatorResponse(), html(), InvitationDelivery, InvitationEmail, InvitationEmailSender (+11 more)
 
-### Community 52 - "managed-catalog.ts"
+### Community 52 - "managed-ai.test.ts"
 Cohesion: 0.18
-Nodes (11): [command,file], MANAGED_CATALOG_SOURCE, MANAGED_CATALOG_VERSION, MANAGED_DEFAULT_BUILDER, MANAGED_INTERPRETER_CANDIDATES, managedCatalog, ManagedCatalogEntry, MANAGED_QUALIFICATION_VERSION (+3 more)
+Nodes (13): [command,file], MANAGED_CATALOG_SOURCE, MANAGED_CATALOG_VERSION, MANAGED_DEFAULT_BUILDER, MANAGED_INTERPRETER_CANDIDATES, managedBuilder(), managedCatalog, ManagedCatalogEntry (+5 more)
 
 ### Community 53 - "navigation-menu.tsx"
 Cohesion: 0.20
@@ -377,24 +381,32 @@ Cohesion: 0.18
 Nodes (11): devDependencies, prisma, tsx, @types/express, @types/node, @types/pg, @types/react, @types/react-dom (+3 more)
 
 ### Community 57 - "providers.test.ts"
-Cohesion: 0.15
-Nodes (16): boundedInput(), callOpenAI(), listProviderModels(), providerConfig(), testOpenAIConnection(), validateBaseUrl(), adapterFor(), discoverModels() (+8 more)
+Cohesion: 0.28
+Nodes (7): listProviderModels(), adapterFor(), discoverModels(), generateText(), ProviderConfig, withProviderAccounting(), schema
 
 ### Community 58 - "layout.tsx"
 Cohesion: 0.20
 Nodes (7): app_globals, geistMono, geistSans, metadata, nextConfig, ref_next, ref_next_font_google
 
-### Community 59 - "ai-presets.test.ts"
-Cohesion: 0.33
-Nodes (7): EVALUATION_PROTOCOL_VERSION, EvaluationSummary, EvaluationTrial, qualifiesModeMapping(), representativeTasks, summarizeTrials(), passed
+### Community 59 - "rooms.ts"
+Cohesion: 0.09
+Nodes (21): ArchivedVersion, ProviderAccountingError, AISettings, authenticatedDelta(), BudgetReservation, BudgetWindow, ClientSocket, colors (+13 more)
+
+### Community 60 - "breadcrumb.tsx"
+Cohesion: 0.13
+Nodes (8): Badge(), badgeVariants, Bubble(), BubbleReactions(), bubbleReactionsVariants, bubbleVariants, ref_base_ui_react_merge_props, ref_base_ui_react_use_render
 
 ### Community 61 - "2guys1canvas product brief"
-Cohesion: 0.10
-Nodes (20): 2guys1canvas product brief, Accepted workflow pivot (2026-09-19), Active MVP (2026-09-28), Active MVP (2026-09-28), Active presentation update (2026-09-30), Authenticated saved projects (2026-09-24), Current reliability and shared context requirement (2026-10-01), Historical managed-model product brief (+12 more)
+Cohesion: 0.11
+Nodes (19): 2guys1canvas product brief, Accepted workflow pivot (2026-09-19), Active MVP (2026-09-28), Active MVP (2026-09-28), Active presentation update (2026-09-30), Authenticated saved projects (2026-09-24), Current reliability and shared context requirement (2026-10-01), Historical managed-model product brief (+11 more)
 
 ### Community 63 - "harness/architecture.md"
-Cohesion: 0.32
-Nodes (3): CoCreate steering entrypoint, graphify, Historical documentation archive
+Cohesion: 0.23
+Nodes (7): CoCreate steering entrypoint, graphify, Historical documentation archive, Harness migration plan, Later migrations, Rollback, Safe rollout
+
+### Community 65 - "multiuser-step06/verify-evidence.cjs"
+Cohesion: 0.10
+Nodes (20): assert, browser, comparison, count(), crypto, decisions, documents, focused (+12 more)
 
 ### Community 66 - "supabase.ts"
 Cohesion: 0.25
@@ -425,32 +437,40 @@ Cohesion: 0.29
 Nodes (7): scripts, build, deploy:cloudflare, dev, migrate:legacy, start, test
 
 ### Community 74 - "intent-authority.ts"
-Cohesion: 0.19
-Nodes (13): clean(), demoExtract(), demoOrchestrate(), shell(), AgentChange, extractRequirement(), AcceptedIntentContext, generic (+5 more)
+Cohesion: 0.36
+Nodes (7): AcceptedIntentContext, generic, normalize(), sourceWords(), validateSubmittedInterpretation(), InterpretationIntent, SharedRequirement
 
 ### Community 76 - "live-browser-collaboration-check.mjs"
 Cohesion: 0.33
 Nodes (4): browser(), clients, json(), origin
 
 ### Community 77 - "ai-accounting.ts"
-Cohesion: 0.20
-Nodes (13): Bounded context and cost target, aggregateCalls(), effectiveness(), EffectivenessGroup, VERIFICATION_POLICY_VERSION, AIRunCall, AIRunRecord, LegacyAISpecialty (+5 more)
+Cohesion: 0.22
+Nodes (13): aggregateCalls(), calculateCharge(), effectiveness(), EffectivenessGroup, maximumAllowanceCharge(), VERIFICATION_POLICY_VERSION, AIRunCall, LegacyAISpecialty (+5 more)
 
 ### Community 78 - "auth-config.ts"
 Cohesion: 0.38
 Nodes (6): legacyKeyProjectRef(), parseOrigin(), required, resolveSupabaseAuthConfig(), SupabaseAuthConfig, SupabaseAuthResolution
 
+### Community 79 - "ref_class_variance_authority"
+Cohesion: 0.22
+Nodes (6): Alert(), alertVariants, Button(), buttonVariants, ref_base_ui_react_button, ref_class_variance_authority
+
 ### Community 80 - "button-group.tsx"
-Cohesion: 0.17
-Nodes (9): Badge(), badgeVariants, ButtonGroup(), buttonGroupVariants, Marker(), markerVariants, ref_base_ui_react_merge_props, ref_base_ui_react_use_render (+1 more)
+Cohesion: 0.40
+Nodes (3): ButtonGroup(), buttonGroupVariants, ref_components_ui_separator
 
 ### Community 81 - "reliability.test.ts"
-Cohesion: 0.07
+Cohesion: 0.08
 Nodes (20): Candidate generation, recovery and promotion, Coordinator and immutable saves, Current harness architecture, Durable authority and storage, Edits, submission and acceptance, Policy and deferred boundaries, Runtime map, Step 05 intent authority and commit boundary (+12 more)
 
 ### Community 82 - ".oxfmtrc.json"
 Cohesion: 0.33
 Nodes (5): ignorePatterns, printWidth, $schema, singleQuote, sortPackageJson
+
+### Community 84 - "lucide-react"
+Cohesion: 0.09
+Nodes (5): NativeSelectProps, ref_base_ui_react_accordion, ref_base_ui_react_checkbox, ref_input_otp, lucide-react
 
 ### Community 85 - "container.js"
 Cohesion: 0.18
@@ -465,7 +485,7 @@ Cohesion: 0.33
 Nodes (5): needsSessionRefresh(), Projects(), request(), selectedId(), ShareProjectDialog()
 
 ### Community 90 - "fixtures/multiuser-baseline.ts"
-Cohesion: 0.18
+Cohesion: 0.17
 Nodes (13): output, report, trials, Attempt, interpretation(), Observation, pause(), plan() (+5 more)
 
 ### Community 92 - "Step 05 handoff — attributable intent and contextual references"
@@ -476,17 +496,17 @@ Nodes (6): Checks and honest scope, Durability, uncertainty and compatibility, F
 Cohesion: 0.12
 Nodes (16): 2guys1canvas AI coding instructions, Active hosted AI boundary (2026-09-28), Active hosted AI boundary (2026-09-28), Active reliability boundary (2026-10-01), Agent and state rules, Coding conventions, Current naming and UI boundary (2026-09-30), Documentation maintenance in the same change (+8 more)
 
-### Community 99 - "generated-isolation.test.ts"
-Cohesion: 0.15
-Nodes (8): ref_node_events, ref_node_net, fs, path, server_isolation_esbuild_cjs, isolationPolicy, files, jobs
+### Community 99 - "coordinator-fencing.test.ts"
+Cohesion: 0.11
+Nodes (6): ref_node_http, dir, manager, observations, platform, project
 
 ### Community 103 - "2guys1canvas API reference"
 Cohesion: 0.17
 Nodes (12): 2guys1canvas API reference, Active hosted OpenRouter BYOK (2026-09-28), Authenticated project API (Supabase mode, 2026-09-24), Client integration notes — 2026-09-28, Durable workflow projection, Historical hosted managed AI, Invitation and usage update (2026-09-30), Legacy AI routes (local compatibility only; hosted routes return 410) (+4 more)
 
 ### Community 104 - "2guys1canvas"
-Cohesion: 0.13
-Nodes (15): 2guys1canvas, Active hosted MVP: OpenRouter BYOK, AI steering documents, Architecture, Checks, Connect AI, Current boundaries, Current product setup (2026-09-30) (+7 more)
+Cohesion: 0.14
+Nodes (14): 2guys1canvas, Active hosted MVP: OpenRouter BYOK, AI steering documents, Architecture, Checks, Connect AI, Current boundaries, Current product setup (2026-09-30) (+6 more)
 
 ### Community 105 - "2guys1canvas product brief"
 Cohesion: 0.25
@@ -509,16 +529,12 @@ Cohesion: 0.15
 Nodes (13): Common contract, Multi-user harness improvement prompts, Starting instruction, Step 01 - Audit, scenarios and baseline, Step 02 - Coordinator fencing and owner routing, Step 03 - Artifact persistence and restoration, Step 04 - Generated execution isolation, Step 05 - Intent inspection, correction and contextual references (+5 more)
 
 ### Community 110 - "isolation.ts"
-Cohesion: 0.20
-Nodes (18): ref_node_url, assertIsolationAvailable(), cancelled(), compileIsolated(), Dependency, hostEnvironment(), IsolatedRequest, IsolationError (+10 more)
-
-### Community 111 - ".ensureWorkflow"
-Cohesion: 0.23
-Nodes (3): WorkflowPhase, WorkflowTask, WorkflowTaskState
+Cohesion: 0.07
+Nodes (33): ref_node_events, ref_node_module, ref_node_net, ref_node_url, BYOK_LEASE_MS, BYOK_MODEL_VERSION, Lease, LeaseModel (+25 more)
 
 ### Community 112 - "Harness status and outstanding work"
-Cohesion: 0.13
-Nodes (15): Accepted deferred implementation, Context, accounting and recovery, Current implementation and dated evidence, Documentation cleanup verification, Durable workflow control and permissions, Evidence conventions, Execution, tools and evidence, Harness status and outstanding work (+7 more)
+Cohesion: 0.12
+Nodes (16): Accepted deferred implementation, Context, accounting and recovery, Current implementation and dated evidence, Documentation cleanup verification, Durable workflow control and permissions, Evidence conventions, Execution, tools and evidence, Harness status and outstanding work (+8 more)
 
 ### Community 113 - "2guys1canvas contributor instructions"
 Cohesion: 0.29
@@ -529,12 +545,12 @@ Cohesion: 0.40
 Nodes (3): changed, original, shared
 
 ### Community 115 - "RoomView"
-Cohesion: 0.13
-Nodes (15): 2guys1canvas implemented API contracts, Active temporary OpenRouter routes, Authenticated project routes, Local compatibility only, Preview and download, Shared response models, Step 05 intent command contracts, Transport and authorization (+7 more)
+Cohesion: 0.12
+Nodes (17): 2guys1canvas implemented API contracts, Active temporary OpenRouter routes, Authenticated project routes, Local compatibility only, Preview and download, Room reads, submissions and decisions, Shared response models, Step 05 intent command contracts (+9 more)
 
-### Community 116 - "bubble.tsx"
-Cohesion: 0.38
-Nodes (4): Bubble(), BubbleReactions(), bubbleReactionsVariants, bubbleVariants
+### Community 116 - "verify-build-progress.ts"
+Cohesion: 0.15
+Nodes (15): address, Browser, browsers, candidates, converge(), dataDir, fake, gates (+7 more)
 
 ### Community 118 - "CoCreate harness assessment"
 Cohesion: 0.40
@@ -549,24 +565,24 @@ Cohesion: 0.33
 Nodes (6): 2guys1canvas, Checks and boundaries, Contributor entrypoints, Hosted configuration and release prerequisites, Hosted setup and use, Start locally
 
 ### Community 122 - "project.ts"
-Cohesion: 0.21
-Nodes (11): ref_node_path_posix, allowedExtensions, applyOperations(), downloadableFiles(), FileOperation, generatedRoot, infrastructureFiles, ProjectSpec (+3 more)
-
-### Community 123 - "Harness migration plan"
-Cohesion: 0.50
-Nodes (4): Harness migration plan, Later migrations, Rollback, Safe rollout
+Cohesion: 0.11
+Nodes (28): Outcome and responsible boundary, ref_node_path_posix, addUsage(), recoverProjectPlan(), RecoveryCheckpoint, taskSchema, generateProjectPlan(), mergeUsage() (+20 more)
 
 ### Community 124 - "Multi-user Step 01 evidence and handoff"
 Cohesion: 0.40
 Nodes (5): Multi-user Step 01 evidence and handoff, Outcome and scope, Reproduction and measurements, Scenario inventory, Verification and file handoff
 
-### Community 126 - "build-recovery.ts"
-Cohesion: 0.27
-Nodes (9): addUsage(), recoverProjectPlan(), RecoveryCheckpoint, taskSchema, generateProjectPlan(), mergeUsage(), budgetProjectFiles(), ProjectPlan (+1 more)
+### Community 125 - "Step 06 handoff — stable progress under ongoing steering"
+Cohesion: 0.33
+Nodes (6): Files and compatibility, Handoff and outstanding dependencies, Measured comparison, Outcome and policy, Step 06 handoff — stable progress under ongoing steering, Verification and retained attempts
 
-### Community 127 - "bundleProject"
-Cohesion: 0.29
-Nodes (7): Exact checks and what they establish, Files and decision, Multi-user Step 04 handoff - 2026-10-04, Next task, Outcome and responsible boundary, Prepared deployment and remaining prerequisites, bundleProject()
+### Community 126 - "cocreate.test.ts"
+Cohesion: 0.53
+Nodes (3): keepLastSuccess(), shouldPromoteRevision(), previewDocument()
+
+### Community 127 - "Multi-user Step 04 handoff - 2026-10-04"
+Cohesion: 0.40
+Nodes (5): Exact checks and what they establish, Files and decision, Multi-user Step 04 handoff - 2026-10-04, Next task, Prepared deployment and remaining prerequisites
 
 ### Community 128 - "documentation-cleanup.md"
 Cohesion: 0.40
@@ -584,37 +600,37 @@ Nodes (6): ref_react_dom_client, App, ProjectApp, src_studio_ivory, src_styles, 
 Cohesion: 0.33
 Nodes (6): AdvancedAISetup(), ByokSetup(), run(), Lease, request(), AIConnection
 
-### Community 133 - "ProjectFile"
-Cohesion: 0.50
-Nodes (4): ProjectFile, crc32(), createZip(), table
-
 ### Community 134 - "2guys1canvas current handoff"
 Cohesion: 0.67
 Nodes (3): 2guys1canvas current handoff, Next work, Read next
 
-### Community 135 - "Supabase identity and persistence boundary (2026-09-24)"
-Cohesion: 0.67
-Nodes (3): Authentication, project naming, and sharing extension (2026-09-25), Invitation, physical usage, and conflict repair (2026-09-30), Supabase identity and persistence boundary (2026-09-24)
+### Community 135 - "Collaborative contradiction-resolution plan"
+Cohesion: 0.50
+Nodes (4): Acceptance tests, Collaborative contradiction-resolution plan, Server contracts, UI
+
+### Community 136 - "BuildProgress.tsx"
+Cohesion: 0.50
+Nodes (3): src_build_progress, BuildProgress(), BuildProgress
 
 ## Knowledge Gaps
-- **686 isolated node(s):** `supabase`, `$schema`, `singleQuote`, `printWidth`, `sortPackageJson` (+681 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1199 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
-- **31 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
+- **713 isolated node(s):** `supabase`, `$schema`, `singleQuote`, `printWidth`, `sortPackageJson` (+708 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 1230 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **32 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `react` connect `react` to `main.tsx`, `menubar.tsx`, `ByokSetup.tsx`, `sidebar.tsx`, `package.json`, `App.tsx`, `lucide-react`, `ProjectApp.tsx`, `combobox.tsx`, `context-menu.tsx`, `types.ts`, `drawer.tsx`, `ref_class_variance_authority`, `carousel.tsx`, `alert-dialog.tsx`, `chart.tsx`, `toast.tsx`, `field.tsx`, `item.tsx`, `attachment.tsx`, `dialog.tsx`, `command.tsx`, `select.tsx`, `breadcrumb.tsx`, `avatar.tsx`, `message.tsx`, `alert.tsx`, `button-group.tsx`, `input-otp.tsx`, `table.tsx`, `popover.tsx`, `input-group.tsx`, `bubble.tsx`?**
-  _High betweenness centrality (0.272) - this node is a cross-community bridge._
-- **Why does `yjs` connect `ref_node_assert_strict` to `rooms.ts`, `measure-responsiveness.ts`, `provider-reconnect.test.ts`, `local-drafts.test.ts`, `live-collaboration-check.mjs`, `package.json`, `artifact-restoration.test.ts`, `App.tsx`, `reliability.test.ts`, `supabase-platform.ts`, `index.ts`, `fixtures/multiuser-baseline.ts`?**
-  _High betweenness centrality (0.114) - this node is a cross-community bridge._
-- **Why does `2guys1canvas implemented API contracts` connect `RoomView` to `rooms.ts`, `harness/architecture.md`?**
-  _High betweenness centrality (0.101) - this node is a cross-community bridge._
+- **Why does `react` connect `react` to `main.tsx`, `menubar.tsx`, `marker.tsx`, `ByokSetup.tsx`, `sidebar.tsx`, `package.json`, `App.tsx`, `pagination.tsx`, `ProjectApp.tsx`, `combobox.tsx`, `context-menu.tsx`, `intent-commands.ts`, `drawer.tsx`, `toggle-group.tsx`, `carousel.tsx`, `alert-dialog.tsx`, `chart.tsx`, `toast.tsx`, `field.tsx`, `item.tsx`, `attachment.tsx`, `dialog.tsx`, `select.tsx`, `breadcrumb.tsx`, `avatar.tsx`, `ref_class_variance_authority`, `lucide-react`, `table.tsx`, `popover.tsx`, `input-group.tsx`, `dropdown-menu.tsx`, `card.tsx`?**
+  _High betweenness centrality (0.241) - this node is a cross-community bridge._
+- **Why does `lucide-react` connect `lucide-react` to `carousel.tsx`, `menubar.tsx`, `ByokSetup.tsx`, `toast.tsx`, `sidebar.tsx`, `package.json`, `context-menu.tsx`, `App.tsx`, `pagination.tsx`, `dialog.tsx`, `ProjectApp.tsx`, `dropdown-menu.tsx`, `navigation-menu.tsx`, `select.tsx`, `combobox.tsx`, `breadcrumb.tsx`?**
+  _High betweenness centrality (0.094) - this node is a cross-community bridge._
+- **Why does `yjs` connect `artifact-restoration.test.ts` to `measure-responsiveness.ts`, `ref_node_assert_strict`, `coordinator-fencing.test.ts`, `provider-reconnect.test.ts`, `local-drafts.test.ts`, `live-collaboration-check.mjs`, `package.json`, `supabase-platform.ts`, `App.tsx`, `reliability.test.ts`, `fixtures/multiuser-baseline.ts`, `rooms.ts`, `cocreate.test.ts`?**
+  _High betweenness centrality (0.079) - this node is a cross-community bridge._
 - **Are the 32 inferred relationships involving `createCoCreateServer()` (e.g. with `.applyRecommendedAI()` and `.assignAI()`) actually correct?**
   _`createCoCreateServer()` has 32 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `supabase`, `$schema`, `singleQuote` to the rest of the system?**
-  _686 weakly-connected nodes found - possible documentation gaps or missing edges._
-- **Should `rooms.ts` be split into smaller, more focused modules?**
-  _Cohesion score 0.05002146844139115 - nodes in this community are weakly interconnected._
+  _713 weakly-connected nodes found - possible documentation gaps or missing edges._
+- **Should `RoomManager` be split into smaller, more focused modules?**
+  _Cohesion score 0.0749084249084249 - nodes in this community are weakly interconnected._
 - **Should `ref_node_assert_strict` be split into smaller, more focused modules?**
-  _Cohesion score 0.09309309309309309 - nodes in this community are weakly interconnected._
+  _Cohesion score 0.14761904761904762 - nodes in this community are weakly interconnected._

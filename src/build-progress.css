@@ -1,0 +1,1 @@
+.build-progress{display:flex;flex-wrap:wrap;gap:8px 20px;padding:9px 18px;border-bottom:1px solid var(--border,#dedad1);background:var(--surface,#fffdf8);color:var(--text,#272722);font-size:12px;line-height:1.5}.build-progress span{overflow-wrap:anywhere}.build-progress span:first-child{font-weight:600}

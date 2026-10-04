@@ -1,6 +1,6 @@
 # 2guys1canvas product brief
 
-This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 with Step 05 attributable intent correction; other accepted human product decisions are preserved.
+This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 with Step 06 bounded collection and visible build progress; other accepted human product decisions are preserved.
 
 ## Mission, users and scope
 
@@ -19,7 +19,9 @@ Participants can inspect current requirements and individual interpretations, in
 Changing accepted intent invalidates affected candidate assumptions and retains the previous product. Saving intent does not authorize spending. **Build accepted changes** explicitly builds the revised accepted baseline under existing membership/BYOK authorization, without reinterpreting edits. A later authorized caller submission can also build that baseline. The old process/reinterpret HTTP shortcuts are retired. Uncertain save replies require canonical coordinator recovery and replay with the same request ID.
 
 
-Nearby eligible submissions use a short configurable collection window, initially three seconds. Capture order determines reconciliation; each candidate uses a fixed accepted revision. Later accepted steering remains pending for the next serialized build and can supersede the current candidate. Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot dispatch or promote after ownership loss. Owner unavailability has bounded connection retries and a clear reopen action, with the current page retaining edits. Reconnect never resubmits inference; explicit command retries preserve their request ID. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
+Nearby eligible submissions use a configurable collection window, initially three seconds, with a maximum wait and build cooldown. At its cutoff, admission closes; only an already executing interpretation finishes. Each candidate freezes the accepted revision. Later caller submissions remain durably captured without interpretation until that candidate completes, then reconcile in capture order for the next serialized build. Ordinary arrivals cannot keep cancelling useful work. Explicit corrections and conflict decisions still invalidate changed candidate assumptions; fixed revision/fingerprint/ownership and compilation gates remain mandatory. Show the building revision, available product and its recorded revision, and submitted changes awaiting interpretation. A queued capture has no accepted revision yet. D-0049 records this policy and its limits.
+
+Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot dispatch or promote after ownership loss. Owner unavailability has bounded connection retries and a clear reopen action, with the current page retaining edits. Reconnect never resubmits inference; interrupted captures return to author drafts for explicit resubmission. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
 
 Consequential contradictions retain faithful alternatives, attribution, history and the last agreed baseline. Only affected contributors resolve a round: silence is pending, unanimous explicit selections resolve, differing completed choices become Disagreements. Changed options or compromises need fresh confirmation. Block dependent disputed changes while safe independent work remains eligible. Conflict highlights, richer compromise/reopen controls and dependency precision remain accepted targets where not implemented.
 
@@ -36,11 +38,11 @@ Managed/founder dispatch, credits, presets, recommended combinations, old setup 
 | Managed credit gate | Inactive for hosted BYOK; no founder-credit fallback |
 | Provider account/key limits | The key owner's provider account controls its funds, quotas and restrictions |
 | Configured spending limit | Any frozen limit present in execution configuration is enforced; current BYOK setup offers no platform dollar-budget control |
-| Recovery calls | Current executor stops at 24 physical dispatch attempts across initial generation, recovery, repairs, transport retries and superseded candidates in that build loop |
+| Recovery calls | Current executor stops at 24 physical dispatch attempts across generation, recovery, repairs, transport retries and successive candidates while captured steering remains pending; supersession does not replenish it |
 | Per-call output | Requested output is separately bounded by provider completion metadata when available; higher effort does not establish a higher provider ceiling |
 | Context capacity | Input plus reserved output must fit model context; cumulative reported usage does not measure occupancy |
 
-The eight-task and 24-call constants are current choices, not inherently optimal budgets. Their adequacy needs evaluation. A durable workflow-wide budget across interpreters, setup, retries and uncertain outcomes remains separate deferred work.
+The eight-task and 24-call constants are current choices, not inherently optimal budgets. Their adequacy needs evaluation. The in-memory executor allowance clears after a successful drain (including attribution-only reuse) or explicit failed-build retry. It excludes interpretation/setup and is not persisted across restart. A durable workflow-wide budget across interpreters, setup, retries and uncertain outcomes remains separate deferred Step 08 work.
 
 ## Build recovery and evidence
 

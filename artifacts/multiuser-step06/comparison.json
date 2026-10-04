@@ -1,0 +1,39 @@
+{
+  "scope": "Single controlled five-arrival before/after sample, actual Windows isolation; no production SLA or total-call savings claim",
+  "beforeCommit": "472698a1f240e0315789369dc8ba3facafbd394b",
+  "fixture": "tests/fixtures/multiuser-baseline.ts",
+  "commands": 5,
+  "controlledProvider": true,
+  "releaseBarrierPolicy": "Capture another command during the held candidate; release it, then await the next candidate. Step 06 now preserves the first candidate before admitting further interpretation.",
+  "before": {
+    "promotionsWhileArriving": 0,
+    "callsBeforeFinalRelease": 5,
+    "arrivals": 5,
+    "staleCandidates": 4,
+    "finalPromotions": 1,
+    "lastAcceptedToPromotionMs": 8397,
+    "promotedVersions": 1,
+    "calls": 10,
+    "inputTokens": 100,
+    "outputTokens": 200,
+    "unknownCalls": 0
+  },
+  "after": {
+    "promotionsWhileArriving": 4,
+    "callsBeforeFinalRelease": 5,
+    "arrivals": 5,
+    "staleCandidates": 0,
+    "finalPromotions": 5,
+    "lastAcceptedToPromotionMs": 3029,
+    "promotedVersions": 5,
+    "calls": 10,
+    "inputTokens": 100,
+    "outputTokens": 200,
+    "unknownCalls": 0
+  },
+  "interpretationAndBuilderCalls": 10,
+  "discardedCandidates": {
+    "before": 4,
+    "after": 0
+  }
+}
