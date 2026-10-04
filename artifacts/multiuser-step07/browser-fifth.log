@@ -1,0 +1,19 @@
+(node:25480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"b2db4d60-150c-4ba2-9cd5-21c801b9488e","correlationId":"5098e290-3daa-4d3c-9553-295430fbe70e"}
+{"event":"collaboration.connected","connectionId":"fd34e244-a8be-4207-8dd7-2d8082a63aab","correlationId":"9d08803b-aa91-4f60-9c4e-c8f11aa3a455"}
+{"event":"collaboration.connected","connectionId":"de373f19-9633-48a6-907e-ed17adc29d79","correlationId":"7fba8cd2-0f44-475c-8b66-0decc5e1fc76"}
+{"phase":"fixture-tool-error","tool":"project.bundle","code":"isolation_resource_limit","cause":{"exitCode":125,"limit":"kernel","diagnostic":"ISOLATION_STARTED 15172 cocreate.isolation.d9168c7a8e03465caf8d0d02e335e557\r\nISOLATION_EXIT 3221225540\r\n"}}
+{"phase":"browser-failure","status":"Error","error":"Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r2; 1/24 physical calls used. Working artifact v1 retained. Submit a smaller change or reconnect the selected builder and Retry build.","acceptedRevision":2,"versions":[{"id":1,"revision":1}],"runs":[{"outcome":"promoted","verification":{"operationsApplied":true,"compilationPassed":true,"evidence":{"policyVersion":"list-behavior-v1","specificationRevision":1,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"e353b93ab9e948c548f85294cf7de4d638a1ab3ab010525f8e877300ee9e6068","checkedAt":"2026-10-04T09:17:29.408Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"},"requirementSatisfaction":"passed","regressionCheck":"passed","verified":true}},{"outcome":"failed","verification":{"operationsApplied":true,"compilationPassed":false,"requirementSatisfaction":"not_measured","regressionCheck":"not_run","verified":false}}]}
+{"event":"collaboration.disconnected","connectionId":"b2db4d60-150c-4ba2-9cd5-21c801b9488e","code":1001}
+{"event":"collaboration.disconnected","connectionId":"fd34e244-a8be-4207-8dd7-2d8082a63aab","code":1006}
+{"event":"collaboration.disconnected","connectionId":"de373f19-9633-48a6-907e-ed17adc29d79","code":1006}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:19
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: failed evidence convergence
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:19:9)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:115:3)
+
+Node.js v22.23.2

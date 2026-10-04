@@ -1,0 +1,88 @@
+### Target.attachToTarget
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Target
+
+Attaches to the target with the given ID. Optionally enables flat access to the session.
+
+```APIDOC
+## Target.attachToTarget
+
+### Description
+Attaches to the target with the given ID. Optionally enables flat access to the session.
+
+### Method
+POST
+
+### Endpoint
+/json/version
+
+### Parameters
+#### Path Parameters
+None
+
+#### Query Parameters
+None
+
+#### Request Body
+- **targetId** (TargetID) - Required - The ID of the target to attach to.
+- **flatten** (boolean) - Optional - Enables "flat" access to the session. Defaults to false.
+
+### Request Example
+```json
+{
+  "id": 1,
+  "method": "Target.attachToTarget",
+  "params": {
+    "targetId": "TARGET_ID",
+    "flatten": true
+  }
+}
+```
+
+### Response
+#### Success Response (200)
+- **sessionId** (SessionID) - The ID assigned to the session.
+
+#### Response Example
+```json
+{
+  "id": 1,
+  "result": {
+    "sessionId": "SESSION_ID"
+  }
+}
+```
+```
+
+--------------------------------
+
+### Target.sendMessageToTarget
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Target
+
+Sends protocol message over session with given id. Deprecated, consider using flat mode instead.
+
+```APIDOC
+## Target.sendMessageToTarget
+
+### Description
+Sends protocol message over session with given id. Consider using flat mode instead; see commands attachToTarget, setAutoAttach, and crbug.com/991325.
+
+### Method
+POST
+
+### Endpoint
+/json/protocol/Target.sendMessageToTarget
+
+### Parameters
+#### Request Body
+- **message** (string) - Required
+- **sessionId** (SessionID) - Required - Identifier of the session.
+- **targetId** (TargetID) - Deprecated - Deprecated.
+
+### Request Example
+{
+  "message": "{\"id\": 1, \"method\": \"Page.enable\"}",
+  "sessionId": "12345"
+}
+```

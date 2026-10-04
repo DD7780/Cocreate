@@ -1,0 +1,157 @@
+TAP version 13
+# (node:14984) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+ok 1 - empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+  ---
+  duration_ms: 7842.615
+  type: 'test'
+  ...
+# Subtest: upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+ok 2 - upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+  ---
+  duration_ms: 398.614
+  type: 'test'
+  ...
+# Subtest: missing/corrupt stored bodies are explicit failures, distinct from an empty project
+ok 3 - missing/corrupt stored bodies are explicit failures, distinct from an empty project
+  ---
+  duration_ms: 429.5222
+  type: 'test'
+  ...
+# Subtest: private bucket and project-bound artifact identity fail closed; no public URL is created
+ok 4 - private bucket and project-bound artifact identity fail closed; no public URL is created
+  ---
+  duration_ms: 84.5732
+  type: 'test'
+  ...
+# Subtest: authenticated lazy historical reads reject revoked users, including revocation during download
+ok 5 - authenticated lazy historical reads reject revoked users, including revocation during download
+  ---
+  duration_ms: 1427.7314
+  type: 'test'
+  ...
+# Subtest: an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+ok 6 - an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+  ---
+  duration_ms: 7527.2224
+  type: 'test'
+  ...
+# Subtest: lease loss after private body upload cannot promote or start another physical attempt
+not ok 7 - lease loss after private body upload cannot promote or start another physical attempt
+  ---
+  duration_ms: 8536.9403
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\artifact-restoration.test.ts:279:1'
+  failureType: 'testCodeFailure'
+  error: 'Controlled publication gate was not reached'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Timeout.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\artifact-restoration.test.ts:236:102)
+    listOnTimeout (node:internal/timers:585:17)
+    process.processTimers (node:internal/timers:521:7)
+  ...
+# Subtest: synchronous publication failure clears the pending gate and preserves the previous product
+ok 8 - synchronous publication failure clears the pending gate and preserves the previous product
+  ---
+  duration_ms: 8324.6631
+  type: 'test'
+  ...
+# Subtest: legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+ok 9 - legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+  ---
+  duration_ms: 170.7056
+  type: 'test'
+  ...
+# Retained-product fixture diagnostics {"status":"Building","requirements":[{"description":"Add a header.","status":"accepted"}],"activeBuild":true,"versions":[1],"calls":2}
+# Subtest: new promotion after a retained-product rollback never overwrites an archived version identity
+not ok 10 - new promotion after a retained-product rollback never overwrites an archived version identity
+  ---
+  duration_ms: 12332.892
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\artifact-restoration.test.ts:348:1'
+  failureType: 'testCodeFailure'
+  error: 'Controlled publication gate was not reached'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Timeout.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\artifact-restoration.test.ts:236:102)
+    listOnTimeout (node:internal/timers:585:17)
+    process.processTimers (node:internal/timers:521:7)
+  ...
+# (node:13924) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"phase":"controlled-first-build","personalCalls":1,"builderCalls":1,"status":"Building","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 11 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 7845.8013
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\auto-build-budget.test.ts:22:1'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:14:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:129:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:1808) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+ok 12 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 12050.4925
+  type: 'test'
+  ...
+# Subtest: collection deadline closes admission despite an interpretation backlog
+ok 13 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 4047.3778
+  type: 'test'
+  ...
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 14 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 404.5493
+  type: 'test'
+  ...
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+ok 15 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 3805.5588
+  type: 'test'
+  ...
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 16 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 3389.6216
+  type: 'test'
+  ...
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 17 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 3463.4114
+  type: 'test'
+  ...
+# Subtest: sustained captures make revision-labelled progress each cycle without a quiet global queue
+ok 18 - sustained captures make revision-labelled progress each cycle without a quiet global queue
+  ---
+  duration_ms: 14752.0265
+  type: 'test'
+  ...
+# Subtest: attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+ok 19 - attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+  ---
+  duration_ms: 3532.2961
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 16
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 107120.5138

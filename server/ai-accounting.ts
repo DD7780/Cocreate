@@ -1,6 +1,6 @@
 import type{AIRate,AIRunCall,AIRunRecord,AIEffort,AIWorkflowMode,LegacyAISpecialty,NormalizedAIUsage,TaskComplexity}from'../src/types.js';
 
-export const VERIFICATION_POLICY_VERSION='compile-only.v1';
+export const VERIFICATION_POLICY_VERSION='list-behavior-v1';
 const million=1_000_000;
 
 export function calculateCharge(usage:NormalizedAIUsage,rate:AIRate){

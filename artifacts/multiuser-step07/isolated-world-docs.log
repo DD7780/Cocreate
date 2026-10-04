@@ -1,0 +1,45 @@
+### Page.createIsolatedWorld
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Page
+
+Creates an isolated world for the given frame.
+
+```APIDOC
+## Page.createIsolatedWorld
+
+### Description
+Creates an isolated world for the given frame.
+
+### Parameters
+- **frameId** (FrameId) - Required
+- **worldName** (string) - Optional
+- **grantUniveralAccess** (boolean) - Optional
+- **contentSecurityPolicy** (string) - Optional
+
+### Response
+- **executionContextId** (Runtime.ExecutionContextId) - Execution context of the isolated world.
+```
+
+--------------------------------
+
+### Page.addScriptToEvaluateOnNewDocument
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Page
+
+Evaluates a given script in every frame upon creation, before any of the frame's scripts are loaded.
+
+```APIDOC
+## Page.addScriptToEvaluateOnNewDocument
+
+### Description
+Evaluates given script in every frame upon creation (before loading frame's scripts).
+
+### Parameters
+- **source** (string) - Required
+- **worldName** (string) - Optional - If specified, creates an isolated world with the given name.
+- **includeCommandLineAPI** (boolean) - Optional - Specifies whether command line API should be available to the script.
+- **runImmediately** (boolean) - Optional - If true, runs the script immediately on existing execution contexts or worlds.
+
+### Response
+- **identifier** (ScriptIdentifier) - Identifier of the added script.
+```

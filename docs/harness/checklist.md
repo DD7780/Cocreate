@@ -1,6 +1,6 @@
 # Harness status and outstanding work
 
-Updated 2026-10-04 during Step 06 final local verification; Linux/kernel and real Storage/RLS/SQL/deployment acceptance remain pending. This is the canonical active completion record. Product targets are in [product.md](../../product.md), contracts in [api.md](../../api.md), and boundaries in [architecture.md](architecture.md). Do not treat acceptance, source implementation and runtime verification as the same status.
+Updated 2026-10-04 during Step 07 final local verification; Linux/kernel and real Storage/RLS/SQL/deployment acceptance remain pending. This is the canonical active completion record. Product targets are in [product.md](../../product.md), contracts in [api.md](../../api.md), and boundaries in [architecture.md](architecture.md). Do not treat acceptance, source implementation and runtime verification as the same status.
 
 ## Evidence conventions
 
@@ -62,7 +62,16 @@ Updated 2026-10-04 during Step 06 final local verification; Linux/kernel and rea
 - [x] Three independent signed local Chrome owner/editor/viewer profiles pass durable pending capture, literal command replay/reload without inference, viewer 403, shared accepted/building/available labels, r1/r3/r4 progress under further captures, seven physical calls and 1440/390 px overflow checks. [Browser report](../../artifacts/multiuser-step06/browser/checks.json), [passing log](../../artifacts/multiuser-step06/browser-second.log). Pending/available/desktop/mobile screenshots inspected. Compilation remains functionally unverified. Local generated/evidence/graph/runtime outputs no longer trigger Vite room reloads.
 - [x] Final required `pnpm test`: **194/194 passed**, zero failures/skips; default production build and strict browser-script types passed. AST-only Graphify refreshed **2,251 nodes / 4,482 edges / 140 communities**, no LLM calls; optional SQL parser and semantic relabelling remain unavailable/unrun. Affected documentation links, unique decision IDs, source hashes and diff reviewed; [verification summary](../../artifacts/multiuser-step06/verification.json), [full tests](../../artifacts/multiuser-step06/full-tests-final.log), [build](../../artifacts/multiuser-step06/build.log), [graph](../../artifacts/multiuser-step06/graphify.log). Earlier failed attempts and the initial 192/194 full run remain in the handoff; no compiler/provider/promotion limit was weakened.
 - [ ] Hosted membership/funding/load and real SQL contention/uncertainty, both unapplied coordinator migrations, private Storage/RLS/deployed replacement and Linux isolation acceptance remain pending. No paid inference, SQL execution, migration, deployment or project-record deletion ran.
-- [ ] Steps 07-10 remain unstarted. Next requested task is Step 07 requirement-linked functional evidence through Step 04 isolation; the incorrect compiling fixture still reports unverified behavior.
+- [x] Step 06 handed off to requested Step 07 below; historical compile-only results remain historical.
+
+## Multi-user roadmap Step 07
+
+- [x] Compiling-but-incorrect baseline reproduced before integration; current policy blocks it. Trusted filter/favorites/sort checks rerun retained covered behaviors through the Step 04 OS boundary. Candidate/accepted-revision/check binding and independently enforced promotion API reject absent/stale/inconsistent evidence. Failed behavior retains the previous artifact; unsupported criteria remain visibly unverified. [Handoff](multiuser-step07-handoff.md), [before](../../artifacts/multiuser-step07/incorrect-product-before.log).
+- [x] Functional/containment/multi-user focused run 34/34 passed before final lifecycle refinements; targeted checks 5/5 passed, fresh-target checks 3/3 passed and final compilation-reuse/baseline/reliability checks 28/28 passed. Real browser network/private-file retrieval, CPU/output, cancellation and child/job cleanup, regression retention/reload/replay, missing runtime before dispatch and authority/stale-evidence gates are covered. [Focused](../../artifacts/multiuser-step07/focused-third.log), [targeted](../../artifacts/multiuser-step07/final-focused.log). Windows setup pins/hash-checks official headless shell; no dependency or unsafe host fallback.
+- [x] Three independent signed local owner/editor/viewer headless Chrome profiles pass blocked-candidate evidence, retained rendered v1, explicit v2 with one honestly unverified criterion, keyboard details, viewer 403, reload/replay without inference, six physical calls and 1440/390 px overflow checks. Four screenshots inspected. [Report](../../artifacts/multiuser-step07/browser/checks.json), [final passing run](../../artifacts/multiuser-step07/browser-final.log). Expanded UI state is participant-local; canonical report content converges.
+- [x] Required final `pnpm test`: **203/203 passed**, zero failures/skips; default production build, strict script types, pinned browser/hash/actual boundary preflight, AST Graphify (**2,331 nodes / 4,709 edges / 142 communities**), local link/decision/diff review and refreshed local preview passed. [Tests](../../artifacts/multiuser-step07/full-tests-final.log), [build](../../artifacts/multiuser-step07/build.log), [script types](../../artifacts/multiuser-step07/script-types-final.log), [preflight](../../artifacts/multiuser-step07/prepare-browser.log), [verification summary](../../artifacts/multiuser-step07/verification.json). Failed attempts remain in the handoff; product limits and unrelated legacy deadlines remain unchanged; newly covered browser observations allow 25 seconds.
+- [ ] Linux namespace/browser/address-space/runtime adversity, real hosted membership, private Storage/RLS/replacement, live provider quality, both unapplied coordinator migrations/real Postgres contention and production scale/reference checks remain pending. No paid inference, migration, deployment or hosted acceptance is claimed.
+- [ ] Steps 08-10 remain unstarted. Next requested task is Step 08 durable workflow budgets/accounting; existing executor scope remains in memory.
 
 ## Current implementation and dated evidence
 
@@ -115,11 +124,11 @@ These are gaps/refinements of existing D-0042 and the original human reliability
 
 ### Execution, tools and evidence
 
-- [-] Step 04 real local Windows compilation isolation, secret stripping, enforced limits/cancellation pass adversity. Prepared Linux deployment/kernel acceptance remains required; future functional checks must use the boundary. See Step 04 evidence above.
+- [-] Step 04 real local Windows compilation isolation, secret stripping, enforced limits/cancellation pass adversity. Prepared Linux deployment/kernel acceptance remains required; Step 07 list checks now use the boundary; actual Linux browser/kernel acceptance remains required. See Step 04 evidence above.
 - [ ] Dependency scheduling and justified bounded workers in isolated workspaces with one serialized integration/promotion boundary.
 - [-] Registry policies cover apply/build/promote. File list/read/search, approved test commands, preview/browser, web and database tool expansion remain deferred, not blanket authority.
 - [ ] Approval-bound and cross-workspace/path/resource adversarial matrix; broad logs/artifacts credential scanning and provider-switch preservation scenarios.
-- [-] Compile/tool evidence and bounded repairs exist. Map accepted requirements to implemented/verified/failed evidence and targeted acceptance/regression checks that gate promotion.
+- [-] Step 07 maps narrow accepted list criteria to candidate-bound implementation/verified/failed/unverified evidence and gates covered acceptance/regressions. Broader observable coverage remains open; unknown prose is unverified.
 - [ ] Compact run details covering trigger, requirements, steps, tools, approvals, failures, evidence and usage; Update ready behavior preserving active preview interaction where practical.
 
 ### Context, accounting and recovery

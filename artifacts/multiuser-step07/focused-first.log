@@ -1,0 +1,243 @@
+TAP version 13
+# {"policyVersion":"list-behavior-v1","specificationRevision":3,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf","checkedAt":"2026-10-04T08:50:04.699Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."},{"kind":"favorites","version":"list-behavior-v1","implemented":true,"passed":true,"message":"The favorite state toggles and restores without removing items."},{"kind":"sort","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Sorting changes list order into alphabetical order without losing items."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_980895587501","requirementRevision":1,"criteriaHash":"242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f","criteria":[{"criterionHash":"8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c","checks":["favorites"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_d6b0094d5067","requirementRevision":1,"criteriaHash":"6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df","criteria":[{"criterionHash":"dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875","checks":["sort"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"}
+# Subtest: real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+ok 1 - real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+  ---
+  duration_ms: 8226.2818
+  type: 'test'
+  ...
+# Subtest: compiling controls without behavior fail; retained feature regressions are checked on every candidate
+ok 2 - compiling controls without behavior fail; retained feature regressions are checked on every candidate
+  ---
+  duration_ms: 20070.7585
+  type: 'test'
+  ...
+# Subtest: unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+ok 3 - unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+  ---
+  duration_ms: 4074.5972
+  type: 'test'
+  ...
+# Subtest: actual verification browser denies a private host file and loopback network and removes its child/profile
+not ok 4 - actual verification browser denies a private host file and loopback network and removes its child/profile
+  ---
+  duration_ms: 2978.076
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\candidate-verification.test.ts:61:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    The input did not match the regular expression /ERR_ACCESS_DENIED/. Input:
+
+    'net::ERR_FILE_NOT_FOUND'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected:
+  actual: 'net::ERR_FILE_NOT_FOUND'
+  operator: 'match'
+  stack: |-
+    withIsolatedBrowser.onStarted.pid (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\candidate-verification.test.ts:74:14)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async withIsolatedBrowser (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\isolation\browser.ts:99:20)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\candidate-verification.test.ts:68:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: cancellation and wall limits terminate browser execution and leave no child jobs
+ok 5 - cancellation and wall limits terminate browser execution and leave no child jobs
+  ---
+  duration_ms: 3811.5674
+  type: 'test'
+  ...
+# (node:15844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Current outcome of Step 01 scenario: simultaneous-slow
+ok 6 - Current outcome of Step 01 scenario: simultaneous-slow
+  ---
+  duration_ms: 6321.9611
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: failed-interpreter
+ok 7 - Current outcome of Step 01 scenario: failed-interpreter
+  ---
+  duration_ms: 5174.5899
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: later-steering
+ok 8 - Current outcome of Step 01 scenario: later-steering
+  ---
+  duration_ms: 7713.1299
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: continuous-arrivals
+ok 9 - Current outcome of Step 01 scenario: continuous-arrivals
+  ---
+  duration_ms: 17898.6489
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: ambiguous-reference
+ok 10 - Current outcome of Step 01 scenario: ambiguous-reference
+  ---
+  duration_ms: 170.5844
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: invented-passage
+ok 11 - Current outcome of Step 01 scenario: invented-passage
+  ---
+  duration_ms: 166.5263
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: incorrect-product
+not ok 12 - Current outcome of Step 01 scenario: incorrect-product
+  ---
+  duration_ms: 4401.1995
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\multiuser-baseline.test.ts:6:39'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    false !== true
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: 'strictEqual'
+  stack: |-
+    runScenario (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\multiuser-baseline.ts:159:68)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\multiuser-baseline.test.ts:7:3)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: Current outcome of Step 01 scenario: snapshot-body-gap
+ok 13 - Current outcome of Step 01 scenario: snapshot-body-gap
+  ---
+  duration_ms: 145.3353
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: projection-growth
+ok 14 - Current outcome of Step 01 scenario: projection-growth
+  ---
+  duration_ms: 171.0018
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: isolation-policy
+ok 15 - Current outcome of Step 01 scenario: isolation-policy
+  ---
+  duration_ms: 80.9275
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: restart-budget
+ok 16 - Current outcome of Step 01 scenario: restart-budget
+  ---
+  duration_ms: 103.2934
+  type: 'test'
+  ...
+# (node:7620) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+ok 17 - required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+  ---
+  duration_ms: 18506.9888
+  type: 'test'
+  ...
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 18 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 3.7094
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 19 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 80.6156
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 20 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 53.76
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 21 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 32.5662
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 22 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 57.6978
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 23 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 2.0607
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 24 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 143.858
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 25 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 87.94
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 26 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 5.4335
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 27 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 6.9644
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 28 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 119.9702
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 29 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 3705.1715
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 30 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 13293.871
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+ok 31 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 3387.4176
+  type: 'test'
+  ...
+# Subtest: unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+ok 32 - unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+  ---
+  duration_ms: 4034.0131
+  type: 'test'
+  ...
+1..32
+# tests 32
+# suites 0
+# pass 30
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 127180.6534

@@ -11,8 +11,25 @@ import { RoomManager } from '../server/rooms.js';
 import { ToolRegistry } from '../server/tool-registry.js';
 import { reconcileRequirements } from '../server/requirements.js';
 import type { Requirement } from '../src/types.js';
+import { applyOperations, bundleProject } from '../server/project.js';
+import { verifyCandidate } from '../server/verification.js';
 
 const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));
+
+test('promotion API rejects missing, changed and cancelled coordinator evidence before workspace writes',async()=>{
+  const dataDir=temporaryData(),store=new EventStore(dataDir),tools=new ToolRegistry(store),workspaceId=`evidence-${randomUUID()}`;
+  const files=applyOperations(undefined,[{type:'write',path:'src/App.tsx',content:'export default function App(){return <main>Candidate</main>}'}]);
+  const compiled=await bundleProject(files),report=await verifyCandidate(files,compiled,[],1);
+  const context={workspaceId,runId:randomUUID(),actorId:'builder',actorType:'builder' as const,role:'builder' as const,inputRevision:1};
+  try{
+    await assert.rejects(tools.execute('project.promote',{files},context),/requires coordinator-owned verification/);
+    await assert.rejects(tools.execute('project.promote',{files:files.map(file=>({...file,content:file.content+'\n// changed'}))},{...context,verification:{report,requirements:[],compiled}}),/stale/);
+    const controller=new AbortController();controller.abort();
+    await assert.rejects(tools.execute('project.promote',{files},{...context,signal:controller.signal,verification:{report,requirements:[],compiled}}),/cancelled/);
+    assert.equal(fs.existsSync(path.resolve('generated/rooms',workspaceId)),false);
+    assert.equal(store.eventsForWorkspace(workspaceId).filter(event=>event.eventType==='tool.failed').length,3);
+  }finally{store.close();assert.equal(path.dirname(dataDir),path.resolve(os.tmpdir()));fs.rmSync(dataDir,{recursive:true,force:true})}
+});
 
 test('event store orders events, redacts secrets, stores artifacts, and enforces run transitions',()=>{
   const dataDir=temporaryData(),store=new EventStore(dataDir),workspaceId='workspace-a';

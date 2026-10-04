@@ -1,0 +1,133 @@
+### Configure V8 max semi-space size for Node.js
+
+Source: https://github.com/nodejs/node/blob/v22.20.0/doc/api/cli.md
+
+This option sets the maximum semi-space size for V8's scavenge garbage collector in MiB. Adjusting this value can improve throughput for Node.js workloads at the cost of increased memory consumption, as the young generation size is three times the semi-space size. Benchmarking different values is crucial for optimal configuration depending on the application's workload and system memory limits.
+
+```bash
+for MiB in 16 32 64 128; do
+    node --max-semi-space-size=$MiB index.js
+done
+```
+
+--------------------------------
+
+### Set V8 max old space size with Node.js
+
+Source: https://github.com/nodejs/node/blob/v22.20.0/doc/api/cli.md
+
+This option configures the maximum memory size for V8's old memory section in MiB. Increasing this limit can reduce the frequency of garbage collection, but setting it too high may lead to excessive memory consumption. It is recommended to leave some memory for other uses to prevent swapping.
+
+```bash
+node --max-old-space-size=1536 index.js
+```
+
+--------------------------------
+
+### Get V8 Heap Space Statistics in Node.js
+
+Source: https://github.com/nodejs/node/blob/v22.20.0/doc/api/v8.md
+
+This method returns an array of objects, each detailing statistics for a specific V8 heap space (e.g., 'new_space', 'old_space', 'code_space'). Each object includes `space_name`, `space_size`, `space_used_size`, `space_available_size`, and `physical_space_size`. The structure and availability of these spaces may vary between V8 versions.
+
+```json
+[
+  {
+    "space_name": "new_space",
+    "space_size": 2063872,
+    "space_used_size": 951112,
+    "space_available_size": 80824,
+    "physical_space_size": 2063872
+  },
+  {
+    "space_name": "old_space",
+    "space_size": 3090560,
+    "space_used_size": 2493792,
+    "space_available_size": 0,
+    "physical_space_size": 3090560
+  },
+  {
+    "space_name": "code_space",
+    "space_size": 1260160,
+    "space_used_size": 644256,
+    "space_available_size": 960,
+    "physical_space_size": 1260160
+  },
+  {
+    "space_name": "map_space",
+    "space_size": 1094160,
+    "space_used_size": 201608,
+    "space_available_size": 0,
+    "physical_space_size": 1094160
+  },
+  {
+    "space_name": "large_object_space",
+    "space_size": 0,
+    "space_used_size": 0,
+    "space_available_size": 1490980608,
+    "physical_space_size": 0
+  }
+]
+```
+
+--------------------------------
+
+### Upper bound from physical memory (pointer compression cage)
+
+Source: https://github.com/nodejs/node/blob/main/deps/v8/src/heap/heap.cc
+
+On 64-bit systems with pointer compression, the max old generation size is capped at roughly 4 GB minus young generation space. On 32-bit or without pointer compression, the upper bound is effectively unlimited (max size_t).
+
+```cpp
+size_t Heap::AllocatorLimitOnMaxOldGenerationSize(uint64_t physical_memory) {
+#ifdef V8_COMPRESS_POINTERS
+  if (v8_flags.new_old_generation_heap_size) {
+    return kPtrComprCageReservationSize;
+  }
+  // The young generation is also allocated on the heap.
+  return kPtrComprCageReservationSize -
+         YoungGenerationSizeFromSemiSpaceSize(
+             DefaultMaxSemiSpaceSize(physical_memory));
+#else
+  return std::numeric_limits<size_t>::max();
+#endif
+}
+```
+
+--------------------------------
+
+### Worker::UpdateResourceConstraints — translates maxOldGenerationSizeMb into V8 heap constraint
+
+Source: https://github.com/nodejs/node/blob/main/src/node_worker.cc
+
+When `maxOldGenerationSizeMb > 0`, this sets V8's old generation size constraint on the worker's isolate, overriding any default or `--max_old_space_size`. If not set, the existing constraint (from e.g. `--max_old_space_size`) is read back into `resource_limits_` so it can be queried later.
+
+```cpp
+void Worker::UpdateResourceConstraints(ResourceConstraints* constraints) {
+  constraints->set_stack_limit(reinterpret_cast<uint32_t*>(stack_base_));
+
+  if (resource_limits_[kMaxYoungGenerationSizeMb] > 0) {
+    constraints->set_max_young_generation_size_in_bytes(
+        static_cast<size_t>(resource_limits_[kMaxYoungGenerationSizeMb] * kMB));
+  } else {
+    resource_limits_[kMaxYoungGenerationSizeMb] =
+        constraints->max_young_generation_size_in_bytes() / kMB;
+  }
+
+  if (resource_limits_[kMaxOldGenerationSizeMb] > 0) {
+    constraints->set_max_old_generation_size_in_bytes(
+        static_cast<size_t>(resource_limits_[kMaxOldGenerationSizeMb] * kMB));
+  } else {
+    resource_limits_[kMaxOldGenerationSizeMb] =
+        constraints->max_old_generation_size_in_bytes() / kMB;
+  }
+
+  if (resource_limits_[kCodeRangeSizeMb] > 0) {
+    constraints->set_code_range_size_in_bytes(
+        static_cast<size_t>(resource_limits_[kCodeRangeSizeMb] * kMB));
+  } else {
+    resource_limits_[kCodeRangeSizeMb] =
+        constraints->code_range_size_in_bytes() / kMB;
+  }
+}
+```

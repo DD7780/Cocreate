@@ -1,0 +1,196 @@
+{
+  "scope": "Three independent signed local owner/editor/viewer Chrome profiles; real SQLite and Windows OS-isolated compiler/browser; controlled loopback provider. Hosted/live/SQL not run.",
+  "participants": 3,
+  "failedCandidateBlocked": true,
+  "priorProductVisible": true,
+  "failedEvidenceConverged": true,
+  "passedChecksWithHonestUnverifiedCoverage": true,
+  "reloadAddsNoInference": true,
+  "replayAddsNoInference": true,
+  "viewerDenied": true,
+  "keyboardDetails": true,
+  "responsiveWidths": [
+    1440,
+    390
+  ],
+  "promotedRevisions": [
+    1,
+    3
+  ],
+  "interpreterCalls": 3,
+  "builderCalls": 3,
+  "physicalCalls": 6,
+  "evidence": [
+    {
+      "policyVersion": "list-behavior-v1",
+      "specificationRevision": 1,
+      "sourceHash": "ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4",
+      "candidateHash": "00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a",
+      "planHash": "e353b93ab9e948c548f85294cf7de4d638a1ab3ab010525f8e877300ee9e6068",
+      "checkedAt": "2026-10-04T10:30:46.469Z",
+      "browserVersion": "HeadlessChrome/154.0.8037.92",
+      "checks": [
+        {
+          "kind": "filter",
+          "version": "list-behavior-v1",
+          "implemented": true,
+          "passed": true,
+          "message": "Filtering narrows the list; clearing restores it."
+        }
+      ],
+      "requirements": [
+        {
+          "requirementId": "req_3fb819102acc",
+          "requirementRevision": 1,
+          "criteriaHash": "0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9",
+          "criteria": [
+            {
+              "criterionHash": "622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89",
+              "checks": [
+                "filter"
+              ],
+              "status": "passed"
+            }
+          ],
+          "implementation": "observed",
+          "status": "verified"
+        }
+      ],
+      "status": "passed"
+    },
+    {
+      "policyVersion": "list-behavior-v1",
+      "specificationRevision": 2,
+      "sourceHash": "cfaab3c4fe966929b8bc8461e9914be3d6ab4d572e7ab78c441bcde2ff79a1c2",
+      "candidateHash": "b9569839786e9e7c8e3023bfc88cd87ce8175136db3a7efcafbb9781ec6926c5",
+      "planHash": "4e406d25f26a64139b1bdafeceb344f9c6c165b246fb0918f9d3b471e5f1cddf",
+      "checkedAt": "2026-10-04T10:30:54.155Z",
+      "browserVersion": "HeadlessChrome/154.0.8037.92",
+      "checks": [
+        {
+          "kind": "filter",
+          "version": "list-behavior-v1",
+          "implemented": true,
+          "passed": false,
+          "message": "Filtering did not narrow and restore the visible list."
+        },
+        {
+          "kind": "favorites",
+          "version": "list-behavior-v1",
+          "implemented": true,
+          "passed": true,
+          "message": "The favorite state toggles and restores without removing items."
+        }
+      ],
+      "requirements": [
+        {
+          "requirementId": "req_3fb819102acc",
+          "requirementRevision": 1,
+          "criteriaHash": "0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9",
+          "criteria": [
+            {
+              "criterionHash": "622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89",
+              "checks": [
+                "filter"
+              ],
+              "status": "failed"
+            }
+          ],
+          "implementation": "observed",
+          "status": "failed"
+        },
+        {
+          "requirementId": "req_980895587501",
+          "requirementRevision": 1,
+          "criteriaHash": "242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f",
+          "criteria": [
+            {
+              "criterionHash": "8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c",
+              "checks": [
+                "favorites"
+              ],
+              "status": "passed"
+            }
+          ],
+          "implementation": "observed",
+          "status": "verified"
+        }
+      ],
+      "status": "failed"
+    },
+    {
+      "policyVersion": "list-behavior-v1",
+      "specificationRevision": 3,
+      "sourceHash": "ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4",
+      "candidateHash": "00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a",
+      "planHash": "774b912abfb887c920dd880cb930439ff45e5fde53466c551f85098f4f6466d8",
+      "checkedAt": "2026-10-04T10:30:59.161Z",
+      "browserVersion": "HeadlessChrome/154.0.8037.92",
+      "checks": [
+        {
+          "kind": "filter",
+          "version": "list-behavior-v1",
+          "implemented": true,
+          "passed": true,
+          "message": "Filtering narrows the list; clearing restores it."
+        },
+        {
+          "kind": "favorites",
+          "version": "list-behavior-v1",
+          "implemented": true,
+          "passed": true,
+          "message": "The favorite state toggles and restores without removing items."
+        }
+      ],
+      "requirements": [
+        {
+          "requirementId": "req_3fb819102acc",
+          "requirementRevision": 1,
+          "criteriaHash": "0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9",
+          "criteria": [
+            {
+              "criterionHash": "622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89",
+              "checks": [
+                "filter"
+              ],
+              "status": "passed"
+            }
+          ],
+          "implementation": "observed",
+          "status": "verified"
+        },
+        {
+          "requirementId": "req_9000bc354acf",
+          "requirementRevision": 1,
+          "criteriaHash": "c22d87d66437dd513f8208eaeaa105b25f05a243c40b365fb91de17c82b82233",
+          "criteria": [
+            {
+              "criterionHash": "3553181909d61532ff56d3fa39262a3e410a85582a371736a4fdaaa03ba2ccb4",
+              "checks": [],
+              "status": "unverified"
+            }
+          ],
+          "implementation": "unknown",
+          "status": "unverified"
+        },
+        {
+          "requirementId": "req_980895587501",
+          "requirementRevision": 1,
+          "criteriaHash": "242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f",
+          "criteria": [
+            {
+              "criterionHash": "8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c",
+              "checks": [
+                "favorites"
+              ],
+              "status": "passed"
+            }
+          ],
+          "implementation": "observed",
+          "status": "verified"
+        }
+      ],
+      "status": "unverified"
+    }
+  ]
+}

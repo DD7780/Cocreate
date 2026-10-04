@@ -1,0 +1,18 @@
+(node:12996) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"16f6900a-b860-484f-b955-75a0f3097ad8","correlationId":"adf6b279-7107-4966-a66f-90ad6d62309b"}
+{"event":"collaboration.connected","connectionId":"9c11d9b0-26b6-4e61-9729-e7f0b73323f9","correlationId":"0e8c7d5f-991d-4fb7-9b54-f23ddf711944"}
+{"event":"collaboration.connected","connectionId":"5988808d-c614-41ab-8e38-abad09dfcf62","correlationId":"904ab4cc-72b3-44a0-8f4f-9378a39bde0f"}
+{"phase":"browser-failure","status":"Error","error":"Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r1; 1/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build.","acceptedRevision":1,"versions":[],"runs":[{"outcome":"failed","verification":{"operationsApplied":true,"compilationPassed":false,"requirementSatisfaction":"not_measured","regressionCheck":"not_run","verified":false}}]}
+{"event":"collaboration.disconnected","connectionId":"5988808d-c614-41ab-8e38-abad09dfcf62","code":1006}
+{"event":"collaboration.disconnected","connectionId":"9c11d9b0-26b6-4e61-9729-e7f0b73323f9","code":1006}
+{"event":"collaboration.disconnected","connectionId":"16f6900a-b860-484f-b955-75a0f3097ad8","code":1006}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:18
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: verified first product
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:18:9)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-candidate-evidence.ts:105:19)
+
+Node.js v22.23.2

@@ -1,6 +1,6 @@
 # 2guys1canvas contributor instructions
 
-Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-03; this document owns contributor rules, not completion claims.
+Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-04; this document owns contributor rules, not completion claims.
 
 ## Start and maintain authority
 
@@ -67,3 +67,9 @@ Documentation-only edits require link/reference review and `git diff --check`; d
 | [README.md](README.md) | Actual setup and user operation |
 
 Inspect all affected canonical documents in the same change. Do not create competing root architecture/progress files or treat older assessments/plans as current instructions. Keep [archived narrative](docs/harness/archive/2026-10-01-pre-consolidation/README.md) identifiable as history. Report actual changes/checks, blockers and next work; keep secrets and private reasoning out.
+
+## Step 07 acceptance boundary
+
+Use server/verification.ts to select trusted checks from frozen accepted criteria; generated tests/claims cannot configure the plan or promotion authority. Bind evidence to specification and requirement revisions, criterion hashes, full source plus compiled JS/CSS, plan and check version. Record durable evidence before promotion; project.promote independently checks its coordinator-owned context. Keep existing intent, fingerprint and ownership fences after awaited work. Rerun every retained covered behavior for each candidate. Reuse compiled bytes only from an unchanged available artifact compiled and durably promoted by this coordinator instance, with matching source/compiled hashes. Persisted metadata alone cannot establish compilation provenance; functional evidence must still be regenerated. Unknown prose stays unverified; do not infer implementation or full acceptance from compilation. Functional failures stop without automatic provider repairs and preserve the previous artifact.
+
+Execute generated browser code exclusively through server/isolation/browser.ts under the Step 04 OS/job/resource boundary. Parent-owned CDP uses inherited pipes, and trusted DOM assertions run in a separate isolated world. Do not grant network capabilities, increase resource/process limits, run a host verification fallback or let model/HTTP input select executable paths/check code. Browser runtime setup is explicit operator work; preflight covered checks before builder dispatch. Windows local acceptance and pending Linux/hosted acceptance must remain distinct. See the [Step 07 handoff](docs/harness/multiuser-step07-handoff.md).

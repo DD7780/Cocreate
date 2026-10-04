@@ -1,0 +1,44 @@
+(node:18596) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "scenario": "incorrect-product",
+  "observations": {
+    "acceptedCount": 1,
+    "functionalVerified": false,
+    "compilationPassed": true,
+    "filterControlAbsentFromSource": true,
+    "lastAcceptedToPromotionMs": 5426,
+    "promotedVersions": 1
+  },
+  "attempts": [
+    {
+      "phase": "interpretation",
+      "queueMs": 64.61429999999996,
+      "providerMs": 0.06359999999995125
+    },
+    {
+      "phase": "builder",
+      "providerMs": 0.049799999999777356
+    }
+  ],
+  "physicalAttempts": [
+    {
+      "phase": "interpretation",
+      "durationMs": 58,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 22,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    }
+  ],
+  "reportedUsage": {
+    "calls": 2,
+    "inputTokens": 20,
+    "outputTokens": 40,
+    "unknownCalls": 0
+  }
+}

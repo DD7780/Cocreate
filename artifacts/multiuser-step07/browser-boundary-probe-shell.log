@@ -1,0 +1,8 @@
+ISOLATION_STARTED 16720 cocreate.isolation.abbaed2ea08a4bfaaf8022ce7ce026a9
+
+[1004/140927.155:WARNING:net\dns\dns_config_service_win.cc:609] Failed to read DnsConfig.
+
+{"id":1,"result":{"protocolVersion":"1.3","product":"HeadlessChrome/154.0.8037.92","revision":"@334b65d254ccc35df4fca82706d1753227b01039","userAgent":"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) HeadlessChrome/154.0.8037.92 Safari/537.36","jsVersion":"15.4.80.19"}}
+{"id":2,"result":{}}
+{"id":2,"error":{"code":-32601,"message":"'Browser.close' wasn't found"}}
+EXIT 0

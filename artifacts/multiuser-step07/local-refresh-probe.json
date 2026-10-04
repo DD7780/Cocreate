@@ -1,0 +1,8 @@
+{
+  "service": "cocreate-app",
+  "correctedProbe": "Current five-second health probe and independent Node JSON/Vite checks passed",
+  "probe": "PowerShell Invoke-WebRequest",
+  "contentType": "System.String",
+  "status": 200,
+  "priorProbe": "Initial two-second PowerShell health polling timed out; cause not established"
+}
