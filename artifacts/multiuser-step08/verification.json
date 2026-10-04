@@ -1,0 +1,103 @@
+{
+  "date": "2026-10-04",
+  "base": "5784de627aaccb64a0a989a2f43b12e331c93dfe",
+  "branch": "codex/byok-mvp",
+  "status": "accounting_verified_full_regression_gate_open",
+  "scope": "Real local SQLite; controlled loopback provider and durable-store/RPC fixtures; actual Windows isolated compiler/browser. No real hosted/SQL/live acceptance.",
+  "checks": {
+    "budgetLedger": {
+      "passed": 9,
+      "total": 9,
+      "log": "budget-final.log"
+    },
+    "requiredFullSuite": {
+      "passed": 203,
+      "total": 209,
+      "failed": 6,
+      "skipped": 0,
+      "log": "full-tests-final.log",
+      "failures": [
+        "an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact",
+        "lease loss after private body upload cannot promote or start another physical attempt",
+        "new promotion after a retained-product rollback never overwrites an archived version identity",
+        "sustained captures make revision-labelled progress each cycle without a quiet global queue",
+        "real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate",
+        "Current outcome of Step 01 scenario: incorrect-product"
+      ]
+    },
+    "affectedCaseRerun": {
+      "passed": 5,
+      "total": 6,
+      "log": "native-recheck.log"
+    },
+    "preChangePublicationComparison": {
+      "passed": 2,
+      "total": 3,
+      "remainingFailureAlsoBefore": true,
+      "log": "publication-before-current-host.log"
+    },
+    "build": {
+      "passed": true,
+      "log": "build-final.log",
+      "warning": "Existing bundle chunk warning"
+    },
+    "graph": {
+      "passed": true,
+      "astOnly": true,
+      "llmCalls": 0,
+      "log": "graphify-final.log"
+    },
+    "localIdle": {
+      "roomId": "f3Up_EmJ0X31-j7RR0XnEP6S",
+      "status": "Waiting for ideas",
+      "activeSubmissions": 0,
+      "versions": 0,
+      "readOnly": true
+    },
+    "localPreview": {
+      "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S",
+      "health": {
+        "status": "ok",
+        "service": "cocreate-app"
+      },
+      "status": 200,
+      "viteClient": true,
+      "scope": "HTTP readiness only; no inference, generated-room change or browser acceptance claim"
+    }
+  },
+  "policy": {
+    "physicalCeiling": 24,
+    "recoveryManifestMaximum": 8,
+    "interpretationIncluded": true,
+    "setupSeparate": true,
+    "retryAndRestartReplenish": false,
+    "userDollarControlAdded": false,
+    "paidLiveProviderCalls": 0,
+    "migrationsRun": 0,
+    "deployments": 0,
+    "unrelatedAppsClosed": 0
+  },
+  "pending": [
+    "Fresh complete passing whole suite under unchanged native/resource/deadline limits",
+    "Prepared coordinator migrations remain unapplied; real database fencing/uncertainty/contention",
+    "Independent hosted accounts and private Storage/RLS/replacement",
+    "Actual Linux compiler/browser namespace/address-space/runtime adversity",
+    "Authorized live provider quality/invoice reconciliation and production scale/reference comparison",
+    "Step 09 unstarted"
+  ],
+  "sourceHashes": {
+    "server/workflow-budget.ts": "50239d71e88a5581cf93abddc0cde166ea63aa471389885aa526a0388e24827e",
+    "server/rooms.ts": "db20d1c6ebd3d77ef588ae0022f372a5678bbd88b4a88c6c26c428ec75bd0a3b",
+    "server/providers.ts": "b53d00f6646207ef3a62ea0c652482a8f7d2549c856e29e7373fe78d20141754",
+    "server/usage-ledger.ts": "3548a31e2388d2c28fc0a0d968b4897af9ec9905d82b9c05ecce89c69bc63c5c",
+    "server/index.ts": "2020a11b648a461874b5c7b948d5e5c1067d8b43ed3dc2e833fbb988ea76e25b",
+    "src/types.ts": "8f10679c281aa9ee6f5bb883608f90936c1c57f3daaa3c04fbceaf7dc472dd2d",
+    "tests/workflow-budget.test.ts": "3babf4966696c9f3469e0ff5ec20c575dbd76508798c1eec892779af66141f2f",
+    "tests/usage-ledger.test.ts": "f75dc82be534e513f69600aff8fe6a896a63d78883e926ad4d3aaf07efbb9b30",
+    "tests/build-progress.test.ts": "981644f6ec5e507eb2e0efccddfba550b9f393f44b07e505b4a31bc0e6ba08a2",
+    "tests/reliability.test.ts": "7b7adfddd642db1dc66309ec30f258df3eac82ac37083f4e7ee7762a1b53fe08",
+    "tests/ai-presets.test.ts": "b6def4b36a24d70731a2d03ee393995ca80691fed4ec3f96512b7a63d31c8910",
+    "tests/fixtures/workflow-budget.ts": "9d77c9c13e93e5baa6a5d68dcd291a80718b29c0e6b61b90b02958431090007c",
+    "tests/fixtures/multiuser-baseline.ts": "7c8532e61d153bb09d858ac0d8cd9d529ed444736c58764617e72db420dc2e96"
+  }
+}

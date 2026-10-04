@@ -1,3 +1,4 @@
+import {usedBudget} from './workflow-budget.js';
 import { verifiedList } from './verified-list.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -132,7 +133,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       }
       observations.promotionsWhileArriving = room.versions.length;
       observations.callsBeforeFinalRelease = room.executionBudget?.calls || 0;
-      assert.equal(observations.callsBeforeFinalRelease, arrivals, 'supersession did not reset executor calls');
+      assert.equal(observations.callsBeforeFinalRelease, arrivals*2, 'supersession did not reset interpretation/build calls');
       gates.get(arrivals)!(); await drain();
       const tasks = manager.view(room).workflow.tasks;
       observations.arrivals = arrivals; observations.staleCandidates = tasks.filter(t => t.state === 'stale').length;
@@ -195,10 +196,10 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       assert.equal(observations.allHostProcess, false); assert.equal(observations.allCancellationBeforeStart, false);
       assert.equal(observations.compilerIsolated,true);assert.equal(observations.compilerCancellable,true);
     } else {
-      room.executionBudget = { calls: 23, reservedUsd: 1, maximumUsd: 2 };
+      room.executionBudget = usedBudget(23,2);
       manager.save(room); manager.shutdown(); manager = createManager(); room = manager.get(roomId)!;
       observations.executorBudgetRestored = room.executionBudget !== undefined;
-      assert.equal(observations.executorBudgetRestored, false);
+      assert.equal(observations.executorBudgetRestored, true);assert.equal(room.executionBudget?.calls,23);
       observations.automaticInferenceOnRestart = attempts.length;
       assert.equal(observations.automaticInferenceOnRestart, 0);
     }

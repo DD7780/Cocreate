@@ -51,9 +51,11 @@ All mutations below require the room/project owner, including a current hosted o
 
 The key is never serialized into room state/snapshots and lasts two hours in process memory. Expiry/restart requires reconnecting. Discovery compatibility requires text output, structured response support, finite rates/context and minimum context; metadata compatibility is not a paid capability or quality test. Requested builder/interpreter output is 8,000/2,400, lowered by completion metadata and context bounds. `top_provider.max_completion_tokens` is distinct from `context_length`.
 
-The policy and limit distinctions have one authoritative home in [product.md](product.md#hosted-ai-and-limits). Current executor recovery has at most eight one-file manifest tasks and a 24-physical-call budget; this does not bound all workflow interpretation/setup requests. Any frozen configured spending limit also applies; no managed-credit fallback exists.
+The policy and limit distinctions have one authoritative home in [product.md](product.md#hosted-ai-and-limits). Recovery has at most eight one-file manifest tasks. The durable workflow scope has 24 physical attempts including interpretation, generation, repairs and transport retries; setup operations have separate named scopes. Retry/reconnect/restart/supersession preserve the allowance. Room state exposes `workflowBudget` (scope ID, calls/maximum, committed-or-held USD, optional frozen USD maximum, uncertain-call count and closed flag); missing prices are not a zero-cost claim. Any frozen configured spending limit also applies; no managed-credit fallback exists.
 
 Named-connection/preset/effort routes under `/api/rooms/:id/ai` are 410 in hosted mode after the four temporary routes above. Managed catalog/funding/spender/builder routes are 410 in both modes. Old persisted configuration remains readable; it does not enable managed dispatch.
+
+Owner-only `POST /api/rooms/:id/workflow-budget/reset` takes `{requestId, expectedScopeId}`. It checks current owner/membership, coordinator fence and absence of active/queued interpretations or builds; a stale scope or reused actor/request ID with another payload is rejected. A durable receipt permits exact replay without another reset. It creates a fresh 24-call scope with the current configured limit, keeps historical ledger uncertainty and performs no inference. Snapshot uncertainty fences the coordinator; reconnect recovers the canonical receipt. Compatibility `ai/test` now requires a project-bound setup scope.
 
 ## Room reads, submissions and decisions
 

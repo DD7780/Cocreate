@@ -1,0 +1,68 @@
+TAP version 13
+# (node:17548) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+ok 1 - physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+  ---
+  duration_ms: 1.6377
+  type: 'test'
+  ...
+# Subtest: SQLite accounting restores more than the recent 500 calls without double counting
+ok 2 - SQLite accounting restores more than the recent 500 calls without double counting
+  ---
+  duration_ms: 2114.246
+  type: 'test'
+  ...
+# Subtest: optional token fields remain optional and replay cannot replace a newer final usage record
+ok 3 - optional token fields remain optional and replay cannot replace a newer final usage record
+  ---
+  duration_ms: 57.7966
+  type: 'test'
+  ...
+# (node:24168) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+ok 4 - physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+  ---
+  duration_ms: 8.059
+  type: 'test'
+  ...
+# Subtest: ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+ok 5 - ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+  ---
+  duration_ms: 0.7344
+  type: 'test'
+  ...
+# Subtest: concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+ok 6 - concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+  ---
+  duration_ms: 1188.9685
+  type: 'test'
+  ...
+# Subtest: owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+ok 7 - owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+  ---
+  duration_ms: 192.5963
+  type: 'test'
+  ...
+# Subtest: remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+ok 8 - remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+  ---
+  duration_ms: 75.8332
+  type: 'test'
+  ...
+# Subtest: work starting during owner authorization cannot reset an active allowance
+ok 9 - work starting during owner authorization cannot reset an active allowance
+  ---
+  duration_ms: 129.1943
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 9
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5302.6343

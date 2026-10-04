@@ -1,3 +1,4 @@
+import {usedBudget} from './fixtures/workflow-budget.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createProgressFixture, pause, waitFor } from './fixtures/build-progress.js';
@@ -17,7 +18,7 @@ test('later captured submissions cannot starve a fixed accepted candidate and dr
     await waitFor(()=>f.room.versions.length===1,'first promotion while submissions wait').catch(error=>{console.error('Progress diagnostics',JSON.stringify({status:f.room.status,error:f.room.lastError,active:!!f.room.buildTask,versions:f.room.versions.map(item=>item.id),submissions:f.room.submissions.map(item=>item.status),personal:f.personal.length,builders:f.builders.length,budget:f.room.executionBudget}));throw error;});
     assert.equal(f.room.versions[0].specificationRevision,1);
     await waitFor(()=>f.gates.has(2),'next collected candidate');
-    assert.equal(f.builders[1].accepted,5);assert.equal(f.room.executionBudget?.calls,2);
+    assert.equal(f.builders[1].accepted,5);assert.equal(f.room.executionBudget?.calls,7);
     assert.equal(f.manager.view(f.room).buildProgress!.availableRevision,1);
     assert.equal(f.manager.view(f.room).buildProgress!.buildingRevision,5);
     f.release(2);
@@ -25,7 +26,7 @@ test('later captured submissions cannot starve a fixed accepted candidate and dr
     assert.deepEqual(f.personal.map(item=>item.actor),['alice','bob','bob','bob','bob']);
     assert.equal(f.builders.length,2);assert.equal(f.room.versions.length,2);assert.equal(f.room.pending.get('cara')?.length,1);
     assert.equal(f.manager.view(f.room).workflow.tasks.filter(item=>item.state==='stale').length,0);
-    assert.equal(f.room.executionBudget,undefined);
+    assert.equal(f.room.executionBudget?.closed,true);
   }finally{await f.close();}
 });
 
@@ -61,13 +62,13 @@ test('explicit correction bypasses deferred submissions, cancels assumptions and
   try{
     await f.submit('alice','Build a catalog','correct-initial');await waitFor(()=>f.gates.has(1),'candidate');
     await f.submit('bob','Add saved favorites','correct-pending');
-    const target=f.room.sharedRequirements[0];
+    const budgetId=f.room.executionBudget?.id;const target=f.room.sharedRequirements[0];
     await f.manager.mutateIntent(f.room,'alice',{requestId:'correct-during-build',specificationRevision:f.room.specificationRevision,target:{kind:'requirement',id:target.id,revision:target.revision},action:'correct',text:'Build a searchable catalog',category:'goal',classification:'explicit_request'});
     await waitFor(()=>!f.room.buildTask,'correction abort');
-    assert.equal(f.room.versions.length,0);assert.equal(f.room.executionBudget?.calls,1);
+    assert.equal(f.room.versions.length,0);assert.equal(f.room.executionBudget?.id,budgetId);assert.ok(f.room.executionBudget!.calls>=2);
     // Bob's already authorized captured command may subsequently build the corrected baseline.
     await waitFor(()=>f.gates.has(2),'authorized next candidate');
-    assert.equal(f.room.executionBudget?.calls,2);f.release(2);await waitFor(()=>f.room.versions.length===1,'corrected promotion');
+    assert.equal(f.room.executionBudget?.calls,4);f.release(2);await waitFor(()=>f.room.versions.length===1,'corrected promotion');
     assert.ok(f.room.versions[0].specificationRevision!>1);
   }finally{await f.close();}
 });
@@ -86,7 +87,7 @@ test('current membership is rechecked before deferred interpretation dispatch',a
 test('continuous captures do not replenish the executor ceiling between collected candidates',async()=>{
   const f=await createProgressFixture({hold:true});
   try{
-    f.room.executionBudget={calls:23,reservedUsd:0};
+    f.room.executionBudget=usedBudget(22);
     await f.submit('alice','Build a catalog','budget-initial');await waitFor(()=>f.gates.has(1),'last permitted candidate');
     await f.submit('bob','Add bounded favorites','budget-pending');f.release(1);
     await waitFor(()=>f.room.status==='Error','next dispatch bound');
@@ -107,7 +108,7 @@ test('sustained captures make revision-labelled progress each cycle without a qu
       f.release(i);await waitFor(()=>f.room.versions.length===i,'progress with further work pending');
       assert.equal(f.room.versions.at(-1)!.specificationRevision,i);
     }
-    await waitFor(()=>f.gates.has(4),'final candidate');assert.equal(f.room.executionBudget?.calls,4);
+    await waitFor(()=>f.gates.has(4),'final candidate');assert.equal(f.room.executionBudget?.calls,8);
     f.release(4);await waitFor(()=>!f.room.buildTask&&!f.room.buildTimer&&f.room.submissions.every(item=>item.status==='built'),'sustained workload drain');
     assert.equal(f.room.versions.length,4);assert.equal(f.manager.view(f.room).workflow.tasks.filter(item=>item.state==='stale').length,0);
   }finally{await f.close();}
@@ -119,7 +120,7 @@ test('attribution-only deferred acceptance neither rebuilds nor leaves a stuck b
     await f.submit('alice','Build a catalog','same-initial');await waitFor(()=>f.gates.has(1),'candidate');
     await f.submit('bob','Build a catalog','same-pending');f.release(1);
     await waitFor(()=>!f.room.buildTask&&!f.room.buildTimer&&f.room.submissions.every(item=>item.status==='built'),'already-current drain');
-    assert.equal(f.builders.length,1);assert.equal(f.room.executionBudget,undefined);
+    assert.equal(f.builders.length,1);assert.equal(f.room.executionBudget?.closed,true);
     assert.equal(f.room.sharedRequirements[0].sources.length,2);assert.equal(f.manager.view(f.room).buildProgress!.availableRevision,1);
     assert.equal(f.manager.view(f.room).buildProgress!.acceptedRevision,2);
   }finally{await f.close();}

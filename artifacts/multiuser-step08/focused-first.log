@@ -1,0 +1,495 @@
+TAP version 13
+# (node:24832) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"phase":"controlled-first-build","personalCalls":1,"builderCalls":1,"status":"Building","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 1 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 6238.1232
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\auto-build-budget.test.ts:22:1'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:14:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:129:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:22696) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+not ok 2 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 6701.475
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:6:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    7 !== 2
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 2
+  actual: 7
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:21:51)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: collection deadline closes admission despite an interpretation backlog
+ok 3 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 4980.4723
+  type: 'test'
+  ...
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 4 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 486.0229
+  type: 'test'
+  ...
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+not ok 5 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 460.9478
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:60:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    3 !== 1
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 3
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:68:51)
+    runNextTicks (node:internal/process/task_queues:64:5)
+    process.processTimers (node:internal/timers:518:9)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 6 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 4835.0075
+  type: 'test'
+  ...
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 7 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 5010.457
+  type: 'test'
+  ...
+# Subtest: sustained captures make revision-labelled progress each cycle without a quiet global queue
+not ok 8 - sustained captures make revision-labelled progress each cycle without a quiet global queue
+  ---
+  duration_ms: 15339.4717
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:100:1'
+  failureType: 'testCodeFailure'
+  error: 'Progress fixture timed out: progress with further work pending'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\fixtures\build-progress.ts:14:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:108:20)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+not ok 9 - attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+  ---
+  duration_ms: 5088.456
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\build-progress.test.ts:117:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    + actual - expected
+    
+    + {
+    +   attempts: {
+    +     '115721d3-51bf-4678-ae48-1144eec1d0b4': {
+    +       budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822',
+    +       budgetScopeKind: 'workflow',
+    +       callId: '115721d3-51bf-4678-ae48-1144eec1d0b4',
+    +       chargeIncomplete: true,
+    +       configurationVersion: 'custom:manual:custom:fixture',
+    +       endedAt: '2026-10-04T15:27:39.559Z',
+    +       errorKind: undefined,
+    +       estimatedChargeUsd: undefined,
+    +       estimatedInputTokens: 3493,
+    +       estimatedOutputTokens: 12000,
+    +       model: 'fixture',
+    +       outcome: 'succeeded',
+    +       parentCallId: undefined,
+    +       pricingVersion: 'unknown',
+    +       provider: 'custom',
+    +       providerCostUsd: undefined,
+    +       providerRequestId: undefined,
+    +       purpose: 'builder',
+    +       reservedChargeUsd: undefined,
+    +       retryReason: undefined,
+    +       startedAt: '2026-10-04T15:27:39.480Z',
+    +       submissionId: undefined,
+    +       terminationReason: 'completed',
+    +       usage: {
+    +         cacheWriteTokens: undefined,
+    +         cachedInputTokens: undefined,
+    +         inputTokens: 10,
+    +         outputTokens: 20,
+    +         rateLimitRemaining: undefined,
+    +         rateLimitReset: undefined,
+    +         reasoningIncludedInOutput: undefined,
+    +         reasoningTokens: undefined
+    +       },
+    +       usageStatus: 'measured',
+    +       workflowRunId: '924d2f7d-674f-4633-8c13-d6357c7a3a35',
+    +       workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+    +     },
+    +     '517cbfd2-e9ed-4947-bdad-970f811d71ce': {
+    +       budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822',
+    +       budgetScopeKind: 'workflow',
+    +       callId: '517cbfd2-e9ed-4947-bdad-970f811d71ce',
+    +       chargeIncomplete: true,
+    +       configurationVersion: 'custom:manual:custom:fixture',
+    +       endedAt: '2026-10-04T15:27:44.067Z',
+    +       errorKind: undefined,
+    +       estimatedChargeUsd: undefined,
+    +       estimatedInputTokens: 4044,
+    +       estimatedOutputTokens: 2400,
+    +       model: 'fixture',
+    +       outcome: 'succeeded',
+    +       parentCallId: undefined,
+    +       pricingVersion: 'unknown',
+    +       provider: 'custom',
+    +       providerCostUsd: undefined,
+    +       providerRequestId: undefined,
+    +       purpose: 'interpretation',
+    +       reservedChargeUsd: undefined,
+    +       retryReason: undefined,
+    +       startedAt: '2026-10-04T15:27:43.942Z',
+    +       submissionId: '7bc5910b-7f70-4e85-8755-79a26836850d',
+    +       terminationReason: 'completed',
+    +       usage: {
+    +         cacheWriteTokens: undefined,
+    +         cachedInputTokens: undefined,
+    +         inputTokens: 10,
+    +         outputTokens: 20,
+    +         rateLimitRemaining: undefined,
+    +         rateLimitReset: undefined,
+    +         reasoningIncludedInOutput: undefined,
+    +         reasoningTokens: undefined
+    +       },
+    +       usageStatus: 'measured',
+    +       workflowRunId: undefined,
+    +       workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+    +     },
+    +     'db92d039-bc4e-4397-9977-5bdfb3983e0f': {
+    +       budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822',
+    +       budgetScopeKind: 'workflow',
+    +       callId: 'db92d039-bc4e-4397-9977-5bdfb3983e0f',
+    +       chargeIncomplete: true,
+    +       configurationVersion: 'custom:manual:custom:fixture',
+    +       endedAt: '2026-10-04T15:27:39.407Z',
+    +       errorKind: undefined,
+    +       estimatedChargeUsd: undefined,
+    +       estimatedInputTokens: 3601,
+    +       estimatedOutputTokens: 2400,
+    +       model: 'fixture',
+    +       outcome: 'succeeded',
+    +       parentCallId: undefined,
+    +       pricingVersion: 'unknown',
+    +       provider: 'custom',
+    +       providerCostUsd: undefined,
+    +       providerRequestId: undefined,
+    +       purpose: 'interpretation',
+    +       reservedChargeUsd: undefined,
+    +       retryReason: undefined,
+    +       startedAt: '2026-10-04T15:27:39.363Z',
+    +       submissionId: '0ee653f3-4754-4e96-bc61-f88e8f10a250',
+    +       terminationReason: 'completed',
+    +       usage: {
+    +         cacheWriteTokens: undefined,
+    +         cachedInputTokens: undefined,
+    +         inputTokens: 10,
+    +         outputTokens: 20,
+    +         rateLimitRemaining: undefined,
+    +         rateLimitReset: undefined,
+    +         reasoningIncludedInOutput: undefined,
+    +         reasoningTokens: undefined
+    +       },
+    +       usageStatus: 'measured',
+    +       workflowRunId: undefined,
+    +       workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+    +     }
+    +   },
+    +   calls: 3,
+    +   closed: true,
+    +   id: '8ef660cf-2506-45f1-b4c4-4f76dd05d822',
+    +   kind: 'workflow',
+    +   maximumCalls: 24,
+    +   maximumUsd: undefined,
+    +   reservedUsd: 0,
+    +   startedAt: '2026-10-04T15:27:39.365Z',
+    +   uncertainCalls: 3
+    + }
+    - undefined
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  actual:
+    id: '8ef660cf-2506-45f1-b4c4-4f76dd05d822'
+    kind: 'workflow'
+    startedAt: '2026-10-04T15:27:39.365Z'
+    maximumCalls: 24
+    calls: 3
+    reservedUsd: 0
+    uncertainCalls: 3
+    attempts:
+      db92d039-bc4e-4397-9977-5bdfb3983e0f:
+        callId: 'db92d039-bc4e-4397-9977-5bdfb3983e0f'
+        workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+        submissionId: '0ee653f3-4754-4e96-bc61-f88e8f10a250'
+        purpose: 'interpretation'
+        provider: 'custom'
+        model: 'fixture'
+        configurationVersion: 'custom:manual:custom:fixture'
+        startedAt: '2026-10-04T15:27:39.363Z'
+        estimatedInputTokens: 3601
+        estimatedOutputTokens: 2400
+        usage:
+          inputTokens: 10
+          outputTokens: 20
+        usageStatus: 'measured'
+        endedAt: '2026-10-04T15:27:39.407Z'
+        outcome: 'succeeded'
+        terminationReason: 'completed'
+        pricingVersion: 'unknown'
+        chargeIncomplete: true
+        budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822'
+        budgetScopeKind: 'workflow'
+      115721d3-51bf-4678-ae48-1144eec1d0b4:
+        callId: '115721d3-51bf-4678-ae48-1144eec1d0b4'
+        workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+        workflowRunId: '924d2f7d-674f-4633-8c13-d6357c7a3a35'
+        purpose: 'builder'
+        provider: 'custom'
+        model: 'fixture'
+        configurationVersion: 'custom:manual:custom:fixture'
+        startedAt: '2026-10-04T15:27:39.480Z'
+        estimatedInputTokens: 3493
+        estimatedOutputTokens: 12000
+        usage:
+          inputTokens: 10
+          outputTokens: 20
+        usageStatus: 'measured'
+        endedAt: '2026-10-04T15:27:39.559Z'
+        outcome: 'succeeded'
+        terminationReason: 'completed'
+        pricingVersion: 'unknown'
+        chargeIncomplete: true
+        budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822'
+        budgetScopeKind: 'workflow'
+      517cbfd2-e9ed-4947-bdad-970f811d71ce:
+        callId: '517cbfd2-e9ed-4947-bdad-970f811d71ce'
+        workspaceId: '4ab2db98-ce29-41a8-a47a-fd30422a4789'
+        submissionId: '7bc5910b-7f70-4e85-8755-79a26836850d'
+        purpose: 'interpretation'
+        provider: 'custom'
+        model: 'fixture'
+        configurationVersion: 'custom:manual:custom:fixture'
+        startedAt: '2026-10-04T15:27:43.942Z'
+        estimatedInputTokens: 4044
+        estimatedOutputTokens: 2400
+        usage:
+          inputTokens: 10
+          outputTokens: 20
+        usageStatus: 'measured'
+        endedAt: '2026-10-04T15:27:44.067Z'
+        outcome: 'succeeded'
+        terminationReason: 'completed'
+        pricingVersion: 'unknown'
+        chargeIncomplete: true
+        budgetScopeId: '8ef660cf-2506-45f1-b4c4-4f76dd05d822'
+        budgetScopeKind: 'workflow'
+    closed: true
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\build-progress.test.ts:123:46)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# (node:20764) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+ok 10 - required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+  ---
+  duration_ms: 24703.0566
+  type: 'test'
+  ...
+# Subtest: unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+ok 11 - unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+  ---
+  duration_ms: 6883.3906
+  type: 'test'
+  ...
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 12 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 4.1615
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 13 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 261.2517
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 14 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 49.5967
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 15 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 34.013
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 16 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 137.1467
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 17 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 1.4534
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 18 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 249.1556
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 19 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 228.955
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 20 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 16.2053
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 21 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 15.5234
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 22 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 300.8068
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 23 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 5555.7068
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 24 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 9853.6714
+  type: 'test'
+  ...
+# Subtest: tests\\reliability.test.ts
+not ok 3 - tests\\reliability.test.ts
+  ---
+  duration_ms: 290315.11
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\reliability.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 4294967295
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+# (node:25704) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+ok 26 - physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+  ---
+  duration_ms: 3.9835
+  type: 'test'
+  ...
+# Subtest: SQLite accounting restores more than the recent 500 calls without double counting
+ok 27 - SQLite accounting restores more than the recent 500 calls without double counting
+  ---
+  duration_ms: 2752.8704
+  type: 'test'
+  ...
+# Subtest: optional token fields remain optional and replay cannot replace a newer final usage record
+ok 28 - optional token fields remain optional and replay cannot replace a newer final usage record
+  ---
+  duration_ms: 100.6259
+  type: 'test'
+  ...
+# (node:17896) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+ok 29 - physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+  ---
+  duration_ms: 3.7938
+  type: 'test'
+  ...
+# Subtest: ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+ok 30 - ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+  ---
+  duration_ms: 5.4445
+  type: 'test'
+  ...
+# Subtest: concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+ok 31 - concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+  ---
+  duration_ms: 1423.3766
+  type: 'test'
+  ...
+# Subtest: owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+ok 32 - owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+  ---
+  duration_ms: 213.2658
+  type: 'test'
+  ...
+# Subtest: remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+ok 33 - remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+  ---
+  duration_ms: 107.0759
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 27
+# fail 6
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 348099.2115

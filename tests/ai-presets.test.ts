@@ -82,7 +82,7 @@ test('discovery without passed capability checks is unavailable and actionable',
   assert.match(recommendation.missing.join(' '), /capability checks/i);
 });
 
-test('applying a preset is opt-in, preserves Advanced overrides, and reserves atomically', async () => {
+test('applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch', async () => {
   const manager = new RoomManager({debounceMs: 500, encryptionSecret: 'preset-test-secret'});
   const room = manager.create(`preset-${crypto.randomUUID()}`);
   try {
@@ -99,11 +99,9 @@ test('applying a preset is opt-in, preserves Advanced overrides, and reserves at
     assert.equal(view.ai.setup?.mode, 'recommended');
     assert.equal(view.ai.setup?.workflowMode, 'developer');
     assert.deepEqual(view.ai.participantOverrides, {friend:{connectionId,model:'openai/gpt-5.6-luna'}}, 'Advanced overrides remain saved');
-    const setup = room.ai.setup!;
-    (manager as any).reserveBudget(room, 'personal', setup);
-    (manager as any).reserveBudget(room, 'builder', setup, 2);
-    (manager as any).reserveBudget(room, 'builder', setup, 2);
-    assert.throws(() => (manager as any).reserveBudget(room, 'builder', setup, 2), /remaining.*budget/i);
+    assert.equal(room.ai.setup!.maximumSpendUsd,preview.defaultMaximumSpendUsd);
+    assert.equal(manager.view(room).workflowBudget,undefined);
+    assert.equal(manager.eventStore.allProviderRequestRecordsForWorkspace(room.id).length,0);
   } finally { manager.shutdown(); }
 });
 

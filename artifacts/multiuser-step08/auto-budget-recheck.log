@@ -1,0 +1,28 @@
+TAP version 13
+# (node:22268) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"phase":"controlled-first-build","personalCalls":1,"builderCalls":1,"status":"Building","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 1 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 6146.974
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\auto-build-budget.test.ts:22:1'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:14:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:129:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6887.6637

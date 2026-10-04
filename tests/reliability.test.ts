@@ -1,3 +1,4 @@
+import {usedBudget} from './fixtures/workflow-budget.js';
 import { verifiedList } from './fixtures/verified-list.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -121,7 +122,7 @@ test('physical recovery calls and spending reservations cannot exceed their shar
   const {generateText}=await import('../server/providers.js');
   const setup={mode:'custom' as const,resolved:{personal:{model:'builder',rate:{currency:'USD' as const,inputPerMillion:1,outputPerMillion:2,reasoningBilling:'not_separately_reported' as const,reasoningNote:'Synthetic',sourceUrl:'https://example.test',verifiedAt:'2026-10-01'},maxInputTokens:5000,maxOutputTokens:500,connectionId:'x',connectionName:'x',provider:'custom' as const},builder:undefined as any,repairAttempts:1}};setup.resolved.builder=setup.resolved.personal;
   const call=()=> (manager as any).tracked(room,{purpose:'builder',provider:'custom',model:'builder',workflowRunId:'run',setup},()=>generateText({provider:'custom',baseUrl:provider.baseUrl,apiKey:'synthetic',apiFormat:'responses'},{model:'builder',instructions:'Test',input:'Test',maxOutputTokens:500}));
-  try{room.executionBudget={calls:23,reservedUsd:0};await call();assert.equal(dispatched,1);await assert.rejects(call,/24 physical-call ceiling/);assert.equal(dispatched,1);room.executionBudget={calls:0,reservedUsd:0,maximumUsd:0};await assert.rejects(call,/spending limit/);assert.equal(dispatched,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+  try{room.executionBudget=usedBudget(23);await call();assert.equal(dispatched,1);await assert.rejects(call,/24 physical-call ceiling/);assert.equal(dispatched,1);room.executionBudget=usedBudget(0,0);await assert.rejects(call,/spending limit/);assert.equal(dispatched,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON',async()=>{
@@ -211,15 +212,15 @@ test('independent participants submit in durable capture order, retain later bui
 });
 
 test('ownership loss after compilation blocks promotion; command replay adds no physical call',async()=>{
-  let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0;
+  let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0,bundled=false;
   const gate=new Promise<void>(resolve=>{release=resolve}),bundling=new Promise<void>(resolve=>{entered=resolve});
   const provider=await fixture(body=>{calls++;return response(body.text.format.schema.required.includes('goals')?interpreted('Build catalog'):plan('src/App.tsx','export default function App(){return <main>Compiled fixture</main>}'))});
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lost-promotion-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{canonicalVersions=(payload.versions as any[]).length},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},recordProviderRequest:async()=>{},onCoordinatorLost:callback=>{lose=callback;return()=>{}}}});
   const execute=manager.tools.execute.bind(manager.tools);
-  manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
+  manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
     const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
-    const first=await manager.submitChanges(room,'alice','same-command');await bundling;const before=calls;
+    const first=await manager.submitChanges(room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error');assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
     assert.equal((await manager.submitChanges(room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
     lose(room.id);release();await room.buildTask;await room.persistQueue;
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);
