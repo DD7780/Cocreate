@@ -37,6 +37,9 @@ const hash = (value: string) =>
   createHash("sha256").update(value).digest("hex");
 const posix = (value: string) => value.replaceAll("\\", "/");
 const codePattern = /\.(?:[cm]?[jt]sx?)$/;
+// prepareIsolation copies this trusted worker and esbuild-wasm's browser bundle
+// into .runtime/isolation. These loads do not use ordinary source imports.
+const isolatedWorker = "server/isolation/compiler-worker.cjs";
 
 export function inspectSources(inputs: SourceInput[]): Inventory {
   const sources = new Map(
@@ -72,7 +75,13 @@ export function inspectSources(inputs: SourceInput[]): Inventory {
     function add(specifier: string, typeOnly: boolean) {
       const target = resolve(file, specifier);
       imports.push({ specifier, target, typeOnly });
-      if (!target && specifier.startsWith(".") && codePattern.test(specifier)) {
+      const preparedCompilerDependency =
+        file === isolatedWorker && specifier === "./esbuild.cjs";
+      if (preparedCompilerDependency) unknownDynamicLoad = true;
+      if (
+        !target && !preparedCompilerDependency &&
+        specifier.startsWith(".") && codePattern.test(specifier)
+      ) {
         unresolvedLocalImports.push(`${file}: ${specifier}`);
       }
       if (
@@ -137,6 +146,17 @@ export function inspectSources(inputs: SourceInput[]): Inventory {
     });
   }
   const byFile = new Map(files.map((file) => [file.file, file]));
+  const isolationLoader = byFile.get("server/isolation.ts");
+  if (
+    isolationLoader && byFile.has(isolatedWorker) &&
+    /["']compiler-worker\.cjs["']/.test(sources.get(isolationLoader.file) || "")
+  ) {
+    isolationLoader.imports.push({
+      specifier: "./isolation/compiler-worker.cjs",
+      target: isolatedWorker,
+      typeOnly: false,
+    });
+  }
   for (const file of files)
     for (const reference of file.imports) {
       if (reference.target)

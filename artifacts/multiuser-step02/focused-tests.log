@@ -1,0 +1,206 @@
+TAP version 13
+# (node:2420) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+ok 1 - remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+  ---
+  duration_ms: 34.0159
+  type: 'test'
+  ...
+# Subtest: closing during a claim releases the late epoch without reviving ownership
+ok 2 - closing during a claim releases the late epoch without reviving ownership
+  ---
+  duration_ms: 2.9198
+  type: 'test'
+  ...
+# Subtest: closing during renewal cannot validate an old worker; malformed epochs fail closed
+ok 3 - closing during renewal cannot validate an old worker; malformed epochs fail closed
+  ---
+  duration_ms: 6.3283
+  type: 'test'
+  ...
+# Subtest: loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+ok 4 - loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+  ---
+  duration_ms: 200.7932
+  type: 'test'
+  ...
+# Subtest: hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+ok 5 - hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+  ---
+  duration_ms: 15.6733
+  type: 'test'
+  ...
+# (node:17124) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"c50c9745-3084-43a5-8c00-8c13bd36bf1b"}
+# {"event":"collaboration.connected","connectionId":"94184fff-0661-456c-a8b6-e33024d6e75a","correlationId":"c629a523-661c-41c3-8f91-6f5c05b8cdca"}
+# {"event":"collaboration.disconnected","connectionId":"94184fff-0661-456c-a8b6-e33024d6e75a","code":4403}
+# Subtest: hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+ok 6 - hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+  ---
+  duration_ms: 559.4381
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"aae7777e-4742-4cee-b69b-8ceeea94c49b"}
+# Subtest: non-owner ingress retries without hydrating a second writer or bypassing membership
+ok 7 - non-owner ingress retries without hydrating a second writer or bypassing membership
+  ---
+  duration_ms: 302.821
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 8 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 34.8331
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 9 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.8339
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 10 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 4.0118
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 11 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 69.0981
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 12 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 15.041
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 13 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 18.8585
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 14 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 2.2923
+  type: 'test'
+  ...
+# Subtest: disconnect rejects an in-flight flush and destroy removes document listeners
+ok 15 - disconnect rejects an in-flight flush and destroy removes document listeners
+  ---
+  duration_ms: 9.476
+  type: 'test'
+  ...
+# Subtest: burst edits share one transport update and explicit flush drains before acknowledgement
+ok 16 - burst edits share one transport update and explicit flush drains before acknowledgement
+  ---
+  duration_ms: 4.0147
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 17 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 41.1936
+  type: 'test'
+  ...
+# (node:19048) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 18 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 56.8996
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 19 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 347.1654
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 20 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 84.3724
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 21 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 73.6492
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 22 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 119.5256
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 23 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 8.8185
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 24 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 190.561
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 25 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 146.4506
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 26 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 14.358
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 27 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 21.9616
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 28 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 214.7619
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 29 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 1641.3601
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 30 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 1352.977
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+ok 31 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 437.4505
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 6182.3563

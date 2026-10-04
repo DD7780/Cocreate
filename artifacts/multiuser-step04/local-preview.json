@@ -1,0 +1,12 @@
+{
+  "scope": "Read-only refreshed local development preview; no inference",
+  "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S",
+  "health": {
+    "status": "ok",
+    "service": "cocreate-app"
+  },
+  "pageStatus": 200,
+  "viteDevelopmentClient": true,
+  "listenerPid": 24124,
+  "idleSnapshot": "local-idle.json"
+}

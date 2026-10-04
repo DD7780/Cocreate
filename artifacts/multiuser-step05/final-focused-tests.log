@@ -1,0 +1,108 @@
+TAP version 13
+# (node:7032) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: coauthor correction preserves teammate wording and exact sources, audit and previous revision
+ok 1 - coauthor correction preserves teammate wording and exact sources, audit and previous revision
+  ---
+  duration_ms: 225.5846
+  type: 'test'
+  ...
+# Subtest: withdrawal removes only caller support and survives restart; same request replays before stale checks
+ok 2 - withdrawal removes only caller support and survives restart; same request replays before stale checks
+  ---
+  duration_ms: 206.9909
+  type: 'test'
+  ...
+# Subtest: unauthorized, stale and forged targets cannot mutate accepted intent
+ok 3 - unauthorized, stale and forged targets cannot mutate accepted intent
+  ---
+  duration_ms: 168.5055
+  type: 'test'
+  ...
+# Subtest: concurrent stale corrections serialize and only one current revision commits
+ok 4 - concurrent stale corrections serialize and only one current revision commits
+  ---
+  duration_ms: 167.5376
+  type: 'test'
+  ...
+# Subtest: ambiguous current intent can be corrected explicitly as proposal, question or request without inference
+ok 5 - ambiguous current intent can be corrected explicitly as proposal, question or request without inference
+  ---
+  duration_ms: 182.7702
+  type: 'test'
+  ...
+# Subtest: correction of one current intent preserves other entries and their independently withdrawable attribution
+ok 6 - correction of one current intent preserves other entries and their independently withdrawable attribution
+  ---
+  duration_ms: 175.46
+  type: 'test'
+  ...
+# Subtest: accepted change aborts an old candidate but proposal-only change leaves independent work running
+ok 7 - accepted change aborts an old candidate but proposal-only change leaves independent work running
+  ---
+  duration_ms: 174.8991
+  type: 'test'
+  ...
+# Subtest: canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt
+ok 8 - canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt
+  ---
+  duration_ms: 280.2417
+  type: 'test'
+  ...
+# Subtest: provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted
+ok 9 - provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted
+  ---
+  duration_ms: 1.8241
+  type: 'test'
+  ...
+# Subtest: accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not
+ok 10 - accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not
+  ---
+  duration_ms: 0.9532
+  type: 'test'
+  ...
+# Subtest: model cannot forge human authority, decision references, or withdraw teammates via deleted source
+ok 11 - model cannot forge human authority, decision references, or withdraw teammates via deleted source
+  ---
+  duration_ms: 0.6131
+  type: 'test'
+  ...
+# Subtest: affected model IDs do not overwrite a teammate or silently withdraw the caller
+ok 12 - affected model IDs do not overwrite a teammate or silently withdraw the caller
+  ---
+  duration_ms: 0.5221
+  type: 'test'
+  ...
+# Subtest: unverified/proposed matching descriptions never confer accepted teammate attribution
+ok 13 - unverified/proposed matching descriptions never confer accepted teammate attribution
+  ---
+  duration_ms: 0.3074
+  type: 'test'
+  ...
+# Subtest: queued intent commands recheck current membership before any durable mutation
+ok 14 - queued intent commands recheck current membership before any durable mutation
+  ---
+  duration_ms: 144.3731
+  type: 'test'
+  ...
+# Subtest: a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution
+ok 15 - a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution
+  ---
+  duration_ms: 1.1548
+  type: 'test'
+  ...
+# Subtest: typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent
+ok 16 - typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent
+  ---
+  duration_ms: 0.9747
+  type: 'test'
+  ...
+1..16
+# tests 16
+# suites 0
+# pass 16
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2314.6327

@@ -1,3 +1,4 @@
+import { IntentReview } from "../IntentReview";
 import { useEffect, useRef, useState } from "react";
 import {
   Bot,
@@ -269,10 +270,7 @@ export function AgentPanel({
   const [collapsed, setCollapsed] = useState(false),
     [conflictsOpen, setConflictsOpen] = useState(false),
     [drawer, setDrawer] = useState<"intent" | "conflicts" | null>(null),
-    [correction, setCorrection] = useState(""),
-    [busy, setBusy] = useState<"correct" | "reinterpret" | "effort" | null>(
-      null,
-    ),
+    [busy, setBusy] = useState<"effort" | null>(null),
     [effortMessage, setEffortMessage] = useState("");
   const accepted =
       selected?.accepted ||
@@ -285,26 +283,6 @@ export function AgentPanel({
     disagreements = state.conflictGroups.filter(
       (item) => item.state === "disagreement",
     ),
-    latest = me?.latest,
-    intents = latest?.intents?.length
-      ? latest.intents
-      : [...(latest?.features || []), ...(latest?.goals || [])]
-          .slice(0, 1)
-          .map((text, index) => ({
-            id: `legacy-${index}`,
-            text,
-            classification: latest!.classification,
-            rationale: "Legacy contribution-level classification.",
-          })),
-    protectedInterpretation =
-      !!latest &&
-      (latest.classification === "decision" ||
-        latest.withdrawals.length > 0 ||
-        latest.intents?.some(
-          (intent) =>
-            intent.classification === "decision" ||
-            intent.category === "withdrawal",
-        )),
     activeEffort = state.ai.setup?.effort || "medium",
     recommended = state.ai.setup?.mode === "recommended",
     owner = state.ownerId === me?.id;
@@ -314,26 +292,7 @@ export function AgentPanel({
       setConflictsOpen(true);
     }
   }, [activeConflicts.length]);
-  async function send() {
-    setBusy("correct");
-    try {
-      await api(`/api/rooms/${id}/process`, token, {
-        method: "POST",
-        body: JSON.stringify({ correction }),
-      });
-      setCorrection("");
-    } finally {
-      setBusy(null);
-    }
-  }
-  async function reinterpret() {
-    setBusy("reinterpret");
-    try {
-      await api(`/api/rooms/${id}/reinterpret`, token, { method: "POST" });
-    } finally {
-      setBusy(null);
-    }
-  }
+
   async function changeEffort(effort: AIEffort) {
     if (!owner || state.ai.status !== "connected" || effort === activeEffort)
       return;
@@ -355,10 +314,6 @@ export function AgentPanel({
       setBusy(null);
     }
   }
-  const label = (classification: string) =>
-    classification === "explicit_request"
-      ? "Accepted request"
-      : classification.replace("_", " ");
   if (collapsed)
     return (
       <aside className="agent-panel compact collapsed">
@@ -602,108 +557,51 @@ export function AgentPanel({
           </p>
         </div>
       </details>
-      {!hosted && (
-        <section className="panel-steering">
-          <textarea
-            value={correction}
-            onChange={(event) => setCorrection(event.target.value)}
-            placeholder="Submit steering or correct an assumption…"
-          />
-          <button onClick={send} disabled={!!busy || !correction.trim()}>
-            {busy === "correct" ? <LoaderCircle className="spin" /> : <Send />}
-            Submit steering
-          </button>
-        </section>
+      {drawer === "intent" && (
+        <IntentReview
+          state={state}
+          participantId={me?.id}
+          canEdit={!!me && tokenRole(token) !== "viewer"}
+          shownRevision={shownRevision}
+          onClose={() => setDrawer(null)}
+          onCommand={(command) =>
+            api(`/api/rooms/${id}/intent-commands`, token, {
+              method: "POST",
+              body: JSON.stringify(command),
+            })
+          }
+          onBuild={(requestId) =>
+            api(`/api/rooms/${id}/intent-build`, token, {
+              method: "POST",
+              body: JSON.stringify({ requestId }),
+            })
+          }
+        />
       )}
-      {drawer && (
+      {drawer === "conflicts" && (
         <div
           className="context-drawer"
           role="dialog"
           aria-modal="true"
-          aria-label={
-            drawer === "intent" ? "Shared intent details" : "Conflict details"
-          }
+          aria-label="Conflict details"
         >
           <header>
-            <strong>
-              {drawer === "intent"
-                ? "Shared Intent"
-                : "Conflicts and decisions"}
-            </strong>
+            <strong>Conflicts and decisions</strong>
             <button aria-label="Close details" onClick={() => setDrawer(null)}>
               <X />
             </button>
           </header>
           <div>
-            {drawer === "intent" ? (
-              <>
-                <p>Accepted requirements · specification r{shownRevision}</p>
-                {accepted.map((requirement) => (
-                  <article key={requirement.id}>
-                    <span>
-                      {requirement.status} · {requirement.category}
-                    </span>
-                    <strong>{requirement.description}</strong>
-                    <details>
-                      <summary>Criteria and sources</summary>
-                      {requirement.acceptanceCriteria.map(
-                        (criterion, index) => (
-                          <p key={index}>{criterion}</p>
-                        ),
-                      )}
-                      {requirement.sources.map((source, index) => (
-                        <p key={index}>
-                          {source.participantName} · document r
-                          {source.documentRevision}
-                          {source.passages.map((passage, i) => (
-                            <small key={i}>“{passage}”</small>
-                          ))}
-                        </p>
-                      ))}
-                    </details>
-                  </article>
-                ))}
-                {latest && (
-                  <>
-                    <h3>Your latest intents</h3>
-                    {intents.map((intent) => (
-                      <article
-                        className={`intent-entry ${intent.classification}`}
-                        key={intent.id}
-                      >
-                        <span>{label(intent.classification)}</span>
-                        <strong>{intent.text}</strong>
-                        <small>{intent.rationale}</small>
-                      </article>
-                    ))}
-                    {!hosted && (
-                      <button
-                        onClick={reinterpret}
-                        disabled={!!busy || protectedInterpretation}
-                      >
-                        {busy === "reinterpret" ? (
-                          <LoaderCircle className="spin" />
-                        ) : (
-                          <Bot />
-                        )}
-                        Reinterpret latest contribution
-                      </button>
-                    )}
-                  </>
-                )}
-              </>
-            ) : (
-              state.conflictGroups.map((group) => (
-                <ConflictChoice
-                  key={group.id}
-                  group={group}
-                  participantId={me?.id}
-                  canDecide={tokenRole(token) !== "viewer"}
-                  roomId={id}
-                  token={token}
-                />
-              ))
-            )}
+            {state.conflictGroups.map((group) => (
+              <ConflictChoice
+                key={group.id}
+                group={group}
+                participantId={me?.id}
+                canDecide={tokenRole(token) !== "viewer"}
+                roomId={id}
+                token={token}
+              />
+            ))}
           </div>
         </div>
       )}

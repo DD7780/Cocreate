@@ -1,0 +1,16 @@
+{
+  "scope": "Local controlled-provider Step 01 audit only",
+  "testsFailed": 0,
+  "testsPassed": 140,
+  "graphifyAstOnly": true,
+  "sqlParserAvailable": false,
+  "browserProfiles": 3,
+  "repeatCount": 3,
+  "boundedPhysicalAttemptsReconciled": true,
+  "productionBuildPassed": true,
+  "sourceHashesVerified": 11,
+  "runtimeSourceUnchanged": true,
+  "trials": 33,
+  "scenarios": 11,
+  "localLinksChecked": 107
+}

@@ -1,5 +1,7 @@
 # Model-routing evaluation protocol
 
+> Historical preset-routing protocol and local compatibility rubric. Hosted setup is now explicit BYOK under D-0035, not this resolver/effort UI. Its evidence-versus-hypothesis principles remain applicable; any future live comparison requires a separately authorized budget and current metadata. Use [product.md](../../product.md#hosted-ai-and-limits) and [checklist.md](checklist.md) for current scope and status.
+
 Version: `2026-09-22.v3`. No paid evaluation has been authorized or run.
 
 The canonical executable catalog and mode availability map are in `server/ai-presets.ts`. Provider capability checks prove API/schema compatibility only. They do not prove that a model is better for a workflow. Developer uses the economical capability-validated baseline on the owner's selected connection and is labelled `hypothesis` until repeated live trials qualify it. Analyst and Researcher have no routing candidates because their required tools are not implemented.

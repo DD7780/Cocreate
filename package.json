@@ -10,7 +10,7 @@
     "dev": "tsx server/index.ts",
     "build": "tsc --noEmit && vite build --configLoader runner",
     "start": "cross-env NODE_ENV=production tsx server/index.ts",
-    "test": "cross-env COCREATE_AUTH_MODE=local tsx --test tests/*.test.ts",
+    "test": "cross-env COCREATE_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts",
     "deploy:cloudflare": "wrangler deploy",
     "migrate:legacy": "tsx scripts/migrate-legacy-to-supabase.ts",
     "audit:code": "tsx scripts/codebase-audit.ts",
@@ -35,7 +35,8 @@
     "vite": "^7.1.12",
     "ws": "^8.18.3",
     "y-protocols": "^1.0.6",
-    "yjs": "^13.6.27"
+    "yjs": "^13.6.27",
+    "esbuild-wasm": "0.25.12"
   },
   "devDependencies": {
     "@prisma/adapter-pg": "7.10.0",

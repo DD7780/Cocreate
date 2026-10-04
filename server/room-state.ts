@@ -26,9 +26,20 @@ import { type AgentChange } from "./generator.js";
 import { type ProjectFile, type ProjectSpec } from "./project.js";
 import { type EncryptedSecret } from "./credentials.js";
 
-export type ProjectRole = "owner" | "editor" | "viewer";
+import type { IntentCommandResult, IntentCorrection } from "../shared/types.js";
+import type { AcceptedIntentContext } from "./intent-authority.js";
+import type { ArtifactBody, ArtifactReference, ArchivedVersion } from "./artifacts.js";
 
+export type ProjectRole = "owner" | "editor" | "viewer";
 export type DurableStore = {
+  publishArtifactBodies?: (
+    projectId: string,
+    bodies: ArtifactBody[],
+  ) => Promise<unknown>;
+  readArtifact?: (
+    projectId: string,
+    reference: ArtifactReference,
+  ) => Promise<Uint8Array>;
   saveSnapshot: (
     projectId: string,
     revision: number,
@@ -41,6 +52,7 @@ export type DurableStore = {
     update: Uint8Array,
   ) => Promise<unknown>;
   assertCoordinator?: (projectId: string) => Promise<void>;
+  onCoordinatorLost?: (listener: (projectId: string) => void) => () => void;
   recordProviderRequest?: (record: ProviderRequestRecord) => Promise<void>;
   reserveManagedRequest?: (input: {
     callId: string;
@@ -57,7 +69,6 @@ export type DurableStore = {
     usage: Record<string, unknown>;
   }) => Promise<void>;
 };
-
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
@@ -66,8 +77,8 @@ export type ClientSocket = WebSocket & {
   role?: ProjectRole;
   ticketExpiresAt?: number;
 };
-
 export type StoredVersion = Version & {
+  artifactRef?: string;
   source?: ProductSource;
   files?: ProjectFile[];
   bundle: string;
@@ -75,21 +86,19 @@ export type StoredVersion = Version & {
   decisions?: string[];
   specification?: ProjectSpec;
 };
-
 export type EditRecord = AgentChange & {
   participantId: string;
   at: string;
   update: string;
 };
-
 export type SubmissionStatus =
   | "submitted"
   | "interpreting"
   | "queued"
   | "built"
   | "failed";
-
 export type StoredSubmission = {
+  intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
   id: string;
   requestId: string;
@@ -104,7 +113,6 @@ export type StoredSubmission = {
   assignment?: AgentAssignment;
   setup?: AISetupPolicy;
 };
-
 export type StoredConnection = {
   id: string;
   name: string;
@@ -117,7 +125,6 @@ export type StoredConnection = {
   status: "saved" | "reachable" | "error";
   lastError?: string;
 };
-
 export type AISettings = {
   mode: "disconnected" | "demo" | "openai" | "managed" | "byok_lease";
   connections?: StoredConnection[];
@@ -137,7 +144,6 @@ export type AISettings = {
   builderModel?: string;
   encryptedKey?: EncryptedSecret;
 };
-
 export type BudgetWindow = {
   id: string;
   startedAt: number;
@@ -153,22 +159,29 @@ export type BudgetWindow = {
   pricingVersion: string;
   setup: AISetupPolicy;
 };
-
 export type BudgetReservation = {
   amount: number;
   layer: NonNullable<NonNullable<AISetupPolicy["resolved"]>["personal"]>;
 };
-
 export type RunWindow = { id: string; startedAt: number; calls: AIRunCall[] };
-
 export type UsageMeta = {
   phase: "interpretation" | "builder" | "repair";
   participantId?: string;
   provider: AIProvider;
   model: string;
 };
-
 export type Room = {
+  intentCommit?: { done: Promise<void>; projection: Partial<Room> };
+  interpretationHistory?: Requirement[];
+  intentCorrections?: IntentCorrection[];
+  intentBuildPending?: boolean;
+  intentReceipts?: Record<
+    string,
+    { hash: string; result: IntentCommandResult }
+  >;
+  pendingPromotion?: number;
+  artifactHistory?: ArchivedVersion[];
+  artifactManifest?: ArtifactReference[];
   id: string;
   coordinatorEpoch: number;
   doc: Y.Doc;
@@ -195,6 +208,7 @@ export type Room = {
     task: string;
     index: number;
     total: number;
+    artifactRef?: string;
   };
   executionBudget?: { calls: number; reservedUsd: number; maximumUsd?: number };
   conflictGroups: ConflictGroup[];

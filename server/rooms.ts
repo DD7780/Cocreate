@@ -17,6 +17,28 @@ import {
   kindOf,
   requirementFingerprint,
 } from "./steering-text.js";
+import {
+  acceptedContext,
+  type AcceptedIntentContext,
+} from "./intent-authority.js";
+import {
+  applyIntentCommand,
+  intentCommandHash,
+  parseIntentCommand,
+} from "./intent-commands.js";
+import type { IntentCommandResult, IntentCorrection } from "../shared/types.js";
+import { IsolationError, assertIsolationAvailable } from "./isolation.js";
+import {
+  captureArtifacts,
+  versionArtifactBytes,
+  bodyFromBytes,
+  restoreVersion,
+  verifyArtifact,
+  ArtifactUnavailableError,
+  type ArtifactReference,
+  type ArtifactBody,
+  type ArchivedVersion,
+} from "./artifacts.js";
 import { deletionSignature } from "../shared/document-state.js";
 import { applySteeringUpdate } from "./steering-edits.js";
 import fs from "node:fs";
@@ -79,6 +101,7 @@ import {
   hasOpenContradictions,
   migrateLegacyContradictions,
   normalizeInterpretation,
+  detectConflictGroups,
   reconcileRequirements,
   submitConflictSelection,
   supersedeInterpretationSources,
@@ -104,6 +127,7 @@ import {
 } from "./managed-catalog.js";
 import { BYOK_MODEL_VERSION, OpenRouterLeases } from "./byok-lease.js";
 import { aggregatePhysicalUsage } from "./usage-ledger.js";
+import { CoordinatorUnavailableError } from "./coordinator.js";
 const colors = [
     "#5B6BE1",
     "#E05D7B",
@@ -133,6 +157,8 @@ const buildFingerprint = (room: Room) =>
   acceptedRequirementFingerprint(room.sharedRequirements, room.conflictGroups);
 
 export class RoomManager {
+  private lostOwnership = new Set<string>();
+  private unsubscribeOwnership?: () => void;
   private coordinatorId = randomUUID();
   private heartbeat: NodeJS.Timeout;
   rooms = new Map<string, Room>();
@@ -164,14 +190,13 @@ export class RoomManager {
         try {
           this.assertOwned(room);
         } catch {
-          for (const controller of room.agentControllers.values())
-            controller.abort();
-          room.buildController?.abort();
-          for (const client of room.clients)
-            client.close(1012, "Coordinator ownership changed");
+          this.loseOwnership(room.id);
         }
     }, 10_000);
     this.heartbeat.unref();
+    this.unsubscribeOwnership = config.durableStore?.onCoordinatorLost?.((id) =>
+      this.loseOwnership(id),
+    );
   }
   async connectTemporaryOpenRouter(room: Room, ownerId: string, key: string) {
     if (room.ownerId !== ownerId)
@@ -328,7 +353,22 @@ export class RoomManager {
         };
     }
   }
+  private loseOwnership(id: string) {
+    this.lostOwnership.add(id);
+    const room = this.rooms.get(id);
+    if (!room) return;
+    clearTimeout(room.saveTimer);
+    clearTimeout(room.buildTimer);
+    for (const timer of room.timers.values()) clearTimeout(timer);
+    room.timers.clear();
+    for (const controller of room.agentControllers.values()) controller.abort();
+    room.buildController?.abort();
+    for (const client of room.clients)
+      client.close(1012, "Coordinator ownership changed");
+  }
   private assertOwned(room: Room) {
+    if (this.lostOwnership.has(room.id))
+      throw new CoordinatorUnavailableError();
     this.eventStore.renewCoordinator(
       room.id,
       this.coordinatorId,
@@ -463,6 +503,8 @@ export class RoomManager {
       meta.specificationRevision ||
       room.sharedRequirements.reduce((total, item) => total + item.revision, 0);
     room.versions = meta.versions || [];
+    room.artifactHistory = meta.artifactHistory;
+    room.artifactManifest = meta.artifactManifest;
     room.aiRuns =
       meta.aiRuns ||
       room.versions.flatMap((version: StoredVersion) =>
@@ -473,6 +515,10 @@ export class RoomManager {
       meta.ai?.mode === "demo"
         ? { mode: "disconnected" }
         : meta.ai || { mode: "disconnected" };
+    room.interpretationHistory = meta.interpretationHistory;
+    room.intentCorrections = meta.intentCorrections;
+    room.intentBuildPending = meta.intentBuildPending;
+    room.intentReceipts = meta.intentReceipts;
     room.requirementRevisions = meta.requirementRevisions;
     room.commandReceipts = meta.commandReceipts;
     room.recoveryCheckpoint = meta.recoveryCheckpoint;
@@ -513,6 +559,8 @@ export class RoomManager {
   hydrate(id: string, meta: any) {
     if (this.rooms.has(id)) return this.rooms.get(id)!;
     const room = this.makeRoom(id);
+    if (meta?.artifactBodies)
+      this.eventStore.restoreArtifactBodies(meta.artifactBodies);
     if (meta?.harnessProjection)
       this.eventStore.restoreHarness(id, meta.harnessProjection);
     if (meta?.update)
@@ -537,9 +585,15 @@ export class RoomManager {
       migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
     room.specificationRevision = meta?.specificationRevision || 0;
     room.versions = meta?.versions || [];
+    room.artifactHistory = meta?.artifactHistory;
+    room.artifactManifest = meta?.artifactManifest;
     room.aiRuns = meta?.aiRuns || [];
     room.runWindow = meta?.runWindow;
     room.ai = meta?.ai || { mode: "disconnected" };
+    room.interpretationHistory = meta?.interpretationHistory;
+    room.intentCorrections = meta?.intentCorrections;
+    room.intentBuildPending = meta?.intentBuildPending;
+    room.intentReceipts = meta?.intentReceipts;
     room.requirementRevisions = meta?.requirementRevisions;
     room.commandReceipts = meta?.commandReceipts;
     room.recoveryCheckpoint = meta?.recoveryCheckpoint;
@@ -589,8 +643,20 @@ export class RoomManager {
       | "builder"
       | "system"
       | "tool" = "system",
-  ) {
+  ): boolean | Promise<boolean> {
     this.assertOwned(room);
+    if (room.intentCommit && eventType !== "intent.command_recorded")
+      return room.intentCommit.done.then(() => {
+        try {
+          return this.save(room, eventType, actorId, actorType);
+        } catch {
+          return false;
+        }
+      });
+    if (room.pendingPromotion && eventType !== "product.promoted")
+      return (room.persistQueue || Promise.resolve()).then(() =>
+        this.save(room, eventType, actorId, actorType),
+      );
     room.commandReceipts ||= {};
     for (const item of room.submissions)
       room.commandReceipts[
@@ -611,9 +677,16 @@ export class RoomManager {
           room.sharedRequirements.filter((item) => item.status === "accepted"),
         ),
       });
+    const captured = captureArtifacts(room, this.eventStore);
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
+      interpretationHistory: room.interpretationHistory,
+      intentCorrections: room.intentCorrections,
+      intentBuildPending: room.intentBuildPending,
+      intentReceipts: room.intentReceipts,
+      artifactHistory: captured.artifactHistory,
+      artifactManifest: room.artifactManifest,
       update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString("base64"),
       participants: [...room.participants.values()].map((p) => ({
         ...p,
@@ -663,6 +736,7 @@ export class RoomManager {
     if (this.config.durableStore) {
       const snapshot = structuredClone({
           ...payload,
+          artifactBodies: captured.artifactBodies,
           harnessProjection: this.eventStore.exportHarness(room.id),
         }),
         prior = room.persistQueue || Promise.resolve();
@@ -671,7 +745,12 @@ export class RoomManager {
         .then(() =>
           this.config.durableStore!.saveSnapshot(room.id, revision, snapshot),
         )
-        .then(() => {
+        .then((result) => {
+          room.artifactHistory = captured.artifactHistory;
+          const manifest = (
+            result as { artifactManifest?: ArtifactReference[] } | undefined
+          )?.artifactManifest;
+          if (manifest) room.artifactManifest = manifest;
           for (const client of room.clients)
             this.sendJson(client, {
               type: "saved",
@@ -697,6 +776,7 @@ export class RoomManager {
       room.persistQueue = saving;
       return saving;
     }
+    room.artifactHistory = captured.artifactHistory;
     const target = path.join(this.dataDir, `${room.id}.json`),
       temp = `${target}.${room.persistRevision}.tmp`,
       serialized = JSON.stringify(payload);
@@ -905,8 +985,13 @@ export class RoomManager {
         await ws.authorizeRead!();
         if (ws.readyState === 1) ws.send(data);
       })
-      .catch(() => {
-        ws.close(4403, "Project access or ownership changed");
+      .catch((error) => {
+        ws.close(
+          error instanceof CoordinatorUnavailableError ? 1012 : 4403,
+          error instanceof CoordinatorUnavailableError
+            ? "Coordinator ownership changed"
+            : "Project access changed",
+        );
       });
   }
   private sendSync(ws: ClientSocket, room: Room) {
@@ -1140,6 +1225,7 @@ export class RoomManager {
           }
           if (this.config.durableStore?.recordProviderRequest)
             await this.config.durableStore.recordProviderRequest(record);
+          this.assertOwned(room);
           room.providerLedger?.set(record.callId, record);
           const index = room.providerCalls.findIndex(
             (item) => item.callId === record.callId,
@@ -1168,6 +1254,10 @@ export class RoomManager {
             "provider-gateway",
             "system",
           );
+          if (record.outcome === "dispatching") {
+            await this.config.durableStore?.assertCoordinator?.(room.id);
+            this.assertOwned(room);
+          }
         },
       },
       action,
@@ -1482,7 +1572,7 @@ export class RoomManager {
       requiresKey = providerDefaults[provider].requiresCredential,
       secret = input.apiKey?.trim();
     if (requiresKey && !secret && !existing?.encryptedKey)
-      throw new Error("Enter this provider’s API key.");
+      throw new Error("Enter this providerÃ¢â‚¬â„¢s API key.");
     const stored: StoredConnection = {
       id,
       name: (input.name || provider).trim().slice(0, 60),
@@ -1889,7 +1979,10 @@ export class RoomManager {
     return this.config.buildMaxWaitMs ?? 60_000;
   }
   private cancelled(error: unknown) {
-    return error instanceof ProviderError && error.kind === "cancelled";
+    return (
+      (error instanceof ProviderError && error.kind === "cancelled") ||
+      (error instanceof IsolationError && error.code === "isolation_cancelled")
+    );
   }
   private reserveBudget(
     room: Room,
@@ -2195,6 +2288,8 @@ export class RoomManager {
               previous,
               revision,
               controller.signal,
+              submission?.intentContext ||
+                acceptedContext(room.sharedRequirements),
             ),
         );
         this.recordUsage(
@@ -2228,6 +2323,10 @@ export class RoomManager {
             result.value,
             room.conflictGroups,
           );
+        if (previous)
+          room.interpretationHistory = (
+            room.interpretationHistory || []
+          ).concat(structuredClone(previous));
         room.requirements = room.requirements
           .filter((r) => r.participantId !== p.id)
           .concat(result.value);
@@ -2346,11 +2445,8 @@ export class RoomManager {
       participantId,
       editSeqs: batch.map((item) => item.seq),
       documentRevision: room.agentRevisions.get(participantId) || 0,
-      snapshot: JSON.stringify(
-        room.sharedRequirements
-          .filter((item) => item.status === "accepted")
-          .map((item) => ({ id: item.id, description: item.description })),
-      ),
+      intentContext: acceptedContext(room.sharedRequirements),
+      snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
       previousInterpretationId: participant.latest?.id,
       createdAt: now(),
       status: "submitted",
@@ -2420,6 +2516,7 @@ export class RoomManager {
     }
   }
   private scheduleBuild(room: Room) {
+    if (this.lostOwnership.has(room.id)) return;
     if (!room.pendingBuildSince) room.pendingBuildSince = Date.now();
     clearTimeout(room.buildTimer);
     const current = Date.now(),
@@ -2450,6 +2547,7 @@ export class RoomManager {
     this.requestBuild(room);
   }
   private requestBuild(room: Room, force = false) {
+    this.assertOwned(room);
     if (!force && buildFingerprint(room) === room.lastBuiltFingerprint) {
       room.pendingBuildSince = undefined;
       room.status = hasOpenContradictions(room.conflictGroups)
@@ -2460,6 +2558,7 @@ export class RoomManager {
       this.broadcastState(room);
       return;
     }
+    room.intentBuildPending = false;
     room.requestedRevision++;
     if (!room.buildTask)
       room.buildTask = this.buildLoop(room).finally(() => {
@@ -2541,6 +2640,8 @@ export class RoomManager {
   }
   private async buildLoop(room: Room) {
     while (this.hasAI(room)) {
+      await room.intentCommit?.done;
+      this.assertOwned(room);
       const revision = room.requestedRevision,
         specificationRevision = room.specificationRevision,
         fingerprint = buildFingerprint(room),
@@ -2723,6 +2824,7 @@ export class RoomManager {
             actorType: "builder" as const,
             role: "builder" as const,
             inputRevision: specificationRevision,
+            signal: controller.signal,
           },
           base =
             room.recoveryCheckpoint?.fingerprint === fingerprint
@@ -2735,6 +2837,7 @@ export class RoomManager {
             | undefined,
           lastFailure = "",
           attempts = 0;
+        await assertIsolationAvailable(controller.signal);
         for (let attempt = 0; attempt < maxAttempts; attempt++) {
           attempts = attempt + 1;
           let reservation: BudgetReservation | undefined;
@@ -2792,6 +2895,7 @@ export class RoomManager {
             );
             break;
           } catch (error) {
+            if (error instanceof IsolationError) throw error;
             lastFailure =
               error instanceof Error ? error.message : String(error);
             if (attempt < maxAttempts - 1) {
@@ -2816,6 +2920,7 @@ export class RoomManager {
             }
           }
         }
+        await room.intentCommit?.done;
         if (controller.signal.aborted)
           throw new ProviderError(
             "cancelled",
@@ -2867,6 +2972,7 @@ export class RoomManager {
         }
         this.assertOwned(room);
         await this.config.durableStore?.assertCoordinator?.(room.id);
+        this.assertOwned(room);
         if (fingerprint !== buildFingerprint(room))
           throw new Error("A newer specification superseded this candidate.");
         const priorPromotion = {
@@ -2878,11 +2984,51 @@ export class RoomManager {
           recoveryCheckpoint: room.recoveryCheckpoint,
           budgetWindow: room.budgetWindow,
         };
+        const preparedArtifact = bodyFromBytes(
+          versionArtifactBytes(room.id, {
+            id:
+              Math.max(
+                0,
+                ...room.versions.map((version) => version.id),
+                ...(room.artifactHistory || []).map((version) => version.id),
+              ) + 1,
+            files: working,
+            bundle: compiled.javascript,
+            css: compiled.css,
+          }),
+          "application/vnd.cocreate.product+json",
+        );
+        await this.config.durableStore?.publishArtifactBodies?.(room.id, [
+          preparedArtifact,
+        ]);
+        this.assertOwned(room);
+        await this.config.durableStore?.assertCoordinator?.(room.id);
+        this.assertOwned(room);
+        if (
+          controller.signal.aborted ||
+          !shouldPromoteRevision(revision, room.requestedRevision) ||
+          fingerprint !== buildFingerprint(room)
+        )
+          throw new Error("A newer specification superseded this candidate.");
+        await room.intentCommit?.done;
+        this.assertOwned(room);
+        if (controller.signal.aborted || fingerprint !== buildFingerprint(room))
+          throw new ProviderError("cancelled", "Accepted intent changed.");
         await this.tools.execute(
           "project.promote",
           { files: working },
           toolContext,
         );
+        await room.intentCommit?.done;
+        this.assertOwned(room);
+        if (
+          controller.signal.aborted ||
+          fingerprint !== buildFingerprint(room)
+        ) {
+          const oldFiles = room.versions.at(-1)?.files;
+          if (oldFiles) persistProject(room.id, oldFiles);
+          throw new ProviderError("cancelled", "Accepted intent changed.");
+        }
         const aiRun = this.finalizeRun(room, {
             runId,
             setup: frozenSetup,
@@ -2893,7 +3039,12 @@ export class RoomManager {
             compilationPassed: true,
           }),
           version: StoredVersion = {
-            id: (room.versions.at(-1)?.id || 0) + 1,
+            id:
+              Math.max(
+                0,
+                ...room.versions.map((version) => version.id),
+                ...(room.artifactHistory || []).map((version) => version.id),
+              ) + 1,
             createdAt: now(),
             summary: plan.summary,
             fileCount: working.length,
@@ -2912,6 +3063,7 @@ export class RoomManager {
             maximumUsd: room.budgetWindow.maximumUsd,
           };
         room.recoveryCheckpoint = undefined;
+        room.pendingPromotion = version.id;
         room.versions.push(version);
         room.versions = room.versions.slice(-6);
         room.lastBuiltFingerprint = fingerprint;
@@ -2921,10 +3073,22 @@ export class RoomManager {
         room.status = "Updated";
         room.budgetWindow = undefined;
         for (const submission of queuedSubmissions) submission.status = "built";
-        if (
-          (await this.save(room, "product.promoted", "builder", "builder")) ===
-          false
-        ) {
+        let committed = false,
+          promotionError: unknown;
+        try {
+          committed =
+            (await this.save(
+              room,
+              "product.promoted",
+              "builder",
+              "builder",
+            )) !== false;
+        } catch (error) {
+          promotionError = error;
+        } finally {
+          room.pendingPromotion = undefined;
+        }
+        if (!committed) {
           room.versions = priorPromotion.versions;
           room.aiRuns = priorPromotion.aiRuns;
           room.runWindow = priorPromotion.runWindow;
@@ -2935,9 +3099,18 @@ export class RoomManager {
           for (const submission of queuedSubmissions)
             submission.status = "queued";
           const oldFiles = room.versions.at(-1)?.files;
-          if (oldFiles) persistProject(room.id, oldFiles);
-          throw new Error(
-            "Artifact promotion could not be durably saved; the last working artifact is retained.",
+          let owned = true;
+          try {
+            this.assertOwned(room);
+          } catch {
+            owned = false;
+          }
+          if (oldFiles && owned) persistProject(room.id, oldFiles);
+          throw (
+            promotionError ||
+            new Error(
+              "Artifact promotion could not be durably saved; the last working artifact is retained.",
+            )
           );
         }
         this.eventStore.transitionRun({
@@ -2974,6 +3147,7 @@ export class RoomManager {
         await this.save(room, "build.completed", "builder", "builder");
         this.broadcastState(room);
       } catch (error) {
+        await room.intentCommit?.done;
         try {
           this.assertOwned(room);
         } catch {
@@ -3075,7 +3249,262 @@ export class RoomManager {
         return;
     }
   }
-  async reinterpretLatest(room: Room, participantId: string) {
+  mutateIntent(
+    room: Room,
+    participantId: string,
+    value: unknown,
+    authorizeCurrent?: () => Promise<void>,
+  ): Promise<IntentCommandResult> {
+    const command = parseIntentCommand(value),
+      task = (room.steeringQueue || Promise.resolve())
+        .catch(() => {})
+        .then(async () => {
+          await authorizeCurrent?.();
+          this.assertOwned(room);
+          await this.config.durableStore?.assertCoordinator?.(room.id);
+          this.assertOwned(room);
+          const participant = room.participants.get(participantId);
+          if (!participant)
+            throw Object.assign(new Error("Participant not found."), {
+              status: 403,
+            });
+          const key = JSON.stringify([participantId, command.requestId]),
+            hash = intentCommandHash(command),
+            receipt = room.intentReceipts?.[key];
+          if (receipt) {
+            if (receipt.hash !== hash)
+              throw Object.assign(
+                new Error(
+                  "This request ID already belongs to another intent command.",
+                ),
+                { status: 409 },
+              );
+            return receipt.result;
+          }
+          if (command.specificationRevision !== room.specificationRevision)
+            throw Object.assign(
+              new Error(
+                "The specification changed. Refresh and review your intent before correcting.",
+              ),
+              { status: 409 },
+            );
+          // Promotion and steering cannot cross while either canonical commit is pending.
+          if (room.pendingPromotion) await room.persistQueue;
+          this.assertOwned(room);
+          if (command.specificationRevision !== room.specificationRevision)
+            throw Object.assign(
+              new Error(
+                "The specification changed during promotion. Refresh and review before correcting.",
+              ),
+              { status: 409 },
+            );
+          const transformed = applyIntentCommand(
+            room.sharedRequirements,
+            participant.latest,
+            participant,
+            command,
+            now(),
+          );
+          const projection: Partial<Room> = {
+            sharedRequirements: room.sharedRequirements,
+            requirements: room.requirements,
+            participants: new Map(
+              [...room.participants].map(([id, p]) => [id, { ...p }]),
+            ),
+            conflictGroups: room.conflictGroups,
+            contradictions: room.contradictions,
+            specificationRevision: room.specificationRevision,
+            status: room.status,
+            requirementRevisions: structuredClone(room.requirementRevisions),
+            interpretationHistory: room.interpretationHistory,
+            intentCorrections: room.intentCorrections,
+            intentReceipts: room.intentReceipts,
+            intentBuildPending: room.intentBuildPending,
+            requestedRevision: room.requestedRevision,
+          };
+          const before = buildFingerprint(room);
+          let release!: () => void;
+          room.intentCommit = {
+            done: new Promise<void>((resolve) => {
+              release = resolve;
+            }),
+            projection,
+          };
+          try {
+            room.sharedRequirements = transformed.requirements;
+            room.conflictGroups = detectConflictGroups(
+              room.sharedRequirements,
+              room.conflictGroups,
+            );
+            room.contradictions = contradictionsFromConflictGroups(
+              room.conflictGroups,
+            );
+            room.specificationRevision++;
+            if (participant.latest)
+              room.interpretationHistory = (
+                room.interpretationHistory || []
+              ).concat(structuredClone(participant.latest));
+            participant.latest = transformed.interpretation;
+            room.requirements = room.requirements
+              .filter((item) => item.participantId !== participantId)
+              .concat(transformed.interpretation);
+            room.intentCorrections = (room.intentCorrections || []).concat(
+              transformed.audit,
+            );
+            const acceptedChanged = before !== buildFingerprint(room);
+            if (acceptedChanged) {
+              room.intentBuildPending = true;
+              room.requestedRevision++;
+            }
+            room.status = hasOpenContradictions(room.conflictGroups)
+              ? "Decision needed"
+              : room.versions.length
+                ? "Updated"
+                : "Waiting for ideas";
+            const result: IntentCommandResult = {
+              requestId: command.requestId,
+              specificationRevision: room.specificationRevision,
+              action: command.action,
+              buildPending: !!room.intentBuildPending,
+            };
+            room.intentReceipts = {
+              ...room.intentReceipts,
+              [key]: { hash, result },
+            };
+            if (
+              (await this.save(
+                room,
+                "intent.command_recorded",
+                participantId,
+                "user",
+              )) === false
+            )
+              throw new Error("Canonical save failed or its reply was lost.");
+            if (acceptedChanged) {
+              clearTimeout(room.buildTimer);
+              room.buildTimer = undefined;
+              room.pendingBuildSince = undefined;
+              room.buildController?.abort();
+            }
+            return result;
+          } catch (error) {
+            const currentParticipants = room.participants;
+            Object.assign(room, projection, {
+              participants: currentParticipants,
+            });
+            const currentActor = room.participants.get(participantId);
+            if (currentActor)
+              currentActor.latest =
+                projection.participants?.get(participantId)?.latest;
+            // Never compensate against an uncertain remote result. A new coordinator must hydrate canonical receipts.
+            this.loseOwnership(room.id);
+            throw Object.assign(
+              new Error(
+                "Intent save outcome is uncertain. Reopen after canonical coordinator recovery and retry the same request ID.",
+              ),
+              { status: 503, cause: error },
+            );
+          } finally {
+            room.intentCommit = undefined;
+            release();
+            this.broadcastState(room);
+          }
+        });
+    room.steeringQueue = task;
+    return task;
+  }
+  buildAcceptedChanges(
+    room: Room,
+    participantId: string,
+    requestId: string,
+    authorizeCurrent?: () => Promise<void>,
+  ) {
+    const task = (room.steeringQueue || Promise.resolve())
+      .catch(() => {})
+      .then(async () => {
+        await authorizeCurrent?.();
+        this.assertOwned(room);
+        await this.config.durableStore?.assertCoordinator?.(room.id);
+        this.assertOwned(room);
+        if (!room.participants.has(participantId) || !this.hasAI(room))
+          throw new Error(
+            "Connect and save AI before building accepted changes.",
+          );
+        if (room.ai.setup?.mode === "byok_lease")
+          this.byok.require(
+            room.id,
+            room.ai.setup.credentialHandle || "",
+            participantId,
+          );
+        const prior =
+          room.commandReceipts?.[JSON.stringify([participantId, requestId])];
+        if (prior)
+          return {
+            status: prior.status,
+            message: "This accepted build was already requested.",
+          };
+        if (!room.intentBuildPending)
+          throw new Error(
+            "There are no corrected accepted changes waiting for a build.",
+          );
+        if (
+          !eligibleRequirements(room.sharedRequirements, room.conflictGroups)
+            .length
+        )
+          throw new Error("No accepted requirements are eligible for a build.");
+        await room.buildTask;
+        await authorizeCurrent?.();
+        this.assertOwned(room);
+        if (room.ai.setup?.mode === "byok_lease")
+          this.byok.require(
+            room.id,
+            room.ai.setup.credentialHandle || "",
+            participantId,
+          );
+        const submission: StoredSubmission = {
+          id: randomUUID(),
+          requestId,
+          participantId,
+          editSeqs: [],
+          documentRevision: room.agentRevisions.get(participantId) || 0,
+          snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
+          createdAt: now(),
+          status: "queued",
+          setup: structuredClone(room.ai.setup),
+        };
+        room.submissions.push(submission);
+        if (
+          (await this.save(
+            room,
+            "submission.accepted_build_requested",
+            participantId,
+            "user",
+          )) === false
+        ) {
+          this.loseOwnership(room.id);
+          throw new CoordinatorUnavailableError();
+        }
+        this.requestBuild(room, true);
+        this.broadcastState(room);
+        return {
+          status: "queued",
+          message: "Building the corrected accepted requirements.",
+        };
+      });
+    room.steeringQueue = task;
+    return task;
+  }
+  reinterpretLatest(room: Room, participantId: string) {
+    const task = (room.steeringQueue || Promise.resolve())
+      .catch(() => {})
+      .then(() => this.reinterpretCaptured(room, participantId));
+    room.steeringQueue = task;
+    return task;
+  }
+  private async reinterpretCaptured(room: Room, participantId: string) {
+    this.assertOwned(room);
+    await this.config.durableStore?.assertCoordinator?.(room.id);
+    this.assertOwned(room);
     const participant = room.participants.get(participantId),
       previous = participant?.latest;
     if (!participant || !previous)
@@ -3120,9 +3549,11 @@ export class RoomManager {
           participantId,
           participant.name,
           changes,
-          documentText(room.doc),
+          JSON.stringify(acceptedContext(room.sharedRequirements)),
           previous,
           revision,
+          undefined,
+          acceptedContext(room.sharedRequirements),
         );
       this.recordUsage(room, "personal", result.usage, undefined, {
         phase: "interpretation",
@@ -3154,12 +3585,17 @@ export class RoomManager {
         : room.versions.length
           ? "Updated"
           : "Waiting for ideas";
-      this.save(
-        room,
-        "interpretation.reinterpreted",
-        participantId,
-        "personal_agent",
-      );
+      if (
+        (await this.save(
+          room,
+          "interpretation.reinterpreted",
+          participantId,
+          "personal_agent",
+        )) === false
+      ) {
+        this.loseOwnership(room.id);
+        throw new CoordinatorUnavailableError();
+      }
       this.broadcastState(room);
       if (
         before !==
@@ -3224,7 +3660,7 @@ export class RoomManager {
       requestId: string;
     },
   ) {
-    const prior = this.conflictQueue.get(room.id) || Promise.resolve();
+    const prior = room.steeringQueue || Promise.resolve();
     const task = prior
       .catch(() => {})
       .then(async () => {
@@ -3310,17 +3746,17 @@ export class RoomManager {
           this.scheduleBuild(room);
         return selected;
       });
-    this.conflictQueue.set(room.id, task);
-    void task
-      .finally(() => {
-        if (this.conflictQueue.get(room.id) === task)
-          this.conflictQueue.delete(room.id);
-      })
-      .catch(() => {});
+    room.steeringQueue = task;
     return task;
   }
   view(room: Room): RoomView {
     this.normalize(room);
+    if (room.intentCommit)
+      room = {
+        ...room,
+        ...room.intentCommit.projection,
+        intentCommit: undefined,
+      };
     const participants = [...room.participants.values()],
       safe = room.ai.connections!.map(({ encryptedKey, ...connection }) => ({
         ...connection,
@@ -3335,7 +3771,10 @@ export class RoomManager {
         room.ai.connections!.find((item) => item.id === builder.connectionId),
       currentProduct = [...room.versions]
         .reverse()
-        .find((version: StoredVersion) => !!version.files?.length),
+        .find(
+          (version: StoredVersion) =>
+            version.id !== room.pendingPromotion && !!version.files?.length,
+        ),
       ai: AIConnection = {
         status: this.hasAI(room) ? "connected" : "disconnected",
         connections: safe,
@@ -3424,6 +3863,9 @@ export class RoomManager {
         emptyUsage(),
       );
     return {
+      interpretationHistory: room.interpretationHistory,
+      intentCorrections: room.intentCorrections,
+      intentBuildPending: room.intentBuildPending,
       requirementRevisions: room.requirementRevisions,
       roomId: room.id,
       ownerId: room.ownerId,
@@ -3436,9 +3878,14 @@ export class RoomManager {
       contradictions: room.contradictions,
       specificationRevision: room.specificationRevision,
       latestVersion: currentProduct?.id ?? null,
-      versions: room.versions
-        .filter((version) => !!version.files?.length)
-        .map(({ source, bundle, ...v }) => v),
+      versions: room.artifactHistory?.length
+        ? room.artifactHistory.filter(
+            (version) =>
+              version.id !== room.pendingPromotion && version.downloadable,
+          )
+        : room.versions
+            .filter((version) => !!version.files?.length)
+            .map(({ source, bundle, ...v }) => v),
       aiRuns: room.aiRuns,
       providerCalls: room.providerCalls.slice(-100),
       setupUsage,
@@ -3454,9 +3901,51 @@ export class RoomManager {
     };
   }
   version(room: Room, id: number) {
-    return room.versions.find((v) => v.id === id) || null;
+    return (
+      room.versions.find(
+        (v) => v.id === id && v.id !== room.pendingPromotion,
+      ) || null
+    );
+  }
+  async readArchivedArtifact(room: Room, ref: string) {
+    this.assertOwned(room);
+    const reference = room.artifactManifest?.find((item) => item.ref === ref);
+    const cached = this.eventStore.readArtifact(ref);
+    if (cached) {
+      if (reference) return verifyArtifact(reference, cached);
+      if (
+        !/^sha256:[a-f0-9]{64}$/.test(ref) ||
+        this.eventStore.writeArtifact(cached).ref !== ref
+      )
+        throw new ArtifactUnavailableError("corrupt");
+      return cached;
+    }
+    if (!reference || !this.config.durableStore?.readArtifact)
+      throw new ArtifactUnavailableError("missing");
+    const bytes = verifyArtifact(
+      reference,
+      await this.config.durableStore.readArtifact(room.id, reference),
+    );
+    this.assertOwned(room);
+    this.eventStore.restoreArtifactBodies([
+      { ...reference, base64: bytes.toString("base64") },
+    ]);
+    return bytes;
+  }
+  async restoredVersion(room: Room, id: number) {
+    const current = this.version(room, id);
+    if (current) return current;
+    if (id === room.pendingPromotion) return null;
+    const archived = room.artifactHistory?.find((version) => version.id === id);
+    if (!archived) return null;
+    return restoreVersion(
+      await this.readArchivedArtifact(room, archived.artifactRef),
+      room.id,
+      archived,
+    );
   }
   shutdown() {
+    this.unsubscribeOwnership?.();
     clearInterval(this.heartbeat);
     for (const room of this.rooms.values()) {
       clearTimeout(room.saveTimer);

@@ -1,8 +1,14 @@
-# Current repository source map
+# Repository graph coverage and source-map checkpoints
 
-Refreshed 2026-10-04 with Graphify 0.9.61 and its Windows workflow after the authorized codebase cleanup. Graph coverage is separate from application, hosted-provider and deployment verification.
+Full cleanup checkpoint refreshed 2026-10-04 with Graphify 0.9.61 and its Windows workflow after the authorized codebase cleanup. Graph coverage is separate from application, hosted-provider and deployment verification.
 
-## Coverage
+## GitHub integration AST refresh (2026-10-04)
+
+After integrating `origin/codex/byok-mvp` through `472698a` into the cleanup branch, `graphify update .` completed without LLM/API calls: **1,870 nodes, 3,983 edges, 112 communities, 0 dangling endpoints**. New intent-authority/commands/review, private artifact restoration, coordinator retry and isolated compiler modules are represented. [sync-ast-diagnostics.json](sync-ast-diagnostics.json) records actual represented-file fingerprints and limits. Community names follow current hubs; no LLM relabeling ran.
+
+This refresh is structural. Changed document/CSS/image semantic relationships were not re-extracted. The full curated inventory and raw-relationship evidence below describe the earlier cleanup checkpoint, not complete current semantic coverage. The CLI preserved that curated checkpoint in its ignored dated backup before rebuilding. Application test/build evidence is in [the integration checklist](../docs/harness/checklist.md#github-branch-integration-2026-10-04), separate from graph integrity.
+
+## Cleanup full-map checkpoint (before GitHub integration)
 
 - **144/144 project files in scope** have graph representation and current SHA-256 fingerprints. The native corpus includes 111 code/configuration files, 22 project documents and one SVG. Ten additional files receive explicit file/schema/reference coverage, including CSS, Dockerfile, Wrangler JSONC and Prisma declarations. Graphify also reinjects one dated planning-memory document, which is marked historical.
 - **1,511 nodes, 3,830 projected edges, 92 named communities.** The prior full map contained 2,017 nodes, 4,792 edges and 199 project files. Removed scaffold is pruned; shared contracts, extracted UI/room helpers, audit tooling, CI and current steering are mapped.

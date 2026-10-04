@@ -1,0 +1,83 @@
+{
+  "verifiedAt": "2026-10-03T17:17:43.446024+00:00",
+  "step": 3,
+  "scope": "Local/controlled SDK HTTP and three independent signed browser profiles; no real Storage/RLS/SQL, hosted accounts, paid inference, migration or deployment",
+  "fullTests": {
+    "passed": 158,
+    "failed": 0
+  },
+  "focusedTests": {
+    "passed": 49,
+    "failed": 0
+  },
+  "productionBuild": "passed, default bundle restored after local-auth browser build",
+  "scriptTypes": "passed",
+  "browserArtifactRestoration": {
+    "scope": "Three local signed Chrome profiles after empty server-cache replacement; canonical snapshot/private bodies through real SDK over controlled Storage/PostgREST, not hosted accounts or real SQL",
+    "currentVersion": 2,
+    "revision": 3,
+    "checkpointRestored": true,
+    "zipRestored": true,
+    "previewRendered": true,
+    "clientsConverged": true,
+    "extraInterpreterCalls": 0,
+    "extraBuilderCalls": 0
+  },
+  "screenshotsInspected": [
+    "desktop.png",
+    "mobile.png",
+    "restored-product.png",
+    "restored-workspace.png"
+  ],
+  "graphify": {
+    "mode": "AST-only",
+    "nodes": 2006,
+    "edges": 3902,
+    "communities": 132,
+    "optionalSqlParser": "unavailable; no new SQL introduced"
+  },
+  "documentationLinks": {
+    "checked": 169,
+    "missing": []
+  },
+  "diffCheck": "passed",
+  "sourceHashes": {
+    "server/artifacts.ts": "ab94aec948c9ef7dc6ddf88aea641a12f0302a9bf24eaa855f689e9be4970f98",
+    "server/event-store.ts": "2eb3a51998e3fa173addcd0ec834839a47c1019dabd32d99d3866141db43b4c5",
+    "server/rooms.ts": "74566200891f767d2fdf4fb580549a8e77edd48f49c4b0e6db557b8f98d77f72",
+    "server/supabase-platform.ts": "e7fd4ee2d5195dfcb1164c286ac04a30300fb20e1e72d95021240ea79bb6dd6b",
+    "server/index.ts": "52855e096110bbedbac5d2967ce7199b7b22997276a29222e26490bb7b930b05",
+    "server/project-routes.ts": "18dead5b81add1eee9590f23fce506b0c5625a55cc483d95248d8cfe9c37fc63",
+    "tests/artifact-restoration.test.ts": "ae969f2aaf021027b91f755cdf290db5019f62fda01940c825a43591dee9b6c2",
+    "tests/fixtures/artifact-storage.ts": "56ff8784aa3beea7089c1c6abe7f9fc961e0d7295e8f214af15c427e4a8bd0a8",
+    "scripts/verify-artifact-growth.ts": "dfdacb7944abc3052ec6eb02f0366372978d44feb83d49c731683b6403eff088",
+    "scripts/verify-reliability.ts": "121d6bfbd4727649c63b364d10f9fd4be06a38cf329e7024bb460e0426982970",
+    "supabase/migrations/20261001104120_workflow_coordinator_fencing.sql": "c5a5ecbaa2502d53c65ad12bb3854f4f79e2a6fdc2a6696c97c5aeb70bc6d3ca",
+    "supabase/migrations/20261003203000_coordinator_dispatch_updates.sql": "369be1a32cc916c6e20c84ae05e4bab11370260d2c8d9beeff8a34469d6f677c"
+  },
+  "retention": "proposal only; no data pruning or historical migration",
+  "externalPending": [
+    "real private Storage immutable publication/readback and corruption checks",
+    "real member/nonmember Storage RLS and membership revocation",
+    "prepared/unapplied coordinator SQL and real database contention",
+    "deployed disposable-container restoration"
+  ],
+  "nextStep": 4,
+  "step04Started": false,
+  "preservedFailures": [
+    "full-tests-first.log",
+    "regression-recheck.log",
+    "focused-tests-first.log",
+    "focused-tests-second.log",
+    "artifact-tests-first.log",
+    "artifact-tests-interrupted.log"
+  ],
+  "localPreview": {
+    "health": {
+      "status": "ok",
+      "service": "cocreate-app"
+    },
+    "developmentClientServed": true,
+    "pageStatus": 200
+  }
+}

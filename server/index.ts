@@ -1,3 +1,5 @@
+import { assertIsolationAvailable } from "./isolation.js";
+import { artifactResponse } from "./artifacts.js";
 import "dotenv/config";
 import http from "node:http";
 import path from "node:path";
@@ -29,6 +31,8 @@ import type {
   AIWorkflowMode,
   LegacyAISpecialty,
 } from "../shared/types.js";
+import { coordinatorResponse } from "./coordinator-response.js";
+import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 type Options = {
   platform?: SupabasePlatform;
@@ -94,23 +98,19 @@ export async function createCoCreateServer(options: Options = {}) {
   app.use(express.json({ limit: "40kb" }));
   app.get("/__cocreate/app-health", (_req, res) =>
     platformState.error
-      ? res
-          .status(503)
-          .json({
-            status: "configuration-error",
-            service: "cocreate-app",
-            error: platformState.error,
-          })
+      ? res.status(503).json({
+          status: "configuration-error",
+          service: "cocreate-app",
+          error: platformState.error,
+        })
       : res.json({ status: "ok", service: "cocreate-app" }),
   );
   app.get("/api/auth/config", (_req, res) =>
-    res
-      .status(platformState.error ? 503 : 200)
-      .json({
-        mode: platformState.mode,
-        configured: !platformState.error,
-        error: platformState.error || undefined,
-      }),
+    res.status(platformState.error ? 503 : 200).json({
+      mode: platformState.mode,
+      configured: !platformState.error,
+      error: platformState.error || undefined,
+    }),
   );
   if (platformState.platform)
     registerProjectRoutes(
@@ -147,8 +147,6 @@ export async function createCoCreateServer(options: Options = {}) {
             ? ["owner", "editor", "viewer"]
             : ["owner", "editor"],
         );
-        await platformState.platform.assertCoordinator(ticket.roomId);
-        next();
       } catch (error) {
         res
           .status(403)
@@ -156,6 +154,13 @@ export async function createCoCreateServer(options: Options = {}) {
             error:
               error instanceof Error ? error.message : "Project access denied.",
           });
+        return;
+      }
+      try {
+        await platformState.platform.assertCoordinator(ticket.roomId);
+        next();
+      } catch (error) {
+        coordinatorResponse(res, error, true);
       }
     },
   );
@@ -169,11 +174,9 @@ export async function createCoCreateServer(options: Options = {}) {
         | undefined,
       session = verifySession(secret, token);
     if (!session) {
-      res
-        .status(401)
-        .json({
-          error: "Your project session expired or is invalid. Sign in again.",
-        });
+      res.status(401).json({
+        error: "Your project session expired or is invalid. Sign in again.",
+      });
       return null;
     }
     if (session.role === "viewer" && req.method !== "GET") {
@@ -195,11 +198,9 @@ export async function createCoCreateServer(options: Options = {}) {
     const auth = authorize(req, res);
     if (!auth) return null;
     if (auth.room.ownerId !== auth.session.participantId) {
-      res
-        .status(403)
-        .json({
-          error: "Only the workspace owner can change the AI connection.",
-        });
+      res.status(403).json({
+        error: "Only the workspace owner can change the AI connection.",
+      });
       return null;
     }
     return auth;
@@ -212,23 +213,19 @@ export async function createCoCreateServer(options: Options = {}) {
   };
   app.post("/api/rooms", (req, res) => {
     if (platformState.mode === "supabase")
-      return res
-        .status(404)
-        .json({
-          error: "Create authenticated projects through /api/projects.",
-        });
+      return res.status(404).json({
+        error: "Create authenticated projects through /api/projects.",
+      });
     const id = roomToken();
     manager.create(id);
     res.json({ roomId: id, inviteUrl: `/r/${id}` });
   });
   app.post("/api/session", (req, res) => {
     if (platformState.mode === "supabase")
-      return res
-        .status(403)
-        .json({
-          error:
-            "Room links cannot grant project access. Sign in and use a project membership.",
-        });
+      return res.status(403).json({
+        error:
+          "Room links cannot grant project access. Sign in and use a project membership.",
+      });
     const roomId = String(req.body.roomId || ""),
       name = String(req.body.name || "")
         .trim()
@@ -264,12 +261,10 @@ export async function createCoCreateServer(options: Options = {}) {
     (req, res) => {
       const auth = authorize(req, res);
       if (!auth) return;
-      res
-        .status(410)
-        .json({
-          error:
-            "Founder-funded managed AI is disabled in this MVP. Connect your OpenRouter key.",
-        });
+      res.status(410).json({
+        error:
+          "Founder-funded managed AI is disabled in this MVP. Connect your OpenRouter key.",
+      });
     },
   );
   app.post("/api/rooms/:id/ai/openrouter/connect", async (req, res) => {
@@ -285,6 +280,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -310,6 +306,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -344,6 +341,7 @@ export async function createCoCreateServer(options: Options = {}) {
           ),
         );
       } catch (error) {
+        if (coordinatorResponse(res, error)) return;
         res
           .status(400)
           .json({
@@ -365,6 +363,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -375,12 +374,10 @@ export async function createCoCreateServer(options: Options = {}) {
   });
   app.use("/api/rooms/:id/ai", (req, res, next) => {
     if (platformState.platform)
-      return res
-        .status(410)
-        .json({
-          error:
-            "This connection flow is retired. Use the temporary OpenRouter connection.",
-        });
+      return res.status(410).json({
+        error:
+          "This connection flow is retired. Use the temporary OpenRouter connection.",
+      });
     next();
   });
   app.get("/api/rooms/:id/workflow/events", (req, res) => {
@@ -395,11 +392,9 @@ export async function createCoCreateServer(options: Options = {}) {
       limit < 1 ||
       limit > 100
     )
-      return res
-        .status(400)
-        .json({
-          error: "Use a non-negative event cursor and a limit from 1 to 100.",
-        });
+      return res.status(400).json({
+        error: "Use a non-negative event cursor and a limit from 1 to 100.",
+      });
     res.json(manager.workflowActivity(auth.room, after, limit));
   });
   app.post("/api/rooms/:id/ai/test", async (req, res) => {
@@ -415,6 +410,7 @@ export async function createCoCreateServer(options: Options = {}) {
       );
       res.json(result);
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -435,6 +431,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -457,6 +454,7 @@ export async function createCoCreateServer(options: Options = {}) {
       );
       res.json({ ok: true });
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -487,6 +485,7 @@ export async function createCoCreateServer(options: Options = {}) {
         }),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -507,6 +506,7 @@ export async function createCoCreateServer(options: Options = {}) {
           ),
         );
       } catch (error) {
+        if (coordinatorResponse(res, error)) return;
         res
           .status(400)
           .json({
@@ -529,6 +529,7 @@ export async function createCoCreateServer(options: Options = {}) {
           ),
         );
       } catch (error) {
+        if (coordinatorResponse(res, error)) return;
         res
           .status(400)
           .json({
@@ -555,6 +556,7 @@ export async function createCoCreateServer(options: Options = {}) {
       );
       res.json({ ok: true });
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -619,6 +621,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -637,6 +640,7 @@ export async function createCoCreateServer(options: Options = {}) {
           .json({ error: "Choose Light, Medium, High, or Extra effort." });
       res.json(manager.setAIEffort(auth.room, effort));
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -674,6 +678,7 @@ export async function createCoCreateServer(options: Options = {}) {
         ),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -700,12 +705,10 @@ export async function createCoCreateServer(options: Options = {}) {
         !alternativeId ||
         !Number.isInteger(req.body.groupRevision)
       )
-        return res
-          .status(400)
-          .json({
-            error:
-              "Provide a current conflict revision, decision timestamp, alternative, and request ID.",
-          });
+        return res.status(400).json({
+          error:
+            "Provide a current conflict revision, decision timestamp, alternative, and request ID.",
+        });
       res.json(
         await manager.selectConflict(auth.room, String(req.params.groupId), {
           participantId: auth.session.participantId,
@@ -716,6 +719,7 @@ export async function createCoCreateServer(options: Options = {}) {
         }),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(Number((error as { status?: number })?.status) || 400)
         .json({
@@ -742,6 +746,7 @@ export async function createCoCreateServer(options: Options = {}) {
         manager.retryBuild(auth.room, auth.session.participantId, requestId),
       );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
         .status(400)
         .json({
@@ -749,48 +754,101 @@ export async function createCoCreateServer(options: Options = {}) {
         });
     }
   });
-  app.post("/api/rooms/:id/process", async (req, res) => {
-    const auth = authorize(req, res);
-    if (!auth) return;
-    if (platformState.platform)
-      return res
-        .status(410)
-        .json({ error: "Use Build my changes to submit only your own edits." });
-    try {
-      await manager.processNow(
-        auth.room,
-        auth.session.participantId,
-        String(req.body.correction || ""),
+  const authorizeIntentCommit = async (session: Session) => {
+    if (session.exp && session.exp <= Math.floor(Date.now() / 1000))
+      throw Object.assign(
+        new Error("Your project session expired. Reopen the project."),
+        { status: 401 },
       );
-      res.json({ ok: true });
+    if (platformState.platform)
+      await platformState.platform.requireMembership(
+        session.roomId,
+        session.participantId,
+        ["owner", "editor"],
+      );
+  };
+  app.post("/api/rooms/:id/intent-commands", async (req, res) => {
+    const auth = authorize(req, res);
+    if (!auth) return;
+    try {
+      if (auth.session.role === "viewer")
+        return res.status(403).json({ error: "Viewers cannot change intent." });
+      if (platformState.platform)
+        await platformState.platform.requireMembership(
+          auth.room.id,
+          auth.session.participantId,
+          ["owner", "editor"],
+        );
+      res.json(
+        await manager.mutateIntent(
+          auth.room,
+          auth.session.participantId,
+          req.body,
+          () => authorizeIntentCommit(auth.session),
+        ),
+      );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
-        .status(400)
+        .status(Number((error as { status?: number })?.status) || 400)
         .json({
           error: error instanceof Error ? error.message : String(error),
         });
     }
   });
-  app.post("/api/rooms/:id/reinterpret", async (req, res) => {
+  app.post("/api/rooms/:id/intent-build", async (req, res) => {
     const auth = authorize(req, res);
     if (!auth) return;
-    if (auth.room.ai.setup?.mode === "managed")
-      return res
-        .status(409)
-        .json({
-          error:
-            "Managed reinterpretation requires a new authenticated submission.",
-        });
     try {
-      await manager.reinterpretLatest(auth.room, auth.session.participantId);
-      res.json({ ok: true });
+      if (auth.session.role === "viewer")
+        return res.status(403).json({ error: "Viewers cannot build." });
+      if (platformState.platform)
+        await platformState.platform.requireMembership(
+          auth.room.id,
+          auth.session.participantId,
+          ["owner", "editor"],
+        );
+      const requestId = String(req.body.requestId || "");
+      if (!/^[A-Za-z0-9_-]{8,100}$/.test(requestId))
+        return res
+          .status(400)
+          .json({ error: "A valid build request ID is required." });
+      res.json(
+        await manager.buildAcceptedChanges(
+          auth.room,
+          auth.session.participantId,
+          requestId,
+          () => authorizeIntentCommit(auth.session),
+        ),
+      );
     } catch (error) {
+      if (coordinatorResponse(res, error)) return;
       res
-        .status(400)
+        .status(Number((error as { status?: number })?.status) || 400)
         .json({
           error: error instanceof Error ? error.message : String(error),
         });
     }
+  });
+  app.post("/api/rooms/:id/process", (req, res) => {
+    const auth = authorize(req, res);
+    if (!auth) return;
+    res
+      .status(410)
+      .json({
+        error:
+          "Use Build my changes for captured edits or the intent review controls for explicit correction/withdrawal.",
+      });
+  });
+  app.post("/api/rooms/:id/reinterpret", (req, res) => {
+    const auth = authorize(req, res);
+    if (!auth) return;
+    res
+      .status(410)
+      .json({
+        error:
+          "Automatic reinterpretation is retired. Review and correct your recorded intent explicitly.",
+      });
   });
   app.post("/api/rooms/:id/runtime-error", (req, res) => {
     const auth = authorize(req, res);
@@ -802,38 +860,82 @@ export async function createCoCreateServer(options: Options = {}) {
     );
     res.json({ ok: true });
   });
-  app.get("/api/rooms/:id/download/:version", (req, res) => {
+  app.get("/api/rooms/:id/download/:version", async (req, res) => {
     const auth = authorize(req, res);
     if (!auth) return;
-    const v = manager.version(auth.room, Number(req.params.version));
-    if (!v?.files)
-      return res
-        .status(404)
-        .send(
-          "Runnable project files are unavailable for this legacy version.",
+    try {
+      const v = await manager.restoredVersion(
+        auth.room,
+        Number(req.params.version),
+      );
+      if (!v?.files)
+        return res
+          .status(404)
+          .send(
+            "Runnable project files are unavailable for this legacy version.",
+          );
+      if (platformState.platform) {
+        await platformState.platform.requireMembership(
+          auth.room.id,
+          auth.session.participantId,
         );
-    res.setHeader("Content-Type", "application/zip");
-    res.setHeader(
-      "Content-Disposition",
-      `attachment; filename="cocreate-${auth.room.id}-v${v.id}.zip"`,
-    );
-    res.send(createZip(downloadableFiles(v.files)));
+        await platformState.platform.assertCoordinator(auth.room.id);
+      }
+      res.setHeader("Content-Type", "application/zip");
+      res.setHeader(
+        "Content-Disposition",
+        `attachment; filename="cocreate-${auth.room.id}-v${v.id}.zip"`,
+      );
+      res.send(createZip(downloadableFiles(v.files)));
+    } catch (error) {
+      if (!artifactResponse(res, error) && !coordinatorResponse(res, error))
+        res
+          .status(Number((error as { status?: number })?.status) || 403)
+          .json({
+            error:
+              error instanceof Error
+                ? error.message
+                : "Artifact access failed.",
+          });
+    }
   });
-  app.get("/preview/:id/:version", (req, res) => {
-    const auth = platformState.mode === "supabase" ? authorize(req, res) : null;
-    if (platformState.mode === "supabase" && !auth) return;
-    const room = auth?.room || manager.get(req.params.id),
-      v = room && manager.version(room, Number(req.params.version));
-    if (!v) return res.status(404).send("Preview not found");
-    res.setHeader("Cache-Control", "no-store");
-    res.setHeader("Referrer-Policy", "no-referrer");
-    res.setHeader(
-      "Content-Security-Policy",
-      "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; frame-ancestors 'self'",
-    );
-    res
-      .type("html")
-      .send(previewDocument(v.bundle, v.css || v.source?.css || ""));
+  app.get("/preview/:id/:version", async (req, res) => {
+    try {
+      const auth =
+        platformState.mode === "supabase" ? authorize(req, res) : null;
+      if (platformState.mode === "supabase" && !auth) return;
+      const room = auth?.room || manager.get(req.params.id),
+        v =
+          room &&
+          (await manager.restoredVersion(room, Number(req.params.version)));
+      if (!v) return res.status(404).send("Preview not found");
+      if (platformState.platform && auth) {
+        await platformState.platform.requireMembership(
+          auth.room.id,
+          auth.session.participantId,
+        );
+        await platformState.platform.assertCoordinator(auth.room.id);
+      }
+      res.setHeader("Cache-Control", "no-store");
+      res.setHeader("Referrer-Policy", "no-referrer");
+      res.setHeader(
+        "Content-Security-Policy",
+        "default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data: blob:; font-src data:; connect-src 'none'; frame-ancestors 'self'",
+      );
+      res
+        .type("html")
+        .send(previewDocument(v.bundle, v.css || v.source?.css || ""));
+    } catch (error) {
+      if (!artifactResponse(res, error) && !coordinatorResponse(res, error))
+        res
+          .status(Number((error as { status?: number })?.status) || 403)
+          .json({
+            error:
+              error instanceof Error
+                ? error.message
+                : "Artifact access failed.",
+          });
+    }
   });
   const rejectUpgrade = (
     socket: import("node:stream").Duplex,
@@ -842,11 +944,15 @@ export async function createCoCreateServer(options: Options = {}) {
     correlationId: string,
   ) => {
     const reason =
-      status === 401
-        ? "Unauthorized"
-        : status === 404
-          ? "Not Found"
-          : "Bad Request";
+      status === 503
+        ? "Service Unavailable"
+        : status === 403
+          ? "Forbidden"
+          : status === 401
+            ? "Unauthorized"
+            : status === 404
+              ? "Not Found"
+              : "Bad Request";
     console.warn(
       JSON.stringify({
         event: "collaboration.upgrade_rejected",
@@ -855,7 +961,7 @@ export async function createCoCreateServer(options: Options = {}) {
       }),
     );
     socket.end(
-      `HTTP/1.1 ${status} ${reason}\r\nConnection: close\r\nContent-Length: 0\r\n\r\n`,
+      `HTTP/1.1 ${status} ${reason}\r\n${status === 503 ? "Retry-After: 2\r\n" : ""}Connection: close\r\nContent-Length: 0\r\n\r\n`,
     );
   };
   server.on("upgrade", async (req, socket, head) => {
@@ -879,11 +985,6 @@ export async function createCoCreateServer(options: Options = {}) {
         session = verifySession(secret, url.searchParams.get("token") || "");
       if (!session || session.roomId !== roomId)
         return rejectUpgrade(socket, 401, "invalid_session", correlationId);
-      const room =
-        manager.rooms.get(roomId) ||
-        (platformState.mode === "local" ? manager.get(roomId) : null);
-      if (!room)
-        return rejectUpgrade(socket, 404, "missing_room", correlationId);
       if (platformState.platform) {
         if (!session.accountId || session.participantId !== session.accountId)
           return rejectUpgrade(socket, 401, "invalid_session", correlationId);
@@ -893,11 +994,25 @@ export async function createCoCreateServer(options: Options = {}) {
             session.accountId,
           );
           session.role = currentRole;
-          await platformState.platform.assertCoordinator(roomId);
         } catch {
           return rejectUpgrade(socket, 403, "forbidden", correlationId);
         }
+        try {
+          await platformState.platform.assertCoordinator(roomId);
+        } catch {
+          return rejectUpgrade(
+            socket,
+            503,
+            "coordinator_unavailable",
+            correlationId,
+          );
+        }
       }
+      const room =
+        manager.rooms.get(roomId) ||
+        (platformState.mode === "local" ? manager.get(roomId) : null);
+      if (!room)
+        return rejectUpgrade(socket, 404, "missing_room", correlationId);
       if (!room.participants.has(session.participantId))
         manager.join(room, session.participantId, session.name);
       wss.handleUpgrade(req, socket, head, (ws) => {
@@ -948,7 +1063,14 @@ export async function createCoCreateServer(options: Options = {}) {
               }
               manager.handleMessage(room, ws, packet, isBinary);
             })
-            .catch(() => ws.close(4403, "Project access or ownership changed"));
+            .catch((error) =>
+              ws.close(
+                error instanceof CoordinatorUnavailableError ? 1012 : 4403,
+                error instanceof CoordinatorUnavailableError
+                  ? "Coordinator ownership changed"
+                  : "Project access changed",
+              ),
+            );
         });
         ws.on("close", (code) => {
           if (expiryTimer) clearTimeout(expiryTimer);
@@ -1013,6 +1135,7 @@ const main =
   path.resolve(process.argv[1]) ===
     path.resolve(fileURLToPath(import.meta.url));
 if (main) {
+  await assertIsolationAvailable();
   const instance = await createCoCreateServer();
   const info = await instance.start();
   console.log(`2guys1canvas ready at ${info.url}`);

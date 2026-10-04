@@ -1,0 +1,46 @@
+TAP version 13
+# (node:10304) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 1 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 15435.6395
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\auto-build-budget.test.ts:21:1'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:13:9)
+    runNextTicks (node:internal/process/task_queues:64:5)
+    process.processTimers (node:internal/timers:518:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\auto-build-budget.test.ts:125:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:28296) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.connected","connectionId":"18e3fc50-aba4-4d3b-80de-449c1eea7a85","correlationId":"597d8c0e-d0ab-4490-9009-45c44b3aea3a"}
+# {"event":"collaboration.connected","connectionId":"da69404b-294f-4cbf-810b-415085bdb9dd","correlationId":"6689e2b5-e596-4473-ae80-242270fce9a2"}
+# {"event":"collaboration.connected","connectionId":"9e32b88c-2bcd-4585-8ac6-38e82b04d26f","correlationId":"6c55e09f-f0be-40b0-8f4c-8ca6c7795d39"}
+# Subtest: tests\\integration.test.ts
+not ok 2 - tests\\integration.test.ts
+  ---
+  duration_ms: 179404.7674
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\integration.test.ts:1:1'
+  failureType: 'testCodeFailure'
+  exitCode: 4294967295
+  signal: ~
+  error: 'test failed'
+  code: 'ERR_TEST_FAILURE'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 179428.7979

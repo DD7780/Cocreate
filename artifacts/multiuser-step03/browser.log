@@ -1,0 +1,124 @@
+(node:10476) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"9055704c-77a5-4281-b92d-c46d0a1ca8fc","correlationId":"8cebd91c-a2a2-43fb-a354-1cc946dbf32c"}
+{"event":"collaboration.connected","connectionId":"3fd6a3c7-ee9e-4184-a044-c9a002eb56d7","correlationId":"125cc9a5-698f-4cf3-ba51-302a79055b44"}
+{"event":"collaboration.connected","connectionId":"4c844ec9-2a41-4d99-9d16-ada75db7e3bc","correlationId":"32b53a3f-57bc-433c-a573-2725b3dcf3d2"}
+{"event":"collaboration.disconnected","connectionId":"4c844ec9-2a41-4d99-9d16-ada75db7e3bc","code":1005}
+{"event":"collaboration.connected","connectionId":"9aa08f52-94a8-4c35-b443-1df7afbff86f","correlationId":"9394e196-d9e4-4145-befe-9a6245b73163"}
+{"event":"collaboration.disconnected","connectionId":"9aa08f52-94a8-4c35-b443-1df7afbff86f","code":1001}
+{"event":"collaboration.connected","connectionId":"0d73b21d-073d-4326-9136-2d34262898e5","correlationId":"aebfd003-5f12-4b89-88cf-e82131b2bb21"}
+{"event":"collaboration.connected","connectionId":"f53b2ff0-88cc-4daf-b505-6a4b7d196ae0","correlationId":"5e6778b0-872d-4ecf-a02f-d3cd1c42873c"}
+{"event":"collaboration.disconnected","connectionId":"9055704c-77a5-4281-b92d-c46d0a1ca8fc","code":1006}
+{"event":"collaboration.disconnected","connectionId":"f53b2ff0-88cc-4daf-b505-6a4b7d196ae0","code":1006}
+{"event":"collaboration.disconnected","connectionId":"0d73b21d-073d-4326-9136-2d34262898e5","code":1006}
+{"event":"collaboration.disconnected","connectionId":"3fd6a3c7-ee9e-4184-a044-c9a002eb56d7","code":1006}
+{"event":"collaboration.connected","connectionId":"5815e1aa-7f65-460c-9a21-ecc3c6fb72d3","correlationId":"e3b985b1-733b-46a6-8226-b3a9f092abc4"}
+{"event":"collaboration.connected","connectionId":"70da2618-b6a2-4dab-9c1d-502825f85117","correlationId":"4e2fe4d0-e25d-4b7f-9500-27b5c9c926e1"}
+{"event":"collaboration.connected","connectionId":"de86585e-1c8b-4a21-a79b-2632374fea9e","correlationId":"253b498b-ce79-4943-8987-74b9a89e6706"}
+{"event":"collaboration.connected","connectionId":"e8c2f05f-c348-4c3d-9bfc-5dc48fc4c1d6","correlationId":"1f3ed94b-68c2-47fc-8df8-48cfd16852d4"}
+{
+  "scope": "Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference",
+  "participants": 3,
+  "artifactRestoration": {
+    "scope": "Three local signed Chrome profiles after empty server-cache replacement; canonical snapshot/private bodies through real SDK over controlled Storage/PostgREST, not hosted accounts or real SQL",
+    "currentVersion": 2,
+    "revision": 3,
+    "checkpointRestored": true,
+    "zipRestored": true,
+    "previewRendered": true,
+    "clientsConverged": true,
+    "extraInterpreterCalls": 0,
+    "extraBuilderCalls": 0
+  },
+  "simultaneousSubmissions": true,
+  "selectedRevisionVerified": true,
+  "offlineEditsRecovered": true,
+  "reloadDraftRecovered": true,
+  "noInferenceOnReconnect": true,
+  "noInferenceOnReload": true,
+  "converged": {
+    "revision": 3,
+    "artifact": 2,
+    "usage": {
+      "recorded": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "generation": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "setup": {
+        "requests": 0,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0
+      },
+      "unknownUsageRequests": 0,
+      "recordedFrom": "2026-10-03T17:09:22.343Z",
+      "coverage": "partial"
+    },
+    "accepted": [
+      "req_5b9f2fd90ce8",
+      "req_980895587501",
+      "req_a78566be4eac"
+    ]
+  },
+  "interpreterCalls": 3,
+  "builderCalls": 2,
+  "responsive": [
+    {
+      "width": 1440,
+      "viewport": 1440,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 1024,
+      "viewport": 1024,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 768,
+      "viewport": 768,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "card": true,
+      "selector": true
+    }
+  ],
+  "acceptedToRenderedPreviewMs": 1338,
+  "previewTimingScope": "Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency",
+  "compilingIncorrectCandidatePromoted": true,
+  "functionalVerified": false,
+  "filterControls": 0,
+  "referenceComparison": "Not performed in this baseline; supplied reference is available and comparison remains pending"
+}
+{"event":"collaboration.disconnected","connectionId":"e8c2f05f-c348-4c3d-9bfc-5dc48fc4c1d6","code":1006}
+{"event":"collaboration.disconnected","connectionId":"de86585e-1c8b-4a21-a79b-2632374fea9e","code":1006}
+{"event":"collaboration.disconnected","connectionId":"70da2618-b6a2-4dab-9c1d-502825f85117","code":1006}
+{"event":"collaboration.disconnected","connectionId":"5815e1aa-7f65-460c-9a21-ecc3c6fb72d3","code":1006}

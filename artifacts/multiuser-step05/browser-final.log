@@ -1,0 +1,11 @@
+(node:27140) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"30e5ada0-0c93-48f3-ae59-057f1405dd4c","correlationId":"3ea2af35-e1cf-4117-bb71-14e4ec78388d"}
+{"event":"collaboration.connected","connectionId":"42325b20-5f94-4608-9acb-3d21d8329c58","correlationId":"446c5b23-3394-4ffe-b39b-6ed39e70a487"}
+{"event":"collaboration.connected","connectionId":"fe1df166-7ec6-4951-a72d-391041e598d0","correlationId":"fbef801e-06c3-4455-aa49-23db2ce92f9b"}
+{"event":"collaboration.disconnected","connectionId":"30e5ada0-0c93-48f3-ae59-057f1405dd4c","code":1001}
+{"event":"collaboration.connected","connectionId":"6f86c1cd-b56f-4876-8469-9d6167f162d2","correlationId":"d88000d4-ab33-479e-802c-1fd2c86c617e"}
+{"scope":"Three independent local Chrome profiles with signed owner/editor/viewer sessions, SQLite, loopback controlled provider and Windows isolated compilation; no hosted accounts, real SQL, or paid inference","participants":3,"coauthorPreserved":true,"revisionConflictVisible":true,"correctionReloaded":true,"replayReceiptCount":4,"viewerDenied":true,"legacyRoutesRetired":true,"nativeTabTrap":true,"escapeAndReturnFocus":true,"keyboardSave":true,"deviceCacheFailureVisible":true,"explicitWithdrawal":true,"acceptedContextSeparated":true,"candidateInvalidation":true,"oldProductRetained":true,"noInferenceOnCorrectionReloadReplay":true,"interpreterCalls":2,"builderCalls":3,"finalSpecificationRevision":6,"functionalVerified":false}
+{"event":"collaboration.disconnected","connectionId":"6f86c1cd-b56f-4876-8469-9d6167f162d2","code":1006}
+{"event":"collaboration.disconnected","connectionId":"fe1df166-7ec6-4951-a72d-391041e598d0","code":1006}
+{"event":"collaboration.disconnected","connectionId":"42325b20-5f94-4608-9acb-3d21d8329c58","code":1006}

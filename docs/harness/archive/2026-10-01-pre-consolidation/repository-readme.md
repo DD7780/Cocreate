@@ -1,0 +1,148 @@
+> Historical pre-consolidation README; not current setup or release guidance. Use the [current README](../../../../README.md) and [archive index](README.md). No historical checks were rerun.
+
+# 2guys1canvas
+
+## Current product setup (2026-09-30)
+
+The visible product name is 2guys1canvas. Keep existing CoCreate-prefixed technical settings and deployed origins until explicitly migrated. For invitation email, set `RESEND_API_KEY` as a server secret and `COCREATE_EMAIL_FROM` to a bare address or `Name <address>` on the exact verified Resend sending domain. Do not use the example placeholder. A provider response with an ID means accepted for delivery, not inbox delivery. The local environment has no sender configured; live delivery has not been verified. Invitation retries reuse their request ID; a deliberate resend creates another valid link. Workflow shows recorded physical usage with partial historical coverage and keeps the older generation counter separate. Build my changes uses editor-focused Alt+X on Windows/Linux; macOS currently has no shortcut.
+
+## Active hosted MVP: OpenRouter BYOK
+
+Create or open a project, write with collaborators, and connect AI when ready. The owner enters an OpenRouter key, clicks Connect for generation-free validation, explicitly selects a builder and Interpretation model, then saves. The key stays in server memory for a two-hour lease and must be reentered after expiry or restart. Editors need the owner's explicit spending permission. Hosted managed credits, founder funding, presets and the old connection wizard are inactive; historical project and billing data remain. 2guys1canvas imposes no BYOK dollar or physical-call cap; the workspace shows reported input/output tokens from recent provider requests, marks unknown usage, and offers an explicit retry after failed builds. The previous managed-deployment instructions below are historical and superseded. Rollback is an application release rollback; retain project, billing and audit records.
+
+2guys1canvas is a multiplayer agent-workflow workspace for collaborative software building. Multiple authorized collaborators share one durable workflow: they co-write a brief, explicitly submit steering, inspect the real task plan and ordered activity, preserve requirement attribution, and receive versioned shared artifacts. Developer is the only active workflow; one serialized builder produces a React product in a restricted preview. Historical Analyst and Researcher records remain readable.
+
+## Historical managed hosted setup (inactive)
+
+New hosted projects preselect a shared managed builder and a fixed personal interpreter. The normal path is sign in, create/open a project, write, then **Build my changes**; the compact Builder selector offers three featured choices and more catalog entries, usage/credit state, and Advanced settings. Opening settings, changing builders, typing, saving, and navigating never invoke inference. Existing BYOK projects retain their connection and assignments until explicit owner opt-in. Advanced preserves discovery, exact model IDs, explicit capability tests, custom assignments, and supported effort controls.
+
+Before managed inference, apply `supabase/migrations/202609270001_managed_ai_funding.sql`, set server-only `COCREATE_MANAGED_OPENROUTER_KEY`, and deliberately credit an account in the server-only `managed_credit_accounts` entitlement table. The project owner must authorize each additional spending member; membership alone does not grant spend. Credit starts at zero, so missing migration, key, authorization, or balance blocks provider dispatch. Do not expose the founder key in a `VITE_` variable or client bundle. The migration and live billing/provider flow have not been verified in this workspace. Payment checkout is separate work.
+
+Deployment order: apply the additive SQL migration with a privileged database operator; verify its tables, functions, grants, and zero starting balances; configure the credential in server secrets; credit a specific account with an explicitly approved amount; authorize project spenders; then run two-account credit/concurrency checks and a small live provider request before opening managed access. The SQL migration, provider bill reconciliation, and hosted browser flow require external verification. For rollback, remove the server credential or put the funding account on `billing_hold`, then roll back the application release. Keep the ledger tables, project IDs, snapshots, and audit rows for reconciliation; do not reverse the migration by deleting them.
+
+Managed metadata is in `server/managed-catalog.ts`; qualification fixtures and the offline scorer are in `server/managed-qualification.ts` and `scripts/managed-qualification.ts`. Run `pnpm exec tsx scripts/managed-qualification.ts plan` before funding any evaluation. Gemini 3.8 Flash and the DeepSeek interpreter are provisional choices; no paid comparative qualification has run. Catalog rates and endpoint policy require verification before production credit is added.
+
+### Historical local/BYOK documentation
+
+The sections below describe earlier local-room and BYOK workflows. Their claims that owner keys are the default, three modes appear in setup, or managed credit does not exist are superseded by the hosted setup above.
+
+The right-side workflow panel is backed by durable server records. It shows the workflow phase/controller, planned and active tasks, safe activity summaries with an event cursor, and the latest promoted artifact's verification state. Compilation is labeled unverified unless functional acceptance checks actually passed. A server restart interrupts unfinished runs/tasks and waits for review rather than silently repeating side effects.
+
+## Start
+
+Requires Node.js 22+ and pnpm.
+
+```bash
+pnpm install
+pnpm dev
+```
+
+Open `http://localhost:5173`. The single command starts the React app, HTTP API, WebSocket collaboration server, local persistence, and preview service. Room data is stored in `data/` and survives restarts.
+
+To test with multiple people, create a room, copy **Invite**, and open the URL on another browser or device. Add `?join=1` to a room URL when you want a new participant identity in another tab of the same browser. Other devices on the same network can use `http://COMPUTER_IP:5173`; Windows Firewall may ask you to allow local network access.
+
+## Connect AI
+
+Open **API connections** as the room owner. Recommended setup is the primary experience and explains that the owner's saved API powers its model assignments. Use **Connect your API** or **Connect or manage API · Advanced** to add or edit a provider, configure its endpoint, save an encrypted credential, optionally discover models in a visible selector, manually enter an exact model ID, explicitly run model tests, and assign the personal interpreter and shared executor. Return with **View recommended setup**, choose one of the three modes and a spending limit, inspect the models resolved from that checked connection, and apply the setup. Light, Medium, High, and Extra are selected later from the compact AI effort picker beside the canvas.
+
+The only user-facing modes are **Developer**, **Analyst**, and **Researcher**. Light, Medium, High, and Extra are effort settings inside a mode. Developer uses the implemented app-building executor. Analyst is visibly unavailable until validated data ingestion and isolated reproducible computation exist; Researcher is visibly unavailable until controlled retrieval, source capture, and citation verification exist. CoCreate does not simulate either unavailable workflow. Existing General app, Engineer, Designer, Web developer, and Motion designer presets migrate to Developer without changing their saved models, credentials, effort, overrides, or historical runs.
+
+The four model-test results separate authentication/reachability, text generation, interpreter structured output, and current Developer executor operations. Tests make real provider requests and may consume provider usage; opening settings, saving a connection, viewing recommendations, or changing selections does not run them.
+
+Choose **Advanced: Choose my own models** to manage any number of named OpenAI, Anthropic, Google Gemini, OpenRouter, DeepSeek, custom OpenAI-compatible, or Ollama connections, exact manual model IDs, separate personal/builder assignments, and participant overrides. Existing rooms remain Custom until the owner explicitly opts into Recommended; switching views does not remove credentials, assignments, or overrides.
+
+The four checks are intentionally separate: endpoint/authentication reachability, usable text generation, the internal requirements schema, and the internal project-operation schema. Passing them verifies the API contract for a small request; it does not certify a model's general coding quality. CoCreate never silently changes provider or model when a request fails.
+
+Ollama defaults to `http://localhost:11434` and does not need a fake key. Here, localhost means the machine running the CoCreate server. Other HTTP endpoints are rejected; use HTTPS for remote/custom providers. When `COCREATE_HOSTED=true`, localhost and private-network targets are blocked to reduce server-side request-forgery risk.
+
+Keys never enter the shared document or generated app; they are encrypted at rest using `CREDENTIAL_ENCRYPTION_SECRET` and are never returned to the browser.
+
+Only the room owner can add, update, test, assign, or disconnect credentials or change the shared mode, effort, and spending policy. Collaborators receive read-only safe status and can use configured agents without receiving a key. [`server/ai-presets.ts`](../../../../server/ai-presets.ts) is the single versioned catalog for source-linked USD input, cached-input, cache-write, output, reasoning, tier, and routing-fee terms. Recommended setup shows per-interpreter and shared-executor allowances, an explicitly scoped estimated one-pass maximum, an incomplete marker when not every billable category is bounded, and a separate user-controlled spending limit. These are estimates, not provider invoices. Missing provider usage or billing categories remain unknown and are never shown as free. CoCreate has no managed-credit ledger, account authentication, or payment system; platform-managed AI is deliberately unavailable until those authorization and accounting prerequisites exist.
+
+The spending limit is a total safety ceiling; it does not increase a model call's output-token allowance. The canvas-side effort control applies 8K / 12K / 20K / 32K executor output allowances for Light / Medium / High / Extra to future submissions in both Recommended and Advanced rooms. Advanced defaults to Medium and keeps its manually chosen models and participant overrides when effort changes. CoCreate locally recovers common JSON-envelope serialization defects without a provider call and still applies the exact schema and project validators. Incomplete output gets one bounded compact retry with usage retained; if that also fails, choose a higher effort or a model with stronger structured-output support.
+
+## Product loop
+
+Everyone brainstorms and co-writes in the same rich canvas. Typing, formatting, autosaving, and reconnecting do not invoke a model. **Build my changes** captures only the authenticated participant's unsubmitted edit records, acknowledges the final collaborative update, and starts a short collection window so nearby submissions can share one serialized build without losing attribution. Only the caller's edit records are submitted, and the builder receives the accepted registry. Personal-model context still includes a shared document snapshot, and the legacy build API can flush other drafts; complete source isolation and legacy-route enforcement remain hardening work. An empty submission reports **No new changes to submit** without an AI call. A failed generation keeps the last successful Product visible and reports the error.
+
+On Windows and Linux, **Alt + X** invokes the same submission function while the shared editor has focus. The button exposes this through its tooltip and `aria-keyshortcuts`. The adjacent shortcut preference can remap it to Alt + S or Alt + Y, or disable it. macOS defaults to no shortcut so Option + X retains its normal text-input behavior; Mac users may explicitly choose a shortcut.
+
+The submission collection window defaults to three seconds and is configurable with `BUILD_DEBOUNCE_MS`; `BUILD_COOLDOWN_MS` and `BUILD_MAX_WAIT_MS` still bound shared builder scheduling. Model inputs are compacted before dispatch. Each completed run stores a versioned call ledger with provider-reported input, cached input, cache writes, output, and separately available reasoning usage; pricing snapshots; interpretation/builder/repair breakdowns; latency; outcome; and explicit verification fields. Reasoning already included in provider output is not counted twice, the shared builder is counted once, and missing/timeout usage remains uncertain rather than zero.
+
+The generated scope is deliberately bounded: a real multi-file React and TypeScript frontend under `generated/rooms/<room-id>`. The builder may use approved local React dependencies, relative source modules, CSS, JSON, and isolated app storage; it cannot request networks, cookies, parent-window access, dynamic imports, or backend code. Every file operation is validated, the project is compiled before promotion, and a failed update keeps the last working Product. The Product view can refresh, open in a new tab, or download a complete runnable project ZIP.
+
+## Checks
+
+```bash
+pnpm test
+pnpm build
+pnpm start
+```
+
+## Deploy on Cloudflare
+
+CoCreate deploys as a Cloudflare Worker backed by one Cloudflare Container because the application includes a Node.js server, WebSockets, build tooling, and local project files. Cloudflare Containers require a Workers Paid plan.
+
+For a Git-connected production Worker:
+
+1. Keep the Worker name as `cocreate`, matching `wrangler.jsonc`.
+2. Set the production branch to `main`.
+3. Use `pnpm build` as the build command and `pnpm deploy:cloudflare` as the deploy command.
+4. Push to `main` and allow several minutes for the first container image to build and provision.
+
+Before deployment, add `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` as encrypted Worker secrets in the Cloudflare dashboard or with `wrangler secret put`. Both values are required by the container and must never be added to `wrangler.jsonc` or the repository. The Worker uses Cloudflare's native container proxy so ordinary HTTP requests and WebSocket upgrades follow the same startup and routing path; `/__cocreate/health` checks the Worker and `/__cocreate/app-health` checks the application inside the container. Collaboration retries are bounded and diagnose invalid sessions or missing rooms through the authenticated room-state route. Recoverable edits remain in the current tab and resynchronize with Yjs, but they are not durable across a reload.
+
+Tests cover signed participant attribution, character-level Yjs edits across three WebSocket clients, evolving requirements, owner-only provider setup, mixed-provider role assignment, secret redaction, serialized builds, failed-build retention, append-only recovery, interrupted run states, deny-before-execution tool policy, validated multi-file operations, runnable downloads, and preview compilation. Adapter contract fixtures cover all seven adapters, model discovery/manual IDs, authentication errors, successful text and structured output, schema failures, empty/truncated output, rate-limit retries, and cancellation. They do not spend or require a real API key.
+
+## Architecture
+
+- `src/` — React workspace with Document/Product tabs, split view, participant presence, owner settings, and save/build status.
+- `server/rooms.ts` — room isolation, Yjs persistence, presence, participant debouncing, exactly-one serialized orchestrator, versioning, rollback.
+- `server/providers.ts` — provider adapters, native authentication/request parsing, retries, error classification, model discovery, usage normalization, and schema validation.
+- `server/generator.ts` — provider-independent agent prompts, internal structured schemas, and deliberately budgeted whole-file context.
+- `server/ai-presets.ts`, `server/ai-accounting.ts` — canonical published-rate catalog, deterministic allowances, normalized charge calculations, run aggregation, and comparable effectiveness metrics.
+- `server/project.ts` — room-scoped file operations, project persistence, dependency policy, and compile validation.
+- `server/event-store.ts` — SQLite event history, content-addressed artifacts, derived workspace/run views, migrations, and recovery.
+- `server/tool-registry.ts` — typed generated-project tools, deny-by-default policy, and audited execution outcomes.
+- `server/credentials.ts` — authenticated encryption for room provider credentials.
+- `server/preview.ts` — unique-origin CSP preview with isolated room application storage.
+- `docs/harness/` — evidence-based assessment, architecture, migration plan, and tracked acceptance checklist.
+
+## Current boundaries
+
+Local mode still uses SQLite plus local generated-project files and is intended for a trusted LAN or single server with persistent storage. Hosted mode now uses Supabase accounts and project memberships, but it is not enterprise authorization: immediate socket revocation after membership removal, audited organization policy, and live multi-account adversarial coverage remain unfinished. The Cloudflare Container still does not persist local generated project files across replacement, so complete production artifact recovery is not yet guaranteed even though authoritative project records live in Supabase. Generated apps are frontend-only and run in a restricted browser preview, but compilation still occurs inside the CoCreate server process; a dedicated sandboxed build/runtime service is required before treating generated build execution as a security boundary. See `docs/harness/` for exact evidence and remaining criteria.
+
+## AI steering documents
+
+Start with [AGENTS.md](../../../../AGENTS.md), [context.md](../../../../context.md), [product.md](../../../../product.md), and [instructions.md](../../../../instructions.md). Canonical design and progress live in [docs/harness/architecture.md](../../../../docs/harness/architecture.md), [decisions.md](../../../../docs/harness/decisions.md), and [checklist.md](../../../../docs/harness/checklist.md); implemented contracts live in [api.md](../../../../api.md). Product requirements are not completion evidence. Update affected documents alongside changes; do not duplicate architecture or progress files at the root.
+
+The workspace uses a dark editorial presentation with restrained neubrutalist accents. Third-party font and icon sources are recorded in [docs/ui-assets.md](../../../../docs/ui-assets.md); generated Product previews remain visually isolated from workspace styling.
+## Supabase saved projects
+
+Hosted CoCreate uses Supabase Google plus confirmed email/password Auth, Postgres project/membership/invitation records, and private Storage while keeping Express, Yjs, and the existing agent harness. Production browser configuration is injected into the Vite build through the container `image_vars` in `wrangler.jsonc`; local builds use the matching `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY`, and `VITE_COCREATE_APP_ORIGIN` variables. Missing, malformed, or project-mismatched values fail closed. Keep `SUPABASE_SECRET_KEY`, provider credentials, session/encryption secrets, email-provider keys, and migration credentials server-only.
+
+CoCreate is a Vite SPA with an Express API, not a Next.js application. The browser client therefore uses `@supabase/supabase-js` with persisted PKCE sessions and automatic refresh; authenticated project requests refresh near-expiry sessions and retry one 401 once. `@supabase/ssr` is installed for a possible future cookie/SSR host, but Next.js `page.tsx`, `next/headers`, and middleware/proxy files are intentionally not active entrypoints here.
+
+1. The initial hosted schema migration is applied to the verified target project. For later schema changes, continue using versioned files under `supabase/migrations` and the Supabase CLI; run `supabase test db` against a local stack when available.
+2. In Google Cloud, authorize the Supabase provider callback `https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/callback`. This is Google's return to Supabase, not the application's callback.
+3. In Supabase Auth URL Configuration, set the Site URL to `https://cocreate.susan981314271.workers.dev` and allow the exact application callback `https://cocreate.susan981314271.workers.dev/api/auth/callback`. Allow `http://localhost:5173/api/auth/callback` separately for local development. `cocreate.pages.dev` is a different application and must not be used for CoCreate OAuth.
+4. Enable email/password in Supabase Auth, keep Confirm Email enabled, configure production custom SMTP for confirmation/recovery, and verify confirmation and recovery templates return through the allowed application callback.
+5. Apply `supabase/migrations/202609250001_email_invitations_and_sharing.sql` to the verified project. Set `COCREATE_APP_ORIGINS` and `COCREATE_PUBLIC_ORIGIN` to the exact deployment origins.
+6. Configure transactional project-invitation email separately: add `RESEND_API_KEY` as a Cloudflare secret and set `COCREATE_EMAIL_FROM` to a verified sender. Supabase SMTP does not send CoCreate project invitations.
+7. Start CoCreate and verify Google login, email confirmation/login/recovery, named project create/rename/reopen, and invited editor/viewer permission boundaries before enabling collaborators.
+
+Direct Postgres tooling may use the optional pooler templates in `.env.example`. Supply the database password locally and percent-encode reserved characters in its URI user-info component. Normal Supabase API access does not require these URLs, and their placeholders are intentionally non-operational.
+
+Prisma 7.10 is pinned with matching client and PostgreSQL adapter packages. `.env.local` separates the transaction-mode `DATABASE_URL` used by serverless runtime connections from the session-mode `DIRECT_URL` used by Prisma CLI operations. `prisma7.config.ts` deliberately loads `.env.local` and points CLI operations at `DIRECT_URL`; Prisma 7 keeps connection URLs out of `schema.prisma`. The schema is introspected across `public` and `auth` only because public foreign keys reference `auth.users`; all Supabase-owned auth tables and enums are declared external to Prisma Migrate. Supabase SQL migrations remain authoritative, so do not run Prisma Migrate against production until the two migration histories have an explicit cutover plan. Both URLs must contain the same percent-encoded database password.
+
+The repository includes a project-scoped Supabase MCP server in `.mcp.json`. Claude Code users must authenticate it interactively from a regular terminal with `/mcp`; the OAuth credential is held by the MCP client and must not be committed. The configured database, development, debugging, functions, and branching groups can mutate the selected project, so review proposed tool calls before approval.
+
+Legacy import is dry-run-first: `pnpm migrate:legacy -- --mapping scripts/trusted-owner-map.example.json`. It never maps names or room-link holders to accounts. Review the report, verify `SUPABASE_URL`, then use `--apply --confirm-target`; the tool backs up local data first, hashes inputs, reruns idempotently, and quarantines unmapped rooms.
+
+Live OAuth, remote RLS, and Storage evidence are pending until a complete server secret and dashboard configuration are available. The arithmetic/unit suite does not impersonate that evidence.
+
+### Device draft recovery and refreshed workspace
+
+The canvas keeps a participant-scoped IndexedDB recovery copy after validating the room session. “Saved on this device” and “Synced” are separate statuses. Browser storage may be unavailable or evicted; server persistence remains required. New project startup still needs a network connection. Typing bursts are batched for 40 ms; Build my changes drains edits before submission.
+
+Workflow shows actual tasks and evidence, Canvas is for shared writing, and Artifacts opens the generated product. AI setup opens on demand. Managed model selection uses no inference; generation still requires configured funding. The dark comic styling supports reduced motion.

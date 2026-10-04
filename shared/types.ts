@@ -97,7 +97,50 @@ export type InterpretationIntentCategory =
   | SharedRequirementCategory
   | "question"
   | "withdrawal";
+export type IntentReference = {
+  requirementId: string;
+  revision: number;
+  participantIds: string[];
+  authority: "accepted_context";
+};
+export type IntentValidation = {
+  status: "verified" | "needs_clarification";
+  reason?: string;
+};
+export type IntentTarget =
+  | { kind: "requirement"; id: string; revision: number }
+  | { kind: "interpretation"; id: string; intentId: string; revision: number };
+export type IntentCommand = {
+  requestId: string;
+  specificationRevision: number;
+  target: IntentTarget;
+  action: "correct" | "withdraw";
+  text?: string;
+  category?: InterpretationIntentCategory;
+  classification?: "explicit_request" | "proposal" | "question";
+};
+export type IntentCommandResult = {
+  requestId: string;
+  specificationRevision: number;
+  action: "correct" | "withdraw";
+  buildPending: boolean;
+};
+export type IntentCorrection = {
+  requestId: string;
+  participantId: string;
+  participantName: string;
+  target: IntentTarget;
+  action: "correct" | "withdraw";
+  before: string;
+  after?: string;
+  recordedAt: string;
+  sources: SharedRequirementSource[];
+};
 export type InterpretationIntent = {
+  authority?: "authenticated_submission" | "human_correction";
+  validation?: IntentValidation;
+  contextReferences?: IntentReference[];
+  withdrawn?: boolean;
   id: string;
   text: string;
   category: InterpretationIntentCategory;
@@ -141,6 +184,8 @@ export type SharedRequirementSource = {
   participantId: string;
   participantName: string;
   interpretationId: string;
+  intentId?: string;
+  authority?: "authenticated_submission" | "human_correction";
   documentRevision: number;
   editSeqs: number[];
   passages: string[];
@@ -519,6 +564,9 @@ export type RequirementRevision = {
   accepted: SharedRequirement[];
 };
 export type RoomView = {
+  interpretationHistory?: Requirement[];
+  intentCorrections?: IntentCorrection[];
+  intentBuildPending?: boolean;
   requirementRevisions?: RequirementRevision[];
   roomId: string;
   ownerId: string | null;

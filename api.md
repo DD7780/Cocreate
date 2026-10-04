@@ -1,238 +1,150 @@
-# 2guys1canvas API reference
+# 2guys1canvas implemented API contracts
 
-## Reliability contracts (2026-10-01)
+Source-inspected 2026-10-03 including Step 03 artifact recovery boundaries. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
-These supersede older no-call-ceiling and mutable-save-acknowledgment descriptions. RoomView.requirementRevisions contains durable {revision, accepted} snapshots. The selector and requirements action read the selected accepted snapshot, excluding unsubmitted drafts. The ordinary requirements list retains proposals/conflicts and provenance.
+## Transport and authorization
 
-WebSocket saved receipts carry {type:'saved', revision, savedAt, vector, deletions}; vector is the base64 Yjs insertion state vector, deletions is a canonical JSON signature of deleted client clock ranges. Only a confirmed immutable canonical snapshot is acknowledged. flush is ordered after document updates and a full canonical save; failure returns {type:'flush-error', requestId, message} and prevents the client submit request. Clients discard older room-state workflow/snapshot cursors within a connection; the first state on a new authenticated connection is authoritative even if uncommitted prior events had a higher cursor. Cloud append errors can recover through a confirmed full snapshot; cloud snapshot failure remains unsaved.
+HTTP/socket requests use the client host; local default is `http://localhost:5173`. JSON body limit is 40 KB. Prefer `Authorization: Bearer <token>` over the currently supported room-route token query parameter; never log credentials or authenticated URLs.
 
-The legacy HTTP /api/rooms/:id/build route returns 410 in both modes, preventing an authenticated caller from flushing teammates’ drafts. Internal buildNow remains a local harness helper. Local compatibility /process corrections include only the explicit correction as inserted steering.
+Hosted project routes use a Supabase access token verified for issuer/audience/signature/expiry. `POST /api/projects/:id/session` verifies account and membership, claims coordinator ownership, hydrates the room if needed and returns a separate five-minute signed project ticket. Participant ID equals account UUID. Room/preview/download middleware requires that ticket, current membership and coordinator authority; historical artifact reads recheck membership/ownership after awaited retrieval before returning bytes; mutations require owner/editor. A URL alone grants nothing. Viewers cannot submit edits or room commands.
 
-POST /api/rooms/:id/submit keeps the existing requestId contract. Captured source batches and all nonterminal submissions are persisted independently of the recent-history cutoff. Durable receipts are keyed by [participantId,requestId]; replays cannot consume new edits. Submitted batches reconcile in capture order. Failed/interrupted interpretations return captured edits to their author for an explicit new submission. Accepted work arriving during a fixed-revision build stays queued until the current candidate is discarded and the newer accepted baseline is built.
+Local mode uses HMAC-SHA256 signed room participant tokens `{roomId, participantId, name}`; local creation/join has no account identity or expiry guarantee. These compatibility sessions are not hosted authorization. Invalid room tickets return 401, missing rooms 404 and denied permission usually 403; caught operation/provider failures commonly return 400 `{error}`. Operation success is not functional acceptance.
 
-physicalUsage.recorded counts deduplicated physical dispatch attempts, including retries and setup. physicalUsage.generation is the subset excluding connection and capability tests; it includes interpretation, builder recovery and repairs. Reported tokens sum reported input plus output; cached/reasoning subcategories are not added again. Missing usage remains unknown; monetary estimates and historical logical generation counters remain separate. Coverage is partial because pre-ledger history may be absent. ProviderRequestRecord includes terminationReason; exhaustion is failed/truncated with any reported usage preserved. Cumulative usage is not context occupancy.
+Hosted use requires the service-role RPCs in the [original fencing migration](supabase/migrations/20261001104120_workflow_coordinator_fencing.sql) and [Step 02 hardening migration](supabase/migrations/20261003203000_coordinator_dispatch_updates.sql). Both remain prepared/unapplied; real SQL and hosted-account behavior are unverified. Missing RPCs fail closed. Current routing retains the Worker primary-container affinity and returns a bounded retry on non-owner ingress.
 
-Builder execution is bounded to 24 physical calls across whole-project generation, at most eight recovery tasks, validation/compilation repairs and transport retries, including superseded candidates. Frozen configured spending limits apply as well; BYOK has no managed-credit gate. Discovered top_provider.max_completion_tokens bounds the requested output allowance independently of context_length. The additive 20261001104120_workflow_coordinator_fencing.sql migration introduces service-role-only claim_workflow_coordinator, release_workflow_coordinator and commit_workflow_snapshot RPCs. Hosted use fails closed without these RPCs. The migration is NOT applied and its SQL execution/live account behavior remain unverified.
+Ownership unavailable or lost returns HTTP **503**, `Retry-After: 2`, `Cache-Control: no-store`, and `{code:"coordinator_unavailable", retryAfterMs:2000, retryable:true, error}`. The safe message says to retry with the same request ID and reopen the project if it persists. Membership denial remains 403 and invalid tickets 401; current authorization is checked first. WebSocket rejection uses HTTP 503/Retry-After; an established socket losing ownership closes with 1012, while access revocation closes with 4403. No Location header or owner/credential disclosure is returned. The client retries connection only, then shows a terminal reopen action with page edits retained.
 
+Private artifact restoration failures return HTTP **409**, `Cache-Control: no-store`, and `{code:"artifact_unavailable", reason:"missing"|"corrupt"|"unavailable", error}`. Opening a project with missing/corrupt required current product or checkpoint fails explicitly, rather than hydrating an empty room. Reopen retries reads without inference. Preview `/preview/:id/:version` and download `/api/rooms/:id/download/:version` can fetch archived version bodies lazily; an unknown version remains 404, while membership denial remains 403. The application streams verified preview/ZIP bytes and exposes no Storage credentials, public URLs or signed download URLs. Version metadata/history can include older newly archived versions; current/latest excludes a pending promotion. Legacy history absent from canonical records remains unavailable.
 
-## Invitation and usage update (2026-09-30)
+## Authenticated project routes
 
-Invitation routes retain their existing paths and authorization. The server reads `RESEND_API_KEY` and `COCREATE_EMAIL_FROM`; invalid or absent sender configuration returns per-address `deliveryState: configuration_required` with an actionable `deliveryError`. Only a successful provider response with an ID returns `sent`. Email content includes inviter, project, role, accept link, and expiry. Acceptance remains authenticated and verified-email-bound in SQL. Creation and resend requests use request IDs for replay, deliberate resends preserve all earlier pending links, and acceptance preserves an existing membership role. `RoomView.usage` and `setupUsage` remain separate from the deduplicated physical-call ledger. Unknown usage is not converted to measured zero, and historical coverage remains explicitly partial.
-
-## Active hosted OpenRouter BYOK (2026-09-28)
-
-Hosted routes require a signed project ticket and membership. `POST /api/rooms/:id/ai/openrouter/connect` accepts `{apiKey}`, validates through OpenRouter `/key` and discovers `/models` without generation, and returns redacted lease metadata. `POST /api/rooms/:id/ai/openrouter/models` accepts `{handle,interpreterModel,builderModel}` and validates both exact IDs. `PUT /api/rooms/:id/ai/openrouter/spenders/:memberId` accepts `{authorized:boolean}` for a project editor or owner. `POST /api/rooms/:id/ai/openrouter/disconnect` revokes the lease. The project owner controls these mutations. `/api/rooms/:id/submit` remains the hosted generation entry. Obsolete hosted `/ai` routes return 410, and managed dispatch is rejected even for historical assignments. The key is never serialized into room state or snapshots. `POST /api/rooms/:id/retry-build` with a unique `{requestId}` explicitly retries accepted requirements after a failed build using the currently selected BYOK models; it does not reinterpret edits. BYOK has no managed-credit gate; the October 1 shared 24-physical-call recovery ceiling and configured spending limits apply. Room state exposes recent physical provider requests and their reported token usage; incomplete usage stays marked. Lease expiry or restart requires reconnecting. Historical API sections below are superseded for the active hosted MVP.
-
-Source-inspected 2026-09-30. This file distinguishes hosted Supabase contracts from historical local-room compatibility routes. Canonical sources include `server/index.ts`, `server/project-routes.ts`, `server/rooms.ts`, `server/managed-catalog.ts`, `server/supabase-platform.ts`, and `shared/types.ts`.
-
-## Historical hosted managed AI
-
-Hosted requests use a Supabase bearer session and project membership. New projects are Developer/managed by default. The shared builder is selected from the server's versioned exact-ID allowlist; the personal interpreter is fixed. These routes never return the founder OpenRouter key. The funding account and authorized spenders are separate from membership, and a zero-credit project cannot dispatch a managed provider call. The additive `202609270001_managed_ai_funding.sql` migration must be applied before these contracts are usable.
-
-| Method and path | Authorization | Behavior |
+| Method and path | Permission | Request/result |
 | --- | --- | --- |
-| GET `/api/rooms/:id/ai/managed-catalog` | Project member | Versioned, redacted builder metadata, published rates, provisional evidence, and availability; no inference |
-| GET `/api/rooms/:id/ai/managed-funding` | Project member | Funding account, available balance, limits, and spender authorization; no credential |
-| PUT `/api/rooms/:id/ai/managed-spenders/:accountId` | Project owner | `{authorized: boolean}` explicitly grants or revokes project spending for a member |
-| POST `/api/rooms/:id/ai/managed-builder` | Project owner | `{modelId: string}` selects an enabled exact catalog ID for future submissions only |
-| POST `/api/rooms/:id/submit` | Project editor/owner | Authenticated participant steering; managed physical calls reserve credit atomically before dispatch |
+| GET `/api/projects?search=&archived=&offset=&limit=` | Authenticated account | Membership-scoped recent-first paginated list |
+| POST `/api/projects` | Authenticated account | `{title?, workflowMode?}`; only Developer; creates project/owner and returns project with 201 |
+| PATCH `/api/projects/:id` | Owner | `{title?, archived?}`; rename/archive/restore |
+| POST `/api/projects/:id/session` | Member | `{token, participantId, role, expiresAt}` |
+| GET `/api/projects/:id/sharing` | Owner or explicit sharing member | Members and pending invitations |
+| POST `/api/projects/:id/invites` | Owner or explicit sharing member | `{emails?: string[], email?, role?, ttlHours?, requestId?}`; 1–10 normalized recipients, editor/viewer, defaults editor/72 hours; per-recipient results |
+| POST `/api/projects/:id/invites/:inviteId/resend` | Same sharing authority | `{ttlHours?, requestId?}`; creates another link, preserves earlier link |
+| DELETE `/api/projects/:id/invites/:inviteId` | Same sharing authority | Explicit pending-invite revoke |
+| PATCH `/api/projects/:id/members/:memberId` | Sharing authority; owner for sharing grant | `{role?, canShare?}`; non-owner roles editor/viewer |
+| POST `/api/invites/accept` | Matching confirmed account | `{token}` → `{projectId}`; transactional/idempotent |
+| Any `/api/projects/:id/managed-funding`, `/managed-spenders/:memberId` | Authenticated member | 410; managed funding inactive |
 
-The provider-call ledger stores one row per physical attempt, including frozen model/catalog/rate policy, reservation, outcome, and reported charge when available. Timeout or unknown charge remains reserved/uncertain. Setup tests and project generation are reported separately. The hosted `/build` and `/process` compatibility routes return 410; managed `/reinterpret` returns 409 pending a submission-based implementation. The local harness keeps its older compatibility routes. Advanced/BYOK remains available and never falls back to managed funding.
+Titles are trimmed, required and at most 120 characters; omitted creation title becomes Untitled project. Tokens are 256-bit random values, authorized through SHA-256 hashes. New invite links also store encrypted tokens for request replay; legacy links/hashes remain valid until expiry, acceptance or explicit revoke. Request IDs use 8–100 letters/digits/underscore/hyphen; omission generates a new ID, so callers should retain one for uncertain replies. Multi-recipient creation derives an email-specific replay key. Changed payload under a reused key fails. Deliberate resend preserves old pending links and acceptance preserves existing membership roles. Creation/resend is limited to 30 per actor/hour.
 
-The remainder of this file includes earlier local-room and BYOK contracts. Statements below that claim no hosted account, no credit ledger, three active modes, or callable hosted legacy build routes are superseded by this section.
+Server email uses `RESEND_API_KEY` and a syntactically valid verified-domain `COCREATE_EMAIL_FROM`. Missing/invalid config returns `configuration_required` and actionable delivery error per address. Only a successful provider response with ID means `sent`; this is acceptance, not inbox delivery. Replayed already-sent invitations do not resend. Provider idempotency has a retention window; uncertain outcomes outside it need reconciliation.
 
-## Transport and authentication
+Browser auth is Google PKCE plus email/password signup, confirmation resend, login, recovery, authenticated password change and logout. Safe same-origin return paths include invite links. Callback derives from configured app origin: established production `https://cocreate.susan981314271.workers.dev/api/auth/callback`, separately configured localhost development, with legacy `/auth/callback` recovery. Callback restores session, exchanges a code once and removes parameters. A failed/cancelled new login with an existing session requires explicit Continue/Switch account. Project requests refresh near expiry and allow one refresh/retry after 401. None of these client states replaces backend membership.
 
-HTTP and WebSocket use the same host as the client; local default is http://localhost:5173. JSON bodies use Content-Type: application/json and the server's body limit is 40 KB.
+## Active temporary OpenRouter routes
 
-Authenticated HTTP routes accept Authorization: Bearer <session-token>. A `token` query parameter is also currently supported; prefer headers where possible to avoid URL leakage. Tokens must not be logged or included in documentation examples.
+All mutations below require the room/project owner, including a current hosted owner check.
 
-Session tokens are custom HMAC-SHA256-signed base64url payload/signature pairs, not JWTs. Payload: `{roomId, participantId, name}`. The current verifier has no expiry check. There is no account/OAuth login flow. Room links grant the ability to join; first participant becomes owner. This is not enterprise authorization.
+| Method and path | Request/result |
+| --- | --- |
+| POST `/api/rooms/:id/ai/openrouter/connect` | `{apiKey}`; validates key and discovers compatible models without generation; returns redacted handle/sponsor/expiry/model/spender metadata |
+| POST `/api/rooms/:id/ai/openrouter/models` | `{handle, interpreterModel, builderModel}`; validates both exact returned IDs and saves assignments |
+| PUT `/api/rooms/:id/ai/openrouter/spenders/:memberId` | `{authorized: boolean}`; target must be owner/editor |
+| POST `/api/rooms/:id/ai/openrouter/disconnect` | Revokes memory lease and disconnects |
 
-Invalid sessions return 401 with `{error: string}`; missing or mismatched rooms return 404; owner-only operations return 403 for other participants. Many caught operation/provider failures are currently mapped to HTTP 400 with `{error: string}`. Capability failure can also be expressed within a successful JSON response; inspect check statuses.
+The key is never serialized into room state/snapshots and lasts two hours in process memory. Expiry/restart requires reconnecting. Discovery compatibility requires text output, structured response support, finite rates/context and minimum context; metadata compatibility is not a paid capability or quality test. Requested builder/interpreter output is 8,000/2,400, lowered by completion metadata and context bounds. `top_provider.max_completion_tokens` is distinct from `context_length`.
 
-## Rooms and sessions
+The policy and limit distinctions have one authoritative home in [product.md](product.md#hosted-ai-and-limits). Current executor recovery has at most eight one-file manifest tasks and a 24-physical-call budget; this does not bound all workflow interpretation/setup requests. Any frozen configured spending limit also applies; no managed-credit fallback exists.
 
-| Method and path | Auth | Request | Response |
-| --- | --- | --- | --- |
-| POST /api/rooms | None | Empty object | `{roomId, inviteUrl}`; inviteUrl is `/r/<roomId>` |
-| POST /api/session | None | `{roomId: string, name: string, token?: string}` | `{token: string, participantId: string, owner: boolean}` |
-| GET /api/rooms/:id/state | Participant | None | `RoomView` |
-| GET /api/rooms/:id/workflow/events | Participant | Query: `after` non-negative sequence cursor; `limit` 1–100 | `{events: WorkflowActivity[], cursor: number, latestCursor: number, hasMore: boolean}` |
+Named-connection/preset/effort routes under `/api/rooms/:id/ai` are 410 in hosted mode after the four temporary routes above. Managed catalog/funding/spender/builder routes are 410 in both modes. Old persisted configuration remains readable; it does not enable managed dispatch.
 
-Session names are trimmed and limited to 40 characters. Supplying a valid token for the same room reuses that participant identity. Do not invent a client-chosen participant ID.
+## Room reads, submissions and decisions
 
-## Durable workflow projection
-
-Every room has one `WorkflowOverview` in `RoomView.workflow`. It includes the stable workflow ID, schema version, explicit phase, revision, current controller identity, control epoch, current tasks, a safe recent activity window, the latest activity cursor, and the last promoted artifact with its honest verification state. The current Phase 1 task model wraps the serialized Developer builder; it does not yet dispatch concurrent workers.
-
-Workflow phases are `draft`, `queued`, `running`, `awaiting_input`, `awaiting_approval`, `pause_requested`, `paused`, `completed`, `failed`, `cancel_requested`, and `cancelled`. Only the transitions used by the current submission/build/recovery path are exposed through application behavior; pause, resume, cancellation, approval, and handoff command routes are not implemented yet.
-
-Developer tasks record a source requirement revision, run ID, dependencies, assigned worker label, acceptance criteria, evidence state, artifact version, timestamps, and blocker. Current tasks have no dependencies and use `shared-executor`. A successful compilation/promote sequence completes the task with `unverified` evidence unless explicit acceptance checks establish more; compilation is never upgraded to functional verification.
-
-The workflow events route is authenticated and cursor-based. It returns ordered safe summaries only, not raw event payloads, document contents, secrets, provider inputs, unrestricted logs, or chain-of-thought. `cursor` is the last returned event (or the supplied cursor when no event is returned); `latestCursor` and `hasMore` permit bounded pagination without skipping a backlog. A late joiner's room state contains a consistent snapshot and recent activity; the cursor can retrieve subsequent events without treating repeated reads as commands.
-
-## Named AI connections (preferred API)
-
-All operations below require the room owner. Saving a connection does not certify inference or coding quality.
-
-The browser's persistent **API connections** control leads with Recommended setup and links prominently to this named-connection contract in Advanced. Recommended resolution uses exact capability-checked models from the owner's saved connection; it does not supply platform credentials. Model tests run only through the explicit `check` request and may consume provider usage. The four returned checks mean authentication/reachability, basic text, interpreter structured output, and the current Developer project-operation schema; they do not certify broad quality or Researcher/Analyst capabilities. Collaborators can read only the redacted `RoomView.ai` status and cannot call these mutations successfully.
-
-| Method and path | Request | Response |
+| Method and path | Authorization | Contract |
 | --- | --- | --- |
-| POST /api/rooms/:id/ai/connections | `{id?: string, name: string, provider: AIProvider, baseUrl?: string, apiFormat?: AIFormat, apiKey?: string}` | `{id: string}` |
-| GET /api/rooms/:id/ai/recommendation | query: `mode`, `effort` | Server-resolved `AIRecommendation`; read-only and makes no model call |
-| POST /api/rooms/:id/ai/recommendation | `{mode, effort, maximumSpendUsd}` | Applied Developer `AIRecommendation` or actionable 400; unavailable modes cannot be applied |
-| POST /api/rooms/:id/ai/effort | `{effort}` | Owner-only, inference-free update for future submissions; Recommended re-resolves within its existing spending limit, while Custom preserves manual assignments and applies canonical allowances |
-| POST /api/rooms/:id/ai/connections/:connectionId/models | Empty object | `{models: AIModel[]}` |
-| POST /api/rooms/:id/ai/connections/:connectionId/check | `{model: string}` | `ModelChecks` |
-| DELETE /api/rooms/:id/ai/connections/:connectionId | None | `{ok: true}` |
-| POST /api/rooms/:id/ai/assignments | `{personal: AgentAssignment, builder: AgentAssignment, participantOverrides?: Record<string, AgentAssignment>}` | `{ok: true}` |
+| GET `/api/rooms/:id/state` | Participant/current hosted member | `RoomView` |
+| GET `/api/rooms/:id/workflow/events?after=&limit=` | Same | Integer cursor ≥0; limit 1–100; `{events, cursor, latestCursor, hasMore}` |
+| POST `/api/rooms/:id/submit` | Participant/current owner or editor | `{requestId: string}`, nonempty ≤100; `{submissionId?, status, message}` |
+| POST `/api/rooms/:id/retry-build` | Same plus BYOK spender when applicable | `{requestId}`, nonempty ≤100; explicit accepted-build retry |
+| POST `/api/rooms/:id/conflicts/:groupId/selections` | Owner/editor AND affected contributor | `{groupRevision, expectedUpdatedAt, alternativeId, requestId}`; current revision/timestamp required; stale 409; replay returns prior decision |
+| POST `/api/rooms/:id/build` | Participant | 410 in both modes; use caller-only submit |
+| POST `/api/rooms/:id/process` | Authenticated participant | Retired HTTP 410; use caller submit or explicit intent commands |
+| POST `/api/rooms/:id/reinterpret` | Authenticated participant | Retired HTTP 410; explicit intent review/correction replaces inference |
+| POST `/api/rooms/:id/runtime-error` | Participant/current hosted owner/editor | `{message, version}`; latest-version failure can restore previous preview |
 
-Use `id` to update an existing connection. For a credential-requiring provider, an existing encrypted credential can be reused when no new key is supplied. Ollama does not require a fake key. Read safe connection state from RoomView.ai; no saved secret is returned.
+Primary submissions persist complete captured author batches, accepted-baseline context, frozen model/setup, source revision and lifecycle before inference. Reconciliation follows capture order. Active submissions survive the recent-history cutoff; receipts keyed by participant/request ID remain independently persisted. Replay never consumes new edits; empty draft returns `No new changes to submit` without inference. Failure/interruption restores edits for explicit new submission. Later accepted work supersedes an obsolete fixed-revision candidate and remains queued for the next build. Internal `buildNow` is a local harness helper, not callable public all-draft authorization.
 
-```ts
-type AIProvider = 'openai' | 'anthropic' | 'gemini' | 'openrouter'
-  | 'deepseek' | 'custom' | 'ollama';
-type AIFormat = 'responses' | 'chat-completions';
-type AgentAssignment = { connectionId: string; model: string };
-type AIModel = {
-  id: string; name: string; contextLength?: number;
-  textOutput?: boolean | 'unknown';
-};
-type CapabilityCheck = {
-  status: 'unverified' | 'passed' | 'failed'; reason?: string;
-};
-type ModelChecks = {
-  reachable: CapabilityCheck; text: CapabilityCheck;
-  personal: CapabilityCheck; builder: CapabilityCheck; checkedAt?: string;
-};
-```
+Retry build does not reinterpret edits. It uses current selected models/accepted requirements and can reuse a checkpoint only for the same fingerprint. Public reinterpretation is retired. The internal diagnostic method reuses only recorded caller edits and frozen accepted metadata on the steering queue, checks coordinator ownership, independently validates output, and rejects settled decisions/withdrawals. It is not a public correction or funding path.
 
-Formats are configuration options, not a promise that all providers share the OpenAI protocol. Adapters own provider-specific behavior. Successful model discovery returns the account-visible IDs and the client presents them as selectable options while preserving exact manual entry. Discovery is not proof that the account can generate with every listed model. Capability checks issue inference requests and may consume usage.
+Workflow activity exposes ordered safe summaries, not raw payloads, private document content, unrestricted logs or reasoning. Cursor is last returned event (or supplied cursor on empty); latestCursor/hasMore support backlog pagination. Current serialized builds are durable tasks before dispatch with source revision, assignment, acceptance criteria, run link and evidence. The recovery manifest is internal checkpoint work, not concurrent task scheduling.
 
-## Legacy AI routes (local compatibility only; hosted routes return 410)
+## Preview and download
 
-Owner-only; use the named-connection API for new UI work.
+GET `/api/rooms/:id/download/:version` requires participant authorization and returns a runnable ZIP, or 404 when legacy source files are unavailable. GET `/preview/:id/:version` requires ticket/current membership in hosted mode; local mode permits URL access. Preview returns no-store/no-referrer and a restrictive CSP. Compilation uses the isolated process boundary in `server/isolation.ts`; preview restrictions remain separate. Successful compile/promotion has `unverified` functional evidence unless real acceptance establishes more.
 
-- POST `/api/rooms/:id/ai/test`: `{apiKey, model, provider?, baseUrl?, apiFormat?}`; returns `{ok: true, model, provider, apiFormat, usage}`. Usage is provider-normalized and may omit unavailable values. This is not ModelChecks.
-- POST `/api/rooms/:id/ai/models`: `{apiKey, provider?, baseUrl?, apiFormat?}`; returns `{models, provider, baseUrl, apiFormat}`.
-- POST `/api/rooms/:id/ai/connect`: `{apiKey, personalModel, builderModel?, provider?, baseUrl?, apiFormat?}`; returns `{ok: true}`. Missing builderModel defaults to personalModel.
-- POST `/api/rooms/:id/ai/disconnect`: empty object; returns `{ok: true}`.
-
-## Building and preview
-
-| Method and path | Auth | Request | Response |
-| --- | --- | --- | --- |
-| POST /api/rooms/:id/build | Participant | Empty object | `{ok: true}` after awaited buildNow |
-| POST /api/rooms/:id/submit | Participant | `{requestId: string}` | Participant-scoped submission result; retained repeated request IDs are idempotent and an empty draft returns `No new changes to submit` |
-| POST /api/rooms/:id/process | Participant | `{correction?: string}` | `{ok: true}` after processing the authenticated participant |
-| POST /api/rooms/:id/reinterpret | Participant | Empty object | `{ok: true}` after reprocessing that participant's latest authenticated edit batch |
-| POST /api/rooms/:id/runtime-error | Participant | `{message: string, version: number}` | `{ok: true}` |
-| GET /api/rooms/:id/download/:version | Participant | None | application/zip attachment; legacy versions without files return 404 text |
-| GET /preview/:id/:version | No explicit session check | None | text/html; missing version returns 404 text |
-
-The submission route consumes only the authenticated participant's unsubmitted edit records. It snapshots their edit sequence IDs, participant revision, shared document context, previous interpretation reference, creation time, and lifecycle status before inference. The shared snapshot can include other participants' unsubmitted text as personal-model context; source scoping is not yet a complete isolation guarantee. The current room submission list retains only the last 200 entries, limiting request-ID deduplication. The legacy `/build` route remains callable and flushes all participants' pending drafts through `buildNow`; the active UI does not use it. This legacy route conflicts with the intended participant-only submission contract and requires hardening.
-
-`ok: true` is an operation response, not evidence that every requirement passed browser acceptance. Inspect room status, lastError, and latestVersion. The preview route is currently accessible by its room/version URL; do not describe it as session-protected. It sends Cache-Control: no-store and Referrer-Policy: no-referrer.
-
-Reinterpretation is deliberately targeted: it reuses the authenticated edit sequence recorded on the participant's latest interpretation, replaces only that interpretation's requirement sources, retains stable shared-requirement IDs and other contributors, and creates a new immutable snapshot/event. It does not globally reclassify a room. Settled decisions and explicit withdrawals require a new human correction; missing historical edits produce an explicit error. An unchanged accepted-requirement fingerprint does not schedule another build.
-
-No current route exposes approval decisions, owner contradiction resolution, a public run-history API, pause, or rollback. Do not invent those client contracts from target architecture documents.
-
-No current route exposes managed platform credentials, accounts, balances, purchases, webhooks, a credit ledger, room billing authorization, Researcher retrieval, or Analyst data upload. Recommended setup stores the selected workflow mode when it is available; only Developer can currently be applied. Analyst and Researcher recommendation previews return `modeAvailable: false` with an actionable prerequisite and never simulate execution.
+There are no public pause/resume/cancel, control-handoff, approval, general rollback, Researcher retrieval or Analyst ingestion routes. Phase/approval schemas are not implemented commands.
 
 ## Shared response models
 
-Import exact contracts from `shared/types.ts`; do not maintain a second application type definition from this prose.
+Import exact types from `shared/types.ts`; prose is not a second schema.
 
-RoomView includes:
-- `roomId`, `ownerId`, `participants`, `ai`.
-- `status`: Waiting for ideas | Collecting submissions | Understanding edits | Decision needed | Building | Updated | Error.
-- `requirements`, authoritative `conflictGroups`, derived compatibility `contradictions`, `specificationRevision`, `requirementsRevision`.
-- `latestVersion: number | null`, `versions`, optional `lastError`.
-- `debounceMs`, `buildDebounceMs`, `buildCooldownMs`, cumulative `usage`, and the last 50 `aiRuns`.
-- The last 100 redacted `providerCalls`, legacy windowed `setupUsage`, and authoritative recorded-scope `physicalUsage`. A provider call is one physical HTTP attempt, so retries and structured-output repairs have distinct IDs and records. `physicalUsage` scans the full available ledger and separates setup from generation; it still reports partial historical coverage.
-- Optional `savedAt` and `persistRevision`.
+| Model/field | Implemented meaning |
+| --- | --- |
+| `RoomView` | Room/owner/participants, safe AI, status, requirements/conflicts, specification/requirements revision, versions/latestVersion/error, timing, workflow, save metadata and usage |
+| `requirementRevisions` | Durable `{revision, accepted}` snapshots; selected UI revision excludes unsubmitted drafts |
+| `status` | Waiting for ideas, Collecting submissions, Understanding edits, Decision needed, Building, Updated, Error |
+| `workflow` | Workflow ID/schema/phase/revision/controller/epoch/tasks, recent activity/cursor and last artifact evidence |
+| `SharedRequirement` | Stable ID/revision/category/description/acceptance criteria/status/authority/sources/timestamps; statuses proposed/accepted/withdrawn/superseded |
+| Attributed intent | Classification proposal/question/explicit_request/decision/ambiguity, rationale/passage/source revision/edit sequences; invalid labels fail closed to ambiguity |
+| `ConflictGroup` | Stable ID/revision/round, subject/scope, alternatives/source contributors, required resolvers, selections/history/baseline/build scopes; states awaiting_choices/disagreement/resolved/obsolete |
+| `contradictions` | Derived compatibility view; conflictGroups is authority |
+| `Version.aiRun` / `aiRuns` | Frozen run/model/pricing/routing metadata, call usage/cost/outcome/latency and separate verification; recent 50 run window |
+| `providerCalls` | Recent 100 safe physical request records for display, not the full ledger |
+| `physicalUsage` | Full available deduplicated ledger aggregation: recorded/generation/setup, unknownUsageRequests, recordedFrom, coverage partial |
+| `usage`, `setupUsage` | Separate historical generation/windowed setup values; do not add to physicalUsage |
 
-`AIConnection` includes safe named connections, optional default personal/shared-executor assignments, participant overrides, and an optional `AISetupPolicy`. A policy is either `custom` or a versioned `recommended` workflow-mode/effort configuration with exact resolved layers and a user-controlled spending limit. `SafeAIConnection` includes ID/name/provider/base URL, optional API format, hasCredential, status, model list, per-model checks, and optional lastError. It never includes a raw key. On normalization, any legacy General app, Engineer, Designer, Web developer, or Motion designer active preset gains `workflowMode: developer`; its assignments, encrypted credential, effort, overrides, resolved layers, and spending ceiling are unchanged. Historical run `specialty` fields remain readable and are not rewritten.
+Every physical HTTP attempt has a unique call ID, purpose/retry reason, dispatch/final outcome, timing, provider/config/pricing references, reported usage/charge and optional termination reason. Retries and schema repairs are separate attempts. Exhaustion keeps reported usage. Aggregate by ID with final/newer outcome preference. Reported tokens are input plus output; cache/reasoning subsets are not added again. Generation excludes connection/text/interpreter/builder capability tests. Missing fields/outcomes remain unknown; estimates are not invoices, and coverage is partial because pre-ledger history may be absent. Cumulative usage is not context occupancy.
 
-Both recommendation routes are owner-only. Previewing a recommendation is pure resolution: it does not check capabilities, call a provider, change assignments, or start a build. Applying re-resolves on the server, requires passed role capabilities, rejects a maximum below its conservative bound, and affects future submissions/runs. Manual `/ai/assignments` activation marks the room Custom and preserves overrides.
+Workflow phases include draft/queued/running/awaiting_input/awaiting_approval/pause_requested/paused/completed/failed/cancel_requested/cancelled; only current submission/build/recovery transitions have behavior. Future phase names do not prove controls. Requirements do not yet carry a complete implemented/verified evidence lifecycle.
 
-The client presents mode, funding, rates, and limits in Recommended setup, while effort is a canvas-side control. The owner posts the selected level to `/ai/effort`. Recommended rooms re-resolve the current mode under the existing spending ceiling; Custom/Advanced rooms keep their exact connections, models, and participant overrides while receiving the canonical input/output and repair allowances. Disconnected and collaborator controls remain read-only. The mutation makes no model call, and submitted work keeps its frozen setup snapshot.
+## WebSocket collaboration and save receipts
 
-Recommendations expose `workflowMode`, `modeAvailable`, optional `unavailableReason`, `routingRuleVersion`, `routingReason`, `status`, same-connection `builderCandidates`, `onePassEstimateUsd`, `maximumEstimateUsd`, `estimateScope`, and `estimateComplete`. The one-pass scope is one submitted participant interpretation plus one shared executor call, without repairs or additional participant interpretations, and assumes uncached input. The bounded maximum includes configured executor/structured-output repairs but only one interpreter, so it is marked incomplete when team size or other provider charges are unknown. `status: hypothesis` means compatibility and prices are known but comparative quality is not measured. The spending limit is a safety ceiling, not an expected charge.
+Connect `/ws?room=<roomId>&token=<ticket>` over ws/wss matching the page. Hosted origin must pass configured `COCREATE_APP_ORIGINS` and current membership/coordinator checks. Upgrade, every inbound message and every outbound delivery recheck authority; viewers receive state/awareness but cannot edit. Expired tickets close the socket. Revoked access prevents later delivery, but no proactive instantaneous closure of a completely silent socket is claimed.
 
-`maximumSpendUsd` does not control `max_output_tokens`. Effort freezes per-call allowances for both Recommended and Custom/Advanced; Developer executor outputs are 8K / 12K / 20K / 32K from Light through Extra, with old Custom rooms defaulting to Medium until the owner changes them. Before a repair call, structured generation locally normalizes only fenced/balanced JSON envelopes, raw control characters inside strings, and trailing commas, then applies the same strict schema. An unclosed JSON object/string is classified as probable truncation even if the provider reports a normal stop. Structured generation may use one compact retry; reported usage is aggregated across both attempts. A second failure is actionable and never silently raises effort or changes the model.
+Binary frames: discriminator 0 Yjs V1 update, 1 awareness, 2 server state vector. Document fragment is `default`. Browser answers the vector with missing update bytes. Outgoing edits may coalesce for 40 ms.
 
-`AIRate` is a frozen catalog snapshot containing USD input/output rates, optional cached-input/cache-write rates, reasoning treatment, optional long-context tiers/platform multiplier/other charges, official source URL, and verification date. `AIRunRecord` freezes the effective models and routing/pricing/verification-policy versions; call-level `interpretation`, `builder`, and `repair` entries; normalized usage; estimated charge; uncertainty; latency; outcome; and separate verification fields. Provider reasoning tokens marked as included in output are informational and are never added to the charge again. A timeout or omitted provider field remains unknown. `compilationPassed` must not be read as requirement or regression proof.
+| Direction/message | Contract |
+| --- | --- |
+| Client `{type:'awareness-client', clientId}` | Associates awareness identity |
+| Client `{type:'flush', requestId}` | Orders after pending document frames and confirmed canonical snapshot |
+| Server `{type:'room-state', state}` | Authoritative shared projection |
+| Server `{type:'saved', revision, savedAt, vector, deletions}` | Immutable committed snapshot receipt: base64 insertion vector plus canonical deletion-range JSON signature |
+| Server `{type:'flushed', requestId}` | Confirmed flush before submit |
+| Server `{type:'flush-error', requestId, message}` | Rejects flush; client does not submit |
+| Server `{type:'save-error', revision, message}` | Unsynced state |
+| Server `{type:'permission-error', message}` | Actionable access failure |
 
-`SharedRequirement` includes ID/revision/category/description/acceptanceCriteria/status/authority/sources/timestamps. Current statuses: proposed, accepted, withdrawn, superseded. Current categories: goal, feature, design, constraint. Implemented/verified evidence states are planned, not current fields.
+Saved status requires coverage of local insertion clocks and deletion signature. Only successful remote snapshot commit acknowledges hosted saving; ordered append failure can recover through a confirmed full snapshot, snapshot failure cannot. Browser filters older cursors/revisions within a connection and resets on a new authenticated generation so a lower canonical cursor can recover failed prior writes.
 
-Each participant `Requirement` interpretation may include `classifierVersion` and an `intents` array. Every intent has its own text, category, classification, short rationale, exact source passage, affected requirement IDs, participant attribution, source revision, and authenticated edit sequence IDs. Current classifications are `proposal`, `question`, `explicit_request`, `decision`, and `ambiguity`. Missing or invalid classifications normalize to `ambiguity`, never silently to an accepted request. Legacy interpretation arrays remain readable and are migrated into per-intent records during normalization.
+Client connection states are connecting/connected/bounded reconnecting/terminal error. Transient retries use capped jittered backoff (six attempts, roughly ten-second cap before jitter); authenticated state diagnosis distinguishes 401/404/403 from transport failure. Replacement cleans stale listeners/timers/flush promises. In-memory edits and validated participant-scoped IndexedDB copies aid recovery after authenticated state restore, but do not provide full offline cold startup or access permission. Device-saved is separate from synced.
 
-`ConflictGroup` includes stable ID/revision/round, subject/scope, all alternatives and requirement revisions, contributor sources, required resolver IDs, explicit selections, state (`awaiting_choices`, `disagreement`, `resolved`, or `obsolete`), detection status, decision history, optional last agreed baseline, affected build scopes, and timestamps. `Contradiction` remains a derived compatibility view. The authenticated selection endpoint below mutates the authoritative group.
+## Local compatibility only
 
-`Version` includes ID, createdAt, summary, optional fileCount/conflicts, and the promoted run's `aiRun`. `AIUsage` includes request counts, input/output totals, optional cached/cache-write/reasoning totals, and optional estimated/uncertain cost. It is an operational estimate, not confirmed provider billing.
+POST `/api/rooms` returns `{roomId, inviteUrl}`; POST `/api/session` takes `{roomId,name,token?}` and returns `{token,participantId,owner}`. Display name is trimmed and capped at 40; a valid same-room token reuses identity. Hosted creation/join returns 404/403 instead.
 
-## WebSocket collaboration
+Owner-only named connections remain locally implemented: POST `/ai/connections` takes ID/name/provider/baseUrl/apiFormat/key; POST `/ai/connections/:connectionId/models` returns models; POST `/check` takes model and returns reachability/text/personal/builder checks; DELETE connection disconnects; POST `/ai/assignments` sets personal/builder/participant overrides. Supported adapters are OpenAI, Anthropic, Gemini, OpenRouter, DeepSeek, custom and Ollama; format options are responses/chat-completions, not universal protocol compatibility. Discovery is not quality proof; explicit capability tests may use inference.
 
-Connect to `/ws?room=<roomId>&token=<session-token>` using ws or wss to match the page. Invalid room/session upgrades are rejected. The shared document uses the Yjs `default` XML fragment.
+Local GET/POST `/ai/recommendation` and POST `/ai/effort` are owner-only compatibility configuration. Only Developer activation is accepted; effort values light/medium/high/extra preserve `light` storage despite Low label. They freeze future configuration, not active work. Old `/ai/test`, `/models`, `/connect`, `/disconnect` remain local compatibility too. These routes are retired hosted; managed dispatch is disabled. Exact dormant type details and dated behavior remain in the [historical API snapshot](docs/harness/archive/2026-10-01-pre-consolidation/api.md).
 
-Binary frames use one discriminator byte followed by payload:
-- 0: Yjs document update; client sends edits, server sends synchronization and relayed updates.
-- 1: Yjs awareness update.
-- 2: Server state vector; client replies with a type-0 update containing its missing changes when present.
+Update this reference with route/type/message changes and actual validation. Source inspection here is not a live session, SQL execution or deployment claim.
 
-Client JSON:
-- `{type: 'awareness-client', clientId: number}`.
-- `{type: 'flush', requestId: string}` asks the server to acknowledge all earlier ordered WebSocket frames before the client captures a submission.
+Step 04 changes no HTTP command or model tool selection surface. `project.bundle` receives the coordinator AbortSignal and records `isolated-process` plus policy version in tool evidence. Actual OS preflight precedes builder dispatch. Unavailable isolation, cancellation and resource/timeout failures retain the existing artifact and stop without unsafe fallback or provider repair. An explicit retry is required after operator repair. Docker startup also preflights; prepared Linux configuration remains unverified in the intended kernel. See [Step 04 handoff](docs/harness/multiuser-step04-handoff.md).
 
-Server JSON:
-- `{type: 'room-state', state: RoomView}`.
-- `{type: 'saved', revision: number, savedAt: string}`.
-- `{type: 'flushed', requestId: string}`.
+## Step 05 intent command contracts
 
-The browser provider reports `connecting`, `connected`, bounded `reconnecting`, and terminal `error` states. Transient failures use capped exponential backoff with jitter (six attempts, capped at roughly 10 seconds before jitter). Before retrying, the client calls the existing authenticated room-state route: 401 becomes an invalid-session action, 404 becomes a missing-room action, and 403 becomes a permission error. Upgrade rejection responses and server logs contain only a safe category/correlation ID; tokens and authenticated URLs are not logged by application code.
+Owner/editor authentication, current project membership and coordinator routing apply to both routes. Membership/ticket expiry are rechecked when queued commands execute; hosted BYOK spender authorization additionally applies to builds. Request IDs use 8–100 ASCII letters/digits/underscore/hyphen. Caller identity is stamped server-side; body attribution/validation/history fields grant no authority.
 
-Hosted persistence stores discriminator-0 payloads and full snapshots as Yjs V1 bytes. Supabase `bytea` requests use PostgreSQL hex text; Node Buffer JSON is not a valid wire/storage encoding. Restore validates decoded bytes in an isolated document before hydrating a room. The exact historical Buffer-JSON envelope is recoverable only after its original stored bytes are quarantined. If a snapshot is unreadable, recovery replays only update rows whose decoded bytes pass Yjs validation and whose SHA-256 matches `update_hash`; otherwise the project fails closed with an actionable recovery error.
+- POST `/api/rooms/:id/intent-commands`: `{requestId,specificationRevision,target,action,text?,category?,classification?}`. Target is `{kind:'requirement',id,revision}` or the caller's current `{kind:'interpretation',id,intentId,revision}`. Action is `correct` or `withdraw`. Correction requires nonempty text of at most 2,000 characters, category goal/feature/design/constraint/question and classification explicit_request/proposal/question. Return `{requestId,specificationRevision,action,buildPending}` only after canonical save. Actor/request-ID replay returns its original result before stale checks; changed payload returns 409. Stale specification/target returns 409, unrelated support 403, absent requirement 404, malformed input 400. Uncertain save returns 503 and fences this coordinator; canonical recovery plus the same request ID is required. No inference is dispatched.
+- POST `/api/rooms/:id/intent-build`: `{requestId}`. Requires corrected accepted intent pending, eligible requirements, saved connected AI and the existing BYOK sponsor permission. Persist a queued submission/receipt before explicit builder dispatch; no interpretation. Replay returns the existing status. It is separate from failed-build retry and from caller draft submission.
+- POST `/api/rooms/:id/process` and `/reinterpret`: authenticated HTTP 410 with directions to explicit intent review/caller submission; no inference.
 
-`/api/auth/callback` captures and removes OAuth query parameters, restores any existing persisted session, and exchanges a PKCE `code` once. A cancelled or failed new login with an existing valid session returns an explicit account-choice screen; without a valid session it returns to login or shows an actionable error. UI state never substitutes for server-side project membership.
+Room state adds optional additive `interpretationHistory`, `intentCorrections` (actor/target/before/after/time/original sources), and `intentBuildPending`. Individual intents add authority authenticated_submission/human_correction, validation verified/needs_clarification with reason, accepted-context references with requirement revision/contributor IDs, and explicit withdrawn flag. Shared sources add intent ID and authority. Legacy fields remain readable without fabricated verification. Permanent intent receipts remain canonical/private rather than a full public room-state ledger.
 
-The provider keeps its Y.Doc in memory and answers the server state vector after a successful reconnect, so edits made during a recoverable disconnect are resynchronized. A disconnected or unacknowledged flush rejects before `/submit` is called. Do not promise persisted offline browser edits across a page reload: this client does not implement a durable browser Yjs store.
-
-## Maintenance
-
-When routes, authorization, shared types, or WebSocket messages change, update this file alongside implementation and contract tests. Separate implemented contracts from proposed extensions. This reference was checked against source, not against a live API session.
-## Authenticated project API (Supabase mode, 2026-09-24)
-
-Hosted project routes accept `Authorization: Bearer <Supabase access token>`. `@supabase/server` verifies issuer, audience, expiry, and signature against the configured JWKS. Room routes and WebSockets then use a separate five-minute project ticket returned by `POST /api/projects/:id/session`; that ticket contains no provider credential.
-
-The Vite browser client supports Google PKCE and Supabase email/password authentication. Signup uses `signUp` with account confirmation, login uses `signInWithPassword`, confirmation can be resent, and recovery exchanges the one-time callback before an authenticated `updateUser` password change. The exact application callback is derived from the configured origin: production uses `https://cocreate.susan981314271.workers.dev/api/auth/callback`, while local development uses `http://localhost:5173/api/auth/callback`. Same-origin relative return destinations—including `/invite/:token`—survive Google, confirmation, recovery, and login. The client exchanges a callback code at most once and fails closed on missing or mismatched public configuration. Before an authenticated project request it refreshes a token within one minute of expiry; a 401 permits exactly one refresh-and-retry.
-
-| Method and path | Permission | Result |
-| --- | --- | --- |
-| `GET /api/projects?search=&archived=&offset=&limit=` | authenticated member | recent-first paginated private project list |
-| `POST /api/projects` | authenticated account | atomically creates project + owner membership; no inference |
-| `PATCH /api/projects/:id` | owner | rename or archive/restore |
-| `POST /api/projects/:id/session` | member | rehydrate room and return scoped collaboration ticket |
-| `GET /api/projects/:id/sharing` | owner or member with `can_share` | current members and pending invitations |
-| `POST /api/projects/:id/invites` | owner or member with `can_share` | create 1–10 email-bound editor/viewer invitations; optional `requestId` replays the same invitation and link |
-| `POST /api/projects/:id/invites/:inviteId/resend` | owner or member with `can_share` | create another valid link without revoking the prior link; optional `requestId` replays the same resend |
-| `DELETE /api/projects/:id/invites/:inviteId` | owner or member with `can_share` | revoke a pending invitation |
-| `PATCH /api/projects/:id/members/:memberId` | owner or member with `can_share`; owner required for `can_share` | update a non-owner editor/viewer role or owner-controlled sharing permission |
-| `POST /api/invites/accept` | authenticated account with matching confirmed email | transactionally and idempotently consume a valid invitation and add membership |
-
-Invitation tokens are 256-bit random values. SHA-256 hashes authorize acceptance; new links also store an encrypted token for same-request retries. Legacy hashes and links stay valid until their existing expiry, acceptance, or explicit revocation. A resend creates a second active link. The database deduplicates by actor/project/request ID; a retry with the same ID and different recipient or role fails. Existing memberships keep their role on acceptance. Pending invites expire, may be revoked, and are limited to 30 creations/resends per actor per hour. `deliveryState: sent` means the email provider accepted the request, not that delivery is confirmed. Resend idempotency is bounded by the provider's retention window; uncertain outcomes beyond it require reconciliation. In Supabase mode, legacy room creation and display-name join endpoints are disabled. Preview and download access require the project ticket. Hosted WebSocket origins must match `COCREATE_APP_ORIGINS`; viewers may receive state/awareness but cannot submit Yjs updates or room mutations.
-
-| Method and path | Permission | Result |
-| --- | --- | --- |
-| `POST /api/rooms/:id/conflicts/:groupId/selections` | current owner/editor membership and affected contributor | Submit `{groupRevision, expectedUpdatedAt, alternativeId, requestId}`; stale timestamp/revision returns 409, duplicate request returns the prior decision |
-
-`RoomView.physicalUsage` is the deduplicated physical-call ledger, split into generation and setup, with unknown-usage count, first recorded date, and `coverage: partial`. SQLite scans its full event history; hosted mode reads the server-only Postgres ledger, including recoverable recent snapshot calls. `usage` remains the separate historical generation counter. Neither counter proves complete pre-ledger history, and they must not be added together.
-
-## Client integration notes — 2026-09-28
-
-No route schema changes in this slice. POST /api/rooms/:id/ai/managed-builder remains owner-authorized and returns modelId plus catalogVersion. The client checks the returned modelId; selecting does not dispatch inference or require a successful funding query. Credit and spender checks still apply to actual generation. Only metadata_verified catalog entries can be selected.
-
-Outgoing WebSocket Yjs updates may be coalesced for 40 ms; the binary frame format is unchanged. The client drains pending changes before the existing flush request. Device-saved status comes from IndexedDB transaction completion; synced status still comes from the server. Cache hydration follows an authenticated room-state GET and does not confer authorization.
+Captured submissions store frozen accepted context with ID/revision/category/description/status/authority and attributable sources. Raw shared draft material is excluded from interpreter input. Exact captured passage and known-reference checks are enforced outside prompts; model affected IDs cannot overwrite coauthors or implicitly withdraw support. Candidate promotion waits for any pending intent commit and rechecks accepted fingerprint/requested revision/ownership. Compilation remains functionally unverified. See [Step 05 handoff](docs/harness/multiuser-step05-handoff.md) for local and unrun hosted scopes.

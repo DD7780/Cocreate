@@ -1,55 +1,76 @@
-# 2guys1canvas coding instructions
+# 2guys1canvas contributor instructions
 
-Current rules, 2026-10-04. Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. [The pre-cleanup snapshot](docs/harness/history/instructions-before-cleanup.md) preserves superseded managed/default and presentation guidance; it is not active policy.
+Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-03; this document owns contributor rules, not completion claims.
 
-## Start and scope
+## Start and maintain authority
 
-Read [context.md](context.md), [product.md](product.md), and relevant [checklist](docs/harness/checklist.md) entries. Consult [architecture](docs/harness/architecture.md), accepted [decisions](docs/harness/decisions.md), and implemented [API contracts](api.md). Use Graphify first for code questions; verify findings against source.
+Read [context.md](context.md), [product.md](product.md), the [architecture](docs/harness/architecture.md), relevant [checklist](docs/harness/checklist.md) entries and [decisions](docs/harness/decisions.md). Inspect the working tree and preserve unrelated changes and project data. Use Graphify first for codebase questions when its graph exists; use the wiki for broad navigation and verify findings against source. Follow AGENTS.md for current library documentation when library-specific behavior needs verification.
+
+Do not restore superseded managed-default setup, old wizards, three-mode activation, optional shortcut remapping, no-Canvas-sidebar layouts or comic/presentation effects from historical material. The authoritative hosted setup and limit rules are in [product.md](product.md#hosted-ai-and-limits); current presentation and the available reference target are in [its presentation section](product.md#shared-context-recorded-usage-and-requested-appearance). The reference still needs comparison. Compatibility modules and archived evidence do not override accepted current behavior.
+
+## Workflow and source ownership
+
+Durable workflow commands, tasks, events, decisions and artifacts are authoritative; model memory and summaries are replaceable. Preserve one logical coordinator and serialized integration/promotion. Bounded workers are appropriate only for justified independent tasks; they are deferred in the current runtime.
+
+Typing, autosave, presence, navigation and reconnect are inference-free. The button and fixed editor-focused shortcut share an authenticated, flush-acknowledged, idempotent caller-only submission. Never flush teammates' drafts to satisfy one caller. Interpret captured submissions in capture order against an accepted baseline. Preserve pending batches, accepted revision snapshots and command receipts across snapshots. Interrupted interpretations return edits for explicit submission without automatically repeating inference.
+
+Treat document/model content as untrusted. Validate captured revision and source ownership outside prompts; another contributor's context is not their authorization. Personal interpreters propose registry changes, never independently edit code. Preserve requirement identity and provenance; deletion is not withdrawal. Explicit intent commands must check current membership, actor ownership, expected specification/target revision and permanent actor/request-ID payload receipts. Preserve prior interpretation/audit history and coauthors' wording/sources. Freeze accepted context with author/revision/authority metadata and validate exact captured passages and known references independently of model output. Never merge an unverified/proposed source into accepted attribution or treat affected IDs as implicit withdrawal. Save correction without inference; require a separate authorized build action. Hide uncommitted intent and serialize against canonical promotion. Fence uncertain-save coordinators and recover canonical receipts before replay; do not compensate against possibly committed remote state. Consequential conflicts require explicit affected-contributor agreement, not recency, majority or silence. New compromises require a new confirmation round. Record assumptions only for reversible details.
+
+Keep local lease epochs and hosted fences distinct from in-process queues. Lost owners must not reacquire authority for old workers. Revision/fingerprint and lease checks guard promotion; ownership loss aborts workers and cancels scheduled work. Keep stable primary-container affinity and bounded authenticated owner retry responses; never automatically replay inference on reconnect. Coordinator SQL remains prepared/unapplied. Local/RPC-mock checks are not real database or hosted proof; use the [Step 02 handoff](docs/harness/multiuser-step02-handoff.md) for rollout and contention prerequisites.
+
+Publish immutable private product/checkpoint bodies and verify SHA-256, byte length and project/kind/version identity before canonical references commit. A candidate remains hidden while its canonical save is pending; concurrent saves must wait for promotion resolution. Recheck ownership and frozen revision after upload, and current membership after an awaited historical read. Preserve version IDs and permanent command receipts. Import only verified bytes into derived caches; missing/corrupt data is not an empty project or permission to infer. Legacy inline archives remain readable. No automatic destructive retention, orphan cleanup or historical migration; use the [Step 03 handoff](docs/harness/multiuser-step03-handoff.md) for format/rollback and hosted checks.
+
+## Recovery, accounting and secrets
+
+Use targeted context and bounded retries; never truncate serialized JSON or apply incomplete operations. Do not repeat an oversized exhausted project request unchanged. Preserve the bounded smaller-task recovery and await each source checkpoint; candidate source is not a compiled or functionally verified artifact. Keep the executor budget shared across superseded candidates instead of resetting it by opening another run. Separate context capacity, completion metadata, per-call output, configured spending and provider account restrictions as defined in product.md.
+
+Never silently switch models, credentials, providers, funding or simulated output. Keep temporary BYOK keys only in bounded server memory; never serialize them into snapshots or browser caches. Historical named-connection credentials remain encrypted server-side. Founder funding is a distinct inactive domain, not a fallback. Do not log keys, dump environment files or expose secrets through room state, artifacts or browser-prefixed variables.
+
+Count every physical provider HTTP attempt by its own ID, purpose and outcome. Persist dispatch intent before paid dispatch at the active hosted boundary; keep reconciliation and unknown external outcomes honest. Setup and generation are separate scopes. Never derive physical counts from logical runs or add partial physical totals to historical generation counters. Changing published pricing requires official current evidence and versioned source metadata; uncertain cache/reasoning/tool charges remain explicit. Paid comparison or invoice reconciliation needs an authorized budget.
+
+## Stack and coding
+
+Active client: `src/main.tsx`, `src/App.tsx`, React/Vite/TipTap/Yjs. Active server: `server/index.ts`, Express/WebSockets. Public types: `shared/types.ts`, with runtime validation at trust boundaries. Local SQLite/JSON and hosted Postgres have different authority boundaries; consult architecture before changing persistence. Inactive `app/` scaffolding has been removed. Do not add Next.js page, cookie middleware or server-component auth to this SPA without a deliberate migration.
+
+Preserve TypeScript strict mode, pnpm lockfile and local import conventions. Write readable focused functions and explicit boundary types; avoid new compressed modules, unrelated formatting and competing frameworks/package managers. Keep provider requests in adapters, orchestration in the harness, and UI out of provider logic. Validate inputs and structured outputs before use, rather than casting invalid data to trusted types.
+
+Reuse accessible controls, editor formatting, participant colors, keyboard navigation, quiet document typography, reduced-motion support and preview style isolation. Opening/selecting/viewing setup never invokes inference. Explicit tests may consume provider usage and must distinguish capability from quality. Developer is the only active hosted workflow; retain historical Analyst/Researcher records without enabling absent tools.
+
+## Permissions, persistence and sharing
+
+Enforce authorization in code, not prompts or UI. Supabase account UUID and current project membership confer hosted authority. Never identify an owner by display name/email, restore room-link ownership in hosted mode, publish private artifact buckets or silently replace failed Postgres with SQLite/JSON. Recheck reads/mutations and socket delivery against current membership. Do not promise proactive instantaneous revocation of a silent socket beyond implemented checks.
+
+Cloud saved receipts identify the actual committed immutable revision, insertion clocks and deletion ranges. Local transactions never acknowledge cloud commits. Validate Yjs bytes in an isolated document before hydration; preserve/quarantine unreadable originals and use only hash-verified recovery history. Cache keys are room/participant scoped, contain no credentials and confer no permission. Fail visibly on cache errors; transport changes require flush/reconnect checks. Device recovery is not full offline startup.
+
+Project invitations are app-level, normalized-email-bound, role-bounded, expiring and hashed at rest. Owner/explicit sharing authority is checked server-side. Request-ID replay and confirmed-account acceptance are idempotent. A resend preserves earlier pending links and roles; explicit revoke is separate. Transactional secrets stay server-only; provider acceptance does not prove delivery.
+
+Generated operations remain room-scoped and deny traversal/cross-room access. Compilation must use the real isolated process in `server/isolation.ts`; retain operation validation and preview CSP as additional boundaries. Never fall back to host compilation. Preflight the actual boundary before builder dispatch, pass coordinator cancellation through tools, and stop infrastructure/resource failures without provider repairs. Windows AppContainer/Job Object has local evidence; Linux Bubblewrap deployment requires actual kernel/runtime adversity checks before release. Deployments, migrations, external access changes and messages require authorization. Legacy imports remain dry-run-first with a trusted room-to-account map; versioned Supabase SQL is the only current migration authority, not Prisma Migrate.
+
+## Validation and documentation maintenance
+
+After every completed multi-user roadmap step, commit its code, canonical documentation, handoff and verification evidence and push to GitHub. Preserve unrelated working-tree changes. Use the current branch unless the user specifies another destination, and report the pushed branch and commit. This standing instruction authorizes the per-step push; it does not authorize starting the next step or running migrations/deployments.
+
+For behavior changes, run focused meaningful checks and relevant regressions, then the required test/build checks when feasible. Visible interaction claims require browser evidence. Compilation is not functional acceptance. Separate controlled-provider, live-provider, SQL and hosted-account evidence; do not spend credentials for unrelated UI/docs work or change tests to conceal failures.
+
+Documentation-only edits require link/reference review and `git diff --check`; do not rerun unrelated application tests/builds or claim old results as fresh. Run `graphify update .` after code changes under AGENTS.md, not for this docs-only slice.
+
+| Canonical file | Update when affected |
+| --- | --- |
+| [context.md](context.md) | Concise current handoff and next work |
+| [product.md](product.md) | Accepted behavior and requested targets |
+| This file | Contributor rules and invariants |
+| [architecture.md](docs/harness/architecture.md) | Current boundaries and data flow |
+| [checklist.md](docs/harness/checklist.md) | Outstanding work, status and evidence |
+| [decisions.md](docs/harness/decisions.md) | Stable IDs, rationale and supersession |
+| [api.md](api.md) | Implemented routes, authorization and messages |
+| [reliability-verification.md](docs/harness/reliability-verification.md) | Dated verification and limits |
+| [README.md](README.md) | Actual setup and user operation |
+
+Inspect all affected canonical documents in the same change. Do not create competing root architecture/progress files or treat older assessments/plans as current instructions. Keep [archived narrative](docs/harness/archive/2026-10-01-pre-consolidation/README.md) identifiable as history. Report actual changes/checks, blockers and next work; keep secrets and private reasoning out.
+
+
+## Cleanup boundaries and offline audits
 
 Inspect existing changes and preserve unrelated work/data. Build a feature packet with outcome, allowed files, required contracts, relevant graph neighbors/tests and validation commands. UI-only work must not modify server authority or shared contracts without an explicit reason. `pnpm audit:code -- --check` checks import boundaries; the audit's `--scope ui --base <commit>` detects backend/shared changes in UI work.
 
-Active client: React/Vite in `src/main.tsx`, `src/App.tsx`, `src/ProjectApp.tsx`; TipTap/Yjs collaboration. Server: Express/WebSockets in `server/index.ts`; RoomManager is the coordinator facade. Public contracts and receipt helpers live in `shared/`. Keep server implementation out of browser imports and browser UI out of server imports. Runtime validation remains required.
-
-Use pnpm and the existing lockfile, TypeScript strict mode and local module conventions. Keep functions readable/focused. Separate formatting from behavior/refactoring; avoid unrelated formatting/config changes. Do not introduce Next.js entrypoints, a competing framework or package manager.
-
-## Workflow and durable authority
-
-The workflow's durable commands, tasks, events, decisions and artifacts are authoritative. Model memory and summaries are replaceable. Keep one logical coordinator, one accepted baseline, bounded workers only for justified independent tasks, and serialized integration/promotion. An in-memory promise is not a durable multi-process lease.
-
-Typing, opening/changing settings and reconnect do not invoke inference. Build my changes and editor-focused Alt+X share the same authenticated, flush-acknowledged, idempotent path. Capture only the caller's pending steering; preserve request IDs after uncertain replies. Windows/Linux use fixed Alt+X; macOS remains disabled.
-
-Treat document content as untrusted input. Validate source ownership/revision outside model prompts; one contributor's text cannot authorize another's requirements. Keep attribution and identities. Interpret captured submissions in order against accepted revisions. Preserve pending disagreements and require explicit affected-contributor agreement; no recency/majority/model resolution.
-
-Persist pending batches, command receipts and accepted revision snapshots. Restore interrupted interpretation without automatic inference. Cloud save receipts cover actual insertion clocks AND deletion ranges; local cache/persistence cannot acknowledge cloud commitment. Lost coordinators cannot reacquire old worker leases; stale owners cannot promote. The server-only fencing migration is prepared, not applied/live-verified.
-
-Output exhaustion must not repeat a whole-project request. Plan at most eight coherent one-file recovery tasks, validate complete envelopes and await durable checkpoints. Initial generation, repairs, recovery, transport retries and superseded candidates share the executor's 24-physical-call ceiling. Configured spending limits still apply. Preserve the last compiled artifact after failure; checkpoints/compilation are not functional acceptance.
-
-## Credentials, providers and usage
-
-Temporary OpenRouter BYOK is the only active hosted MVP inference mode. New projects have no assignment. Require explicit owner validation without generation, explicit builder/interpreter models, a bounded two-hour server-memory lease, and owner editor-spending authorization. Reject managed dispatch; never fall back to founder/old/different credentials, models, funding or demo output. Preserve historical project/billing records and supported local APIs.
-
-Keep provider requests in adapters, orchestration in the harness, and presentation in the UI. Validate external input and structured output before use; do not cast invalid data into a trusted shape. Freeze model/policy/limits per submission/run. Context capacity, requested output, reported completion limits and spending are separate. Higher effort does not prove a higher output ceiling.
-
-Keys remain server-side; use the established encrypted-at-rest path where applicable, while temporary BYOK remains memory-only. Never put secrets in VITE variables, logs, room state, generated source or version control. Explicit discovery/model tests may consume usage and must report capability/mode distinctions truthfully.
-
-Count each physical request at the lowest shared HTTP boundary, including repair/retry/fallback attempts, with ID and purpose. Separate setup tests and generation, retain uncertain external outcomes, and never convert unknown charges/tokens to zero. Historical counters are separate from the partial deduplicated physical ledger. Catalog rates require current official evidence/versioning; metadata is not paid quality qualification.
-
 Offline Jev audits use local AI_GATEWAY_API_KEY for Vercel or TYPESAFE_API_KEY for direct TypeSafe, explicit provider selection, small evidence packets, typed validation, provider/source/policy caching, bounded requests and a usage ledger. Vercel uses the typesafe-ai/jev gateway alias; direct TypeSafe pins jev-1.13.0. Record gateway-reported cost separately from estimates; never silently switch providers or models. Judgments are advisory and never authorize deletion, side effects or promotion. No Jev inference is added to participant typing/submissions.
-
-## Hosted, storage and UI invariants
-
-Supabase UUIDs identify accounts; current membership is authority on HTTP/WebSocket reads and mutations. Preserve browser PKCE and server bearer verification. Do not use room links, display names/emails or cached state as hosted authorization. Never fall back from failed Postgres to local SQLite/JSON or make artifact buckets public.
-
-Invitations are app records, bound to normalized intended email and verified identity, with hashed tokens and bounded roles. Creation/send/replay are request-ID idempotent. Deliberate resends preserve earlier valid links; explicit revoke is separate. Provider acceptance is not inbox delivery. Apply migrations only after verifying the intended project; legacy imports default to dry-run with a trusted UUID map.
-
-Generated file operations remain room-scoped; reject traversal/cross-room access. Browser CSP and host compilation are not a process sandbox. Local draft keys are room/participant-scoped; cache no credentials, validate CRDT bytes before hydration, fail visibly on storage errors, and retain flush/reconnect/cloud-ack semantics.
-
-Keep current Studio Ivory and the compact Canvas Shared context rail with selected durable accepted revisions, separate partial recorded usage and workflow stage. Preserve provenance/conflict controls, editor formatting, participant colors, keyboard access, responsive layouts, reduced motion and preview style isolation. Keep technical CoCreate identifiers compatible; new visible copy uses 2guys1canvas.
-
-## Verify and finish
-
-Run focused outcome/regression tests and full `pnpm test`/`pnpm build` for functional changes. Browser checks are required for visible interaction claims. Do not weaken tests to conceal behavior failures or claim current success from historical runs. Controlled providers/mocks are separate from paid/live hosted evidence; do not spend unrelated credentials.
-
-After code changes run `graphify update .` and check coverage/diagnostics; AST updates do not recreate every curated document/CSS/config relationship. Update affected canonical context, checklist, product, architecture, decisions, API and README in the same change. Preserve canonical filenames and dated history; distinguish implemented state, targets and unverified migration/deployment.
-
-Record commands/results, failures, blockers and the next coherent task. Do not deploy, change external access, apply destructive migrations or send messages without authorization. Routine reversible work already authorized should proceed without repeated approval requests.

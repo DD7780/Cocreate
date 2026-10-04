@@ -1,0 +1,11 @@
+(node:17252) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"13b4ca6b-aeb1-4304-9d28-d1d959678d97","correlationId":"8b5d50e2-b2b8-4fa3-a8b9-ad96671d8e92"}
+{"event":"collaboration.connected","connectionId":"8f5171aa-e225-4067-b2fe-6f2fa8934694","correlationId":"ff2b9f32-4ded-4570-bf52-fe667428a88f"}
+{"event":"collaboration.connected","connectionId":"bec9b32f-b7e3-4dcd-a46b-6a22b1cfa363","correlationId":"f0bad34a-47fb-497c-8935-33b32dbae4bc"}
+{"event":"collaboration.disconnected","connectionId":"13b4ca6b-aeb1-4304-9d28-d1d959678d97","code":1001}
+{"event":"collaboration.connected","connectionId":"4bfa5e5f-ce4b-45a8-8673-ac05334b9974","correlationId":"04eb563b-0871-45b8-b0e1-76b765b36631"}
+{"scope":"Three independent local Chrome profiles with signed owner/editor/viewer sessions, SQLite, loopback controlled provider and Windows isolated compilation; no hosted accounts, real SQL, or paid inference","participants":3,"coauthorPreserved":true,"revisionConflictVisible":true,"correctionReloaded":true,"replayReceiptCount":4,"viewerDenied":true,"legacyRoutesRetired":true,"nativeTabTrap":true,"escapeAndReturnFocus":true,"keyboardSave":true,"explicitWithdrawal":true,"acceptedContextSeparated":true,"candidateInvalidation":true,"oldProductRetained":true,"noInferenceOnCorrectionReloadReplay":true,"interpreterCalls":2,"builderCalls":3,"finalSpecificationRevision":6,"functionalVerified":false}
+{"event":"collaboration.disconnected","connectionId":"4bfa5e5f-ce4b-45a8-8673-ac05334b9974","code":1006}
+{"event":"collaboration.disconnected","connectionId":"bec9b32f-b7e3-4dcd-a46b-6a22b1cfa363","code":1006}
+{"event":"collaboration.disconnected","connectionId":"8f5171aa-e225-4067-b2fe-6f2fa8934694","code":1006}

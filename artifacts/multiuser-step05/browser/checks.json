@@ -1,0 +1,23 @@
+{
+  "scope": "Three independent local Chrome profiles with signed owner/editor/viewer sessions, SQLite, loopback controlled provider and Windows isolated compilation; no hosted accounts, real SQL, or paid inference",
+  "participants": 3,
+  "coauthorPreserved": true,
+  "revisionConflictVisible": true,
+  "correctionReloaded": true,
+  "replayReceiptCount": 4,
+  "viewerDenied": true,
+  "legacyRoutesRetired": true,
+  "nativeTabTrap": true,
+  "escapeAndReturnFocus": true,
+  "keyboardSave": true,
+  "deviceCacheFailureVisible": true,
+  "explicitWithdrawal": true,
+  "acceptedContextSeparated": true,
+  "candidateInvalidation": true,
+  "oldProductRetained": true,
+  "noInferenceOnCorrectionReloadReplay": true,
+  "interpreterCalls": 2,
+  "builderCalls": 3,
+  "finalSpecificationRevision": 6,
+  "functionalVerified": false
+}

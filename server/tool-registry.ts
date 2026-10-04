@@ -1,3 +1,4 @@
+import { isolationPolicy } from './isolation.js';
 import { createHash, randomUUID } from 'node:crypto';
 import { applyOperations, bundleProject, persistProject, type FileOperation, type ProjectFile } from './project.js';
 import { EventStore, type ActorType } from './event-store.js';
@@ -14,11 +15,11 @@ type ToolOutputs={
   'project.bundle':{javascript:string;css:string};
   'project.promote':{fileCount:number};
 };
-export type ToolContext={workspaceId:string;runId:string;actorId:string;actorType:ActorType;role:'builder'|'personal_agent'|'user'|'system';inputRevision:number};
+export type ToolContext={workspaceId:string;runId:string;actorId:string;actorType:ActorType;role:'builder'|'personal_agent'|'user'|'system';inputRevision:number;signal?:AbortSignal};
 export type ToolDefinition<K extends ToolName=ToolName>={
-  name:K;purpose:string;behavior:ToolBehavior;permission:string;environment:'host-process-restricted-api';
-  timeoutMs:number;resourceLimits:{maxFiles:number;maxInputBytes:number};retry:'none'|'idempotent';idempotent:boolean;
-  cancellation:'before-start-only';logging:'metadata-and-hashes';inputSchema:string;outputSchema:string;
+  name:K;purpose:string;behavior:ToolBehavior;permission:string;environment:'host-process-restricted-api'|'isolated-process';
+  timeoutMs:number;resourceLimits:{maxFiles:number;maxInputBytes:number;memoryBytes?:number;cpuSeconds?:number;maxProcesses?:number};retry:'none'|'idempotent';idempotent:boolean;
+  cancellation:'before-start-only'|'during-execution';logging:'metadata-and-hashes';inputSchema:string;outputSchema:string;
 };
 
 const stable=(value:unknown):string=>{
@@ -36,7 +37,7 @@ const outputSummary=(name:ToolName,output:ToolOutputs[ToolName])=>name==='projec
 
 const definitions:{[K in ToolName]:ToolDefinition<K>}={
   'project.apply_operations':{name:'project.apply_operations',purpose:'Validate and apply model-proposed edits to an in-memory candidate.',behavior:'write',permission:'builder:candidate:write',environment:'host-process-restricted-api',timeoutMs:2_000,resourceLimits:{maxFiles:16,maxInputBytes:160_000},retry:'idempotent',idempotent:true,cancellation:'before-start-only',logging:'metadata-and-hashes',inputSchema:'ProjectFile[] + FileOperation[]',outputSchema:'validated ProjectFile[]'},
-  'project.bundle':{name:'project.bundle',purpose:'Compile a validated candidate using the fixed browser bundle operation.',behavior:'read',permission:'builder:candidate:build',environment:'host-process-restricted-api',timeoutMs:20_000,resourceLimits:{maxFiles:16,maxInputBytes:160_000},retry:'idempotent',idempotent:true,cancellation:'before-start-only',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'browser JavaScript and CSS'},
+  'project.bundle':{name:'project.bundle',purpose:'Compile a validated candidate in a secret-free OS-isolated process.',behavior:'read',permission:'builder:candidate:build',environment:'isolated-process',timeoutMs:isolationPolicy.wallMs,resourceLimits:{maxFiles:16,maxInputBytes:160_000,memoryBytes:process.platform==='win32'?isolationPolicy.windowsMemoryBytes:isolationPolicy.linuxAddressSpaceBytes,cpuSeconds:isolationPolicy.cpuSeconds,maxProcesses:process.platform==='win32'?1:isolationPolicy.linuxTasksPerUser},retry:'idempotent',idempotent:true,cancellation:'during-execution',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'browser JavaScript and CSS'},
   'project.promote':{name:'project.promote',purpose:'Persist an already verified candidate inside the current workspace project.',behavior:'write',permission:'builder:workspace:promote',environment:'host-process-restricted-api',timeoutMs:5_000,resourceLimits:{maxFiles:16,maxInputBytes:160_000},retry:'idempotent',idempotent:true,cancellation:'before-start-only',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'persisted file count'},
 };
 
@@ -54,11 +55,11 @@ export class ToolRegistry{
     const decision=this.authorize(name,context);
     this.store.append({eventType:decision.allowed?'tool.authorized':'tool.denied',workspaceId:context.workspaceId,actorId:'policy',actorType:'system',runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,reason:decision.reason}});
     if(!decision.allowed)throw new Error(`Tool denied: ${decision.reason}`);
-    this.store.append({eventType:'tool.started',workspaceId:context.workspaceId,actorId:context.actorId,actorType:context.actorType,runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,timeoutMs:definition!.timeoutMs}});
+    this.store.append({eventType:'tool.started',workspaceId:context.workspaceId,actorId:context.actorId,actorType:context.actorType,runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,timeoutMs:definition!.timeoutMs,environment:definition!.environment,isolationPolicy:name==='project.bundle'?isolationPolicy.version:undefined}});
     try{
       let output:ToolOutputs[ToolName];
       if(name==='project.apply_operations'){const typed=input as ToolInputs['project.apply_operations'];output={files:applyOperations(typed.current,typed.operations)}}
-      else if(name==='project.bundle'){const typed=input as ToolInputs['project.bundle'];output=await bundleProject(typed.files)}
+      else if(name==='project.bundle'){const typed=input as ToolInputs['project.bundle'];output=await bundleProject(typed.files,context.signal)}
       else{const typed=input as ToolInputs['project.promote'];persistProject(context.workspaceId,typed.files);output={fileCount:typed.files.length}}
       this.store.append({eventType:'tool.succeeded',workspaceId:context.workspaceId,actorId:context.actorId,actorType:context.actorType,runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,output:outputSummary(name,output)}});
       return output as ToolOutputs[K];

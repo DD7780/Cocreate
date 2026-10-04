@@ -1,3 +1,4 @@
+import { spawnSync } from 'node:child_process';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
@@ -27,4 +28,12 @@ test('the Cloudflare container uses the native WebSocket-aware proxy',()=>{
   assert.match(worker,/SESSION_SECRET:\s*env\.SESSION_SECRET/);
   assert.match(worker,/CREDENTIAL_ENCRYPTION_SECRET:\s*env\.CREDENTIAL_ENCRYPTION_SECRET/);
   assert.match(dockerfile,/CMD \["node", "--import", "tsx", "server\/index\.ts"\]/);
+});
+
+
+test('direct application startup refuses unavailable isolation before binding a server',()=>{
+  const result=spawnSync(process.execPath,['--import','tsx','server/index.ts'],{cwd:root,env:{...process.env,COCREATE_ISOLATION_MODE:'unavailable',PORT:'0'},encoding:'utf8',timeout:15_000,windowsHide:true});
+  assert.equal(result.error,undefined);assert.notEqual(result.status,0);
+  assert.match(result.stderr,/Generated execution isolation is unavailable/);
+  assert.doesNotMatch(result.stdout,/2guys1canvas ready/);
 });

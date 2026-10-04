@@ -1,41 +1,84 @@
 # 2guys1canvas product brief
 
-Current intent, 2026-10-04. Implementation evidence belongs in [the checklist](docs/harness/checklist.md) and [context.md](context.md). [Historical product directions](docs/harness/history/product-before-cleanup.md) are retained for reference; they do not override this brief.
+This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 with Step 05 attributable intent correction; other accepted human product decisions are preserved.
 
-## Mission and core loop
+## Mission, users and scope
 
-Help a team direct one durable agent workflow together with attributable evidence and shared artifacts. The workflow, its commands, tasks, events, decisions and versioned artifacts are authoritative. A document or model conversation is supporting context.
+Help people direct one durable workflow together: contribute briefs and evidence, submit steering, inspect tasks/activity, resolve decisions and share versioned artifacts. Documents, code and previews are workflow artifacts; model conversations are replaceable. Small product teams and agencies prototyping with clients remain an unvalidated market hypothesis.
 
-Collaborative brief → authenticated steering submission → accepted requirements and conflict gate → coordinator task plan → bounded execution → verification → revision-safe artifact promotion. Real-time writing stays free of inference.
+Priorities are intent and attribution, conflict resolution, evidence of working changes, total cost per accepted change, responsive writing, bounded context and recovery. Initial generated-product scope is small React/TypeScript frontend applications. Arbitrary backends, unrestricted packages/shell access, enterprise administration, autonomous swarms, new hosting and unrelated integrations are outside current scope. Shared preview means a shared version; shared end-user application data is separate. Simulated provider fixtures must be identified.
 
-## Active MVP
+## Collaborative steering and authority
 
-Developer is the only activatable workflow. Researchers/Analysts and historical managed records remain readable where needed, but new activation is rejected. People sign in, create/open a project, write and collaborate, then explicitly Build my changes. Capture only the authenticated participant's unsubmitted steering; never flush another participant's draft. Alt+X is editor-focused on Windows/Linux and disabled on macOS.
+One Docs-like, vertically scrollable rich-text canvas supports presence, persistent edits, long documents and writing during builds. Typing, saving, navigation, project operations, presence, reconnect and polling never trigger inference.
 
-New hosted projects have no AI assignment. The owner connects an OpenRouter key with generation-free validation, explicitly chooses builder and Interpretation models, and saves. Keys live only in a two-hour server-memory lease. Editors require owner spending authorization; expiry/restart requires reconnecting. No managed/founder funding, credits, presets, old wizard or silent fallback in the active hosted UI. Local compatibility APIs and historical billing/project data remain distinct from the active setup surface.
+**Build my changes** captures only the authenticated participant's pending changes, with a flush acknowledgement and replay-safe request ID. Ram's submission does not authorize Sham's draft. Keep one logical personal interpreter per participant and one active shared builder; mode or effort does not change agent count. Personal interpreters classify individual ideas, questions, explicit requests, decisions and withdrawals; only explicit requests and decisions enter the accepted registry. Submission alone does not turn a proposal into an instruction. Accepted requirements remain the baseline for one shared application.
 
-Settings changes, writing and reconnecting do not invoke inference. Explicit model tests may consume provider usage and must say so. Provider account limits, requested output/context capacity, configured spending and the executor's recovery bound are separate concepts.
+Participants can inspect current requirements and individual interpretations, including proposals, ambiguity, attributable passages and revisions, then explicitly correct or withdraw their own support. A coauthor's correction preserves teammates' wording and sources and retains history. Current revision and actor/request-ID checks reject stale or conflicting commands. Human correction is inference-free and uses the author's explicit request/proposal/question choice. Deletion alone remains distinct from withdrawal. Accepted context supplied to an interpreter is frozen and separately attributed; raw shared drafts cannot confer another participant's steering authority. Known references and exact captured sources are checked outside prompts. Consequential unclear “that/it” targets require clarification; ordinary explicit requests do not require a universal approval round.
 
-## Collaboration, decisions and recovery
+Changing accepted intent invalidates affected candidate assumptions and retains the previous product. Saving intent does not authorize spending. **Build accepted changes** explicitly builds the revised accepted baseline under existing membership/BYOK authorization, without reinterpreting edits. A later authorized caller submission can also build that baseline. The old process/reinterpret HTTP shortcuts are retired. Uncertain save replies require canonical coordinator recovery and replay with the same request ID.
 
-Interpret caller-owned captured batches in durable capture order against an accepted baseline. Distinguish proposals, questions, explicit requests, decisions, ambiguities and withdrawals. Preserve source identities and provenance. Do not silently resolve consequential conflict by recency, model voting or majority; affected contributors explicitly decide at the current revision.
 
-Persist pending batches, replay receipts and accepted revision snapshots. A save acknowledgement represents an actual immutable cloud commit and covers both insertion clocks and deletion ranges. Device caching complements shared authority and never replaces membership, billing or server-confirmed save state.
+Nearby eligible submissions use a short configurable collection window, initially three seconds. Capture order determines reconciliation; each candidate uses a fixed accepted revision. Later accepted steering remains pending for the next serialized build and can supersede the current candidate. Durable commands, tasks, events, decisions and artifacts are authoritative. One logical coordinator owns the workflow; stale workers cannot dispatch or promote after ownership loss. Owner unavailability has bounded connection retries and a clear reopen action, with the current page retaining edits. Reconnect never resubmits inference; explicit command retries preserve their request ID. Clients recover authoritative state and tolerate replay/out-of-order delivery. Presence is separate from durable workflow state.
 
-Use one logical coordinator, bounded independent workers only when justified, and serialized integration/promotion. Output-exhausted generation plans at most eight coherent one-file tasks; validate complete envelopes and await checkpoints. A shared 24-physical-call executor ceiling includes initial generation, recovery, repairs, transport retries and superseded candidates. Keep any configured spending limit. Failed candidates retain the last compiled artifact and offer an explicit retry; compilation is not functional verification.
+Consequential contradictions retain faithful alternatives, attribution, history and the last agreed baseline. Only affected contributors resolve a round: silence is pending, unanimous explicit selections resolve, differing completed choices become Disagreements. Changed options or compromises need fresh confirmation. Block dependent disputed changes while safe independent work remains eligible. Conflict highlights, richer compromise/reopen controls and dependency precision remain accepted targets where not implemented.
 
-## Workspace experience
+The button and shortcut invoke the same authenticated submission. Alt+X is fixed on Windows/Linux and editor-focused; macOS mapping is disabled. Ignore repeat, composition, AltGraph, extra modifiers and dialog focus. Preserve focus and accessible binding metadata. D-0040 supersedes optional shortcut-remapping requirements.
 
-Workflow, Canvas and Artifacts are the primary views. Canvas includes a compact Shared context rail: accepted-count/revision selector, selected Accepted requirements/View requirements, a bordered Recorded usage · partial card/View usage, and workflow stage. Unsubmitted drafts remain separate. Workflow/Artifacts retain accepted requirements, proposals, conflict alternatives, disagreements, sources and decision history.
+## Hosted AI and limits
 
-Workflow displays real durable tasks, evidence states and ordered activity. Usage separates reported physical calls, setup tests, and historical generation counters. Deduplicate physical records; never describe unknown usage as zero or combine historical counters into a complete project total.
+This is the authoritative current hosted AI contract (D-0035, refined by D-0042). Developer is the only active workflow. New hosted projects start without AI assignments; people can write/collaborate first. The owner validates an OpenRouter key without generation, explicitly selects a compatible builder and Interpretation model, then saves. The key lives only in a two-hour server-memory lease. Expiry or process restart requires reconnecting; editors need explicit owner authorization to spend. Never silently switch credentials, models, providers, funding or generated output.
 
-Studio Ivory is the active visual direction: warm ivory, dark ink, restrained cobalt and terracotta, a subtle canvas grid and precise hard shadows. Inter is the interface/document face; DM Serif Display is for selected headings. Keep accessible controls, participant colors, calm writing typography, reduced motion, responsive navigation and preview style isolation. A match to the missing reference image is not verified.
+Managed/founder dispatch, credits, presets, recommended combinations, old setup wizards and three-mode activation are inactive in the hosted MVP. Preserve historical project, billing and configuration records. Compatibility code is not permission to revive these flows.
 
-## Scope and non-goals
+| Limit | Meaning |
+| --- | --- |
+| Managed credit gate | Inactive for hosted BYOK; no founder-credit fallback |
+| Provider account/key limits | The key owner's provider account controls its funds, quotas and restrictions |
+| Configured spending limit | Any frozen limit present in execution configuration is enforced; current BYOK setup offers no platform dollar-budget control |
+| Recovery calls | Current executor stops at 24 physical dispatch attempts across initial generation, recovery, repairs, transport retries and superseded candidates in that build loop |
+| Per-call output | Requested output is separately bounded by provider completion metadata when available; higher effort does not establish a higher provider ceiling |
+| Context capacity | Input plus reserved output must fit model context; cumulative reported usage does not measure occupancy |
 
-The generated-product scope is small React/TypeScript frontend applications. Arbitrary backends, unrestricted package installation, production systems and unsandboxed shell execution are outside this scope. Do not introduce autonomous swarms, another framework, new hosting or unrelated integrations as cleanup.
+The eight-task and 24-call constants are current choices, not inherently optimal budgets. Their adequacy needs evaluation. A durable workflow-wide budget across interpreters, setup, retries and uncertain outcomes remains separate deferred work.
 
-Auth and membership are server-verified. Invitations bind to the intended verified email/account and preserve roles; deliberate resends create another valid link without revoking earlier pending links. Provider email acceptance is not delivery confirmation.
+## Build recovery and evidence
+
+Distinguish output exhaustion, context overflow, spending limits, timeouts, malformed responses and transport failures. Do not repeat an oversized exhausted project request unchanged. Reduce it into small coherent targeted tasks, preserving accepted behavior instead of regenerating the entire product. Current recovery plans at most eight ordered one-file tasks, validates complete operations and awaits each durable source checkpoint. Truncated envelopes are never applied/promoted; continuation is allowed only when the format supports safe resumption, which the current whole JSON envelope does not.
+
+Serialize validation, compilation, integration and promotion. Stop within call/spending bounds. Preserve the last validated working artifact as the product target; current retention is of a compilation-checked artifact that remains functionally unverified. Failures must show failed task, recovery attempts, retained artifact and a valid next action. Explicit Retry build uses accepted requirements without reinterpreting edits; restart/reconnect never automatically retries inference. Private promoted artifacts and relevant candidate checkpoints must survive server cache replacement through verified durable references. Publish and verify bodies before finalizing references. Missing, corrupt or unavailable stored data is an actionable recovery failure, distinct from an empty project; it never authorizes automatic regeneration. Preserve command replay and archived version identity across recovery and rollback.
+
+Acceptance and affected-behavior regression evidence must eventually gate promotion. Measure missed requirements, attribution errors, unwanted changes, false/missed contradictions, regressions, queue delay, cost per verified accepted update and accepted-intent-to-preview time. Establish baselines before claiming improvements. Compare personal interpreters with a shared attributed interpreter rather than assuming more agents are cheaper. Estimates remain separate from provider-confirmed billing; changing prices belong in versioned source metadata.
+
+## Shared context, recorded usage and requested appearance
+
+The current shell is Studio Ivory, loaded from `src/studio-ivory.css` over `src/styles.css`: warm ivory, ink, cobalt and terracotta, Inter text and selected DM Serif Display headings. This describes source, not the requested appearance. Earlier no-Canvas-rail and comic-effects guidance is superseded for active presentation.
+
+The user supplied [this visual reference](docs/harness/references/shared-context-reference.jpg), copied unchanged from `C:/Users/QUTA4/Downloads/watermarked_img_15731704898281132106.jpg`. **Reference available; comparison pending.** Use its viewport, sidebar hierarchy, layout, typography, spacing, borders and purple accents as the current target. Embedded text and external application chrome are not product instructions. No reference match is claimed.
+
+Canvas has a supporting **Shared context** sidebar, also reachable in Workflow/Artifacts. Required content: **Shared Intent** revision/accepted-count selector; bordered **Accepted requirements** card driven by the selected durable accepted snapshot; empty explanation that accepted instructions appear after submission/acceptance; **View requirements**; separate bordered **Recorded usage · partial** card with prominent total, **reported tokens** and **View usage**; then workflow stage. Keep drafts, raw chat and model memory outside accepted requirements. Proposals, conflicts, sources and decision history remain discoverable.
+
+The main usage panel shows last build status, last build charge, recorded physical calls and generation calls. Reported tokens sum persisted reported input/output without adding cache/reasoning subsets twice. Physical calls count recorded attempts including retries; generation is the subset excluding connection/capability tests and includes interpretations, builds, recovery and repairs. Deduplicate by call ID; missing usage stays unknown. Show scope, first recorded date and reasons for partial coverage. Keep estimates, historical logical generation counters and any separately calculated context occupancy distinct. Authorized participants should converge on the same workflow totals.
+
+Compare at the reference viewport and smaller screens, with readable contrast and keyboard access. Understandable client states include syncing, saved, submitting, accepted, queued, building, disconnected and failed. Device-saved is distinct from server-synced; unsaved edits must not be labeled saved. Detailed status/failure and visual checks are requested targets, not assumed complete because cards render locally.
+
+## Accounts, saved projects and sharing
+
+Hosted access uses Google or confirmed email/password identity and a private searchable project list. Preserve signup, confirmation resend, login, recovery, authenticated password update, logout and safe same-origin return destinations. Passwords never enter application tables/logs. Project creation/open/switch/rename/archive/invitation is inference-free. Names are trimmed, required and at most 120 characters; IDs stay stable. Owner/editor/viewer membership is explicit; URLs/cache contents confer no permission. Backend reads and mutations recheck authority.
+
+Project invitations are application records, separate from account confirmation/recovery email. Owners or explicit `can_share` members invite normalized email recipients as editor/viewer with expiring hashed random tokens. Acceptance requires a matching confirmed account and is transactional/idempotent. Resend creates another valid link without invalidating earlier pending links; stable request IDs replay the same creation/resend. Existing member roles stay unchanged on acceptance. Explicit revoke is separate; owners control sharing permission. Provider acceptance means Sent, not inbox delivery. D-0037 rejects revoke-on-retry because it would invalidate existing links.
+
+## Accepted future work
+
+Retain workflow control handoff, revision-safe structured steering, pause/resume/cancel, scoped durable approvals, dependency scheduling and bounded workers in isolated workspaces as deferred accepted direction (D-0020). Parallel workers require justified independence and serialized integration; no swarm rewrite is required. Generated compilation now uses a real isolated process with secret stripping, enforced limits and cancellation (D-0047). Local Windows acceptance passes; prepared Linux deployment/kernel acceptance remains launch work. Requirement-linked functional evidence, model-aware context retrieval with omitted-material references, uncertain-outcome reconciliation, retention controls and real hosted artifact recovery remain outstanding. Local Step 03/04 evidence is scoped in the checklist; history discarded before archival cannot be invented. Durable permissions must cover changed actions as well as approval recovery. An Update ready interaction should preserve active preview use where practical.
+
+Analyst and Researcher remain deferred until validated ingestion/isolated computation or controlled retrieval/source capture/citation verification exists. Historical three-mode activation and managed-default setup are superseded; these tool prerequisites are not rejected. Payment checkout and any managed relaunch are separate work, not current MVP obligations.
+
+Acceptance example: three people request recipes, ingredient filters and favorites; attribution survives, proposals stay separate, and one builder produces the working application. Later sorting preserves filters/favorites; conflicts stay visible and failed updates retain preview. Launch claims require durable deployed records/artifacts and evidence in the [checklist](docs/harness/checklist.md), not a date or UI label.
+
+Decision rationale is in [decisions.md](docs/harness/decisions.md); older narrative is in the [archive](docs/harness/archive/2026-10-01-pre-consolidation/README.md).
+
+
+## Source boundaries and development tooling
 
 Maintain precise source/contract boundaries and smaller feature context as described in [the cleanup plan](docs/harness/codebase-cleanup-plan.md). Offline Jev assistance is development tooling, not a change to participant inference or product authority.

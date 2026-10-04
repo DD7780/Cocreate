@@ -1,0 +1,22 @@
+(node:24528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"28fc0b4c-f8d1-4d75-a1df-9adda287284a","correlationId":"9ed3e904-4dad-4bd8-a842-244c70f407de"}
+{"event":"collaboration.connected","connectionId":"098a17e2-b47e-4782-b43c-69ca0e664f74","correlationId":"ba88ce80-9b8d-4676-b556-3f403beb9936"}
+{"event":"collaboration.connected","connectionId":"36e9f67f-5968-411f-9373-8fed5ea38ec9","correlationId":"e174ae06-9a13-4674-9fbf-868a6270501c"}
+{"event":"collaboration.disconnected","connectionId":"36e9f67f-5968-411f-9373-8fed5ea38ec9","code":1006}
+{"event":"collaboration.disconnected","connectionId":"098a17e2-b47e-4782-b43c-69ca0e664f74","code":1006}
+{"event":"collaboration.disconnected","connectionId":"28fc0b4c-f8d1-4d75-a1df-9adda287284a","code":1006}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:14
+const until=async(check:()=>Promise<boolean>,label:string)=>{for(let i=0;i<120;i++){if(await check())return;await wait(100);}throw new Error(`Timed out: ${label}`);};
+                                                                                                                                   ^
+
+Error: Timed out: intent dialog opened by Enter
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:14:132)
+    at runNextTicks (node:internal/process/task_queues:64:5)
+    at listOnTimeout (node:internal/timers:547:9)
+    at process.processTimers (node:internal/timers:521:7)
+    at async review (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:60:399)
+    at async Promise.all (index 2)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:70:3)
+
+Node.js v22.23.2

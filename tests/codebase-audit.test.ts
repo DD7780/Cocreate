@@ -11,6 +11,29 @@ import {
   cachedReview,
 } from "../scripts/codebase-audit.js";
 
+test("audit follows the prepared isolated worker without hiding missing source imports", () => {
+  const result = inspectSources([
+    { file: "server/index.ts", source: 'import "./isolation.js";' },
+    {
+      file: "server/isolation.ts",
+      source: 'const worker = readFileSync(join(sourceDirectory, "compiler-worker.cjs"));',
+    },
+    {
+      file: "server/isolation/compiler-worker.cjs",
+      source: 'const compiler = require("./esbuild.cjs"); require("./missing.cjs");',
+    },
+    { file: "server/other.cjs", source: 'require("./esbuild.cjs");' },
+  ]);
+  const worker = result.files.find(file => file.file.endsWith("compiler-worker.cjs"))!;
+  assert.equal(worker.runtimeReachable, true);
+  assert.equal(worker.unknownDynamicLoad, true);
+  assert.deepEqual(worker.importedBy, ["server/isolation.ts"]);
+  assert.deepEqual(result.unresolvedLocalImports.sort(), [
+    "server/isolation/compiler-worker.cjs: ./missing.cjs",
+    "server/other.cjs: ./esbuild.cjs",
+  ]);
+});
+
 test("UI scope rejects backend authority, shared contracts and migrations", () => {
   assert.deepEqual(
     scopeViolations(

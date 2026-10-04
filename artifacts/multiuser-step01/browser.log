@@ -1,0 +1,105 @@
+(node:17528) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"20af5685-b028-4afe-a262-a87d004071c4","correlationId":"ca178b0d-8134-48c2-9748-d598d932c239"}
+{"event":"collaboration.connected","connectionId":"7b529273-6651-408e-b753-b997ffe450ed","correlationId":"9ffc3dee-1a0a-4bcb-b8f3-1120c0cba13f"}
+{"event":"collaboration.connected","connectionId":"24c6a31e-4357-47d5-99a7-752fafd95043","correlationId":"14fc9f73-41b1-4afd-b4fa-0c57913b7735"}
+{"event":"collaboration.disconnected","connectionId":"24c6a31e-4357-47d5-99a7-752fafd95043","code":1005}
+{"event":"collaboration.connected","connectionId":"61e1273c-6324-414d-a3f6-59c3bfaaefe8","correlationId":"d39bbec0-3faa-4a18-99b9-843dd20dc860"}
+{"event":"collaboration.disconnected","connectionId":"61e1273c-6324-414d-a3f6-59c3bfaaefe8","code":1006}
+{"event":"collaboration.connected","connectionId":"8d1d58fd-8629-4ea1-ad78-8d836f08ce08","correlationId":"b83705a0-30aa-461d-af9e-706dd14f624d"}
+{"event":"collaboration.disconnected","connectionId":"20af5685-b028-4afe-a262-a87d004071c4","code":1001}
+{"event":"collaboration.connected","connectionId":"b66f574f-6130-4b6f-ad3f-76e1b4cd7c81","correlationId":"47ac0d31-a108-4c3e-bf7f-13f3c3bd4db5"}
+{
+  "scope": "Three independent Chrome profiles and signed local participant sessions; local-auth browser bundle, controlled provider, no hosted account or paid inference",
+  "participants": 3,
+  "simultaneousSubmissions": true,
+  "selectedRevisionVerified": true,
+  "offlineEditsRecovered": true,
+  "reloadDraftRecovered": true,
+  "noInferenceOnReconnect": true,
+  "noInferenceOnReload": true,
+  "converged": {
+    "revision": 3,
+    "artifact": 2,
+    "usage": {
+      "recorded": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "generation": {
+        "requests": 5,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 500,
+        "outputTokens": 250,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0,
+        "cachedInputTokens": 0,
+        "cacheWriteTokens": 0,
+        "reasoningTokens": 0
+      },
+      "setup": {
+        "requests": 0,
+        "personalRequests": 0,
+        "builderRequests": 0,
+        "inputTokens": 0,
+        "outputTokens": 0,
+        "estimatedCostUsd": 0,
+        "uncertainCostUsd": 0
+      },
+      "unknownUsageRequests": 0,
+      "recordedFrom": "2026-10-03T13:19:20.913Z",
+      "coverage": "partial"
+    },
+    "accepted": [
+      "req_5b9f2fd90ce8",
+      "req_980895587501",
+      "req_a78566be4eac"
+    ]
+  },
+  "interpreterCalls": 3,
+  "builderCalls": 2,
+  "responsive": [
+    {
+      "width": 1440,
+      "viewport": 1440,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 1024,
+      "viewport": 1024,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 768,
+      "viewport": 768,
+      "card": true,
+      "selector": true
+    },
+    {
+      "width": 390,
+      "viewport": 390,
+      "card": true,
+      "selector": true
+    }
+  ],
+  "acceptedToRenderedPreviewMs": 2250,
+  "previewTimingScope": "Last durable acceptance to DOM observation after explicit preview navigation; includes server/build, polling, navigation and render overhead, not paint timing or production latency",
+  "compilingIncorrectCandidatePromoted": true,
+  "functionalVerified": false,
+  "filterControls": 0,
+  "referenceComparison": "Not performed in this baseline; supplied reference is available and comparison remains pending"
+}
+{"event":"collaboration.disconnected","connectionId":"b66f574f-6130-4b6f-ad3f-76e1b4cd7c81","code":1006}
+{"event":"collaboration.disconnected","connectionId":"8d1d58fd-8629-4ea1-ad78-8d836f08ce08","code":1006}
+{"event":"collaboration.disconnected","connectionId":"7b529273-6651-408e-b753-b997ffe450ed","code":1006}

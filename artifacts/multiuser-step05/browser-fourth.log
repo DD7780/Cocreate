@@ -1,0 +1,25 @@
+(node:29664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"bbe068d1-d2d2-47ea-830d-a931dafc0205","correlationId":"dc39d95b-ad32-4396-bc8b-756303c95e30"}
+{"event":"collaboration.connected","connectionId":"1485f0b2-a065-4ba8-ab43-3f9e0660f88c","correlationId":"6d1fa3e2-c4e2-45a0-9b6e-00887c28ff93"}
+{"event":"collaboration.connected","connectionId":"c854af6a-9776-49ae-bbf3-58809628312a","correlationId":"96f1c5d6-8cd9-445b-8c91-073ff9aa5f25"}
+{"event":"collaboration.disconnected","connectionId":"bbe068d1-d2d2-47ea-830d-a931dafc0205","code":1001}
+{"event":"collaboration.connected","connectionId":"d8bfc914-fcb1-4caf-8472-170e625e37ab","correlationId":"3713e3ad-3dff-4be2-a107-8fbf88acd8c6"}
+{"event":"collaboration.disconnected","connectionId":"d8bfc914-fcb1-4caf-8472-170e625e37ab","code":1006}
+{"event":"collaboration.disconnected","connectionId":"c854af6a-9776-49ae-bbf3-58809628312a","code":1006}
+{"event":"collaboration.disconnected","connectionId":"1485f0b2-a065-4ba8-ab43-3f9e0660f88c","code":1006}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: correction audit survives reload
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:92:10) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

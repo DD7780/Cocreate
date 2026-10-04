@@ -105,3 +105,14 @@ test('burst edits share one transport update and explicit flush drains before ac
   const request=JSON.parse(socket.sent.at(-1) as string);assert.equal(request.type,'flush');socket.message(JSON.stringify({type:'flushed',requestId:request.requestId}));await pending;
   provider.destroy();doc.destroy();remote.destroy();
 });
+
+test('owner unavailability honors bounded retry hints, retains edits, and ends without inference',async()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),states:ConnectionStatus[]=[],callbacks:(()=>void)[]=[],delays:number[]=[];let diagnoses=0;
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},status=>states.push(status),()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',maxRetries:2,random:()=>0.5,fetchImpl:async(_url,options)=>{diagnoses++;assert.equal(options?.method,undefined);return new Response('{}',{status:503,headers:{'Retry-After':'9999'}})},setTimer:(callback,delay)=>{callbacks.push(callback);delays.push(delay);return callbacks.length},clearTimer:()=>{}});
+  try{
+    FakeWebSocket.instances[0].close();await tick();doc.getText('draft').insert(0,'retained steering');
+    assert.equal(delays[0],10000);callbacks.shift()?.();FakeWebSocket.instances[1].close();await tick();assert.equal(delays[1],10000);
+    callbacks.shift()?.();FakeWebSocket.instances[2].close();await tick();
+    const last=states.at(-1);assert.equal(last?.state,'error');assert.match(last!.message,/workflow owner.*Reopen/);assert.equal(doc.getText('draft').toString(),'retained steering');assert.equal(diagnoses,3);assert.equal(callbacks.length,0);
+  }finally{provider.destroy();doc.destroy()}
+});

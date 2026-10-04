@@ -1,0 +1,23 @@
+(node:12944) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"e7a3bc4d-ec13-4f16-a7b8-f7b35aa0c504","correlationId":"5183e2d4-45a2-4ab5-80fc-3d4745e1a62b"}
+{"event":"collaboration.connected","connectionId":"a0d2fc1d-349d-462d-b099-65c90c8ceb88","correlationId":"00cc472a-530c-4008-a32d-5eb89728d925"}
+{"event":"collaboration.connected","connectionId":"66b30400-124c-4b90-8428-0ca46c54d148","correlationId":"d5227feb-2229-4b5c-8c3c-759c848c5260"}
+{"event":"collaboration.disconnected","connectionId":"66b30400-124c-4b90-8428-0ca46c54d148","code":1006}
+{"event":"collaboration.disconnected","connectionId":"a0d2fc1d-349d-462d-b099-65c90c8ceb88","code":1006}
+{"event":"collaboration.disconnected","connectionId":"e7a3bc4d-ec13-4f16-a7b8-f7b35aa0c504","code":1006}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: native dialog retains Tab focus
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-intent-ui.ts:74:232) {
+  generatedMessage: false,
+  code: 'ERR_ASSERTION',
+  actual: false,
+  expected: true,
+  operator: '==',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

@@ -1,0 +1,84 @@
+{
+  "scope": "Local Windows AppContainer/Job Object, controlled provider and signed local Chrome fixtures; no paid inference, hosted account, migration, Docker image build or deployment",
+  "fullTests": {
+    "passed": 170,
+    "failed": 0,
+    "skipped": 0,
+    "durationMs": 182322
+  },
+  "focusedBeforeFinalRefinements": {
+    "passed": 25,
+    "failed": 0
+  },
+  "expandedFocusedBeforeFinalPreflight": {
+    "passed": 57,
+    "failed": 0
+  },
+  "productionBuild": "passed",
+  "standaloneScriptTypes": "passed",
+  "actualWindowsPreflight": "passed",
+  "browserReport": "browser/browser-checks.json",
+  "browserScreenshotsInspected": [
+    "desktop.png",
+    "mobile.png",
+    "restored-product.png",
+    "restored-workspace.png"
+  ],
+  "browserScope": "Browser compilation regression precedes only the trusted flood-probe refinement; final full suite covers the refined output fixture. Compiler/UI behavior unchanged by that refinement.",
+  "graphify": {
+    "scope": "AST only; no LLM calls; optional SQL parser unavailable",
+    "nodes": 2100,
+    "edges": 4124
+  },
+  "documentation": {
+    "files": [
+      "README.md",
+      "api.md",
+      "context.md",
+      "product.md",
+      "instructions.md",
+      "docs/harness/architecture.md",
+      "docs/harness/checklist.md",
+      "docs/harness/decisions.md",
+      "docs/harness/reliability-verification.md",
+      "docs/harness/multiuser-step04-handoff.md"
+    ],
+    "checkedLocalLinks": 187,
+    "missing": [],
+    "uniqueDecisionIds": 47
+  },
+  "diffCheck": "passed",
+  "cleanup": "cleanup.json",
+  "localPreview": "local-preview.json",
+  "sourceSha256": {
+    "Dockerfile": "91e191459e398284625f42853d74e09f55a1e602130526d2d437c6a522219396",
+    "package.json": "faa557e9b032a7cdfb74a08fc85e651b973a6888dfc7ad6a8ca5a0ed93a65f08",
+    "pnpm-lock.yaml": "a0a35e0867c2d47f73342d6311853e20939bea24cdcec076e8cfcdf28dbd8129",
+    "scripts/prepare-isolation.ts": "dbe57c3e876f38e28945f1a89c3bd3a2158bd49008b9b915bc12755589367142",
+    "server/isolation.ts": "f3a7452415beaffe2c65349c8e3b567796453fed878c3c5fd0d96a0f195e6a56",
+    "server/isolation/windows-runner.cs": "bd1a37765dcc6d52d3814729d96dfd3fc78f3e0190d4bc951ef559eb2566c4b9",
+    "server/isolation/compiler-worker.cjs": "21096921cea790c0f7a9d806b6d7e34c8b163ba3cd3ed5733f91fa04ff4f7c31",
+    "server/index.ts": "7689873d83304b4ccafbd8ce81a6737b1ca516a5622c134a4ca8ae4026f7991e",
+    "server/project.ts": "0750cf7638bcf60a514498f62a7876892b920a2fcd778de29ce5b752fe345a08",
+    "server/rooms.ts": "96fd2bdf6237ba6bbf922f17a06fb57dc52b631d5d5dd0e39ace600013721b5d",
+    "server/tool-registry.ts": "17b84de2a8b2348be7c45c78a60354442231b8724d69dd80cd648b1a656146d4",
+    "tests/generated-isolation.test.ts": "9e60b83ac83611568e8647e680bbeeb7a496b744093d69b832ea66e2f6fde158",
+    "tests/cloudflare-container.test.ts": "00f5706489a9cd06d693452187e4058375655cd9cd8dbe845927f98688fae6eb",
+    "tests/reliability.test.ts": "eff9dd8a9b29803df18bed94566541aeef9038b133d0b293ea16f941e95f158d",
+    "tests/fixtures/multiuser-baseline.ts": "81dfcd47a183cdaadc4fcb3417c152b120b8eaf297f8ec2fcf2612c814625436",
+    "scripts/verify-reliability.ts": "121d6bfbd4727649c63b364d10f9fd4be06a38cf329e7024bb460e0426982970"
+  },
+  "pending": [
+    "Linux/Bubblewrap/container kernel and WASM resource compatibility/adversity, using host PID observations",
+    "Real coordinator SQL contention and both unapplied migrations",
+    "Real private Storage/RLS/deployed cache replacement",
+    "Step 05 intent inspection/correction and later steps; functional evidence remains unverified"
+  ],
+  "retainedFailedAttempts": [
+    "os-probe-first.log",
+    "os-probe.log",
+    "full-tests-first.log",
+    "full-tests-contention.log"
+  ],
+  "retainedPriorPassingFullRun": "full-tests-before-output-refinement.log"
+}

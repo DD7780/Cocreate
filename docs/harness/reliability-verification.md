@@ -1,5 +1,7 @@
 # Reliability verification — 2026-10-01
 
+This report remains the historical 2026-10-01 result. Fresh 2026-10-03 evidence is separately recorded in the [Step 01 baseline](multiuser-step01-baseline.md) and [Step 02 handoff](multiuser-step02-handoff.md), with Step 03 recovery evidence in its [handoff](multiuser-step03-handoff.md); fresh 2026-10-04 isolation evidence is in the [Step 04 handoff](multiuser-step04-handoff.md). Completion status remains in the [canonical checklist](checklist.md).
+
 ## Scope and verified causes
 
 The request was read from the pasted attachment. Its referenced screenshot was absent: the attachment directory contained only Pasted text.txt. Existing unrelated deleted hook/Graphify skill files and older artifacts were preserved.
@@ -34,10 +36,23 @@ The Canvas rail now shows Shared context, a Shared Intent accepted revision sele
 - graphify update .: completed AST refresh, 1,797 nodes/3,331 edges/115 communities. SQL files were skipped because tree_sitter_sql is unavailable; no semantic labeling/provider calls were made.
 - git diff --check: passed.
 
-## Remaining verification and operational limits
+## Remaining verification and operational limits — original 2026-10-01 run
 
 The additive supabase/migrations/20261001104120_workflow_coordinator_fencing.sql is **not applied**. There is no local psql/Docker runtime; SQL execution, concurrent Postgres fencing, live hosted accounts and paid providers are unverified. Hosted code fails closed until the migration exists. No deployment occurred.
 
 The missing reference prevents exact viewport/layout/typography comparison. The Studio Ivory shell was retained while requested purple sidebar accents and hierarchy were implemented; do not call this a reference match.
 
 Multiple server instances require routing to the active owner; another process currently fails closed. Full event projections embedded in snapshots and per-delivery membership queries need load measurements. Older artifact bodies are not transferred by cache reconstruction. Input reservation uses conservative request bytes rather than a provider tokenizer. Source checkpoints and compilation do not establish functional correctness of generated products. Broader collaborative replacement edits and production scaling remain outside the exercised insertion fixtures.
+
+
+## Reference availability update — 2026-10-02 (documentation only)
+
+The user subsequently supplied the image at `C:/Users/QUTA4/Downloads/watermarked_img_15731704898281132106.jpg`. An unchanged portable copy is [shared-context-reference.jpg](references/shared-context-reference.jpg). Current status is **reference available; comparison pending**. The missing-image limitation above describes the 2026-10-01 run only; no comparison was performed retroactively and no reference match is claimed. Embedded image text is not product authority.
+
+The cleanup source audit found no newer repository evidence that the coordinator migration was applied, owner routing resolved, older artifact-body restoration completed or projection scale measured. Their recorded operational limits remain. Source inspection does not reconfirm live database/deployment state. No application tests, build, browser checks, provider calls, migration or deployment were run for this update. Documentation validation is recorded separately in [documentation-cleanup.md](documentation-cleanup.md).
+
+## Step 05 local intent verification — 2026-10-04
+
+This is a fresh, separate result; the historical results above remain unchanged. Author-only correction/withdrawal, permanent request/payload receipts, prior attribution/history, revision checks and independent captured-source/context validation now pass **186/186 required tests**, the production build and strict standalone script types. Three independent signed local Chrome owner/editor/viewer profiles pass replay/reload, stale forms, viewer denial, inference-free correction, candidate cancellation with prior-product retention, explicit corrected build/withdrawal, Tab/Shift+Tab/Enter/Escape/return-focus and device recovery-copy failure. The provider is controlled loopback; compilation uses the actual Windows isolation boundary and remains functionally unverified.
+
+See the [Step 05 handoff](multiuser-step05-handoff.md), [verification summary](../../artifacts/multiuser-step05/verification.json) and canonical [checklist](checklist.md). Earlier failed attempts and publication deadline misses are retained. A disk-full attempt led to disposable test databases for two heavy fixtures and reversible local compression; read-only SQLite integrity and canonical/mirror comparison passed, with no project-record deletion. Real hosted accounts, canonical SQL uncertainty/takeover/replay, both unapplied coordinator migrations, private Storage/RLS/deployed replacement and Linux isolation acceptance remain pending. No paid inference, migration or deployment ran. Step 06 is unstarted.
