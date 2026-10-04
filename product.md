@@ -1,6 +1,6 @@
 # 2guys1canvas product brief
 
-This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 with Step 07 requirement-linked checks and Step 06 bounded collection/progress; other accepted human product decisions are preserved.
+This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-04 through Step 09 interpretation/topology evaluation; other accepted human product decisions are preserved.
 
 ## Mission, users and scope
 
@@ -26,6 +26,8 @@ Durable commands, tasks, events, decisions and artifacts are authoritative. One 
 Consequential contradictions retain faithful alternatives, attribution, history and the last agreed baseline. Only affected contributors resolve a round: silence is pending, unanimous explicit selections resolve, differing completed choices become Disagreements. Changed options or compromises need fresh confirmation. Block dependent disputed changes while safe independent work remains eligible. Conflict highlights, richer compromise/reopen controls and dependency precision remain accepted targets where not implemented.
 
 The button and shortcut invoke the same authenticated submission. Alt+X is fixed on Windows/Linux and editor-focused; macOS mapping is disabled. Ignore repeat, composition, AltGraph, extra modifiers and dialog focus. Preserve focus and accessible binding metadata. D-0040 supersedes optional shortcut-remapping requirements.
+
+Retain serial personal interpretation after Step 09's controlled evaluation (D-0052). Logical per-participant interpretations do not require separate physical processes. Synthetic independent calls can benefit from parallel service, and shared attribution can reduce repeated request overhead; neither establishes a material production bottleneck, live quality or cost per verified update. A future concurrency/shared-contract change requires evidence about real queue contribution, independence, stale baselines, failure handling and accounted reprocessing. Preserve explicit model choices, durable capture order and one integration owner. No shared interpreter or speculative worker is activated by the evaluation.
 
 ## Hosted AI and limits
 

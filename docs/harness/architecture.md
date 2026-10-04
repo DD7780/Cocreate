@@ -1,6 +1,6 @@
 # Current harness architecture
 
-Source-audited 2026-10-04 for Step 07. This document describes current boundaries. [Product](../../product.md) owns accepted behavior; [checklist](checklist.md) owns status; [decisions](decisions.md) owns rationale; [API](../../api.md) owns contracts. See the [Step 01 baseline](multiuser-step01-baseline.md) and individual step handoffs for separately scoped evidence.
+Source-audited 2026-10-04 through Step 09 evaluation. This document describes current boundaries. [Product](../../product.md) owns accepted behavior; [checklist](checklist.md) owns status; [decisions](decisions.md) owns rationale; [API](../../api.md) owns contracts. See the [Step 01 baseline](multiuser-step01-baseline.md) and individual step handoffs for separately scoped evidence.
 
 ## Runtime map
 
@@ -49,6 +49,8 @@ Yjs V1 updates are written as explicit PostgreSQL hex bytes. Restore validates i
 Step 01 historically reproduced acceptance of unresolved “that” and invented passages. Step 05 adds independently checked captured-source and known-context-reference validation, including owned insertion fragments and shorter replacements. Unknown sources/targets remain visible ambiguity rather than accepted builder input. This is scoped provenance/reference enforcement, not proof of complete semantic correctness. Public legacy reinterpretation is retired; its internal diagnostic uses captured author edits, attributed accepted context and serialized owner checks. Automatic restart resumption is not implemented: restoration is inference-free and awaits human action. See the Step 05 boundary below.
 
 Deletion is not withdrawal. Conflict groups hold stable subject/scope, alternatives, contributor set, group revision/round, selections and decision history. The authenticated selection route checks current editor/owner membership AND affected contributor, revision/timestamp and request ID, serializes choices and awaits persistence. Silence stays pending; disagreement retains options; unresolved requirement IDs are excluded while independent accepted work remains eligible. Detection is deterministic for known structured cases, with coarse dependency scopes; broad semantic detection, document highlights and richer compromise/reopen UI are incomplete.
+
+Step 09 retains this serial queue (D-0052). Its offline two-worker experiment receives reversed completions but reconciles in capture order in memory; it is not a durable completion/recovery implementation. The shared-batch experiment uses the existing intent schema and independent per-capture stamping/source validation, with synthetic attributed results. Neither is a production dispatch path. Actual queue/SQLite observations preserve completed queued interpretations and restore deferred uninterpreted captures to failed receipts plus author drafts without inference. Fresh authority failure lets the next authorized capture proceed without poisoning the steering queue. Provider I/O has existing bounded retries/timeouts; persistence and authorization waits are separate, so no overall queue latency SLA is claimed. See the [Step 09 handoff](multiuser-step09-handoff.md) for measured tradeoffs and unresolved native publication observations.
 
 ## Coordinator and immutable saves
 

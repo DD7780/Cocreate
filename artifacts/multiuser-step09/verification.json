@@ -1,0 +1,129 @@
+{
+  "date": "2026-10-04",
+  "base": "05758c8c9a5223288b94403dea86423987ccca05",
+  "branch": "codex/byok-mvp",
+  "status": "controlled_topology_evaluation_complete_native_and_full_gate_open",
+  "decision": "D-0052: retain serial personal interpretation and one integration owner; no production concurrency/shared contract/topology change",
+  "scope": "Loopback synthetic providers, actual local capture queue/SQLite and Windows native baseline. No live provider/hosted/SQL/deployment acceptance.",
+  "checks": {
+    "comparisonTrials": 36,
+    "identicalProjections": true,
+    "offlineReverseCompletion": true,
+    "actualQueue": {
+      "captures": 3,
+      "accepted": 3,
+      "queueToProviderMs": [
+        98,
+        239,
+        401
+      ],
+      "captureToAcceptedMs": [
+        228.17469999999958,
+        376.14150000000063,
+        542.2701999999999
+      ],
+      "physicalCalls": 3,
+      "replayExtraCalls": 0,
+      "restartExtraCalls": 0,
+      "replayStatus": "queued",
+      "recoveredSubmissionStatus": "queued",
+      "restartedReceipts": "Completed interpretations and their receipts remain queued for a future explicit build; no automatic inference",
+      "builderSchedulingSuppressed": true,
+      "boundary": "Actual RoomManager capture-order interpretation and local SQLite; no generated product"
+    },
+    "focused": {
+      "passed": 36,
+      "total": 36,
+      "log": "focused-tests.log"
+    },
+    "nativeBaseline": {
+      "passed": 4,
+      "total": 6,
+      "failures": [
+        {
+          "repeat": 1,
+          "scenario": "simultaneous-slow",
+          "error": "Baseline observation timed out: finite workload drain"
+        },
+        {
+          "repeat": 2,
+          "scenario": "simultaneous-slow",
+          "error": "Baseline observation timed out: finite workload drain"
+        }
+      ],
+      "log": "evaluation-final.log"
+    },
+    "strictRunnerTypes": {
+      "passed": true,
+      "log": "script-types-final.log"
+    },
+    "build": {
+      "passed": true,
+      "log": "build.log",
+      "warning": "Existing chunk-size warning"
+    },
+    "graph": {
+      "passed": true,
+      "astOnly": true,
+      "nodes": 2403,
+      "edges": 4919,
+      "communities": 148,
+      "llmCalls": 0,
+      "optionalSqlParserUnavailable": true,
+      "semanticLabelsRefreshed": false,
+      "log": "graphify.log"
+    },
+    "localPreview": {
+      "scope": "HTTP readiness only; existing runtime unchanged, no inference or new browser interaction claim",
+      "health": {
+        "status": "ok",
+        "service": "cocreate-app"
+      },
+      "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S",
+      "viteClient": true,
+      "status": 200
+    },
+    "wholeSuite": {
+      "rerun": false,
+      "reason": "Diagnostic/test/documentation changes only; application runtime unchanged",
+      "priorStep08Passed": 203,
+      "priorStep08Total": 209,
+      "gate": "open"
+    }
+  },
+  "policy": {
+    "applicationRuntimeChanged": false,
+    "newUiContract": false,
+    "physicalCeiling": 24,
+    "recoveryManifestMaximum": 8,
+    "paidCalls": 0,
+    "migrations": 0,
+    "deployments": 0,
+    "externalMessages": 0,
+    "unrelatedAppsClosed": 0
+  },
+  "failedEvidence": [
+    "evaluation-first.log",
+    "evaluation-second.log",
+    "evaluation-third.json",
+    "evaluation-third.log",
+    "evaluation-final.log"
+  ],
+  "pending": [
+    "Step 08 whole regression gate remains open",
+    "Production queue/model latency, stale-baseline/reinterpretation frequency and cost per verified update",
+    "Live shared-vs-personal quality with an authorized budget",
+    "Actual hosted SQL/Storage/accounts, Linux isolation and deployment",
+    "Step 10 unstarted"
+  ],
+  "sourceHashes": {
+    "server/rooms.ts": "db20d1c6ebd3d77ef588ae0022f372a5678bbd88b4a88c6c26c428ec75bd0a3b",
+    "server/generator.ts": "028345d4b14a272d487d2eb91efa9b96e5051ddba2bd8a0ef4aadc4ae6154647",
+    "server/intent-authority.ts": "d3a41612c68d7f5deff013d63f1e30420b589375cbc1ed9d23ba8b6cb953a6e0",
+    "server/requirements.ts": "3a0957328b28d47d742d814ea9da085d6f10978c8ea7b4e9fb209dc43eabdf2f",
+    "server/providers.ts": "b53d00f6646207ef3a62ea0c652482a8f7d2549c856e29e7373fe78d20141754",
+    "server/workflow-budget.ts": "50239d71e88a5581cf93abddc0cde166ea63aa471389885aa526a0388e24827e",
+    "scripts/verify-interpretation-topology.ts": "a967cd4d75dd9da1155136de9cf621faade94671e04c37497b2195662cbb90ff",
+    "tests/interpretation-order.test.ts": "416520d5cd9d3ccf2a1a085329152327a00081313a43403eb25c025f28ed8d41"
+  }
+}
