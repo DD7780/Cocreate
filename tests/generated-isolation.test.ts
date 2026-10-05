@@ -80,7 +80,19 @@ test('unavailable isolation fails explicitly and cannot fall back to host compil
 
 test('CPU bound stops a busy child before the longer wall deadline',async()=>{
   let pid=0;const started=Date.now();
-  await assert.rejects(runIsolated({operation:'spin'},{onStarted:value=>pid=value}),(error:IsolationError)=>error.code==='isolation_resource_limit');
+  await assert.rejects(runIsolated({operation:'spin'},{onStarted:value=>pid=value}),(error:IsolationError)=>{
+    assert.equal(error.code,'isolation_resource_limit');
+    if(process.platform==='win32'){
+      const diagnostic=(error.cause as {diagnostic?:string})?.diagnostic||'';
+      const accounting=/ISOLATION_ACCOUNTING (\d+) (\d+) (\d+) (\d+) (\d+)/.exec(diagnostic);
+      assert.ok(accounting,'native job accounting identifies the enforced CPU limit');
+      assert.ok(Number(accounting[1])>=isolationPolicy.cpuSeconds*10_000_000);
+      // Windows counts all associations, including processes rejected by a limit.
+      assert.ok(Number(accounting[3])>=1,'the job accounted for its child');
+      assert.ok(Number(accounting[4])>=1,'the job terminated work at the CPU limit');
+    }
+    return true;
+  });
   assert.ok(Date.now()-started<isolationPolicy.wallMs);assert.ok(pid);noChild(pid);noJobs();
 });
 

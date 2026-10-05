@@ -1,3 +1,5 @@
+import {usedBudget} from './workflow-budget.js';
+import { verifiedList } from './verified-list.js';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
@@ -7,6 +9,7 @@ import { performance } from 'node:perf_hooks';
 import * as Y from 'yjs';
 import { RoomManager, type Room } from '../../server/rooms.js';
 import { EventStore } from '../../server/event-store.js';
+import { planVerification } from '../../server/verification.js';
 import { ToolRegistry } from '../../server/tool-registry.js';
 
 export const scenarioNames = ['simultaneous-slow', 'failed-interpreter', 'later-steering',
@@ -33,8 +36,8 @@ const interpretation = (text: string) => ({ goals: [text], features: [], design:
   additions: [], modifications: [], withdrawals: [], classification: 'explicit_request', affectedRequirementIds: [],
   sourcePassages: [text], intents: [{ text, category: 'goal', classification: 'explicit_request',
     rationale: 'Controlled fixture', sourcePassage: text, affectedRequirementIds: [] }] });
-const plan = () => ({ operations: [{ type: 'write', path: 'src/App.tsx',
-  content: 'export default function App(){return <main>Fixture without requested filter</main>}' }],
+const plan = (incorrect = false, covered = false) => ({ operations: [{ type: 'write', path: 'src/App.tsx',
+  content: incorrect ? 'export default function App(){return <main>Fixture without requested filter</main>}' : covered ? verifiedList : 'export default function App(){return <main>Fixture without requested filter</main>}' }],
   summary: 'Controlled candidate', decisions: [], conflicts: [], specification: { agreed: [], proposed: [], questions: [] } });
 
 /** Observations only: no runtime hook, prompt logging, provider credentials or external requests. */
@@ -65,7 +68,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       }
       const authored = personal ? input.authenticatedChanges.map((item: { after: string }) => item.after).join(' ') : '';
       // Deliberately incorrect provider output exposes current acceptance/promotion gaps.
-      const value = personal ? interpretation(scenario === 'invented-passage' ? 'Build a private billing dashboard' : authored) : plan();
+      const value = personal ? interpretation(scenario === 'invented-passage' ? 'Build a private billing dashboard' : authored) : plan(scenario === 'incorrect-product', input.requiredBehaviorChecks?.length > 0);
       attempt.endMs = performance.now() - started;
       res.setHeader('content-type', 'application/json');
       res.end(JSON.stringify({ output: [{ content: [{ type: 'output_text', text: JSON.stringify(value) }] }],
@@ -100,7 +103,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       return manager!.submitChanges(room!, id, key);
     };
     const drain = () => until(() => !!room!.versions.length && !room!.buildTask &&
-      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain');
+      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000);
 
     if (scenario === 'simultaneous-slow' || scenario === 'failed-interpreter') {
       edit('alice', 'Build a catalog'); edit('bob', 'Add favorites'); edit('cara', 'Add unsubmitted filters');
@@ -125,23 +128,23 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       for (let i = 1; i < arrivals; i++) {
         edit('bob', `Add feature number ${i}`); await submit('bob', `request-${i}`);
         const before: number = room.versions.length; gates.get(i)!();
-        await until(() => gates.has(i + 1), 'superseding candidate started');
-        assert.equal(room.versions.length, before, 'stale candidates cannot promote');
+        await until(() => gates.has(i + 1), 'next collected candidate started');
+        assert.equal(room.versions.length, before + 1, 'captured later steering waits until the fixed accepted candidate promotes');
       }
       observations.promotionsWhileArriving = room.versions.length;
       observations.callsBeforeFinalRelease = room.executionBudget?.calls || 0;
-      assert.equal(observations.callsBeforeFinalRelease, arrivals, 'supersession did not reset executor calls');
+      assert.equal(observations.callsBeforeFinalRelease, arrivals*2, 'supersession did not reset interpretation/build calls');
       gates.get(arrivals)!(); await drain();
       const tasks = manager.view(room).workflow.tasks;
       observations.arrivals = arrivals; observations.staleCandidates = tasks.filter(t => t.state === 'stale').length;
       observations.finalPromotions = room.versions.length;
-      assert.equal(observations.staleCandidates, arrivals - 1); assert.equal(room.versions.length, 1);
+      assert.equal(observations.staleCandidates, 0); assert.equal(room.versions.length, arrivals);
       assert.equal(room.submissions.filter(s => s.status === 'built').length, arrivals);
     } else if (scenario === 'ambiguous-reference' || scenario === 'invented-passage' || scenario === 'incorrect-product') {
       const text = scenario === 'ambiguous-reference' ? 'Make that blue' : scenario === 'invented-passage' ?
         'How should we discuss styling?' : 'Build a catalog with a working filter';
       edit('alice', text); await submit('alice', 'request-one');
-      if(scenario==='incorrect-product')await drain();else await until(()=>!room!.buildTask&&!room!.buildTimer,'unverified intent stays outside build');
+      if(scenario==='incorrect-product')await until(()=>room!.status==='Error'&&!room!.buildTask,'incorrect candidate is blocked',25_000);else await until(()=>!room!.buildTask&&!room!.buildTimer,'unverified intent stays outside build');
       observations.acceptedCount = room.sharedRequirements.filter(r => r.status === 'accepted').length;
       observations.functionalVerified = room.aiRuns.at(-1)?.verification.verified||false;
       observations.compilationPassed = room.aiRuns.at(-1)?.verification.compilationPassed||false;
@@ -154,8 +157,9 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
         assert.equal(observations.passageAbsentFromCapturedEdits, true);assert.equal(builderCount,0);assert.equal(room.sharedRequirements[0].status,'proposed');
         assert.ok(room.sharedRequirements[0].sources.every(s => s.participantId === 'alice'), 'provider cannot invent another author');
       } else {
-        observations.filterControlAbsentFromSource = !room.versions.at(-1)!.files!.some(f => /<input|<select/.test(f.content));
-        assert.equal(observations.filterControlAbsentFromSource, true);
+        observations.requiredBehaviorFailed = room.aiRuns.at(-1)?.verification.evidence?.status === 'failed';
+        assert.equal(observations.compilationPassed, true); assert.equal(observations.requiredBehaviorFailed, true, room.lastError+JSON.stringify(manager.eventStore.eventsForWorkspace(roomId).filter(event=>event.eventType==='tool.failed').at(-1)?.payload));
+        assert.equal(room.versions.length, 0); assert.equal(builderCount, 1);
       }
     } else if (scenario === 'snapshot-body-gap') {
       const artifact = manager.eventStore.writeArtifact('synthetic archival body', 'text/plain');
@@ -192,14 +196,15 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       assert.equal(observations.allHostProcess, false); assert.equal(observations.allCancellationBeforeStart, false);
       assert.equal(observations.compilerIsolated,true);assert.equal(observations.compilerCancellable,true);
     } else {
-      room.executionBudget = { calls: 23, reservedUsd: 1, maximumUsd: 2 };
+      room.executionBudget = usedBudget(23,2);
       manager.save(room); manager.shutdown(); manager = createManager(); room = manager.get(roomId)!;
       observations.executorBudgetRestored = room.executionBudget !== undefined;
-      assert.equal(observations.executorBudgetRestored, false);
+      assert.equal(observations.executorBudgetRestored, true);assert.equal(room.executionBudget?.calls,23);
       observations.automaticInferenceOnRestart = attempts.length;
       assert.equal(observations.automaticInferenceOnRestart, 0);
     }
     const events = manager.eventStore.eventsForWorkspace(roomId);
+    if(scenario==='continuous-arrivals'||scenario==='later-steering'){observations.reusedCompilations=events.filter(event=>event.eventType==='build.compilation_reused').length;assert.equal(observations.reusedCompilations,Number(observations.arrivals)-1);}
     const promoted = events.filter(e => e.eventType === 'product.promoted').at(-1);
     const accepted = events.filter(e => e.eventType === 'requirement.registry_reconciled').at(-1);
     if (promoted && accepted) observations.lastAcceptedToPromotionMs = Date.parse(promoted.occurredAt) - Date.parse(accepted.occurredAt);

@@ -1,0 +1,110 @@
+{
+  "base": "472698a",
+  "main": "4f99c16ad12554a5ce612caa33f3b80e86601abb",
+  "incoming": "8f34496944813c54f1d55fd40991269767499942",
+  "resolutions": [
+    {
+      "file": "server/generator.ts",
+      "replaced": [
+        "AIConfig",
+        "generateProjectPlan"
+      ],
+      "added": [],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "server/index.ts",
+      "replaced": [
+        "createCoCreateServer"
+      ],
+      "added": [],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "server/providers.ts",
+      "replaced": [
+        "request"
+      ],
+      "added": [],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "server/rooms.ts",
+      "replaced": [
+        "constructor",
+        "load",
+        "hydrate",
+        "save",
+        "tracked",
+        "testConnection",
+        "reserveBudget",
+        "finalizeRun",
+        "runAgent",
+        "submitChanges",
+        "scheduleBuild",
+        "tryScheduledBuild",
+        "requestBuild",
+        "buildLoop",
+        "view"
+      ],
+      "added": [
+        "compiledVersions",
+        "accountingQueue",
+        "resetWorkflowBudget",
+        "queueCapturedSubmission",
+        "restoreCapturedSubmission",
+        "resumeCapturedSubmissions"
+      ],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "src/App.tsx",
+      "replaced": [
+        "Workspace"
+      ],
+      "added": [],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "shared/types.ts",
+      "replaced": [
+        "ProviderRequestRecord",
+        "AIRunRecord",
+        "Version",
+        "RoomView"
+      ],
+      "added": [
+        "CandidateVerification",
+        "BuildProgress"
+      ],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "server/room-state.ts",
+      "replaced": [
+        "executionBudget"
+      ],
+      "added": [
+        "buildAdmissionClosed",
+        "buildNeedsRestart",
+        "collectionEndsAt",
+        "lastAcceptedAt",
+        "buildingRevision",
+        "submissionTasks",
+        "budgetQueue",
+        "budgetResetReceipts"
+      ],
+      "preservedOtherMainDeclarations": true
+    },
+    {
+      "file": "src/workspace/BuildAccounting.tsx",
+      "replaced": [
+        "BuildAccounting"
+      ],
+      "added": [],
+      "preservedOtherMainDeclarations": true
+    }
+  ],
+  "limitsChanged": false,
+  "removedCleanupModulesRestored": false
+}

@@ -1,0 +1,7 @@
+{
+  "documents": 10,
+  "missingLinks": 0,
+  "uniqueDecisionIds": 51,
+  "decision": "D-0051",
+  "scope": "Relative file links and canonical decision IDs; external URLs not probed"
+}

@@ -1,0 +1,8 @@
+{
+  "documents": 10,
+  "missingLinks": 0,
+  "uniqueDecisionIds": 52,
+  "decision": "D-0052",
+  "initialMissingVerificationArtifactResolved": true,
+  "scope": "Relative Markdown file links and decision IDs; external URLs not probed"
+}

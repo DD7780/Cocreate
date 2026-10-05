@@ -1,0 +1,182 @@
+TAP version 13
+# (node:11028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Current outcome of Step 01 scenario: simultaneous-slow
+ok 1 - Current outcome of Step 01 scenario: simultaneous-slow
+  ---
+  duration_ms: 12817.4981
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: failed-interpreter
+ok 2 - Current outcome of Step 01 scenario: failed-interpreter
+  ---
+  duration_ms: 7182.3706
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: later-steering
+ok 3 - Current outcome of Step 01 scenario: later-steering
+  ---
+  duration_ms: 4035.3249
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: continuous-arrivals
+ok 4 - Current outcome of Step 01 scenario: continuous-arrivals
+  ---
+  duration_ms: 8676.5755
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: ambiguous-reference
+ok 5 - Current outcome of Step 01 scenario: ambiguous-reference
+  ---
+  duration_ms: 188.0632
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: invented-passage
+ok 6 - Current outcome of Step 01 scenario: invented-passage
+  ---
+  duration_ms: 163.1721
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: incorrect-product
+ok 7 - Current outcome of Step 01 scenario: incorrect-product
+  ---
+  duration_ms: 6203.914
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: snapshot-body-gap
+ok 8 - Current outcome of Step 01 scenario: snapshot-body-gap
+  ---
+  duration_ms: 134.7202
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: projection-growth
+ok 9 - Current outcome of Step 01 scenario: projection-growth
+  ---
+  duration_ms: 160.6808
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: isolation-policy
+ok 10 - Current outcome of Step 01 scenario: isolation-policy
+  ---
+  duration_ms: 84.8846
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: restart-budget
+ok 11 - Current outcome of Step 01 scenario: restart-budget
+  ---
+  duration_ms: 103.2631
+  type: 'test'
+  ...
+# (node:17800) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+ok 12 - required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+  ---
+  duration_ms: 21608.4217
+  type: 'test'
+  ...
+# Subtest: unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+ok 13 - unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+  ---
+  duration_ms: 5143.9365
+  type: 'test'
+  ...
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 14 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 5.1687
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 15 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 114.5336
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 16 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 44.2114
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 17 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 27.2956
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 18 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 80.8683
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 19 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 2.6656
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 20 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 138.4223
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 21 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 89.7791
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 22 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 8.3262
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 23 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 9.1289
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 24 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 188.6751
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 25 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 4373.5474
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 26 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 9784.0799
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+ok 27 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 4086.5964
+  type: 'test'
+  ...
+# Subtest: unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+ok 28 - unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+  ---
+  duration_ms: 5328.5355
+  type: 'test'
+  ...
+1..28
+# tests 28
+# suites 0
+# pass 28
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 92310.9401

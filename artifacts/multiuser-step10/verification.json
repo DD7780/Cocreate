@@ -1,0 +1,290 @@
+{
+  "step": 10,
+  "date": "2026-10-05",
+  "base": "b3d38176d95188c1718dd71c52cb7983f1eef3e3",
+  "branch": "codex/byok-mvp",
+  "localImplementation": "complete",
+  "localAcceptance": "passed",
+  "hostedReleaseReadiness": "pending",
+  "scope": "Three independent signed local owner/editor/editor headless profiles, real SQLite and Windows isolated compiler/browser, loopback provider and SDK-backed controlled Storage/PostgREST. No hosted identity/SQL/RLS/live billing/deployment.",
+  "checks": {
+    "full": {
+      "log": "artifacts/multiuser-step10/full-tests-memory-recheck.log",
+      "tests": 212,
+      "passed": 212,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 278664.0131,
+      "failures": []
+    },
+    "focused": {
+      "log": "artifacts/multiuser-step10/focused-tests-final.log",
+      "tests": 61,
+      "passed": 61,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 144680.5168,
+      "failures": []
+    },
+    "failedCaseRecheck": {
+      "log": "artifacts/multiuser-step10/failed-cases-recheck.log",
+      "tests": 2,
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0,
+      "durationMs": 24347.525,
+      "failures": []
+    },
+    "shutdown": {
+      "before": {
+        "log": "artifacts/multiuser-step10/shutdown-before.log",
+        "tests": 1,
+        "passed": 0,
+        "failed": 1,
+        "skipped": 0,
+        "durationMs": 5553.4425,
+        "failures": [
+          "server shutdown drains authenticated HTTP before closing durable state"
+        ]
+      },
+      "after": {
+        "log": "artifacts/multiuser-step10/shutdown-after.log",
+        "tests": 1,
+        "passed": 1,
+        "failed": 0,
+        "skipped": 0,
+        "durationMs": 5225.8053,
+        "failures": []
+      }
+    },
+    "browser": {
+      "log": "artifacts/multiuser-step10/browser-final-takeover.log",
+      "report": "artifacts/multiuser-step10/browser/checks.json",
+      "participants": 3,
+      "physicalCalls": 9,
+      "interpretations": 5,
+      "builders": 4,
+      "reportedTokens": 1350,
+      "takeoverEpoch": [
+        1,
+        2
+      ],
+      "unknownPriceAttempts": 6,
+      "checks": [
+        "filter",
+        "favorites",
+        "sort"
+      ],
+      "unsupportedCriteria": 2
+    },
+    "nativeProbe": {
+      "scope": "Three real Windows preflight plus isolated minimum React builds; no provider calls, policy and limits unchanged",
+      "rows": [
+        {
+          "repeat": 1,
+          "passed": true,
+          "ms": 3581,
+          "bytes": 607801
+        },
+        {
+          "repeat": 2,
+          "passed": true,
+          "ms": 2932,
+          "bytes": 607801
+        },
+        {
+          "repeat": 3,
+          "passed": true,
+          "ms": 2997,
+          "bytes": 607801
+        }
+      ]
+    },
+    "strictTypes": {
+      "passed": true,
+      "log": "artifacts/multiuser-step10/script-types-final.log"
+    },
+    "productionBuild": {
+      "passed": true,
+      "log": "artifacts/multiuser-step10/build.log",
+      "warning": "Existing chunk-size warning"
+    },
+    "graph": {
+      "passed": true,
+      "nodes": 2441,
+      "edges": 4995,
+      "communities": 138,
+      "llmCalls": 0,
+      "log": "artifacts/multiuser-step10/graphify.log",
+      "limitations": [
+        "Optional SQL parser unavailable",
+        "Semantic relabelling not run"
+      ]
+    },
+    "localPreview": {
+      "roomStatus": 200,
+      "checkedAt": "2026-10-05T16:25:19.2529308Z",
+      "healthStatus": 200,
+      "scope": "Read-only primary SQLite idle guard and HTTP startup/health checks; no browser visual or hosted acceptance claim; no synthetic fixtures inserted into the primary room.",
+      "health": {
+        "status": "ok",
+        "service": "cocreate-app"
+      },
+      "viteStatus": 200,
+      "localAuthentication": true,
+      "idleGuard": {
+        "roomId": "f3Up_EmJ0X31-j7RR0XnEP6S",
+        "status": "Waiting for ideas",
+        "activeSubmissions": 0,
+        "versions": 0,
+        "readOnly": true
+      },
+      "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S"
+    },
+    "documentReview": "artifacts/multiuser-step10/document-review.json"
+  },
+  "priorCompleteRuns": [
+    {
+      "log": "artifacts/multiuser-step10/full-tests-first.log",
+      "tests": 211,
+      "passed": 205,
+      "failed": 6,
+      "skipped": 0,
+      "durationMs": 399036.4641,
+      "failures": [
+        "an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact",
+        "synchronous publication failure clears the pending gate and preserves the previous product",
+        "submitted builds ignore typing alone, preserve idempotency, and expose token usage",
+        "collection deadline closes admission despite an interpretation backlog",
+        "sustained captures make revision-labelled progress each cycle without a quiet global queue",
+        "an exhausted recovery leaves the previously promoted and compiled artifact available"
+      ]
+    },
+    {
+      "log": "artifacts/multiuser-step10/full-tests-final.log",
+      "tests": 212,
+      "passed": 210,
+      "failed": 2,
+      "skipped": 0,
+      "durationMs": 334865.4998,
+      "failures": [
+        "compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+        "Current outcome of Step 01 scenario: later-steering"
+      ]
+    }
+  ],
+  "retainedAttempts": {
+    "firstFocused": {
+      "log": "artifacts/multiuser-step10/focused-tests-first.log",
+      "tests": 61,
+      "passed": 60,
+      "failed": 1,
+      "skipped": 0,
+      "durationMs": 145133.1752,
+      "failures": [
+        "CPU bound stops a busy child before the longer wall deadline"
+      ]
+    },
+    "browserLogs": [
+      "artifacts/multiuser-step10/browser-after-memory.log",
+      "artifacts/multiuser-step10/browser-client-build.log",
+      "artifacts/multiuser-step10/browser-final-takeover.log",
+      "artifacts/multiuser-step10/browser-final-verified.log",
+      "artifacts/multiuser-step10/browser-final.log",
+      "artifacts/multiuser-step10/browser-first.log",
+      "artifacts/multiuser-step10/browser-second.log",
+      "artifacts/multiuser-step10/browser-verified.log"
+    ],
+    "failureAlias": "browser/failure.json is retained failed-run evidence; final checks.json governs current passing browser outcome"
+  },
+  "memory": {
+    "BeforeFreeMiB": 1304,
+    "AfterFreeMiB": 1605,
+    "TrimmedProcessCount": 11,
+    "ApplicationsClosed": 0,
+    "SettingsChanged": 0,
+    "Scope": "Explicit user-authorized one-time desktop working-set trim; no process list published"
+  },
+  "runtimeLimitsChanged": false,
+  "observationDeadlinesChanged": false,
+  "paidInference": false,
+  "realHostedChecksRun": false,
+  "migrationsApplied": false,
+  "deployed": false,
+  "externalMessagesSent": false,
+  "commands": {
+    "full": "pnpm test",
+    "focused": "pnpm exec tsx --test --test-concurrency=1 tests/server-shutdown.test.ts tests/generated-isolation.test.ts tests/candidate-verification.test.ts tests/coordinator-fencing.test.ts tests/hosted-reliability.test.ts tests/artifact-restoration.test.ts tests/intent-corrections.test.ts tests/interpretation-order.test.ts tests/workflow-budget.test.ts tests/usage-ledger.test.ts",
+    "browserBuild": "pnpm exec cross-env VITE_COCREATE_AUTH_MODE=local pnpm build",
+    "browser": "pnpm exec tsx scripts/verify-harness-integration.ts",
+    "native": "pnpm exec tsx artifacts/multiuser-step10/native-probe.ts",
+    "types": "pnpm exec tsc --noEmit --strict --target ES2022 --module ESNext --moduleResolution Bundler --jsx react-jsx --esModuleInterop --skipLibCheck scripts/verify-harness-integration.ts artifacts/multiuser-step10/native-probe.ts",
+    "build": "pnpm build",
+    "graph": "graphify update ."
+  },
+  "postBrowserSourceChange": "Only an erased TypeScript non-null annotation was added to recoveryCheckpoint; final strict types pass and runtime behavior is identical to the executed runner.",
+  "releasePrerequisites": [
+    "Two prepared coordinator migrations and real Postgres fencing/contention/membership",
+    "Authorized hosted accounts and private Storage/RLS/container replacement",
+    "Linux compiler/browser kernel isolation and adversity",
+    "Deployment provenance, primary affinity, readiness and rollback",
+    "Authorized live BYOK quality/invoice and invitation delivery",
+    "Reference/accessibility/scale/retention and absent legacy history"
+  ],
+  "sourceSha256": {
+    "server/index.ts": "f905292e7ec0c157da223c669c4f72aa4a3356d9cdeb2753ba3f83a2b6b5d86c",
+    "server/isolation/windows-runner.cs": "47cf42a3ad878ce5f9f5cf1af2c97d8a87b808a5f5b3a27689395d6905796d68",
+    "tests/server-shutdown.test.ts": "c2204bbbd07423dbb681f7313231b0d7490e75c9746c1aab00aebec48babfcd9",
+    "tests/generated-isolation.test.ts": "d7ac650fcb45ff9170a9abd71f7af697fcee44c7fd9cf58b08ef8920f6df0bac",
+    "scripts/verify-harness-integration.ts": "8ff6ec7fe5c8b93d7f8d56553ee1706577b95686449701707e62f5116aa0826e",
+    "artifacts/multiuser-step10/native-probe.ts": "da682a662a9dd3a661991951c88f1df48bd0db8cfc8a55b3a26e32a954a78d66"
+  },
+  "graphSha256": {
+    "graphify-out/graph.json": "1b0b60093a3b09cc1664710ffcc29bbb4d3a67becfe045ce46e95722b0257cc4",
+    "graphify-out/graph.html": "2390cb355c8bd2f6ea9e1b9d2b924840e721eaba103976bbe3373c120751d32c",
+    "graphify-out/GRAPH_REPORT.md": "bbe9225004b83e23a967b83f4f660080c625be26357825fef081502c0254fe3a",
+    "graphify-out/manifest.json": "75a0b2c16e49803399601ca099ada7d507c9fab90a82f32af8907e6d1d553f12"
+  },
+  "evidenceSha256": {
+    "artifacts/multiuser-step10/browser/after-memory-failure.json": "40c4b29e7bec4643c425d0068e222f54ad6e8f48a3a5b826c2b28b739712d103",
+    "artifacts/multiuser-step10/browser/blocked-desktop.png": "81992e192a6e02fc87a4712a65ecc2f6357d0223de331d532fdbdcf9e483c999",
+    "artifacts/multiuser-step10/browser/checks.json": "bfb0dde743590b34a86646ec21c8f49a3aba29fab70f610717363801caa88fc7",
+    "artifacts/multiuser-step10/browser/desktop.png": "6ba96949866f65ca3ae242f1f614f43360177ffe12a89f546cf0024518701ae9",
+    "artifacts/multiuser-step10/browser/failure.json": "40c4b29e7bec4643c425d0068e222f54ad6e8f48a3a5b826c2b28b739712d103",
+    "artifacts/multiuser-step10/browser/first-failure.json": "e5cbe6b389ad9e8f6722986c13037580c282c4d3e6feb25e0efa06f48f9f9e7e",
+    "artifacts/multiuser-step10/browser/mobile.png": "0a8cead213d551ce38002f3af7c3c5e36c07154480249479630615ace22be7ab",
+    "artifacts/multiuser-step10/browser/native-resource-failure.json": "d00ac44829ee0dc50b739fea6fa152cdad1743e83b707cae3dc702e305852958",
+    "artifacts/multiuser-step10/browser/pre-covered-correction-checks.json": "63b7619bd41987f310a6cf908c3a59235e9beebefb59ce4da8f3e0a6e40e328d",
+    "artifacts/multiuser-step10/browser/pre-shutdown-fix-checks.json": "6a5332e763f50a4ba57e45ed62cfcc0870dfeda8005be883fd9913a61c4feea4",
+    "artifacts/multiuser-step10/browser/restored-product.png": "61e9cc5ec0dd6a29f89396825ba55dbadcd247f1f1434676be24c7e160e3e5af",
+    "artifacts/multiuser-step10/browser-after-memory.log": "d01722d87a24bcc2d14a6e274c23664890eb377dabb1940768ed12fcaa2fcb0d",
+    "artifacts/multiuser-step10/browser-client-build.log": "ce8c80587398f2c48932425f4d8b8902cd481769df08edef9f6d225c0793bb9e",
+    "artifacts/multiuser-step10/browser-final-takeover.log": "4299d917b99b6de6c494a77f977badb2e41b1c1424e866ab1a04a7c6a110ba45",
+    "artifacts/multiuser-step10/browser-final-verified.log": "0b6396aa7c0fe44003fc55da906958ff8c16ad73499edf5c57964a4deca9087b",
+    "artifacts/multiuser-step10/browser-final.log": "011c7d66d7303048cc4f3aeeeae31b7f5087aa3348d42bed0a25f4924db87a6a",
+    "artifacts/multiuser-step10/browser-first.log": "c00e937b37971524e129d7178b9235c954edc44824a11c0197e08ea1c9e109c1",
+    "artifacts/multiuser-step10/browser-second.log": "92c61e72d07d9a7c44647abcb1a18fe57fd493d6103458ff5992f70698e3b9d7",
+    "artifacts/multiuser-step10/browser-verified.log": "e26d46e62bfdfd073c7eaf48b4e1dffd2a16e8e792ba8d650102903353bc76dc",
+    "artifacts/multiuser-step10/build.log": "812d6855c39d5b09496fa9f9bb7ae5f80d16129c8b665607b32e5d50fbcbb416",
+    "artifacts/multiuser-step10/failed-cases-recheck.log": "a0d6a9fe5e24ad83618a50e506f34baed93a164208b47bfcd039f0f2a27d7b1a",
+    "artifacts/multiuser-step10/focused-tests-final.log": "bffed8f779e50d2d11bdcb7ac9114bc762b8bd85c560db203ac8ce306030a08d",
+    "artifacts/multiuser-step10/focused-tests-first.log": "27288e6911809c117dcdd36173350fdfa1be631ea0e5916905a8fbda043cfc5c",
+    "artifacts/multiuser-step10/full-tests-final.log": "4d0a96686534489098a7c0375fd8b9c755dc8882c1306e5258696b08fea4e4eb",
+    "artifacts/multiuser-step10/full-tests-first.log": "65d3cda335b265c38066538fc802be944eda5179ca3c78ab68a3e92ef3863fe4",
+    "artifacts/multiuser-step10/full-tests-memory-recheck.log": "6842ede9e07b1ecb236fb88e6daf915e9eccac6979cee7bf66b67045a9560e60",
+    "artifacts/multiuser-step10/graphify.log": "ed2b00c4341d822d4b784d598108fc37f86f2493053574628126d001fe50cc18",
+    "artifacts/multiuser-step10/local-idle.json": "47d6c5dbde30f7712f9eb6ae73a8f34a2ea7ec924c8cffdc4205f48e6a5551c9",
+    "artifacts/multiuser-step10/local-preview.json": "a39d1953927a7d7af96b6575cba1a597914ba01c6af44f6e73c1e0afca0e9e4b",
+    "artifacts/multiuser-step10/memory-reclaimed.json": "5be5698781b71bb063f297decfd9fc8886ff328376d9fd1d74ad95946f46c860",
+    "artifacts/multiuser-step10/native-probe-final.log": "dd0aea2b8e91b38f472850bc92382db1cf6c6cac5514dbee6816af5766c33e91",
+    "artifacts/multiuser-step10/native-probe-first.json": "5e6fd0b67886f30d10602882751161a39d21b67b904c779b6d3ffe88090f5ab2",
+    "artifacts/multiuser-step10/native-probe.json": "f3541139966d91d8ba4eec71be2c0b0ae891bf547d516be5f0720c3ad6529103",
+    "artifacts/multiuser-step10/native-probe.log": "dfe9475108d9f58cfa05e5a4a2cae14e6bc6c0a3c0752d0108f6d4d9ba5793d0",
+    "artifacts/multiuser-step10/native-probe.ts": "da682a662a9dd3a661991951c88f1df48bd0db8cfc8a55b3a26e32a954a78d66",
+    "artifacts/multiuser-step10/script-types-final.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/multiuser-step10/script-types-first.log": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "artifacts/multiuser-step10/shutdown-after.log": "ae1e420928cec884ce1f0b6e3666c03a9637e0a566fc90c6e28cb1ebd3291ee0",
+    "artifacts/multiuser-step10/shutdown-before.log": "8c902706e8b49bba035699bf1b3dd40a66e9eb3e1fda5719d875e1a3b1dd9909",
+    "artifacts/multiuser-step10/document-review.json": "9c8c96b3465049a4abbf386db7978c473bf31954559c28c0a8a0d9bd10e31277"
+  }
+}

@@ -1,3 +1,4 @@
+import {VerificationSummary} from "../VerificationSummary";
 import type { AIRunRecord, NormalizedAIUsage } from "../../shared/types";
 import { dollars } from "../ai/display";
 
@@ -65,117 +66,10 @@ function UsageSummary({ usage }: { usage: NormalizedAIUsage }) {
   );
 }
 
-export function BuildAccounting({
-  run,
-  history,
-}: {
-  run: AIRunRecord;
-  history: AIRunRecord[];
+export function BuildAccounting({ run, history }: {
+    run: AIRunRecord;
+    history: AIRunRecord[];
 }) {
-  const metrics = comparableMetrics(history, run),
-    groups = [
-      [
-        "Interpretation",
-        run.calls.filter((call) => call.phase === "interpretation"),
-      ],
-      ["Builder", run.calls.filter((call) => call.phase === "builder")],
-      ["Repairs", run.calls.filter((call) => call.phase === "repair")],
-    ] as const;
-  return (
-    <details className="build-accounting">
-      <summary>Latest build usage and verification</summary>
-      <div className="accounting-body">
-        <header>
-          <div>
-            <span>Estimated charge</span>
-            <strong>
-              {run.usage.estimatedChargeUsd === undefined
-                ? "Unavailable"
-                : dollars(run.usage.estimatedChargeUsd)}
-            </strong>
-            <small>
-              Pricing snapshot {run.pricingVersion}; provider invoice may
-              differ.
-            </small>
-          </div>
-          <div>
-            <span>Outcome</span>
-            <strong>{run.outcome}</strong>
-            <small>
-              {run.verification.verified
-                ? "Verified by acceptance checks"
-                : run.verification.compilationPassed
-                  ? "Compiled; functional verification not yet measured"
-                  : "Verification did not pass"}
-            </small>
-          </div>
-        </header>
-        <UsageSummary usage={run.usage} />
-        <div className="call-breakdown">
-          {groups.map(([label, calls]) => (
-            <section key={label}>
-              <strong>{label}</strong>
-              <span>
-                {calls.length} call{calls.length === 1 ? "" : "s"}
-              </span>
-              {calls.length === 0 ? (
-                <small>None</small>
-              ) : (
-                calls.map((call, index) => (
-                  <small key={`${label}-${index}`}>
-                    {call.model}: {dollars(call.estimatedChargeUsd)} · input{" "}
-                    {tokenCount(call.usage.inputTokens)} · cached{" "}
-                    {tokenCount(call.usage.cachedInputTokens)} · output{" "}
-                    {tokenCount(call.usage.outputTokens)}
-                    {call.uncertain ? " · usage uncertain" : ""}
-                  </small>
-                ))
-              )}
-            </section>
-          ))}
-        </div>
-        <div className="effectiveness">
-          <strong>Comparable effectiveness</strong>
-          {metrics.passRate === undefined ? (
-            <span>
-              Not enough comparable data ({metrics.samples} sample
-              {metrics.samples === 1 ? "" : "s"}; 3 required).
-            </span>
-          ) : (
-            <>
-              <span>
-                Verification pass rate {(metrics.passRate * 100).toFixed(0)}% ·
-                median latency {Math.round((metrics.median || 0) / 1000)}s.
-              </span>
-              <span>
-                Estimated cost per successful verified build:{" "}
-                {metrics.costPerVerified === undefined
-                  ? "Not enough data"
-                  : dollars(metrics.costPerVerified)}
-                .
-              </span>
-            </>
-          )}
-        </div>
-        <div className="pricing-sources">
-          {[
-            ...new Map(
-              run.calls
-                .filter((call) => call.rate)
-                .map((call) => [call.rate!.sourceUrl, call.rate!]),
-            ).values(),
-          ].map((rate) => (
-            <a
-              key={rate.sourceUrl}
-              href={rate.sourceUrl}
-              target="_blank"
-              rel="noreferrer"
-            >
-              Official {rate.currency} pricing · verified {rate.verifiedAt}
-            </a>
-          ))}
-        </div>
-      </div>
-    </details>
-  );
+    const metrics = comparableMetrics(history, run), groups = [['Interpretation', run.calls.filter(call => call.phase === 'interpretation')], ['Builder', run.calls.filter(call => call.phase === 'builder')], ['Repairs', run.calls.filter(call => call.phase === 'repair')]] as const;
+    return <details className="build-accounting"><summary>Latest build usage and verification</summary><div className="accounting-body"><header><div><span>Estimated charge</span><strong>{run.usage.estimatedChargeUsd === undefined ? 'Unavailable' : dollars(run.usage.estimatedChargeUsd)}</strong><small>Pricing snapshot {run.pricingVersion}; provider invoice may differ.</small></div><div><span>Outcome</span><strong>{run.outcome}</strong><small>{run.verification.verified ? 'Passed the recorded acceptance checks' : run.verification.evidence?.status === 'passed' ? 'Acceptance checks passed; update was not promoted' : run.verification.evidence?.status === 'failed' ? 'Compiled; required behavior checks failed' : run.verification.evidence?.checks.length ? 'Covered checks passed; other criteria unverified' : run.verification.compilationPassed ? 'Compiled; acceptance criteria unverified' : 'Verification did not pass'}</small></div></header><UsageSummary usage={run.usage}/><div className="call-breakdown">{groups.map(([label, calls]) => <section key={label}><strong>{label}</strong><span>{calls.length} call{calls.length === 1 ? '' : 's'}</span>{calls.length === 0 ? <small>None</small> : calls.map((call, index) => <small key={`${label}-${index}`}>{call.model}: {dollars(call.estimatedChargeUsd)} · input {tokenCount(call.usage.inputTokens)} · cached {tokenCount(call.usage.cachedInputTokens)} · output {tokenCount(call.usage.outputTokens)}{call.uncertain ? ' · usage uncertain' : ''}</small>)}</section>)}</div><div className="effectiveness"><strong>Comparable effectiveness</strong>{metrics.passRate === undefined ? <span>Not enough comparable data ({metrics.samples} sample{metrics.samples === 1 ? '' : 's'}; 3 required).</span> : <><span>Verification pass rate {(metrics.passRate * 100).toFixed(0)}% · median latency {Math.round((metrics.median || 0) / 1000)}s.</span><span>Estimated cost per successful verified build: {metrics.costPerVerified === undefined ? 'Not enough data' : dollars(metrics.costPerVerified)}.</span></>}</div><div className="pricing-sources">{[...new Map(run.calls.filter(call => call.rate).map(call => [call.rate!.sourceUrl, call.rate!])).values()].map(rate => <a key={rate.sourceUrl} href={rate.sourceUrl} target="_blank" rel="noreferrer">Official {rate.currency} pricing · verified {rate.verifiedAt}</a>)}</div></div></details>;
 }

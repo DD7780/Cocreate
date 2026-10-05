@@ -1,0 +1,13 @@
+### Chrome DevTools Protocol / Methods / Input.dispatchKeyEvent
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Input
+
+Dispatches a key event to the page. It supports various event types such as `keyDown`, `keyUp`, `rawKeyDown`, and `char`. Parameters include modifier keys, timestamps, text content, key identifiers, DOM-defined key codes (`code`, `key`), virtual key codes, auto-repeat status, keypad origin, system key status, location on the keyboard, and editing commands.
+
+--------------------------------
+
+### Input.insertText
+
+Source: https://chromedevtools.github.io/devtools-protocol/tot/Input
+
+This method emulates inserting text that doesn't come from a key press, for example an emoji keyboard or an IME.

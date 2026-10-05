@@ -1,0 +1,20 @@
+(node:804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+'queued' !== 'failed'
+
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-interpretation-topology.ts:190:10) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: 'queued',
+  expected: 'failed',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

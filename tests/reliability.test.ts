@@ -1,3 +1,5 @@
+import {usedBudget} from './fixtures/workflow-budget.js';
+import { verifiedList } from './fixtures/verified-list.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import fs from 'node:fs';
@@ -14,6 +16,76 @@ import { applySteeringUpdate } from '../server/steering-edits.js';
 
 const plan=(name:string,content:string)=>({operations:[{type:'write',path:name,content}],summary:'Updated',decisions:[],conflicts:[],specification:{agreed:[],proposed:[],questions:[]}});
 const response=(value:unknown,status='completed')=>({output:[{content:[{type:'output_text',text:JSON.stringify(value)}]}],status,incomplete_details:status==='incomplete'?{reason:'max_output_tokens'}:undefined,usage:{input_tokens:10,output_tokens:20}});
+
+test('required behavior failure retains the verified product, records actionable evidence and needs explicit retry', async () => {
+  let broken=false, builds=0;
+  const provider=await fixture(body=>{
+    const input=JSON.parse(body.input);
+    if(body.text.format.schema.required.includes('goals'))return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')));
+    builds++; assert.ok(input.requiredBehaviorChecks.includes('filter'));
+    assert.match(body.instructions, /trusted checks are fixed/);
+    return response(plan('src/App.tsx', broken ? verifiedList.replace('setQuery(e.target.value)','void e') : verifiedList));
+  });
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'verified-retention-')), id=`verified-${crypto.randomUUID()}`;
+  let manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  try {
+    let room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
+    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
+    await waitFor(()=>room.versions.length===1||room.status==='Error',25_000);assert.equal(room.status,'Updated',room.lastError+JSON.stringify(manager.eventStore.eventsForWorkspace(id).filter(event=>event.eventType==='tool.failed').at(-1)?.payload));await waitFor(()=>!room.buildTask);const prior=structuredClone(room.versions[0]);
+    assert.equal(prior.aiRun?.verification.verified,true);
+    broken=true;edit(manager,room,'Add sorting');await manager.submitChanges(room,'alice','two');
+    await waitFor(()=>room.status==='Error'&&!room.buildTask,25_000);
+    assert.equal(builds,2,'functional failures do not spend on automatic provider repairs');
+    assert.deepEqual(room.versions,[prior]);assert.match(room.lastError||'',/Required behavior verification failed/);
+    const run=room.aiRuns.at(-1)!;assert.equal(run.verification.compilationPassed,true);assert.equal(run.verification.operationsApplied,true);
+    assert.equal(run.verification.requirementSatisfaction,'failed');assert.equal(run.verification.regressionCheck,'failed');
+    assert.equal(run.verification.evidence?.checks.find(check=>check.kind==='filter')?.passed,false);
+    assert.equal(run.verification.evidence?.checks.find(check=>check.kind==='sort')?.passed,true);
+    const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
+    assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
+    await manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get(id)!;
+    assert.deepEqual(room.aiRuns.at(-1)?.verification.evidence,run.verification.evidence);
+    assert.equal(manager.view(room).latestVersion,1);assert.equal(builds,2);
+    assert.equal(manager.eventStore.eventsForWorkspace(id).filter(event=>event.eventType==='candidate.verification_recorded').length,2);
+    broken=false;await manager.buildNow(room);assert.equal(room.versions.length,2);assert.equal(builds,3);
+    assert.equal(room.versions[1].aiRun?.verification.evidence?.status,'passed');
+    assert.notEqual(room.versions[1].aiRun?.verification.evidence?.candidateHash,run.verification.evidence?.candidateHash);
+    assert.equal(manager.view(room).workflow?.tasks.at(-1)?.evidenceStatus,'passed');
+  } finally {
+    manager.shutdown();await provider.close();assert.equal(path.dirname(dir),path.resolve(os.tmpdir()));fs.rmSync(dir,{recursive:true,force:true});
+    const generated=path.resolve('generated/rooms',id);assert.equal(path.dirname(generated),path.resolve('generated/rooms'));fs.rmSync(generated,{recursive:true,force:true});
+  }
+});
+
+test('unavailable verification browser fails before builder spending and never reuses legacy covered evidence', async () => {
+  let builds=0;
+  const provider=await fixture(body=>{
+    const input=JSON.parse(body.input);
+    if(body.text.format.schema.required.includes('goals'))return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')));
+    builds++;return response(plan('src/App.tsx',verifiedList));
+  });
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'verification-unavailable-')),id=`verify-missing-${crypto.randomUUID()}`;
+  const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  const previous=process.env.COCREATE_VERIFICATION_BROWSER;
+  try {
+    const room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
+    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
+    await waitFor(()=>room.versions.length===1&&!room.buildTask,25_000);
+    const prior=structuredClone(room.versions[0]);room.versions[0].aiRun!.verification.evidence=undefined;
+    process.env.COCREATE_VERIFICATION_BROWSER=path.join(dir,'missing-browser.exe');
+    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','two');
+    await waitFor(()=>room.status==='Error'&&!room.buildTask,25_000);
+    assert.equal(builds,1,'same semantic fingerprint cannot silently bypass newly required checks');
+    assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0].files,prior.files);
+    assert.match(room.lastError||'',/verification browser is unavailable/);
+    const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
+    assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
+  } finally {
+    previous===undefined?delete process.env.COCREATE_VERIFICATION_BROWSER:process.env.COCREATE_VERIFICATION_BROWSER=previous;
+    manager.shutdown();await provider.close();assert.equal(path.dirname(dir),path.resolve(os.tmpdir()));fs.rmSync(dir,{recursive:true,force:true});
+    const generated=path.resolve('generated/rooms',id);assert.equal(path.dirname(generated),path.resolve('generated/rooms'));fs.rmSync(generated,{recursive:true,force:true});
+  }
+});
 const interpreted=(text:string)=>({goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],intents:[{text,category:'goal',classification:'explicit_request',rationale:'Direct request',sourcePassage:text,affectedRequirementIds:[]}]});
 const connectFixture=async(manager:RoomManager,room:ReturnType<RoomManager['create']>,baseUrl:string)=>{
   const connection=(await manager.saveConnection(room,{name:'Synthetic',provider:'custom',baseUrl,apiFormat:'responses',apiKey:'synthetic'})).id;
@@ -24,7 +96,7 @@ const edit=(manager:RoomManager,room:ReturnType<RoomManager['create']>,text:stri
   const doc=new Y.Doc();Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);
   manager.handleMessage(room,{participantId:'alice',readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);doc.destroy();
 };
-const waitFor=async(check:()=>boolean)=>{for(let i=0;i<250;i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
+const waitFor=async(check:()=>boolean,timeoutMs=5_000)=>{for(let i=0;i<Math.ceil(timeoutMs/20);i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
 const fixture=async(handler:(body:any)=>unknown|Promise<unknown>)=>{
   const server=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const value=await handler(JSON.parse(raw));res.setHeader('content-type','application/json');res.end(JSON.stringify(value));});
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -50,7 +122,7 @@ test('physical recovery calls and spending reservations cannot exceed their shar
   const {generateText}=await import('../server/providers.js');
   const setup={mode:'custom' as const,resolved:{personal:{model:'builder',rate:{currency:'USD' as const,inputPerMillion:1,outputPerMillion:2,reasoningBilling:'not_separately_reported' as const,reasoningNote:'Synthetic',sourceUrl:'https://example.test',verifiedAt:'2026-10-01'},maxInputTokens:5000,maxOutputTokens:500,connectionId:'x',connectionName:'x',provider:'custom' as const},builder:undefined as any,repairAttempts:1}};setup.resolved.builder=setup.resolved.personal;
   const call=()=> (manager as any).tracked(room,{purpose:'builder',provider:'custom',model:'builder',workflowRunId:'run',setup},()=>generateText({provider:'custom',baseUrl:provider.baseUrl,apiKey:'synthetic',apiFormat:'responses'},{model:'builder',instructions:'Test',input:'Test',maxOutputTokens:500}));
-  try{room.executionBudget={calls:23,reservedUsd:0};await call();assert.equal(dispatched,1);await assert.rejects(call,/24 physical-call ceiling/);assert.equal(dispatched,1);room.executionBudget={calls:0,reservedUsd:0,maximumUsd:0};await assert.rejects(call,/spending limit/);assert.equal(dispatched,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+  try{room.executionBudget=usedBudget(23);await call();assert.equal(dispatched,1);await assert.rejects(call,/24 physical-call ceiling/);assert.equal(dispatched,1);room.executionBudget=usedBudget(0,0);await assert.rejects(call,/spending limit/);assert.equal(dispatched,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON',async()=>{
@@ -130,25 +202,25 @@ test('an exhausted recovery leaves the previously promoted and compiled artifact
 
 test('independent participants submit in durable capture order, retain later build inputs and saved drafts on reload',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-submissions-')),seen:string[]=[];let builds=0,releaseFirstBuild:()=>void=()=>{};const firstBuildGate=new Promise<void>(resolve=>{releaseFirstBuild=resolve});
-  const provider=await fixture(async body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals')){seen.push(input.participantName);if(input.participantName==='Alice')await new Promise(resolve=>setTimeout(resolve,80));const text=input.authenticatedChanges.map((change:any)=>change.after).join(' ');assert.doesNotMatch(text,/unsubmitted/);assert.equal(input.sharedBrainstormCanvas,undefined);assert.doesNotMatch(JSON.stringify(input.acceptedContext),/unsubmitted/);return response({goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],intents:[{text,category:'goal',classification:'explicit_request',rationale:'Direct request',sourcePassage:text,affectedRequirementIds:[]}]});}builds++;if(builds===1)await firstBuildGate;return response(plan('src/App.tsx',`export default function App(){return <main>Build ${builds}</main>}`));});
+  const provider=await fixture(async body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals')){seen.push(input.participantName);if(input.participantName==='Alice')await new Promise(resolve=>setTimeout(resolve,80));const text=input.authenticatedChanges.map((change:any)=>change.after).join(' ');assert.doesNotMatch(text,/unsubmitted/);assert.equal(input.sharedBrainstormCanvas,undefined);assert.doesNotMatch(JSON.stringify(input.acceptedContext),/unsubmitted/);return response({goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],intents:[{text,category:'goal',classification:'explicit_request',rationale:'Direct request',sourcePassage:text,affectedRequirementIds:[]}]});}builds++;if(builds===1)await firstBuildGate;return response(plan('src/App.tsx',verifiedList));});
   let manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'}),room=manager.create('room');
   const docs:Y.Doc[]=[];
   const write=(id:string,text:string)=>{let doc=docs[['alice','bob','cara'].indexOf(id)];if(!doc){doc=new Y.Doc();docs[['alice','bob','cara'].indexOf(id)]=doc;Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));}const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.transact(()=>{doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);});manager.handleMessage(room,{participantId:id,readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);};
   try{for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])manager.join(room,id,name);const connection=(await manager.saveConnection(room,{name:'Synthetic',provider:'custom',baseUrl:provider.baseUrl,apiFormat:'responses',apiKey:'synthetic'})).id;room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};await manager.assignAI(room,{connectionId:connection,model:'builder'},{connectionId:connection,model:'builder'});
-    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');releaseFirstBuild();await waitFor(()=>room.versions.length===1&&!room.buildTask);assert.ok(builds>=2,'the fixed active build is superseded and later accepted steering is processed');assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
+    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');assert.equal(room.submissions.find(item=>item.requestId==='request-c')?.status,'submitted');assert.deepEqual(seen,['Alice','Bob']);releaseFirstBuild();await waitFor(()=>room.versions.length>=1,25_000);assert.equal(room.versions[0].specificationRevision,2);await waitFor(()=>room.versions.length===2&&!room.buildTask&&!room.buildTimer,25_000);assert.equal(builds,2,'the fixed active build publishes before captured later steering builds');assert.deepEqual(room.versions.map(item=>item.specificationRevision),[2,3]);assert.deepEqual(seen,['Alice','Bob','Alice']);assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
   }finally{releaseFirstBuild();manager.shutdown();for(const doc of docs)doc?.destroy();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('ownership loss after compilation blocks promotion; command replay adds no physical call',async()=>{
-  let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0;
+  let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0,bundled=false;
   const gate=new Promise<void>(resolve=>{release=resolve}),bundling=new Promise<void>(resolve=>{entered=resolve});
   const provider=await fixture(body=>{calls++;return response(body.text.format.schema.required.includes('goals')?interpreted('Build catalog'):plan('src/App.tsx','export default function App(){return <main>Compiled fixture</main>}'))});
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lost-promotion-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{canonicalVersions=(payload.versions as any[]).length},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},recordProviderRequest:async()=>{},onCoordinatorLost:callback=>{lose=callback;return()=>{}}}});
   const execute=manager.tools.execute.bind(manager.tools);
-  manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
+  manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
     const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
-    const first=await manager.submitChanges(room,'alice','same-command');await bundling;const before=calls;
+    const first=await manager.submitChanges(room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error');assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
     assert.equal((await manager.submitChanges(room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
     lose(room.id);release();await room.buildTask;await room.persistQueue;
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);

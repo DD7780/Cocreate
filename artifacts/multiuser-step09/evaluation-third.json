@@ -1,0 +1,2762 @@
+{
+  "recordedAt": "2026-10-04T17:26:14.797Z",
+  "scope": "Synthetic loopback provider, actual local capture queue/SQLite and existing native build baseline; no live provider/hosted/SQL/deployment",
+  "measurements": "Elapsed monotonic request-to-reconciled projection; raw request/output byte sizes; oracle tokens=ceil(bytes/4), not measured model tokenization or invoices. Shared delay=max job delay is optimistic; two-worker offline memory reducer is not a durable production scheduler. Queue observation suppresses builder scheduling; baseline scenarios exercise native publication separately.",
+  "workload": {
+    "independent": {
+      "captures": 3,
+      "delaysMs": [
+        120,
+        40,
+        10
+      ]
+    },
+    "mixed": {
+      "captures": 3,
+      "delaysMs": [
+        30,
+        20,
+        10
+      ]
+    },
+    "conflict": {
+      "captures": 2,
+      "delaysMs": [
+        80,
+        10
+      ]
+    },
+    "unsafe": {
+      "captures": 2,
+      "delaysMs": [
+        80,
+        10
+      ]
+    }
+  },
+  "actualQueue": {
+    "captures": 3,
+    "accepted": 3,
+    "queueToProviderMs": [
+      96,
+      219,
+      335
+    ],
+    "captureToAcceptedMs": [
+      214.77089999999953,
+      353.04069999999956,
+      494.8890000000001
+    ],
+    "physicalCalls": 3,
+    "replayExtraCalls": 0,
+    "restartExtraCalls": 0,
+    "replayStatus": "queued",
+    "recoveredSubmissionStatus": "queued",
+    "restartedReceipts": "Completed interpretations and their receipts remain queued for a future explicit build; no automatic inference",
+    "builderSchedulingSuppressed": true,
+    "boundary": "Actual RoomManager capture-order interpretation and local SQLite; no generated product"
+  },
+  "trials": [
+    {
+      "repeat": 1,
+      "workload": "independent",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 318.59590000000003,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 157.0299,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "c",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 133.92070000000012,
+          "inputBytes": 2923,
+          "outputBytes": 1305,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 731,
+          "syntheticOutputTokens": 327,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 1,
+      "workload": "mixed",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 110.45939999999996,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 56.303300000000036,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 42.991599999999835,
+          "inputBytes": 2940,
+          "outputBytes": 1357,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 735,
+          "syntheticOutputTokens": 340,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 1,
+      "workload": "conflict",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 106.96069999999963,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 89.41990000000033,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 95.40880000000016,
+          "inputBytes": 2720,
+          "outputBytes": 896,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 680,
+          "syntheticOutputTokens": 224,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 1,
+      "workload": "unsafe",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 127.01510000000007,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 88.69679999999971,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 93.52380000000039,
+          "inputBytes": 2731,
+          "outputBytes": 940,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 683,
+          "syntheticOutputTokens": 235,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "workload": "independent",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 212.11069999999972,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 132.82000000000016,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "c",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 137.79410000000007,
+          "inputBytes": 2923,
+          "outputBytes": 1305,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 731,
+          "syntheticOutputTokens": 327,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "workload": "mixed",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 109.86270000000013,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 58.66030000000001,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 45.08249999999998,
+          "inputBytes": 2940,
+          "outputBytes": 1357,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 735,
+          "syntheticOutputTokens": 340,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "workload": "conflict",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 125.47430000000031,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 89.18460000000005,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 92.32960000000003,
+          "inputBytes": 2720,
+          "outputBytes": 896,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 680,
+          "syntheticOutputTokens": 224,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 2,
+      "workload": "unsafe",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 131.7489999999998,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 91.70449999999983,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 90.16609999999991,
+          "inputBytes": 2731,
+          "outputBytes": 940,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 683,
+          "syntheticOutputTokens": 235,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "workload": "independent",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 203.2431999999999,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 134.42330000000038,
+          "inputBytes": 10167,
+          "outputBytes": 1215,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "c",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2542,
+          "syntheticOutputTokens": 305,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 142.08970000000045,
+          "inputBytes": 2923,
+          "outputBytes": 1305,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 731,
+          "syntheticOutputTokens": 327,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Add sorting",
+                "status": "accepted",
+                "actors": [
+                  "Cara"
+                ]
+              },
+              {
+                "description": "Add favorites",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "workload": "mixed",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 101.07629999999972,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 44.26389999999992,
+          "inputBytes": 10184,
+          "outputBytes": 1267,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 3,
+          "syntheticInputTokens": 2546,
+          "syntheticOutputTokens": 318,
+          "uncertainPricedCalls": 3,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 48.663799999999355,
+          "inputBytes": 2940,
+          "outputBytes": 1357,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "commitOrder": [
+            "a",
+            "b",
+            "c"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 735,
+          "syntheticOutputTokens": 340,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Build a catalog",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Maybe add recipes",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "proposal"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Cara",
+                "classifications": [
+                  "question"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "workload": "conflict",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 104.48450000000048,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 92.53330000000005,
+          "inputBytes": 6785,
+          "outputBytes": 829,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1697,
+          "syntheticOutputTokens": 208,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 87.98300000000017,
+          "inputBytes": 2720,
+          "outputBytes": 896,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 680,
+          "syntheticOutputTokens": 224,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Use a red header",
+                "status": "accepted",
+                "actors": [
+                  "Bob"
+                ]
+              },
+              {
+                "description": "Use a blue header",
+                "status": "accepted",
+                "actors": [
+                  "Alice"
+                ]
+              }
+            ],
+            "conflicts": [
+              {
+                "subject": "header",
+                "actors": [
+                  "Alice",
+                  "Bob"
+                ]
+              }
+            ],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "explicit_request"
+                ],
+                "verified": [
+                  true
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "repeat": 3,
+      "workload": "unsafe",
+      "comparisons": [
+        {
+          "mode": "serial-personal",
+          "elapsedMs": 123.35890000000018,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "parallel-two-experiment",
+          "elapsedMs": 88.30429999999978,
+          "inputBytes": 6796,
+          "outputBytes": 873,
+          "maximumActive": 2,
+          "completionOrder": [
+            "b",
+            "a"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 2,
+          "syntheticInputTokens": 1700,
+          "syntheticOutputTokens": 219,
+          "uncertainPricedCalls": 2,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "mode": "shared-batch-experiment",
+          "elapsedMs": 90.96239999999943,
+          "inputBytes": 2731,
+          "outputBytes": 940,
+          "maximumActive": 1,
+          "completionOrder": [
+            "a",
+            "b"
+          ],
+          "commitOrder": [
+            "a",
+            "b"
+          ],
+          "physicalCalls": 1,
+          "syntheticInputTokens": 683,
+          "syntheticOutputTokens": 235,
+          "uncertainPricedCalls": 1,
+          "projection": {
+            "requirements": [
+              {
+                "description": "Make that blue",
+                "status": "proposed",
+                "actors": [
+                  "Alice"
+                ]
+              },
+              {
+                "description": "Build a private billing dashboard",
+                "status": "proposed",
+                "actors": [
+                  "Bob"
+                ]
+              }
+            ],
+            "conflicts": [],
+            "intents": [
+              {
+                "actor": "Alice",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              },
+              {
+                "actor": "Bob",
+                "classifications": [
+                  "ambiguity"
+                ],
+                "verified": [
+                  false
+                ]
+              }
+            ]
+          }
+        }
+      ]
+    }
+  ],
+  "currentBaseline": [
+    {
+      "repeat": 1,
+      "scenario": "simultaneous-slow",
+      "failed": true,
+      "error": "Baseline observation timed out: finite workload drain"
+    },
+    {
+      "repeat": 1,
+      "scenario": "failed-interpreter",
+      "failed": true,
+      "error": "Baseline observation timed out: finite workload drain"
+    },
+    {
+      "repeat": 2,
+      "scenario": "simultaneous-slow",
+      "observations": {
+        "failedSubmissions": 0,
+        "acceptedCount": 2,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 7412,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 86.49429999999847,
+          "providerMs": 83.60749999999825
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 240.53800000000047,
+          "providerMs": 0.01599999999598367
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.01929999999993015
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 121,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 45,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 37,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 30,
+        "outputTokens": 60,
+        "unknownCalls": 0
+      }
+    },
+    {
+      "repeat": 2,
+      "scenario": "failed-interpreter",
+      "observations": {
+        "failedSubmissions": 1,
+        "acceptedCount": 1,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 7945,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 47.259799999999814,
+          "providerMs": 0.016100000000733417
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 98.48479999999836,
+          "providerMs": 0.04920000000129221
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.025200000003678724
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 25,
+          "outcome": "failed",
+          "usageStatus": "unknown"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 26,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 24,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 1
+      }
+    },
+    {
+      "repeat": 3,
+      "scenario": "simultaneous-slow",
+      "failed": true,
+      "error": "Baseline observation timed out: finite workload drain"
+    },
+    {
+      "repeat": 3,
+      "scenario": "failed-interpreter",
+      "observations": {
+        "failedSubmissions": 1,
+        "acceptedCount": 1,
+        "unsubmittedDraftRetained": true,
+        "duplicateExtraCalls": 0,
+        "lastAcceptedToPromotionMs": 7464,
+        "promotedVersions": 1
+      },
+      "attempts": [
+        {
+          "phase": "interpretation",
+          "queueMs": 77.01429999999527,
+          "providerMs": 0.0027000000118277967
+        },
+        {
+          "phase": "interpretation",
+          "queueMs": 133.49069999999483,
+          "providerMs": 0.020600000003469177
+        },
+        {
+          "phase": "builder",
+          "providerMs": 0.012199999997392297
+        }
+      ],
+      "physicalAttempts": [
+        {
+          "phase": "interpretation",
+          "durationMs": 32,
+          "outcome": "failed",
+          "usageStatus": "unknown"
+        },
+        {
+          "phase": "interpretation",
+          "durationMs": 32,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        },
+        {
+          "phase": "builder",
+          "durationMs": 35,
+          "outcome": "succeeded",
+          "usageStatus": "measured"
+        }
+      ],
+      "reportedUsage": {
+        "calls": 3,
+        "inputTokens": 20,
+        "outputTokens": 40,
+        "unknownCalls": 1
+      }
+    }
+  ],
+  "checks": {
+    "comparisonTrials": 36,
+    "identicalProjections": true,
+    "reverseCompletionCaptureOrder": true,
+    "batchIdentitySourceGuards": true,
+    "baselineInvalidationExperimentOnly": true,
+    "runtimeReplayRestart": true,
+    "nativeBaselinePassed": 3,
+    "nativeBaselineTotal": 6
+  },
+  "sourceHashes": {
+    "server/rooms.ts": "db20d1c6ebd3d77ef588ae0022f372a5678bbd88b4a88c6c26c428ec75bd0a3b",
+    "server/generator.ts": "028345d4b14a272d487d2eb91efa9b96e5051ddba2bd8a0ef4aadc4ae6154647",
+    "server/intent-authority.ts": "d3a41612c68d7f5deff013d63f1e30420b589375cbc1ed9d23ba8b6cb953a6e0",
+    "server/requirements.ts": "3a0957328b28d47d742d814ea9da085d6f10978c8ea7b4e9fb209dc43eabdf2f",
+    "server/providers.ts": "b53d00f6646207ef3a62ea0c652482a8f7d2549c856e29e7373fe78d20141754",
+    "server/workflow-budget.ts": "50239d71e88a5581cf93abddc0cde166ea63aa471389885aa526a0388e24827e",
+    "scripts/verify-interpretation-topology.ts": "98c2a86a6aefd63aed11e6cd9fe964a3846c942b91030feac35033d1666588f8"
+  },
+  "decision": "Retain production serial personal interpretation and one coordinator. Synthetic independent service delay benefits from concurrency; this does not establish material end-to-end production bottleneck or justify a durable speculative scheduler/shared model contract. No runtime concurrency/topology change.",
+  "pending": [
+    "Step 08 whole regression gate remains open",
+    "Production queue/model latency, stale-baseline/reinterpretation frequency and cost per verified update",
+    "Live shared-vs-personal quality with an authorized budget",
+    "Actual hosted SQL/Storage/accounts, Linux isolation and deployment"
+  ]
+}

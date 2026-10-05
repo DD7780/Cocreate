@@ -1,0 +1,13 @@
+(node:22732) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"f359aa88-35b2-4d9f-a06a-d96cfd7b4e00","correlationId":"10a32ba7-79df-494d-a483-35c586978976"}
+{"event":"collaboration.connected","connectionId":"2d215f42-d9e0-4836-88ed-685dc9636d18","correlationId":"f1e7a135-aa7c-4b19-8017-e68958765ab1"}
+{"event":"collaboration.connected","connectionId":"b5f868c1-8540-4441-92c8-c949c19e7fdd","correlationId":"659edf9f-3c24-4947-812b-c9e04ca02fce"}
+{"event":"collaboration.disconnected","connectionId":"2d215f42-d9e0-4836-88ed-685dc9636d18","code":1001}
+{"event":"collaboration.connected","connectionId":"e0d57de7-2ccb-4e8e-a3ec-57630d72455e","correlationId":"6f4f83b1-2646-4e74-9e5c-bba5d041c393"}
+{"event":"collaboration.disconnected","connectionId":"f359aa88-35b2-4d9f-a06a-d96cfd7b4e00","code":1001}
+{"event":"collaboration.connected","connectionId":"a4c1308d-2e9b-443f-863f-d8c2e1aa446b","correlationId":"156ad6c2-6d59-48b4-8e57-5f712c6b66c3"}
+{"scope":"Three independent signed local owner/editor/viewer Chrome profiles, real SQLite, controlled loopback provider and Windows isolated compiler; no hosted accounts, paid inference or SQL execution","participants":3,"capturedPendingDurable":true,"reloadDuringBuild":true,"replayAddsNoInference":true,"viewerDenied":true,"convergedRevisionLabels":true,"progressWithFurtherCaptures":true,"promotedRevisions":[1,3,4],"interpreterCalls":4,"builderCalls":3,"physicalCalls":7,"functionalVerified":false}
+{"event":"collaboration.disconnected","connectionId":"a4c1308d-2e9b-443f-863f-d8c2e1aa446b","code":1006}
+{"event":"collaboration.disconnected","connectionId":"e0d57de7-2ccb-4e8e-a3ec-57630d72455e","code":1006}
+{"event":"collaboration.disconnected","connectionId":"b5f868c1-8540-4441-92c8-c949c19e7fdd","code":1006}

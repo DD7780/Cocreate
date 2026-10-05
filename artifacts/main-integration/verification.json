@@ -1,0 +1,97 @@
+{
+  "date": "2026-10-05",
+  "purpose": "Authorized normal merge of Steps 6–10 into main preserving cleanup and both histories",
+  "parents": {
+    "main": "4f99c16ad12554a5ce612caa33f3b80e86601abb",
+    "roadmap": "8f34496944813c54f1d55fd40991269767499942"
+  },
+  "destination": "refs/heads/main",
+  "checks": {
+    "full": {
+      "tests": 218,
+      "passed": 218,
+      "failed": 0,
+      "skipped": 0,
+      "log": "artifacts/main-integration/full-tests.log"
+    },
+    "types": {
+      "passed": true,
+      "log": "artifacts/main-integration/types-final.log"
+    },
+    "boundaries": {
+      "passed": true,
+      "violations": 0,
+      "providerCalls": 0,
+      "log": "artifacts/main-integration/boundaries.log"
+    },
+    "build": {
+      "passed": true,
+      "log": "artifacts/main-integration/build.log"
+    },
+    "browser": {
+      "passed": true,
+      "participants": 3,
+      "physicalCalls": 9,
+      "reportedTokens": 1350,
+      "scope": "Three independent signed local owner/editor/editor headless profiles, real SQLite and Windows isolated compiler/browser, loopback provider and SDK-backed controlled Storage/PostgREST. No hosted identity/SQL/RLS/live billing/deployment.",
+      "report": "artifacts/main-integration/browser/checks.json",
+      "log": "artifacts/main-integration/browser.log"
+    },
+    "graph": {
+      "log": "artifacts/main-integration/graphify.log",
+      "llmCalls": 0
+    },
+    "documents": {
+      "localLinksChecked": 238,
+      "broken": [],
+      "uniqueDecisionIds": 54
+    },
+    "scopedStagedDiff": "passed",
+    "wholeStagedDiff": "Inherited historical TAP log blank-line whitespace retained; source/docs/graph/new evidence pass"
+  },
+  "historicalEvidence": {
+    "filesChecked": 166,
+    "altered": []
+  },
+  "cleanupPreserved": {
+    "sharedTypes": true,
+    "extractedRoomState": true,
+    "workspacePanels": true,
+    "removedScaffoldNotRestored": true,
+    "dependenciesAndCIUnchanged": true,
+    "offlineAuditTooling": true
+  },
+  "limitsAndDeadlinesChanged": false,
+  "paidInference": false,
+  "migrationsApplied": false,
+  "deployed": false,
+  "hostedRelease": "pending",
+  "sourceSha256": {
+    "server/generator.ts": "1b9fc3fc713b1c625fb5411e2eb9df626081904204603f1161bb4857df534273",
+    "server/index.ts": "b8718a84ef709b95f207868271c15e747c5fa2c9e1e85da5efe7ddbaa781a934",
+    "server/providers.ts": "28e1198a4b49858e000cf572577eb9d174771310321a6a1128b650e38006e50a",
+    "server/rooms.ts": "574676245bbaf776f7072a37d2374cb786e17f90046ac13efe51526317a44408",
+    "server/room-state.ts": "d5f30b6d5f6482969d74986c6757bab09b685b462e0e75d0f669abd7b62930d4",
+    "server/verification.ts": "b186f609f7e346cfe132acdb6ec74ac51e28ea5a3ca91a6a8fbb3efe3d010c14",
+    "server/workflow-budget.ts": "2e69b7bf8a696984e8dca9047c82bb7e9cff63a9fabe239f2cd6daa4656ec3d7",
+    "server/build-progress.ts": "e872a408549780f6d159626647a5b5e87f4aa2755fa6ae33ede3faa4d201f04e",
+    "server/isolation/windows-runner.cs": "36b529061b1265d54f230c7dfe44fd4e251921b9251ab2de13bb58a83dfd0f30",
+    "shared/types.ts": "73de846062ab4278342f781feaaa049eadf907642905134c4fab032630a7b2b1",
+    "src/App.tsx": "587018285bd9a4f0423fbad81d1ec5e37c08ec93fb6782e16f52d0cdb535d2a5",
+    "src/workspace/BuildAccounting.tsx": "f16c6376ca8da841ebdc0603e358a44d52641dba8772ccd770bb80d225f7609c",
+    "src/BuildProgress.tsx": "e241daf8bd06b180c0667868f7031cc0e43df2ac46ccfcb6f88e43935ff10dcf",
+    "src/VerificationSummary.tsx": "23408a7aedc2dc24271a3202ad08c7ae683d43c37ed62b5a83aeda19e0306e20",
+    "scripts/verify-harness-integration.ts": "5912ec179a25755535d57a8c0b49bae4e261509693dc202741dd0d2895ab2b5c"
+  },
+  "documentSha256": {
+    "README.md": "bed80ab60546f8d64f2685002f94aa23e88e7f6eccbb389d7c98f5aa668a86eb",
+    "api.md": "f5244308a673b8e722a9ef3e99579229c3a7d71dc663b71d4c7cf5988dc0b612",
+    "context.md": "cacc15ab8d081f36004ba3a9216e7a04255d19738a62b3c678e3853f252e6884",
+    "product.md": "b2a2291074ecb43de0da30c59e98b100c760695a7a4b3438d11bd7fab71e3e8d",
+    "instructions.md": "4df44102f9d4e41d02223c6f93d2b599978c5ad67503ca0b3770be08ea00e38c",
+    "docs/harness/architecture.md": "1a90176a393ad8a1987c16b04762325c40ed3f161808d366af2bf31d6015809e",
+    "docs/harness/checklist.md": "d296d8c24c1ddce9a0a24b2c4d28b9f7771e626cb02c4dce2f9bec7eede4453d",
+    "docs/harness/decisions.md": "054c5b63634be24bf9b3a6ddaaa89854970c72a3223cc7a069c850d08d5ac86d",
+    "docs/harness/main-integration-handoff.md": "8942a42ef1c7d2c499b381672db8ddc79be8a92ece6ae944d466baf604a8f7e4"
+  }
+}

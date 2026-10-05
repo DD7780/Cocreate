@@ -1,0 +1,17 @@
+$ tsx scripts/codebase-audit.ts --check
+warning: in the working copy of 'README.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/harness/architecture.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'docs/harness/decisions.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'instructions.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/generator.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/index.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/providers.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/room-state.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/rooms.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'shared/types.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/App.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'src/workspace/BuildAccounting.tsx', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/event-store.test.ts', LF will be replaced by CRLF the next time Git touches it
+Audited 133 files; 1 static candidates; 0 boundary violations.
+Jev: 0 physical requests, 0 input tokens with known usage, known-usage estimate $0.000000; unknown requests retain their reservation.
+Report: artifacts/codebase-audit/report.json

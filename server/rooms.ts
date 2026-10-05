@@ -1,3 +1,8 @@
+import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
+import {buildProgressFor} from "./build-progress.js";
+import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
+import {assertVerificationBrowserAvailable} from "./isolation/browser.js";
+import type {CandidateVerification} from "../shared/types.js";
 import type {
   ProjectRole,
   DurableStore,
@@ -167,37 +172,38 @@ export class RoomManager {
   readonly byok = new OpenRouterLeases();
   private dataDir: string;
   private conflictQueue = new Map<string, Promise<unknown>>();
-  constructor(
-    private config: {
-      debounceMs: number;
-      buildDebounceMs?: number;
-      buildCooldownMs?: number;
-      buildMaxWaitMs?: number;
-      encryptionSecret: string;
-      baseUrl?: string;
-      dataDir?: string;
-      durableStore?: DurableStore;
-      managedOpenRouterKey?: string;
-      mvpByokOnly?: boolean;
-    },
-  ) {
+  constructor(private config: {
+    debounceMs: number;
+    buildDebounceMs?: number;
+    buildCooldownMs?: number;
+    buildMaxWaitMs?: number;
+    encryptionSecret: string;
+    baseUrl?: string;
+    dataDir?: string;
+    durableStore?: DurableStore;
+    managedOpenRouterKey?: string;
+    authorizeSubmission?: (projectId: string, participantId: string) => Promise<void>;
+    authorizeBudgetReset?: (projectId: string, participantId: string) => Promise<void>;
+    mvpByokOnly?: boolean;
+}) {
     this.dataDir = config.dataDir || defaultDataDir;
-    fs.mkdirSync(this.dataDir, { recursive: true });
+    fs.mkdirSync(this.dataDir, {
+        recursive: true
+    });
     this.eventStore = new EventStore(this.dataDir);
     this.tools = new ToolRegistry(this.eventStore);
     this.heartbeat = setInterval(() => {
-      for (const room of this.rooms.values())
-        try {
-          this.assertOwned(room);
-        } catch {
-          this.loseOwnership(room.id);
-        }
-    }, 10_000);
+        for (const room of this.rooms.values())
+            try {
+                this.assertOwned(room);
+            }
+            catch {
+                this.loseOwnership(room.id);
+            }
+    }, 10000);
     this.heartbeat.unref();
-    this.unsubscribeOwnership = config.durableStore?.onCoordinatorLost?.((id) =>
-      this.loseOwnership(id),
-    );
-  }
+    this.unsubscribeOwnership = config.durableStore?.onCoordinatorLost?.(id => this.loseOwnership(id));
+}
   async connectTemporaryOpenRouter(room: Room, ownerId: string, key: string) {
     if (room.ownerId !== ownerId)
       throw new Error("Only the project owner may connect a key.");
@@ -461,60 +467,38 @@ export class RoomManager {
   private load(room: Room) {
     const legacyFile = path.join(this.dataDir, `${room.id}.json`);
     if (!this.eventStore.hasWorkspace(room.id) && fs.existsSync(legacyFile))
-      this.eventStore.importLegacyWorkspace(room.id, legacyFile);
+        this.eventStore.importLegacyWorkspace(room.id, legacyFile);
     const meta = this.eventStore.readWorkspaceSnapshot<any>(room.id);
     if (!meta)
-      throw new Error(`Workspace ${room.id} has no recoverable state.`);
+        throw new Error(`Workspace ${room.id} has no recoverable state.`);
     if (meta.update)
-      Y.applyUpdate(room.doc, Buffer.from(meta.update, "base64"), "load");
-    room.participants = new Map(
-      (meta.participants || []).map((p: Participant) => [
-        p.id,
-        {
-          ...p,
-          active: false,
-          agentStatus: "idle",
-          latest: p.latest ? normalizeInterpretation(p.latest) : undefined,
-        },
-      ]),
-    );
-    room.ownerId =
-      meta.ownerId || room.participants.keys().next().value || null;
+        Y.applyUpdate(room.doc, Buffer.from(meta.update, 'base64'), 'load');
+    room.participants = new Map((meta.participants || []).map((p: Participant) => [p.id, {
+            ...p, active: false, agentStatus: 'idle', latest: p.latest ? normalizeInterpretation(p.latest) : undefined
+        }]));
+    room.ownerId = meta.ownerId || room.participants.keys().next().value || null;
     room.requirements = (meta.requirements || []).map(normalizeInterpretation);
     room.sharedRequirements = meta.sharedRequirements || [];
     room.contradictions = meta.contradictions || [];
-    room.conflictGroups =
-      meta.conflictGroups ||
-      migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
+    room.conflictGroups = meta.conflictGroups || migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
     if (!room.sharedRequirements.length && room.requirements.length)
-      for (const interpretation of room.requirements) {
-        const reconciled = reconcileRequirements(
-          room.sharedRequirements,
-          interpretation,
-          room.conflictGroups.length
-            ? room.conflictGroups
-            : room.contradictions,
-        );
-        room.sharedRequirements = reconciled.requirements;
-        room.conflictGroups = reconciled.conflictGroups;
-        room.contradictions = reconciled.contradictions;
-      }
-    room.specificationRevision =
-      meta.specificationRevision ||
-      room.sharedRequirements.reduce((total, item) => total + item.revision, 0);
+        for (const interpretation of room.requirements) {
+            const reconciled = reconcileRequirements(room.sharedRequirements, interpretation, room.conflictGroups.length ? room.conflictGroups : room.contradictions);
+            room.sharedRequirements = reconciled.requirements;
+            room.conflictGroups = reconciled.conflictGroups;
+            room.contradictions = reconciled.contradictions;
+        }
+    room.specificationRevision = meta.specificationRevision || room.sharedRequirements.reduce((total, item) => total + item.revision, 0);
     room.versions = meta.versions || [];
     room.artifactHistory = meta.artifactHistory;
     room.artifactManifest = meta.artifactManifest;
-    room.aiRuns =
-      meta.aiRuns ||
-      room.versions.flatMap((version: StoredVersion) =>
-        version.aiRun ? [version.aiRun] : [],
-      );
+    room.aiRuns = meta.aiRuns || room.versions.flatMap((version: StoredVersion) => version.aiRun ? [version.aiRun] : []);
     room.runWindow = meta.runWindow;
-    room.ai =
-      meta.ai?.mode === "demo"
-        ? { mode: "disconnected" }
-        : meta.ai || { mode: "disconnected" };
+    room.ai = meta.ai?.mode === 'demo' ? {
+        mode: 'disconnected'
+    } : meta.ai || {
+        mode: 'disconnected'
+    };
     room.interpretationHistory = meta.interpretationHistory;
     room.intentCorrections = meta.intentCorrections;
     room.intentBuildPending = meta.intentBuildPending;
@@ -522,74 +506,63 @@ export class RoomManager {
     room.requirementRevisions = meta.requirementRevisions;
     room.commandReceipts = meta.commandReceipts;
     room.recoveryCheckpoint = meta.recoveryCheckpoint;
+    room.budgetResetReceipts = meta.budgetResetReceipts;
+    room.executionBudget = recoverWorkflowBudget(meta, this.eventStore.allProviderRequestRecordsForWorkspace(room.id));
     room.editHistory = meta.editHistory || [];
     room.pending = new Map(meta.pending || []);
     room.agentRevisions = new Map(meta.agentRevisions || []);
     room.submissions = meta.submissions || [];
     this.recoverSubmissions(room);
     room.requestedRevision = meta.requestedRevision || room.versions.length;
-    room.usage = { ...emptyUsage(), ...(meta.usage || {}) };
-    room.providerCalls = meta.providerCalls?.length
-      ? meta.providerCalls
-      : this.eventStore.providerRequestRecordsForWorkspace(room.id);
-    room.budgetWindow =
-      room.ai.setup?.mode === "byok_lease" ? undefined : meta.budgetWindow;
+    room.usage = {
+        ...emptyUsage(), ...(meta.usage || {})
+    };
+    room.providerCalls = meta.providerCalls?.length ? meta.providerCalls : this.eventStore.providerRequestRecordsForWorkspace(room.id);
+    room.budgetWindow = room.ai.setup?.mode === 'byok_lease' ? undefined : meta.budgetWindow;
     room.lastBuildAt = meta.lastBuildAt;
     room.lastBuiltFingerprint = meta.lastBuiltFingerprint;
     room.lastBuiltRequirements = meta.lastBuiltRequirements;
     room.persistRevision = meta.persistRevision || 0;
     room.savedAt = meta.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups)
-      ? "Decision needed"
-      : room.versions.some((version: StoredVersion) => version.files?.length)
-        ? "Updated"
-        : "Waiting for ideas";
+    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
-    const migrateMode =
-      room.ai.setup?.mode === "recommended" && !room.ai.setup.workflowMode;
+    const migrateMode = room.ai.setup?.mode === 'recommended' && !room.ai.setup.workflowMode;
     this.normalize(room);
     this.eventStore.ensureWorkflow(room.id);
     if (room.ownerId)
-      this.eventStore.assignInitialController(room.id, room.ownerId);
+        this.eventStore.assignInitialController(room.id, room.ownerId);
     this.eventStore.interruptActiveRuns(room.id);
     this.eventStore.recoverWorkflow(room.id);
     if (migrateMode)
-      this.save(room, "ai.workflow_mode_migrated", "system", "system");
-  }
+        this.save(room, 'ai.workflow_mode_migrated', 'system', 'system');
+}
   hydrate(id: string, meta: any) {
-    if (this.rooms.has(id)) return this.rooms.get(id)!;
+    if (this.rooms.has(id))
+        return this.rooms.get(id)!;
     const room = this.makeRoom(id);
     if (meta?.artifactBodies)
-      this.eventStore.restoreArtifactBodies(meta.artifactBodies);
+        this.eventStore.restoreArtifactBodies(meta.artifactBodies);
     if (meta?.harnessProjection)
-      this.eventStore.restoreHarness(id, meta.harnessProjection);
+        this.eventStore.restoreHarness(id, meta.harnessProjection);
     if (meta?.update)
-      Y.applyUpdate(room.doc, Buffer.from(meta.update, "base64"), "load");
-    room.participants = new Map(
-      (meta?.participants || []).map((p: Participant) => [
-        p.id,
-        {
-          ...p,
-          active: false,
-          agentStatus: "idle",
-          latest: p.latest ? normalizeInterpretation(p.latest) : undefined,
-        },
-      ]),
-    );
+        Y.applyUpdate(room.doc, Buffer.from(meta.update, 'base64'), 'load');
+    room.participants = new Map((meta?.participants || []).map((p: Participant) => [p.id, {
+            ...p, active: false, agentStatus: 'idle', latest: p.latest ? normalizeInterpretation(p.latest) : undefined
+        }]));
     room.ownerId = meta?.ownerId || null;
     room.requirements = (meta?.requirements || []).map(normalizeInterpretation);
     room.sharedRequirements = meta?.sharedRequirements || [];
     room.contradictions = meta?.contradictions || [];
-    room.conflictGroups =
-      meta?.conflictGroups ||
-      migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
+    room.conflictGroups = meta?.conflictGroups || migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
     room.specificationRevision = meta?.specificationRevision || 0;
     room.versions = meta?.versions || [];
     room.artifactHistory = meta?.artifactHistory;
     room.artifactManifest = meta?.artifactManifest;
     room.aiRuns = meta?.aiRuns || [];
     room.runWindow = meta?.runWindow;
-    room.ai = meta?.ai || { mode: "disconnected" };
+    room.ai = meta?.ai || {
+        mode: 'disconnected'
+    };
     room.interpretationHistory = meta?.interpretationHistory;
     room.intentCorrections = meta?.intentCorrections;
     room.intentBuildPending = meta?.intentBuildPending;
@@ -597,221 +570,122 @@ export class RoomManager {
     room.requirementRevisions = meta?.requirementRevisions;
     room.commandReceipts = meta?.commandReceipts;
     room.recoveryCheckpoint = meta?.recoveryCheckpoint;
+    room.budgetResetReceipts = meta?.budgetResetReceipts;
+    room.executionBudget = recoverWorkflowBudget(meta, meta?.providerLedger || []);
     room.editHistory = meta?.editHistory || [];
     room.pending = new Map(meta?.pending || []);
     room.agentRevisions = new Map(meta?.agentRevisions || []);
     room.submissions = meta?.submissions || [];
     this.recoverSubmissions(room);
     room.requestedRevision = meta?.requestedRevision || room.versions.length;
-    room.usage = { ...emptyUsage(), ...(meta?.usage || {}) };
-    room.providerCalls = meta?.providerCalls?.length
-      ? meta.providerCalls
-      : this.eventStore.providerRequestRecordsForWorkspace(room.id);
-    room.providerLedger = new Map(
-      ((meta?.providerLedger || []) as ProviderRequestRecord[]).map(
-        (record) => [record.callId, record],
-      ),
-    );
-    room.budgetWindow =
-      room.ai.setup?.mode === "byok_lease" ? undefined : meta?.budgetWindow;
+    room.usage = {
+        ...emptyUsage(), ...(meta?.usage || {})
+    };
+    room.providerCalls = meta?.providerCalls?.length ? meta.providerCalls : this.eventStore.providerRequestRecordsForWorkspace(room.id);
+    room.providerLedger = new Map(((meta?.providerLedger || []) as ProviderRequestRecord[]).map(record => [record.callId, record]));
+    room.budgetWindow = room.ai.setup?.mode === 'byok_lease' ? undefined : meta?.budgetWindow;
     room.lastBuildAt = meta?.lastBuildAt;
     room.lastBuiltFingerprint = meta?.lastBuiltFingerprint;
     room.lastBuiltRequirements = meta?.lastBuiltRequirements;
     room.persistRevision = meta?.persistRevision || 0;
     room.savedAt = meta?.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups)
-      ? "Decision needed"
-      : room.versions.some((version: StoredVersion) => version.files?.length)
-        ? "Updated"
-        : "Waiting for ideas";
+    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
     this.normalize(room);
     this.rooms.set(id, room);
     this.eventStore.ensureWorkflow(id);
-    if (room.ownerId) this.eventStore.assignInitialController(id, room.ownerId);
+    if (room.ownerId)
+        this.eventStore.assignInitialController(id, room.ownerId);
     this.eventStore.interruptActiveRuns(id);
     this.eventStore.recoverWorkflow(id);
     return room;
-  }
-  save(
-    room: Room,
-    eventType = "workspace.snapshot_recorded",
-    actorId = "system",
-    actorType:
-      | "user"
-      | "personal_agent"
-      | "builder"
-      | "system"
-      | "tool" = "system",
-  ): boolean | Promise<boolean> {
+}
+  save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system'): boolean | Promise<boolean> {
     this.assertOwned(room);
-    if (room.intentCommit && eventType !== "intent.command_recorded")
-      return room.intentCommit.done.then(() => {
-        try {
-          return this.save(room, eventType, actorId, actorType);
-        } catch {
-          return false;
-        }
-      });
-    if (room.pendingPromotion && eventType !== "product.promoted")
-      return (room.persistQueue || Promise.resolve()).then(() =>
-        this.save(room, eventType, actorId, actorType),
-      );
+    if (room.intentCommit && eventType !== 'intent.command_recorded')
+        return room.intentCommit.done.then(() => {
+            try {
+                return this.save(room, eventType, actorId, actorType);
+            }
+            catch {
+                return false;
+            }
+        });
+    if (room.pendingPromotion && eventType !== 'product.promoted')
+        return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType));
     room.commandReceipts ||= {};
     for (const item of room.submissions)
-      room.commandReceipts[
-        JSON.stringify([item.participantId, item.requestId])
-      ] = {
-        id: item.id,
-        participantId: item.participantId,
-        requestId: item.requestId,
-        status: item.status,
-      };
+        room.commandReceipts[JSON.stringify([item.participantId, item.requestId])] = {
+            id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status
+        };
     room.requirementRevisions ||= [];
-    if (
-      room.requirementRevisions.at(-1)?.revision !== room.specificationRevision
-    )
-      room.requirementRevisions.push({
-        revision: room.specificationRevision,
-        accepted: structuredClone(
-          room.sharedRequirements.filter((item) => item.status === "accepted"),
-        ),
-      });
+    if (room.requirementRevisions.at(-1)?.revision !== room.specificationRevision)
+        room.requirementRevisions.push({
+            revision: room.specificationRevision, accepted: structuredClone(room.sharedRequirements.filter(item => item.status === 'accepted'))
+        });
     const captured = captureArtifacts(room, this.eventStore);
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-      interpretationHistory: room.interpretationHistory,
-      intentCorrections: room.intentCorrections,
-      intentBuildPending: room.intentBuildPending,
-      intentReceipts: room.intentReceipts,
-      artifactHistory: captured.artifactHistory,
-      artifactManifest: room.artifactManifest,
-      update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString("base64"),
-      participants: [...room.participants.values()].map((p) => ({
-        ...p,
-        active: false,
-        agentStatus: "idle",
-      })),
-      ownerId: room.ownerId,
-      requirements: room.requirements,
-      sharedRequirements: room.sharedRequirements,
-      conflictGroups: room.conflictGroups,
-      contradictions: room.contradictions,
-      specificationRevision: room.specificationRevision,
-      versions: room.versions.slice(-6),
-      aiRuns: room.aiRuns.slice(-50),
-      providerCalls: room.providerCalls.slice(-500),
-      runWindow: room.runWindow,
-      ai: room.ai,
-      editHistory: room.editHistory.slice(-1000),
-      submissions: retainSubmissions(room.submissions),
-      requestedRevision: room.requestedRevision,
-      usage: room.usage,
-      budgetWindow: room.budgetWindow,
-      lastBuildAt: room.lastBuildAt,
-      lastBuiltFingerprint: room.lastBuiltFingerprint,
-      lastBuiltRequirements: room.lastBuiltRequirements,
-      persistRevision: room.persistRevision,
-      savedAt: room.savedAt,
-      status: room.status,
-      lastError: room.lastError,
-      commandReceipts: room.commandReceipts,
-      requirementRevisions: room.requirementRevisions,
-      recoveryCheckpoint: room.recoveryCheckpoint,
-      pending: [...room.pending],
-      agentRevisions: [...room.agentRevisions],
+        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+            ...p, active: false, agentStatus: 'idle'
+        })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
-    const revision = room.persistRevision,
-      savedAt = room.savedAt,
-      deletions = deletionSignature(room.doc),
-      vector = Buffer.from(Y.encodeStateVector(room.doc)).toString("base64");
-    this.eventStore.saveWorkspaceSnapshot(
-      room.id,
-      payload,
-      eventType,
-      actorId,
-      actorType,
-    );
+    const revision = room.persistRevision, savedAt = room.savedAt, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
+    this.eventStore.saveWorkspaceSnapshot(room.id, payload, eventType, actorId, actorType);
     if (this.config.durableStore) {
-      const snapshot = structuredClone({
-          ...payload,
-          artifactBodies: captured.artifactBodies,
-          harnessProjection: this.eventStore.exportHarness(room.id),
-        }),
-        prior = room.persistQueue || Promise.resolve();
-      const saving = prior
-        .catch(() => {})
-        .then(() =>
-          this.config.durableStore!.saveSnapshot(room.id, revision, snapshot),
-        )
-        .then((result) => {
-          room.artifactHistory = captured.artifactHistory;
-          const manifest = (
-            result as { artifactManifest?: ArtifactReference[] } | undefined
-          )?.artifactManifest;
-          if (manifest) room.artifactManifest = manifest;
-          for (const client of room.clients)
-            this.sendJson(client, {
-              type: "saved",
-              revision,
-              savedAt,
-              vector,
-              deletions,
-            });
-          return true;
-        })
-        .catch((error) => {
-          for (const client of room.clients)
-            this.sendJson(client, {
-              type: "save-error",
-              revision,
-              message:
-                error instanceof Error
-                  ? error.message
-                  : "Remote persistence failed.",
-            });
-          return false;
+        const snapshot = structuredClone({
+            ...payload, artifactBodies: captured.artifactBodies, harnessProjection: this.eventStore.exportHarness(room.id)
+        }), prior = room.persistQueue || Promise.resolve();
+        const saving = prior.catch(() => {
+        }).then(() => this.config.durableStore!.saveSnapshot(room.id, revision, snapshot)).then(result => {
+            room.artifactHistory = captured.artifactHistory;
+            const manifest = (result as {
+                artifactManifest?: ArtifactReference[];
+            } | undefined)?.artifactManifest;
+            if (manifest)
+                room.artifactManifest = manifest;
+            for (const client of room.clients)
+                this.sendJson(client, {
+                    type: 'saved', revision, savedAt, vector, deletions
+                });
+            return true;
+        }).catch(error => {
+            for (const client of room.clients)
+                this.sendJson(client, {
+                    type: 'save-error', revision, message: error instanceof Error ? error.message : 'Remote persistence failed.'
+                });
+            return false;
         });
-      room.persistQueue = saving;
-      return saving;
+        room.persistQueue = saving;
+        return saving;
     }
     room.artifactHistory = captured.artifactHistory;
-    const target = path.join(this.dataDir, `${room.id}.json`),
-      temp = `${target}.${room.persistRevision}.tmp`,
-      serialized = JSON.stringify(payload);
+    const target = path.join(this.dataDir, `${room.id}.json`), temp = `${target}.${room.persistRevision}.tmp`, serialized = JSON.stringify(payload);
     fs.writeFileSync(temp, serialized);
     let moved = false;
     for (let attempt = 0; attempt < 4 && !moved; attempt++) {
-      try {
-        fs.renameSync(temp, target);
-        moved = true;
-      } catch (error) {
-        const code = (error as NodeJS.ErrnoException).code;
-        if (code !== "EPERM" && code !== "EACCES" && code !== "EEXIST")
-          throw error;
-        Atomics.wait(
-          new Int32Array(new SharedArrayBuffer(4)),
-          0,
-          0,
-          10 * (attempt + 1),
-        );
-      }
+        try {
+            fs.renameSync(temp, target);
+            moved = true;
+        }
+        catch (error) {
+            const code = (error as NodeJS.ErrnoException).code;
+            if (code !== 'EPERM' && code !== 'EACCES' && code !== 'EEXIST')
+                throw error;
+            Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, 10 * (attempt + 1));
+        }
     }
     if (!moved) {
-      fs.copyFileSync(temp, target);
-      fs.unlinkSync(temp);
+        fs.copyFileSync(temp, target);
+        fs.unlinkSync(temp);
     }
     for (const client of room.clients)
-      this.sendJson(client, {
-        type: "saved",
-        revision,
-        savedAt,
-        vector,
-        deletions,
-      });
+        this.sendJson(client, {
+            type: 'saved', revision, savedAt, vector, deletions
+        });
     return true;
-  }
+}
   join(room: Room, id: string, name: string) {
     const old = room.participants.get(id),
       color = old?.color || colors[room.participants.size % colors.length];
@@ -1044,225 +918,118 @@ export class RoomManager {
       payload,
     });
   }
-  private tracked<T>(
-    room: Room,
-    meta: {
-      purpose: ProviderRequestPurpose;
-      provider: AIProvider;
-      model?: string;
-      workflowRunId?: string;
-      submissionId?: string;
-      retryReason?: string;
-      estimatedOutputTokens?: number;
-      actorId?: string;
-      setup?: AISetupPolicy;
-    },
-    action: () => Promise<T>,
-  ) {
-    if (meta.setup?.mode === "managed")
-      throw new ProviderAccountingError(
-        "Founder-funded managed dispatch is disabled in the MVP. Reconnect an OpenRouter key.",
-      );
+  private tracked<T>(room: Room, meta: {
+    purpose: ProviderRequestPurpose;
+    provider: AIProvider;
+    model?: string;
+    workflowRunId?: string;
+    submissionId?: string;
+    retryReason?: string;
+    estimatedOutputTokens?: number;
+    actorId?: string;
+    setup?: AISetupPolicy;
+}, action: () => Promise<T>) {
+    if (meta.setup?.mode === 'managed')
+        throw new ProviderAccountingError('Founder-funded managed dispatch is disabled in the MVP. Reconnect an OpenRouter key.');
     const managed: boolean = false;
-    const catalogEntry = managed
-      ? managedCatalog.find((item) => item.id === meta.model)
-      : undefined;
-    const frozenLayer = [
-      meta.setup?.resolved?.personal,
-      meta.setup?.resolved?.builder,
-    ].find((item) => item?.model === meta.model);
-    const rate =
-      managed || meta.setup?.mode === "byok_lease"
-        ? frozenLayer?.rate
-        : meta.model
-          ? catalogRate(meta.provider, meta.model)
-          : undefined;
-    const configurationVersion = [
-      meta.setup?.mode || room.ai.setup?.mode || "custom",
-      meta.setup?.presetVersion || room.ai.setup?.presetVersion || "manual",
-      meta.provider,
-      meta.model || "none",
-    ].join(":");
-    return withProviderAccounting(
-      {
-        workspaceId: room.id,
-        ...meta,
-        managed,
-        maxInputTokens: frozenLayer?.maxInputTokens,
-        maxPrice:
-          managed && rate
-            ? {
-                prompt: rate.inputPerMillion,
-                completion: rate.outputPerMillion,
-              }
-            : undefined,
-        configurationVersion,
-        record: async (entry) => {
-          this.assertOwned(room);
-          if (entry.outcome === "dispatching")
-            await this.config.durableStore?.assertCoordinator?.(room.id);
-          const charge = rate
-            ? calculateCharge(entry.usage, rate)
-            : { estimatedChargeUsd: undefined, incomplete: true };
-          const record: ProviderRequestRecord = {
-            ...entry,
-            pricingVersion: rate?.verifiedAt || "unknown",
-            estimatedChargeUsd: charge.estimatedChargeUsd,
-            chargeIncomplete: charge.incomplete,
-          };
-          if (
-            record.outcome === "dispatching" &&
-            room.executionBudget &&
-            meta.workflowRunId
-          ) {
-            const budget = room.executionBudget;
-            if (budget.calls >= 24)
-              throw new ProviderAccountingError(
-                "Recovery stopped at the 24 physical-call ceiling. The last working artifact is retained. Submit a smaller change.",
-              );
-            const reserve = rate
-              ? calculateCharge(
-                  {
-                    inputTokens: record.estimatedInputTokens,
-                    outputTokens: record.estimatedOutputTokens || 0,
-                  },
-                  rate,
-                ).estimatedChargeUsd
-              : undefined;
-            if (
-              budget.maximumUsd !== undefined &&
-              (reserve === undefined ||
-                budget.reservedUsd + reserve > budget.maximumUsd)
-            )
-              throw new ProviderAccountingError(
-                "Recovery stopped at the configured spending limit. The last working artifact is retained.",
-              );
-            budget.calls++;
-            budget.reservedUsd += reserve || 0;
-          }
-          if (
-            meta.setup?.mode === "byok_lease" &&
-            record.outcome === "dispatching"
-          ) {
-            if (!meta.actorId || !meta.setup.credentialHandle)
-              throw new ProviderAccountingError(
-                "OpenRouter sponsor authorization is unavailable.",
-              );
-            try {
-              this.byok.require(
-                room.id,
-                meta.setup.credentialHandle,
-                meta.actorId,
-              );
-            } catch (error) {
-              throw new ProviderAccountingError(
-                error instanceof Error
-                  ? error.message
-                  : "OpenRouter sponsor authorization failed.",
-              );
-            }
-          }
-          if (managed) {
-            if (
-              !meta.actorId ||
-              !catalogEntry ||
-              !rate ||
-              !frozenLayer ||
-              !this.config.managedOpenRouterKey ||
-              !this.config.durableStore?.reserveManagedRequest ||
-              !this.config.durableStore.settleManagedRequest
-            )
-              throw new ProviderAccountingError(
-                "Managed AI funding is not configured.",
-              );
-            try {
-              if (record.outcome === "dispatching") {
-                const inputRate = Math.max(
-                  rate!.inputPerMillion,
-                  catalogEntry.id === "deepseek/deepseek-v4.1-flash"
-                    ? 0.05
-                    : rate!.inputPerMillion,
-                );
-                const outputRate = Math.max(
-                  rate!.outputPerMillion,
-                  catalogEntry.id === "deepseek/deepseek-v4.1-flash"
-                    ? 0.6
-                    : rate!.outputPerMillion,
-                );
-                const amount =
-                  Math.ceil(
-                    (record.estimatedInputTokens * inputRate +
-                      (record.estimatedOutputTokens || 0) * outputRate) *
-                      1.2,
-                  ) / 1_000_000;
-                await this.config.durableStore.reserveManagedRequest({
-                  callId: record.callId,
-                  projectId: room.id,
-                  actorId: meta.actorId,
-                  modelId: catalogEntry.id,
-                  catalogVersion:
-                    meta.setup?.presetVersion || MANAGED_CATALOG_VERSION,
-                  reservedUsd: Math.max(0.000001, amount),
-                });
-              } else
-                await this.config.durableStore.settleManagedRequest({
-                  callId: record.callId,
-                  actualUsd:
-                    record.outcome === "succeeded" &&
-                    Number.isFinite(record.providerCostUsd)
-                      ? record.providerCostUsd!
-                      : null,
-                  providerRequestId: record.providerRequestId,
-                  usage: record.usage,
-                });
-            } catch (error) {
-              throw new ProviderAccountingError(
-                error instanceof Error
-                  ? error.message
-                  : "Managed accounting failed.",
-              );
-            }
-          }
-          if (this.config.durableStore?.recordProviderRequest)
-            await this.config.durableStore.recordProviderRequest(record);
-          this.assertOwned(room);
-          room.providerLedger?.set(record.callId, record);
-          const index = room.providerCalls.findIndex(
-            (item) => item.callId === record.callId,
-          );
-          if (index >= 0) room.providerCalls[index] = record;
-          else room.providerCalls.push(record);
-          room.providerCalls = room.providerCalls.slice(-500);
-          this.eventStore.append({
-            eventType:
-              record.outcome === "dispatching"
-                ? "provider.request_dispatched"
-                : "provider.request_reconciled",
-            workspaceId: room.id,
-            actorId: "provider-gateway",
-            actorType: "system",
-            runId: record.workflowRunId,
-            correlationId: record.callId,
-            causationId: record.parentCallId,
-            payload: record,
-          });
-          this.save(
-            room,
-            record.outcome === "dispatching"
-              ? "ai.provider_intent_recorded"
-              : "ai.provider_result_recorded",
-            "provider-gateway",
-            "system",
-          );
-          if (record.outcome === "dispatching") {
-            await this.config.durableStore?.assertCoordinator?.(room.id);
+    const catalogEntry = managed ? managedCatalog.find(item => item.id === meta.model) : undefined;
+    const frozenLayer = [meta.setup?.resolved?.personal, meta.setup?.resolved?.builder].find(item => item?.model === meta.model);
+    const rate = frozenLayer?.rate || (meta.model ? catalogRate(meta.provider, meta.model) : undefined);
+    const configurationVersion = [meta.setup?.mode || room.ai.setup?.mode || 'custom', meta.setup?.presetVersion || room.ai.setup?.presetVersion || 'manual', meta.provider, meta.model || 'none'].join(':');
+    const setupCall = !meta.workflowRunId && !meta.submissionId && meta.purpose !== 'interpretation';
+    let scope: WorkflowBudget | undefined;
+    return withProviderAccounting({
+        workspaceId: room.id, ...meta, managed, maxInputTokens: frozenLayer?.maxInputTokens,
+        maxPrice: managed && rate ? {
+            prompt: rate.inputPerMillion, completion: rate.outputPerMillion
+        } : undefined,
+        configurationVersion, record: entry => this.accountingQueue(room, async () => {
             this.assertOwned(room);
-          }
-        },
-      },
-      action,
-    );
-  }
+            if (entry.outcome === 'dispatching') {
+                await this.config.durableStore?.assertCoordinator?.(room.id);
+                if (meta.actorId)
+                    await this.config.authorizeSubmission?.(room.id, meta.actorId);
+            }
+            const charge = rate ? calculateCharge(entry.usage, rate) : {
+                estimatedChargeUsd: undefined, incomplete: true
+            };
+            let record: ProviderRequestRecord = {
+                ...entry, pricingVersion: rate?.verifiedAt || 'unknown', estimatedChargeUsd: charge.estimatedChargeUsd, chargeIncomplete: charge.incomplete
+            };
+            if (meta.setup?.mode === 'byok_lease' && record.outcome === 'dispatching') {
+                if (!meta.actorId || !meta.setup.credentialHandle)
+                    throw new ProviderAccountingError('OpenRouter sponsor authorization is unavailable.');
+                try {
+                    this.byok.require(room.id, meta.setup.credentialHandle, meta.actorId);
+                }
+                catch (error) {
+                    throw new ProviderAccountingError(error instanceof Error ? error.message : 'OpenRouter sponsor authorization failed.');
+                }
+            }
+            if (record.outcome === 'dispatching') {
+                if (!scope) {
+                    if (setupCall)
+                        scope = openBudget('setup');
+                    else {
+                        if (!room.executionBudget || room.executionBudget.closed)
+                            room.executionBudget = openBudget('workflow', meta.setup?.maximumSpendUsd);
+                        scope = room.executionBudget;
+                    }
+                }
+                record.reservedChargeUsd = rate ? calculateCharge({
+                    inputTokens: record.estimatedInputTokens, outputTokens: record.estimatedOutputTokens || 0
+                }, rate).estimatedChargeUsd : undefined;
+            }
+            if (!scope)
+                throw new ProviderAccountingError('Provider result has no budget scope.');
+            record = updateBudget(scope, record);
+            if (managed) {
+                if (!meta.actorId || !catalogEntry || !rate || !frozenLayer || !this.config.managedOpenRouterKey || !this.config.durableStore?.reserveManagedRequest || !this.config.durableStore.settleManagedRequest)
+                    throw new ProviderAccountingError('Managed AI funding is not configured.');
+                try {
+                    if (record.outcome === 'dispatching') {
+                        const inputRate = Math.max(rate!.inputPerMillion, catalogEntry.id === 'deepseek/deepseek-v4.1-flash' ? .05 : rate!.inputPerMillion);
+                        const outputRate = Math.max(rate!.outputPerMillion, catalogEntry.id === 'deepseek/deepseek-v4.1-flash' ? .6 : rate!.outputPerMillion);
+                        const amount = Math.ceil((record.estimatedInputTokens * inputRate + (record.estimatedOutputTokens || 0) * outputRate) * 1.2) / 1000000;
+                        await this.config.durableStore.reserveManagedRequest({
+                            callId: record.callId, projectId: room.id, actorId: meta.actorId, modelId: catalogEntry.id, catalogVersion: meta.setup?.presetVersion || MANAGED_CATALOG_VERSION, reservedUsd: Math.max(.000001, amount)
+                        });
+                    }
+                    else
+                        await this.config.durableStore.settleManagedRequest({
+                            callId: record.callId, actualUsd: record.outcome === 'succeeded' && Number.isFinite(record.providerCostUsd) ? record.providerCostUsd! : null, providerRequestId: record.providerRequestId, usage: record.usage
+                        });
+                }
+                catch (error) {
+                    throw new ProviderAccountingError(error instanceof Error ? error.message : 'Managed accounting failed.');
+                }
+            }
+            this.assertOwned(room);
+            room.providerLedger?.set(record.callId, record);
+            const index = room.providerCalls.findIndex(item => item.callId === record.callId);
+            if (index >= 0)
+                room.providerCalls[index] = record;
+            else
+                room.providerCalls.push(record);
+            room.providerCalls = room.providerCalls.slice(-500);
+            this.eventStore.append({
+                eventType: record.outcome === 'dispatching' ? 'provider.request_dispatched' : 'provider.request_reconciled', workspaceId: room.id, actorId: 'provider-gateway', actorType: 'system', runId: record.workflowRunId, correlationId: record.callId, causationId: record.parentCallId, payload: record
+            });
+            if (await this.save(room, record.outcome === 'dispatching' ? 'ai.provider_intent_recorded' : 'ai.provider_result_recorded', 'provider-gateway', 'system') === false) {
+                this.loseOwnership(room.id);
+                throw new ProviderAccountingError('Provider reservation persistence failed. Reconnect before retrying.');
+            }
+            if (this.config.durableStore?.recordProviderRequest)
+                await this.config.durableStore.recordProviderRequest(record);
+            if (record.outcome === 'dispatching') {
+                await this.config.durableStore?.assertCoordinator?.(room.id);
+                if (meta.actorId)
+                    await this.config.authorizeSubmission?.(room.id, meta.actorId);
+                this.assertOwned(room);
+            }
+        })
+    }, action);
+}
   private connection(
     provider: AIProvider,
     baseUrl: string,
@@ -1514,22 +1281,14 @@ export class RoomManager {
     this.broadcastState(room);
     return { modelId, catalogVersion: MANAGED_CATALOG_VERSION };
   }
-  async testConnection(
-    apiKey: string,
-    model: string,
-    provider: AIProvider = "openai",
-    baseUrl = "",
-    apiFormat: AIFormat = "responses",
-  ) {
+  async testConnection(apiKey: string, model: string, provider: AIProvider = 'openai', baseUrl = '', apiFormat: AIFormat = 'responses', room?: Room) {
     const connection = this.connection(provider, baseUrl, apiFormat);
-    return testOpenAIConnection(
-      apiKey,
-      model,
-      connection.baseUrl,
-      connection.apiFormat,
-      provider,
-    );
-  }
+    if (!room)
+        throw new Error('Connection tests require an explicit project setup scope.');
+    return this.tracked(room, {
+        purpose: 'connection_test', provider, model, estimatedOutputTokens: 64
+    }, () => testOpenAIConnection(apiKey, model, connection.baseUrl, connection.apiFormat, provider));
+}
   async models(
     apiKey: string,
     provider: AIProvider = "openai",
@@ -1984,62 +1743,12 @@ export class RoomManager {
       (error instanceof IsolationError && error.code === "isolation_cancelled")
     );
   }
-  private reserveBudget(
-    room: Room,
-    kind: "personal" | "builder",
-    setup?: AISetupPolicy,
-    multiplier = 1,
-  ): BudgetReservation | undefined {
-    const layer =
-      setup?.mode === "recommended" || setup?.mode === "byok_lease"
-        ? setup.resolved?.[kind]
-        : undefined;
-    if (setup?.mode === "byok_lease")
-      return layer ? { amount: 0, layer } : undefined;
-    if (
-      !setup ||
-      !layer ||
-      !setup.maximumSpendUsd ||
-      !setup.presetVersion ||
-      !setup.pricingVersion
-    )
-      return;
-    const window =
-      room.budgetWindow ||
-      (room.budgetWindow = {
-        id: randomUUID(),
-        startedAt: Date.now(),
-        maximumUsd: setup.maximumSpendUsd,
-        reservedUsd: 0,
-        actualUsd: 0,
-        uncertainUsd: 0,
-        inputTokens: 0,
-        outputTokens: 0,
-        presetVersion: setup.presetVersion,
-        pricingVersion: setup.pricingVersion,
-        setup: structuredClone(setup),
-      });
-    if (
-      window.presetVersion !== setup.presetVersion ||
-      window.pricingVersion !== setup.pricingVersion ||
-      window.setup.credentialHandle !== setup.credentialHandle ||
-      window.setup.resolved?.builder.model !== setup.resolved?.builder.model
-    )
-      throw new Error(
-        "A build is already using the previous AI setup. Wait for it to finish before submitting with the new setup.",
-      );
-    const amount =
-      multiplier *
-      ((layer.maxInputTokens / 1_000_000) * layer.rate.inputPerMillion +
-        (layer.maxOutputTokens / 1_000_000) * layer.rate.outputPerMillion);
-    if (window.reservedUsd + amount > window.maximumUsd + 1e-9)
-      throw new Error(
-        `This call cannot fit within the remaining $${Math.max(0, window.maximumUsd - window.reservedUsd).toFixed(2)} build budget. Increase the limit for a future build or choose a lighter setup.`,
-      );
-    window.reservedUsd += amount;
-    this.save(room, "ai.budget_reserved", "system", "system");
-    return { amount, layer };
-  }
+  private reserveBudget(room: Room, kind: 'personal' | 'builder', setup?: AISetupPolicy, multiplier = 1): BudgetReservation | undefined {
+    const layer = setup?.mode === 'recommended' || setup?.mode === 'byok_lease' ? setup.resolved?.[kind] : undefined;
+    return layer ? {
+        amount: 0, layer
+    } : undefined;
+}
   private recordUsage(
     room: Room,
     kind: "personal" | "builder",
@@ -2156,60 +1865,30 @@ export class RoomManager {
     }
     this.save(room, "ai.usage_uncertain", "system", "system");
   }
-  private finalizeRun(
-    room: Room,
-    input: {
-      runId: string;
-      setup?: AISetupPolicy;
-      routing?: {
+  private finalizeRun(room: Room, input: {
+    runId: string;
+    setup?: AISetupPolicy;
+    routing?: {
         complexity?: import("../shared/types.js").TaskComplexity;
         evidenceStatus?: import("../shared/types.js").AIRoutingEvidenceStatus;
         reason?: string;
-      };
-      builderModel: string;
-      outcome: "promoted" | "failed";
-      operationsApplied: boolean;
-      compilationPassed: boolean;
-    },
-  ) {
-    const calls = structuredClone(room.runWindow?.calls || []),
-      usage = aggregateCalls(calls),
-      record: AIRunRecord = {
-        runId: input.runId,
-        catalogVersion: input.setup?.presetVersion || "custom",
-        pricingVersion: input.setup?.pricingVersion || "unknown",
-        routingRuleVersion: input.setup?.routingRuleVersion || "manual",
-        verificationPolicyVersion: VERIFICATION_POLICY_VERSION,
-        workflowMode: input.setup?.workflowMode,
-        effort: input.setup?.effort,
-        complexity: input.routing?.complexity || "uncertain",
-        evidenceStatus: input.routing?.evidenceStatus || "hypothesis",
-        routingReason: input.routing?.reason || "Advanced manual assignment.",
-        personalModels: [
-          ...new Set(
-            calls
-              .filter((call) => call.phase === "interpretation")
-              .map((call) => call.model),
-          ),
-        ],
-        builderModel: input.builderModel,
-        calls,
-        usage,
-        latencyMs: Date.now() - (room.runWindow?.startedAt || Date.now()),
-        outcome: input.outcome,
-        verification: {
-          operationsApplied: input.operationsApplied,
-          compilationPassed: input.compilationPassed,
-          requirementSatisfaction: "not_measured",
-          regressionCheck: "not_run",
-          verified: false,
-        },
-      };
+    };
+    builderModel: string;
+    outcome: 'promoted' | 'failed';
+    operationsApplied: boolean;
+    compilationPassed: boolean;
+    evidence?: CandidateVerification;
+}) {
+    const calls = structuredClone(room.runWindow?.calls || []), usage = aggregateCalls(calls), record: AIRunRecord = {
+        runId: input.runId, catalogVersion: input.setup?.presetVersion || 'custom', pricingVersion: input.setup?.pricingVersion || 'unknown', routingRuleVersion: input.setup?.routingRuleVersion || 'manual', verificationPolicyVersion: VERIFICATION_POLICY_VERSION, workflowMode: input.setup?.workflowMode, effort: input.setup?.effort, complexity: input.routing?.complexity || 'uncertain', evidenceStatus: input.routing?.evidenceStatus || 'hypothesis', routingReason: input.routing?.reason || 'Advanced manual assignment.', personalModels: [...new Set(calls.filter(call => call.phase === 'interpretation').map(call => call.model))], builderModel: input.builderModel, calls, usage, latencyMs: Date.now() - (room.runWindow?.startedAt || Date.now()), outcome: input.outcome, verification: {
+            operationsApplied: input.operationsApplied, compilationPassed: input.compilationPassed, evidence: input.evidence, requirementSatisfaction: input.evidence?.status === 'passed' ? 'passed' : input.evidence?.status === 'failed' ? 'failed' : 'not_measured', regressionCheck: input.evidence?.checks.length ? (input.evidence.checks.every(check => check.passed) ? 'passed' : 'failed') : 'not_run', verified: input.outcome === 'promoted' && input.evidence?.status === 'passed'
+        }
+    };
     room.aiRuns.push(record);
     room.aiRuns = room.aiRuns.slice(-50);
     room.runWindow = undefined;
     return record;
-  }
+}
   private queueEdit(room: Room, p: Participant, record: EditRecord) {
     room.pending.set(p.id, [...(room.pending.get(p.id) || []), record]);
     room.agentRevisions.set(p.id, (room.agentRevisions.get(p.id) || 0) + 1);
@@ -2217,288 +1896,153 @@ export class RoomManager {
     if (!room.buildTask && !hasOpenContradictions(room.conflictGroups))
       room.status = room.versions.length ? "Updated" : "Waiting for ideas";
   }
-  private runAgent(
-    room: Room,
-    participantId: string,
-    submittedBatch?: EditRecord[],
-    submission?: StoredSubmission,
-  ): Promise<void> {
+  private runAgent(room: Room, participantId: string, submittedBatch?: EditRecord[], submission?: StoredSubmission): Promise<void> {
     const existing = room.agentTasks.get(participantId);
     if (existing)
-      return existing.then(() =>
-        this.runAgent(room, participantId, submittedBatch, submission),
-      );
+        return existing.then(() => this.runAgent(room, participantId, submittedBatch, submission));
     const task = (async () => {
-      const p = room.participants.get(participantId),
-        batch = submittedBatch || room.pending.get(participantId) || [];
-      if (!p || !this.hasAI(room) || !batch.length) return;
-      const revision =
-          submission?.documentRevision ??
-          room.agentRevisions.get(participantId) ??
-          0,
-        previous = p.latest,
-        controller = new AbortController();
-      if (!submittedBatch) room.pending.delete(participantId);
-      room.agentControllers.set(participantId, controller);
-      if (submission) submission.status = "interpreting";
-      p.agentStatus = "understanding";
-      room.status = room.buildTask ? "Building" : "Understanding edits";
-      this.broadcastState(room);
-      let reservation: BudgetReservation | undefined,
-        usageMeta: UsageMeta | undefined;
-      try {
-        const setup = submission?.setup || structuredClone(room.ai.setup),
-          assignment =
-            submission?.assignment ||
-            (setup?.mode === "recommended" || setup?.mode === "managed"
-              ? room.ai.personal
-              : room.ai.participantOverrides?.[p.id] || room.ai.personal);
-        if (!assignment) throw new Error("No personal model is assigned.");
-        reservation = this.reserveBudget(room, "personal", setup);
-        const agentConfig = this.aiConfigFrom(
-          room,
-          "personal",
-          assignment,
-          setup,
-        );
-        usageMeta = {
-          phase: "interpretation",
-          participantId: p.id,
-          provider: agentConfig.provider || "custom",
-          model: assignment.model,
-        };
-        const result = await this.tracked(
-          room,
-          {
-            purpose: "interpretation",
-            provider: agentConfig.provider || "custom",
-            model: assignment.model,
-            submissionId: submission?.id,
-            actorId: p.id,
-            setup,
-            estimatedOutputTokens: agentConfig.maxOutputTokens,
-          },
-          () =>
-            extractRequirement(
-              agentConfig,
-              p.id,
-              p.name,
-              batch,
-              submission?.snapshot || documentText(room.doc),
-              previous,
-              revision,
-              controller.signal,
-              submission?.intentContext ||
-                acceptedContext(room.sharedRequirements),
-            ),
-        );
-        this.recordUsage(
-          room,
-          "personal",
-          result.usage,
-          reservation,
-          usageMeta,
-        );
-        if (controller.signal.aborted) {
-          if (!submittedBatch)
-            room.pending.set(participantId, [
-              ...batch,
-              ...(room.pending.get(participantId) || []),
-            ]);
-          return;
-        }
-        const priorAcceptance = {
-          requirements: room.requirements,
-          sharedRequirements: room.sharedRequirements,
-          conflictGroups: room.conflictGroups,
-          contradictions: room.contradictions,
-          revision: room.specificationRevision,
-          history: structuredClone(room.requirementRevisions),
-        };
-        const changed =
-            requirementFingerprint(previous) !==
-            requirementFingerprint(result.value),
-          reconciled = reconcileRequirements(
-            room.sharedRequirements,
-            result.value,
-            room.conflictGroups,
-          );
-        if (previous)
-          room.interpretationHistory = (
-            room.interpretationHistory || []
-          ).concat(structuredClone(previous));
-        room.requirements = room.requirements
-          .filter((r) => r.participantId !== p.id)
-          .concat(result.value);
-        room.sharedRequirements = reconciled.requirements;
-        room.conflictGroups = reconciled.conflictGroups;
-        room.contradictions = reconciled.contradictions;
-        if (reconciled.changed) room.specificationRevision++;
-        p.latest = result.value;
-        p.agentStatus = "ready";
-        room.lastError = undefined;
-        if (submission) submission.status = "queued";
-        const blocked = hasOpenContradictions(room.conflictGroups);
-        if (blocked) room.status = "Decision needed";
-        else if (
-          !changed &&
-          !reconciled.acceptedChanged &&
-          !room.pendingBuildSince &&
-          room.agentTasks.size <= 1
-        )
-          room.status = room.versions.length ? "Updated" : "Waiting for ideas";
-        if (
-          (await this.save(
-            room,
-            "requirement.registry_reconciled",
-            p.id,
-            "personal_agent",
-          )) === false
-        ) {
-          room.requirements = priorAcceptance.requirements;
-          room.sharedRequirements = priorAcceptance.sharedRequirements;
-          room.conflictGroups = priorAcceptance.conflictGroups;
-          room.contradictions = priorAcceptance.contradictions;
-          room.specificationRevision = priorAcceptance.revision;
-          room.requirementRevisions = priorAcceptance.history;
-          p.latest = previous;
-          throw new Error(
-            "Accepted requirements could not be durably saved. Retry after reconnecting.",
-          );
-        }
+        const p = room.participants.get(participantId), batch = submittedBatch || room.pending.get(participantId) || [];
+        if (!p || !this.hasAI(room) || !batch.length)
+            return;
+        const revision = submission?.documentRevision ?? room.agentRevisions.get(participantId) ?? 0, previous = p.latest, controller = new AbortController();
+        if (!submittedBatch)
+            room.pending.delete(participantId);
+        room.agentControllers.set(participantId, controller);
+        if (submission)
+            submission.status = 'interpreting';
+        p.agentStatus = 'understanding';
+        room.status = room.buildTask ? 'Building' : 'Understanding edits';
         this.broadcastState(room);
-        if (reconciled.acceptedChanged || room.pendingBuildSince)
-          this.scheduleBuild(room);
-      } catch (error) {
-        if (usageMeta) this.markUncertain(room, reservation, usageMeta);
-        room.pending.set(participantId, [
-          ...batch,
-          ...(room.pending.get(participantId) || []),
-        ]);
-        if (this.cancelled(error)) {
-          p.agentStatus = "idle";
-          return;
+        let reservation: BudgetReservation | undefined, usageMeta: UsageMeta | undefined;
+        try {
+            const setup = submission?.setup || structuredClone(room.ai.setup), assignment = submission?.assignment || (setup?.mode === 'recommended' || setup?.mode === 'managed' ? room.ai.personal : room.ai.participantOverrides?.[p.id] || room.ai.personal);
+            if (!assignment)
+                throw new Error('No personal model is assigned.');
+            reservation = this.reserveBudget(room, 'personal', setup);
+            const agentConfig = this.aiConfigFrom(room, 'personal', assignment, setup);
+            usageMeta = {
+                phase: 'interpretation', participantId: p.id, provider: agentConfig.provider || 'custom', model: assignment.model
+            };
+            const result = await this.tracked(room, {
+                purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
+            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements)));
+            this.recordUsage(room, 'personal', result.usage, reservation, usageMeta);
+            if (controller.signal.aborted) {
+                if (!submittedBatch)
+                    room.pending.set(participantId, [...batch, ...(room.pending.get(participantId) || [])]);
+                return;
+            }
+            const priorAcceptance = {
+                requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, revision: room.specificationRevision, history: structuredClone(room.requirementRevisions)
+            };
+            const changed = requirementFingerprint(previous) !== requirementFingerprint(result.value), reconciled = reconcileRequirements(room.sharedRequirements, result.value, room.conflictGroups);
+            if (previous)
+                room.interpretationHistory = (room.interpretationHistory || []).concat(structuredClone(previous));
+            room.requirements = room.requirements.filter(r => r.participantId !== p.id).concat(result.value);
+            room.sharedRequirements = reconciled.requirements;
+            room.conflictGroups = reconciled.conflictGroups;
+            room.contradictions = reconciled.contradictions;
+            if (reconciled.changed)
+                room.specificationRevision++;
+            p.latest = result.value;
+            p.agentStatus = 'ready';
+            room.lastError = undefined;
+            if (submission)
+                submission.status = 'queued';
+            const blocked = hasOpenContradictions(room.conflictGroups);
+            if (blocked)
+                room.status = 'Decision needed';
+            else if (!changed && !reconciled.acceptedChanged && !room.pendingBuildSince && room.agentTasks.size <= 1)
+                room.status = room.versions.length ? 'Updated' : 'Waiting for ideas';
+            if (await this.save(room, 'requirement.registry_reconciled', p.id, 'personal_agent') === false) {
+                room.requirements = priorAcceptance.requirements;
+                room.sharedRequirements = priorAcceptance.sharedRequirements;
+                room.conflictGroups = priorAcceptance.conflictGroups;
+                room.contradictions = priorAcceptance.contradictions;
+                room.specificationRevision = priorAcceptance.revision;
+                room.requirementRevisions = priorAcceptance.history;
+                p.latest = previous;
+                throw new Error('Accepted requirements could not be durably saved. Retry after reconnecting.');
+            }
+            this.broadcastState(room);
+            if (reconciled.acceptedChanged || room.pendingBuildSince) {
+                room.lastAcceptedAt = Date.now();
+                this.scheduleBuild(room);
+            }
         }
-        if (submission) {
-          submission.status = "failed";
-          submission.error =
-            error instanceof Error ? error.message : String(error);
+        catch (error) {
+            if (usageMeta)
+                this.markUncertain(room, reservation, usageMeta);
+            room.pending.set(participantId, [...batch, ...(room.pending.get(participantId) || [])]);
+            if (this.cancelled(error)) {
+                p.agentStatus = 'idle';
+                return;
+            }
+            if (submission) {
+                submission.status = 'failed';
+                submission.error = error instanceof Error ? error.message : String(error);
+            }
+            p.agentStatus = 'error';
+            room.status = 'Error';
+            room.lastError = error instanceof Error ? error.message : String(error);
+            this.save(room, 'submission.failed', participantId, 'system');
+            this.broadcastState(room);
+            if (submission)
+                throw error;
         }
-        p.agentStatus = "error";
-        room.status = "Error";
-        room.lastError = error instanceof Error ? error.message : String(error);
-        this.save(room, "submission.failed", participantId, "system");
-        this.broadcastState(room);
-        if (submission) throw error;
-      }
     })().finally(() => {
-      room.agentTasks.delete(participantId);
-      room.agentControllers.delete(participantId);
+        room.agentTasks.delete(participantId);
+        room.agentControllers.delete(participantId);
     });
     room.agentTasks.set(participantId, task);
     return task;
-  }
+}
   async submitChanges(room: Room, participantId: string, requestId: string) {
     this.assertOwned(room);
     if (!this.hasAI(room))
-      throw new Error(
-        "Ask the project owner to connect and save an OpenRouter key and two models before building.",
-      );
-    if (room.ai.setup?.mode === "byok_lease")
-      this.byok.require(
-        room.id,
-        room.ai.setup.credentialHandle || "",
-        participantId,
-      );
+        throw new Error('Ask the project owner to connect and save an OpenRouter key and two models before building.');
+    if (room.ai.setup?.mode === 'byok_lease')
+        this.byok.require(room.id, room.ai.setup.credentialHandle || '', participantId);
     const participant = room.participants.get(participantId);
-    if (!participant) throw new Error("Participant not found.");
-    const replay =
-      room.commandReceipts?.[JSON.stringify([participantId, requestId])] ||
-      room.submissions.find(
-        (item) =>
-          item.requestId === requestId && item.participantId === participantId,
-      );
+    if (!participant)
+        throw new Error('Participant not found.');
+    const replay = room.commandReceipts?.[JSON.stringify([participantId, requestId])] || room.submissions.find(item => item.requestId === requestId && item.participantId === participantId);
     if (replay)
-      return {
-        submissionId: replay.id,
-        status: replay.status,
-        message:
-          replay.status === "failed"
-            ? "The previous submission failed; your edits are retained. Submit again with a new request."
-            : "Changes already submitted.",
-      };
+        return {
+            submissionId: replay.id, status: replay.status, message: replay.status === 'failed' ? 'The previous submission failed; your edits are retained. Submit again with a new request.' : 'Changes already submitted.'
+        };
     const batch = room.pending.get(participantId) || [];
     if (!batch.length)
-      return { status: "empty", message: "No new changes to submit" };
-    const setup = structuredClone(room.ai.setup),
-      assignment =
-        setup?.mode === "recommended" ||
-        setup?.mode === "managed" ||
-        setup?.mode === "byok_lease"
-          ? room.ai.personal
-          : room.ai.participantOverrides?.[participantId] || room.ai.personal;
-    if (!assignment) throw new Error("No personal model is assigned.");
+        return {
+            status: 'empty', message: 'No new changes to submit'
+        };
+    const setup = structuredClone(room.ai.setup);
+    const assignment = setup?.mode === 'recommended' || setup?.mode === 'managed' || setup?.mode === 'byok_lease' ? room.ai.personal : room.ai.participantOverrides?.[participantId] || room.ai.personal;
+    if (!assignment)
+        throw new Error('No personal model is assigned.');
     const submission: StoredSubmission = {
-      capturedChanges: structuredClone(batch),
-      id: randomUUID(),
-      requestId,
-      participantId,
-      editSeqs: batch.map((item) => item.seq),
-      documentRevision: room.agentRevisions.get(participantId) || 0,
-      intentContext: acceptedContext(room.sharedRequirements),
-      snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
-      previousInterpretationId: participant.latest?.id,
-      createdAt: now(),
-      status: "submitted",
-      assignment: structuredClone(assignment),
-      setup,
+        capturedChanges: structuredClone(batch), id: randomUUID(), requestId, participantId,
+        editSeqs: batch.map(item => item.seq), documentRevision: room.agentRevisions.get(participantId) || 0,
+        intentContext: acceptedContext(room.sharedRequirements), snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
+        previousInterpretationId: participant.latest?.id, createdAt: now(), status: 'submitted', assignment: structuredClone(assignment), setup
     };
     room.pending.delete(participantId);
     room.submissions.push(submission);
     room.submissions = retainSubmissions(room.submissions);
     room.lastEditAt = Date.now();
-    if (!room.pendingBuildSince) room.pendingBuildSince = room.lastEditAt;
-    room.status = "Collecting submissions";
-    const saved = this.save(
-      room,
-      "submission.submitted",
-      participantId,
-      "user",
-    );
-    this.workflowPhase(room, room.buildTask ? "running" : "queued", {
-      submissionId: submission.id,
-      requestId,
-      participantId,
-      sourceRevision: submission.documentRevision,
+    room.pendingBuildSince ??= room.lastEditAt;
+    if (!room.buildTask)
+        room.status = 'Collecting submissions';
+    const saved = this.save(room, 'submission.submitted', participantId, 'user');
+    this.workflowPhase(room, room.buildTask ? 'running' : 'queued', {
+        submissionId: submission.id, requestId, participantId, sourceRevision: submission.documentRevision
     });
     this.broadcastState(room);
-    const prior = room.steeringQueue || Promise.resolve();
-    const interpretation = prior
-      .catch(() => {})
-      .then(async () => {
-        if ((await saved) === false) {
-          room.pending.set(participantId, [
-            ...batch,
-            ...(room.pending.get(participantId) || []),
-          ]);
-          submission.status = "failed";
-          submission.error =
-            "Submission persistence failed; edits retained. Try submitting again.";
-          throw new Error(submission.error);
-        }
-        await this.runAgent(room, participantId, batch, submission);
-      });
-    room.steeringQueue = interpretation;
-    await interpretation;
+    await this.queueCapturedSubmission(room, submission, saved);
     return {
-      submissionId: submission.id,
-      status: submission.status,
-      message:
-        submission.status === "queued"
-          ? "Changes accepted and queued for the shared build."
-          : "Changes submitted.",
+        submissionId: submission.id, status: submission.status, message: submission.status === 'queued' ? 'Changes accepted and queued for the shared build.' : 'Changes saved; interpretation waits for the current build to finish.'
     };
-  }
+}
   private async flushAgents(room: Room) {
     if (!this.hasAI(room)) throw new Error("Connect an AI model first.");
     for (;;) {
@@ -2516,56 +2060,99 @@ export class RoomManager {
     }
   }
   private scheduleBuild(room: Room) {
-    if (this.lostOwnership.has(room.id)) return;
-    if (!room.pendingBuildSince) room.pendingBuildSince = Date.now();
+    if (this.lostOwnership.has(room.id) || !this.rooms.has(room.id))
+        return;
+    if (room.buildTask) {
+        // Explicit accepted decisions may invalidate the candidate. Ordinary submissions are held outside admission.
+        room.buildNeedsRestart = true;
+        room.buildController?.abort();
+        return;
+    }
+    if (room.buildAdmissionClosed)
+        return;
+    room.pendingBuildSince ??= Date.now();
     clearTimeout(room.buildTimer);
-    const current = Date.now(),
-      quietAt = (room.lastEditAt || current) + this.buildDebounceMs,
-      maxAt = room.pendingBuildSince + this.buildMaxWaitMs,
-      cooldownAt = (room.lastBuildAt || 0) + this.buildCooldownMs,
-      due = Math.max(current, Math.min(quietAt, maxAt), cooldownAt);
-    room.buildTimer = setTimeout(
-      () => this.tryScheduledBuild(room),
-      Math.max(0, due - current),
-    );
-  }
+    const current = Date.now();
+    const quietAt = (room.lastAcceptedAt || room.lastEditAt || current) + this.buildDebounceMs;
+    const maxAt = room.pendingBuildSince + this.buildMaxWaitMs;
+    const cooldownAt = (room.lastBuildAt || 0) + this.buildCooldownMs;
+    room.collectionEndsAt = Math.max(current, Math.min(quietAt, maxAt), cooldownAt);
+    room.buildTimer = setTimeout(() => this.tryScheduledBuild(room), room.collectionEndsAt - current);
+}
   private tryScheduledBuild(room: Room) {
     room.buildTimer = undefined;
-    if (
-      room.agentTasks.size ||
-      room.buildTask ||
-      room.submissions.some(
-        (item) => item.status === "submitted" || item.status === "interpreting",
-      )
-    ) {
-      room.buildTimer = setTimeout(
-        () => this.tryScheduledBuild(room),
-        Math.max(250, this.config.debounceMs),
-      );
-      return;
-    }
-    this.requestBuild(room);
-  }
+    if (this.lostOwnership.has(room.id) || !this.rooms.has(room.id) || room.buildTask || room.buildAdmissionClosed)
+        return;
+    // Close admission at the deadline, including when interpretations remain queued.
+    // At most the interpretation already executing finishes; later captured commands cannot extend this collection.
+    room.buildAdmissionClosed = true;
+    const prior = room.steeringQueue || Promise.resolve();
+    const dispatch = prior.catch(() => {
+    }).then(async () => {
+        this.assertOwned(room);
+        if (await this.save(room, 'build.collection_closed', 'coordinator', 'system') === false) {
+            this.loseOwnership(room.id);
+            throw new CoordinatorUnavailableError();
+        }
+        this.requestBuild(room);
+    });
+    room.steeringQueue = dispatch;
+    void dispatch.catch(error => {
+        if (this.lostOwnership.has(room.id))
+            return;
+        room.status = 'Error';
+        room.lastError = error instanceof Error ? error.message : String(error);
+        this.broadcastState(room);
+    });
+}
   private requestBuild(room: Room, force = false) {
     this.assertOwned(room);
-    if (!force && buildFingerprint(room) === room.lastBuiltFingerprint) {
-      room.pendingBuildSince = undefined;
-      room.status = hasOpenContradictions(room.conflictGroups)
-        ? "Decision needed"
-        : room.versions.length
-          ? "Updated"
-          : "Waiting for ideas";
-      this.broadcastState(room);
-      return;
+    const current = room.versions.at(-1), requiredChecks = planVerification(eligibleRequirements(room.sharedRequirements, room.conflictGroups), room.specificationRevision);
+    const evidence = current?.aiRun?.verification.evidence;
+    const coveredEvidenceCurrent = !requiredChecks.kinds.length || !!(current?.files && evidence && evidence.policyVersion === CHECK_VERSION &&
+        evidence.sourceHash === sourceHash(current.files) && evidence.candidateHash === candidateHash(current.files, {
+        javascript: current.bundle, css: current.css || ''
+    }) && evidence.status !== 'failed' && requiredChecks.requirements.every(row => evidence.requirements.some(item => item.requirementId === row.requirementId && item.criteriaHash === row.criteriaHash)) &&
+        requiredChecks.kinds.every(kind => evidence.checks.some(check => check.kind === kind && check.version === CHECK_VERSION && check.passed)));
+    if (!force && coveredEvidenceCurrent && buildFingerprint(room) === room.lastBuiltFingerprint) {
+        room.pendingBuildSince = undefined;
+        room.buildAdmissionClosed = false;
+        room.collectionEndsAt = undefined;
+        for (const submission of room.submissions.filter(item => item.status === 'queued'))
+            submission.status = 'built';
+        room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.length ? 'Updated' : 'Waiting for ideas';
+        this.resumeCapturedSubmissions(room);
+        if (!room.intentBuildPending && !room.submissions.some(item => item.status === 'submitted' || item.status === 'interpreting'))
+            if (room.executionBudget && !room.executionBudget.legacyAllowanceUnknown)
+                room.executionBudget.closed = true;
+        void this.save(room, 'workflow.budget_closed');
+        void this.save(room, 'build.already_current', 'coordinator', 'system');
+        this.broadcastState(room);
+        return;
     }
     room.intentBuildPending = false;
+    room.buildAdmissionClosed = true;
+    room.collectionEndsAt = undefined;
     room.requestedRevision++;
     if (!room.buildTask)
-      room.buildTask = this.buildLoop(room).finally(() => {
-        room.buildTask = undefined;
-        room.executionBudget = undefined;
-      });
-  }
+        room.buildTask = this.buildLoop(room).finally(() => {
+            room.buildTask = undefined;
+            room.buildingRevision = undefined;
+            room.buildAdmissionClosed = false;
+            if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
+                return;
+            if (room.buildNeedsRestart) {
+                room.buildNeedsRestart = false;
+                this.scheduleBuild(room);
+            }
+            this.resumeCapturedSubmissions(room);
+            if (room.status !== 'Error' && !room.intentBuildPending && !room.buildTimer && !room.submissions.some(item => item.status === 'submitted' || item.status === 'interpreting' || item.status === 'queued'))
+                if (room.executionBudget && !room.executionBudget.legacyAllowanceUnknown)
+                    room.executionBudget.closed = true;
+            void this.save(room, 'workflow.budget_closed');
+            this.broadcastState(room);
+        });
+}
   async buildNow(room: Room) {
     await this.flushAgents(room);
     clearTimeout(room.buildTimer);
@@ -2640,615 +2227,351 @@ export class RoomManager {
   }
   private async buildLoop(room: Room) {
     while (this.hasAI(room)) {
-      await room.intentCommit?.done;
-      this.assertOwned(room);
-      const revision = room.requestedRevision,
-        specificationRevision = room.specificationRevision,
-        fingerprint = buildFingerprint(room),
-        requirements = eligibleRequirements(
-          room.sharedRequirements,
-          room.conflictGroups,
-        ).map((requirement) => structuredClone(requirement));
-      if (!requirements.length) {
-        room.pendingBuildSince = undefined;
-        const blocked = hasOpenContradictions(room.conflictGroups);
-        room.status = blocked ? "Decision needed" : "Waiting for ideas";
-        this.workflowPhase(room, "awaiting_input", {
-          specificationRevision,
-          reason: blocked
-            ? "A requirement decision is pending."
-            : "No accepted requirements are eligible for execution.",
-        });
-        this.broadcastState(room);
-        return;
-      }
-      const queuedSubmissions = room.submissions.filter(
-        (item) => item.status === "queued",
-      );
-      const frozenSetup = structuredClone(
-          room.budgetWindow?.setup ||
-            queuedSubmissions[0]?.setup ||
-            room.ai.setup,
-        ),
-        remainingBudget = room.budgetWindow
-          ? room.budgetWindow.maximumUsd - room.budgetWindow.reservedUsd
-          : Number.POSITIVE_INFINITY,
-        routing =
-          frozenSetup?.mode === "recommended"
-            ? routeBuilderForRun(frozenSetup, requirements, remainingBudget)
-            : undefined,
-        frozenBuilder = structuredClone(
-          routing?.assignment ||
-            (frozenSetup?.mode === "managed" ||
-            frozenSetup?.mode === "byok_lease"
-              ? {
-                  connectionId:
-                    frozenSetup.mode === "managed" ? "managed" : "byok",
-                  model: frozenSetup.resolved!.builder.model,
-                }
-              : room.ai.builder),
-        );
-      if (!frozenBuilder) throw new Error("No builder model is assigned.");
-      const builderConfig = this.aiConfigFrom(
-          room,
-          "builder",
-          frozenBuilder,
-          frozenSetup,
-        ),
-        maxAttempts =
-          frozenSetup?.mode === "byok_lease"
-            ? 2
-            : Math.min(
-                3,
-                Math.max(
-                  1,
-                  frozenSetup?.resolved?.repairAttempts ||
-                    effortAllowance(frozenSetup?.effort || "medium", "builder")
-                      .repairAttempts,
-                ),
-              ),
-        runId = randomUUID(),
-        controller = new AbortController(),
-        configuration = {
-          presetVersion: frozenSetup?.presetVersion,
-          pricingVersion: frozenSetup?.pricingVersion,
-          routingRuleVersion: frozenSetup?.routingRuleVersion,
-          workflowMode: frozenSetup?.workflowMode,
-          effort: frozenSetup?.effort,
-          complexity: routing?.complexity || "uncertain",
-          evidenceStatus: routing?.evidenceStatus || "hypothesis",
-          routingReason: routing?.reason || "Advanced manual assignment.",
-          model: frozenBuilder.model,
-          connectionId: frozenBuilder.connectionId,
-          maxInputTokens: builderConfig.maxInputTokens,
-          maxOutputTokens: builderConfig.maxOutputTokens,
-          maximumSpendUsd: frozenSetup?.maximumSpendUsd,
+        await room.intentCommit?.done;
+        this.assertOwned(room);
+        const revision = room.requestedRevision, specificationRevision = room.specificationRevision, fingerprint = buildFingerprint(room), requirements = eligibleRequirements(room.sharedRequirements, room.conflictGroups).map(requirement => structuredClone(requirement));
+        if (!requirements.length) {
+            room.pendingBuildSince = undefined;
+            const blocked = hasOpenContradictions(room.conflictGroups);
+            room.status = blocked ? 'Decision needed' : 'Waiting for ideas';
+            this.workflowPhase(room, 'awaiting_input', {
+                specificationRevision, reason: blocked ? 'A requirement decision is pending.' : 'No accepted requirements are eligible for execution.'
+            });
+            this.broadcastState(room);
+            return;
+        }
+        const queuedSubmissions = room.submissions.filter(item => item.status === 'queued');
+        const frozenSetup = structuredClone(queuedSubmissions[0]?.setup || room.ai.setup), remainingBudget = remainingAllowanceUsd(room.executionBudget, frozenSetup?.maximumSpendUsd), routing = frozenSetup?.mode === 'recommended' ? routeBuilderForRun(frozenSetup, requirements, remainingBudget) : undefined, frozenBuilder = structuredClone(routing?.assignment || (frozenSetup?.mode === 'managed' || frozenSetup?.mode === 'byok_lease' ? {
+            connectionId: frozenSetup.mode === 'managed' ? 'managed' : 'byok', model: frozenSetup.resolved!.builder.model
+        } : room.ai.builder));
+        if (!frozenBuilder)
+            throw new Error('No builder model is assigned.');
+        const builderConfig = this.aiConfigFrom(room, 'builder', frozenBuilder, frozenSetup), maxAttempts = frozenSetup?.mode === 'byok_lease' ? 2 : Math.min(3, Math.max(1, frozenSetup?.resolved?.repairAttempts || effortAllowance(frozenSetup?.effort || 'medium', 'builder').repairAttempts)), runId = randomUUID(), controller = new AbortController(), configuration = {
+            presetVersion: frozenSetup?.presetVersion, pricingVersion: frozenSetup?.pricingVersion, routingRuleVersion: frozenSetup?.routingRuleVersion, workflowMode: frozenSetup?.workflowMode, effort: frozenSetup?.effort, complexity: routing?.complexity || 'uncertain', evidenceStatus: routing?.evidenceStatus || 'hypothesis', routingReason: routing?.reason || 'Advanced manual assignment.', model: frozenBuilder.model, connectionId: frozenBuilder.connectionId, maxInputTokens: builderConfig.maxInputTokens, maxOutputTokens: builderConfig.maxOutputTokens, maximumSpendUsd: frozenSetup?.maximumSpendUsd
         };
-      this.eventStore.createTask({
-        workspaceId: room.id,
-        taskId: runId,
-        runId,
-        title: `Build Developer artifact for specification r${specificationRevision}`,
-        requirementRevision: specificationRevision,
-        assignedWorker: "shared-executor",
-        acceptanceCriteria: requirements
-          .flatMap((item) => item.acceptanceCriteria)
-          .slice(0, 20),
-      });
-      this.eventStore.transitionTask({
-        workspaceId: room.id,
-        taskId: runId,
-        state: "queued",
-      });
-      this.workflowPhase(room, "queued", {
-        taskId: runId,
-        specificationRevision,
-      });
-      this.eventStore.transitionRun({
-        workspaceId: room.id,
-        runId,
-        kind: "builder",
-        state: "queued",
-        inputRevision: specificationRevision,
-        attempt: 0,
-        payload: {
-          taskId: runId,
-          requirementIds: requirements.map((item) => item.id),
-          configuration,
-        },
-      });
-      room.buildController = controller;
-      room.status = "Building";
-      room.lastError = undefined;
-      this.broadcastState(room);
-      try {
-        this.eventStore.transitionRun({
-          workspaceId: room.id,
-          runId,
-          kind: "builder",
-          state: "executing",
-          inputRevision: specificationRevision,
-          attempt: 1,
-          payload: { configuration },
+        this.eventStore.createTask({
+            workspaceId: room.id, taskId: runId, runId, title: `Build Developer artifact for specification r${specificationRevision}`, requirementRevision: specificationRevision, assignedWorker: 'shared-executor', acceptanceCriteria: requirements.flatMap(item => item.acceptanceCriteria).slice(0, 20)
         });
         this.eventStore.transitionTask({
-          workspaceId: room.id,
-          taskId: runId,
-          state: "running",
+            workspaceId: room.id, taskId: runId, state: 'queued'
         });
-        this.workflowPhase(room, "running", {
-          taskId: runId,
-          specificationRevision,
+        this.workflowPhase(room, 'queued', {
+            taskId: runId, specificationRevision
         });
-        this.broadcastState(room);
-        room.executionBudget ||= {
-          calls: 0,
-          reservedUsd: 0,
-          maximumUsd: frozenSetup?.maximumSpendUsd,
-        };
-        builderConfig.previousRequirements = room.lastBuiltRequirements;
-        builderConfig.checkpoint = async (checkpoint) => {
-          room.recoveryCheckpoint = {
-            fingerprint,
-            revision: specificationRevision,
-            files: checkpoint.files,
-            task: checkpoint.task,
-            index: checkpoint.index,
-            total: checkpoint.total,
-          };
-          const artifact = this.eventStore.writeArtifact(
-            JSON.stringify(checkpoint),
-            "application/vnd.cocreate.recovery+json",
-          );
-          this.eventStore.append({
-            workspaceId: room.id,
-            runId,
-            actorId: "builder",
-            actorType: "builder",
-            eventType: "build.task_checkpointed",
-            inputRevision: specificationRevision,
-            artifactRef: artifact.ref,
-            payload: {
-              task: checkpoint.task,
-              index: checkpoint.index,
-              total: checkpoint.total,
-            },
-          });
-          if ((await this.save(room, "build.recovery_checkpointed")) === false)
-            throw new Error("Recovery checkpoint persistence failed.");
-        };
-        const toolContext = {
-            workspaceId: room.id,
-            runId,
-            actorId: "builder",
-            actorType: "builder" as const,
-            role: "builder" as const,
-            inputRevision: specificationRevision,
-            signal: controller.signal,
-          },
-          base =
-            room.recoveryCheckpoint?.fingerprint === fingerprint
-              ? room.recoveryCheckpoint.files
-              : room.versions.at(-1)?.files || loadProject(room.id) || [];
-        let working = base,
-          compiled: { javascript: string; css: string } | undefined,
-          plan:
-            | Awaited<ReturnType<typeof generateProjectPlan>>["value"]
-            | undefined,
-          lastFailure = "",
-          attempts = 0;
-        await assertIsolationAvailable(controller.signal);
-        for (let attempt = 0; attempt < maxAttempts; attempt++) {
-          attempts = attempt + 1;
-          let reservation: BudgetReservation | undefined;
-          try {
-            reservation = this.reserveBudget(room, "builder", frozenSetup, 2);
-            const result = await this.tracked(
-              room,
-              {
-                purpose: attempt ? "compilation_repair" : "builder",
-                provider: builderConfig.provider || "custom",
-                model: frozenBuilder.model,
-                workflowRunId: runId,
-                actorId:
-                  queuedSubmissions[0]?.participantId ||
-                  room.ownerId ||
-                  undefined,
-                setup: frozenSetup,
-                estimatedOutputTokens: builderConfig.maxOutputTokens,
-              },
-              () =>
-                generateProjectPlan(
-                  builderConfig,
-                  requirements,
-                  working,
-                  lastFailure || undefined,
-                  controller.signal,
-                ),
-            );
-            this.recordUsage(room, "builder", result.usage, reservation, {
-              phase: attempt ? "repair" : "builder",
-              provider: builderConfig.provider || "custom",
-              model: frozenBuilder.model,
-            });
-            plan = result.value;
-          } catch (error) {
-            this.markUncertain(room, reservation, {
-              phase: attempt ? "repair" : "builder",
-              provider: builderConfig.provider || "custom",
-              model: frozenBuilder.model,
-            });
-            throw error;
-          }
-          working = (
-            await this.tools.execute(
-              "project.apply_operations",
-              { current: working, operations: plan.operations },
-              toolContext,
-            )
-          ).files;
-          try {
-            compiled = await this.tools.execute(
-              "project.bundle",
-              { files: working },
-              toolContext,
-            );
-            break;
-          } catch (error) {
-            if (error instanceof IsolationError) throw error;
-            lastFailure =
-              error instanceof Error ? error.message : String(error);
-            if (attempt < maxAttempts - 1) {
-              this.eventStore.transitionRun({
-                workspaceId: room.id,
-                runId,
-                kind: "builder",
-                state: "repairing",
-                inputRevision: specificationRevision,
-                attempt: attempts,
-                error: lastFailure,
-              });
-              this.eventStore.transitionRun({
-                workspaceId: room.id,
-                runId,
-                kind: "builder",
-                state: "executing",
-                inputRevision: specificationRevision,
-                attempt: attempts + 1,
-                payload: { configuration },
-              });
+        this.eventStore.transitionRun({
+            workspaceId: room.id, runId, kind: 'builder', state: 'queued', inputRevision: specificationRevision, attempt: 0, payload: {
+                taskId: runId, requirementIds: requirements.map(item => item.id), configuration
             }
-          }
-        }
-        await room.intentCommit?.done;
-        if (controller.signal.aborted)
-          throw new ProviderError(
-            "cancelled",
-            "Superseded by newer accepted requirements.",
-          );
-        if (!compiled || !plan)
-          throw new Error(
-            `Generated project did not build after ${maxAttempts} attempts. ${lastFailure}`,
-          );
-        this.eventStore.transitionRun({
-          workspaceId: room.id,
-          runId,
-          kind: "builder",
-          state: "verifying",
-          inputRevision: specificationRevision,
-          attempt: attempts,
-          payload: { configuration },
         });
-        this.eventStore.transitionTask({
-          workspaceId: room.id,
-          taskId: runId,
-          state: "verifying",
-          evidenceStatus: "pending",
-        });
+        room.buildController = controller;
+        room.buildingRevision = specificationRevision;
+        room.status = 'Building';
+        room.lastError = undefined;
         this.broadcastState(room);
-        if (
-          !shouldPromoteRevision(revision, room.requestedRevision) ||
-          fingerprint !== buildFingerprint(room)
-        ) {
-          this.eventStore.transitionRun({
-            workspaceId: room.id,
-            runId,
-            kind: "builder",
-            state: "cancelled",
-            inputRevision: specificationRevision,
-            attempt: attempts,
-            error: "A newer workspace revision superseded this build.",
-          });
-          this.eventStore.transitionTask({
-            workspaceId: room.id,
-            taskId: runId,
-            state: "stale",
-            evidenceStatus: "stale",
-            blocker:
-              "A newer specification revision superseded this candidate.",
-          });
-          this.workflowPhase(room, "queued", { supersededTaskId: runId });
-          continue;
-        }
-        this.assertOwned(room);
-        await this.config.durableStore?.assertCoordinator?.(room.id);
-        this.assertOwned(room);
-        if (fingerprint !== buildFingerprint(room))
-          throw new Error("A newer specification superseded this candidate.");
-        const priorPromotion = {
-          versions: [...room.versions],
-          aiRuns: [...room.aiRuns],
-          runWindow: room.runWindow,
-          fingerprint: room.lastBuiltFingerprint,
-          requirements: room.lastBuiltRequirements,
-          recoveryCheckpoint: room.recoveryCheckpoint,
-          budgetWindow: room.budgetWindow,
-        };
-        const preparedArtifact = bodyFromBytes(
-          versionArtifactBytes(room.id, {
-            id:
-              Math.max(
-                0,
-                ...room.versions.map((version) => version.id),
-                ...(room.artifactHistory || []).map((version) => version.id),
-              ) + 1,
-            files: working,
-            bundle: compiled.javascript,
-            css: compiled.css,
-          }),
-          "application/vnd.cocreate.product+json",
-        );
-        await this.config.durableStore?.publishArtifactBodies?.(room.id, [
-          preparedArtifact,
-        ]);
-        this.assertOwned(room);
-        await this.config.durableStore?.assertCoordinator?.(room.id);
-        this.assertOwned(room);
-        if (
-          controller.signal.aborted ||
-          !shouldPromoteRevision(revision, room.requestedRevision) ||
-          fingerprint !== buildFingerprint(room)
-        )
-          throw new Error("A newer specification superseded this candidate.");
-        await room.intentCommit?.done;
-        this.assertOwned(room);
-        if (controller.signal.aborted || fingerprint !== buildFingerprint(room))
-          throw new ProviderError("cancelled", "Accepted intent changed.");
-        await this.tools.execute(
-          "project.promote",
-          { files: working },
-          toolContext,
-        );
-        await room.intentCommit?.done;
-        this.assertOwned(room);
-        if (
-          controller.signal.aborted ||
-          fingerprint !== buildFingerprint(room)
-        ) {
-          const oldFiles = room.versions.at(-1)?.files;
-          if (oldFiles) persistProject(room.id, oldFiles);
-          throw new ProviderError("cancelled", "Accepted intent changed.");
-        }
-        const aiRun = this.finalizeRun(room, {
-            runId,
-            setup: frozenSetup,
-            routing,
-            builderModel: frozenBuilder.model,
-            outcome: "promoted",
-            operationsApplied: true,
-            compilationPassed: true,
-          }),
-          version: StoredVersion = {
-            id:
-              Math.max(
-                0,
-                ...room.versions.map((version) => version.id),
-                ...(room.artifactHistory || []).map((version) => version.id),
-              ) + 1,
-            createdAt: now(),
-            summary: plan.summary,
-            fileCount: working.length,
-            conflicts: plan.conflicts,
-            files: working,
-            bundle: compiled.javascript,
-            css: compiled.css,
-            decisions: plan.decisions,
-            specification: plan.specification,
-            aiRun,
-          },
-          budget = room.budgetWindow && {
-            reservedUsd: room.budgetWindow.reservedUsd,
-            actualUsd: room.budgetWindow.actualUsd,
-            uncertainUsd: room.budgetWindow.uncertainUsd,
-            maximumUsd: room.budgetWindow.maximumUsd,
-          };
-        room.recoveryCheckpoint = undefined;
-        room.pendingPromotion = version.id;
-        room.versions.push(version);
-        room.versions = room.versions.slice(-6);
-        room.lastBuiltFingerprint = fingerprint;
-        room.lastBuiltRequirements = requirements;
-        room.lastBuildAt = Date.now();
-        room.pendingBuildSince = undefined;
-        room.status = "Updated";
-        room.budgetWindow = undefined;
-        for (const submission of queuedSubmissions) submission.status = "built";
-        let committed = false,
-          promotionError: unknown;
+        let evidence: CandidateVerification | undefined, operationsApplied = false, compilationPassed = false;
+        const verificationPlan = planVerification(requirements, specificationRevision);
+        builderConfig.verificationChecks = verificationPlan.kinds;
         try {
-          committed =
-            (await this.save(
-              room,
-              "product.promoted",
-              "builder",
-              "builder",
-            )) !== false;
-        } catch (error) {
-          promotionError = error;
-        } finally {
-          room.pendingPromotion = undefined;
-        }
-        if (!committed) {
-          room.versions = priorPromotion.versions;
-          room.aiRuns = priorPromotion.aiRuns;
-          room.runWindow = priorPromotion.runWindow;
-          room.lastBuiltFingerprint = priorPromotion.fingerprint;
-          room.lastBuiltRequirements = priorPromotion.requirements;
-          room.recoveryCheckpoint = priorPromotion.recoveryCheckpoint;
-          room.budgetWindow = priorPromotion.budgetWindow;
-          for (const submission of queuedSubmissions)
-            submission.status = "queued";
-          const oldFiles = room.versions.at(-1)?.files;
-          let owned = true;
-          try {
+            this.eventStore.transitionRun({
+                workspaceId: room.id, runId, kind: 'builder', state: 'executing', inputRevision: specificationRevision, attempt: 1, payload: {
+                    configuration
+                }
+            });
+            this.eventStore.transitionTask({
+                workspaceId: room.id, taskId: runId, state: 'running'
+            });
+            this.workflowPhase(room, 'running', {
+                taskId: runId, specificationRevision
+            });
+            this.broadcastState(room);
+            builderConfig.previousRequirements = room.lastBuiltRequirements;
+            builderConfig.checkpoint = async (checkpoint) => {
+                room.recoveryCheckpoint = {
+                    fingerprint, revision: specificationRevision, files: checkpoint.files, task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
+                };
+                const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.cocreate.recovery+json');
+                this.eventStore.append({
+                    workspaceId: room.id, runId, actorId: 'builder', actorType: 'builder', eventType: 'build.task_checkpointed', inputRevision: specificationRevision, artifactRef: artifact.ref, payload: {
+                        task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
+                    }
+                });
+                if (await this.save(room, 'build.recovery_checkpointed') === false)
+                    throw new Error('Recovery checkpoint persistence failed.');
+            };
+            const toolContext = {
+                workspaceId: room.id, runId, actorId: 'builder', actorType: 'builder' as const, role: 'builder' as const, inputRevision: specificationRevision, signal: controller.signal
+            }, base = room.recoveryCheckpoint?.fingerprint === fingerprint ? room.recoveryCheckpoint.files : room.versions.at(-1)?.files || loadProject(room.id) || [];
+            let working = base, compiled: {
+                javascript: string;
+                css: string;
+            } | undefined, plan: Awaited<ReturnType<typeof generateProjectPlan>>['value'] | undefined, lastFailure = '', attempts = 0;
+            await assertIsolationAvailable(controller.signal);
+            if (verificationPlan.kinds.length)
+                await assertVerificationBrowserAvailable(controller.signal);
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+                attempts = attempt + 1;
+                let reservation: BudgetReservation | undefined;
+                try {
+                    reservation = this.reserveBudget(room, 'builder', frozenSetup, 2);
+                    const result = await this.tracked(room, {
+                        purpose: attempt ? 'compilation_repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model, workflowRunId: runId, actorId: queuedSubmissions[0]?.participantId || room.ownerId || undefined, setup: frozenSetup, estimatedOutputTokens: builderConfig.maxOutputTokens
+                    }, () => generateProjectPlan(builderConfig, requirements, working, lastFailure || undefined, controller.signal));
+                    this.recordUsage(room, 'builder', result.usage, reservation, {
+                        phase: attempt ? 'repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model
+                    });
+                    plan = result.value;
+                }
+                catch (error) {
+                    this.markUncertain(room, reservation, {
+                        phase: attempt ? 'repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model
+                    });
+                    throw error;
+                }
+                working = (await this.tools.execute('project.apply_operations', {
+                    current: working, operations: plan.operations
+                }, toolContext)).files;
+                operationsApplied = true;
+                try {
+                    const available = room.versions.at(-1), retained = available && {
+                        javascript: available.bundle, css: available.css || ''
+                    };
+                    if (available?.files && retained && this.compiledVersions.has(available) && available.aiRun?.verification.compilationPassed &&
+                        sourceHash(working) === sourceHash(available.files) && available.aiRun.verification.evidence?.candidateHash === candidateHash(working, retained)) {
+                        compiled = retained;
+                        this.eventStore.append({
+                            workspaceId: room.id, runId, actorId: 'coordinator', actorType: 'system', eventType: 'build.compilation_reused', inputRevision: specificationRevision, contentHash: candidateHash(working, retained), payload: {
+                                sourceVersion: available.id
+                            }
+                        });
+                    }
+                    else
+                        compiled = await this.tools.execute('project.bundle', {
+                            files: working
+                        }, toolContext);
+                    compilationPassed = true;
+                    break;
+                }
+                catch (error) {
+                    if (error instanceof IsolationError)
+                        throw error;
+                    lastFailure = error instanceof Error ? error.message : String(error);
+                    if (attempt < maxAttempts - 1) {
+                        this.eventStore.transitionRun({
+                            workspaceId: room.id, runId, kind: 'builder', state: 'repairing', inputRevision: specificationRevision, attempt: attempts, error: lastFailure
+                        });
+                        this.eventStore.transitionRun({
+                            workspaceId: room.id, runId, kind: 'builder', state: 'executing', inputRevision: specificationRevision, attempt: attempts + 1, payload: {
+                                configuration
+                            }
+                        });
+                    }
+                }
+            }
+            await room.intentCommit?.done;
+            if (controller.signal.aborted)
+                throw new ProviderError('cancelled', 'Superseded by newer accepted requirements.');
+            if (!compiled || !plan)
+                throw new Error(`Generated project did not build after ${maxAttempts} attempts. ${lastFailure}`);
+            this.eventStore.transitionRun({
+                workspaceId: room.id, runId, kind: 'builder', state: 'verifying', inputRevision: specificationRevision, attempt: attempts, payload: {
+                    configuration
+                }
+            });
+            this.eventStore.transitionTask({
+                workspaceId: room.id, taskId: runId, state: 'verifying', evidenceStatus: 'pending'
+            });
+            this.broadcastState(room);
+            evidence = await this.tools.execute('project.verify', {
+                files: working, compiled, requirements
+            }, toolContext);
             this.assertOwned(room);
-          } catch {
-            owned = false;
-          }
-          if (oldFiles && owned) persistProject(room.id, oldFiles);
-          throw (
-            promotionError ||
-            new Error(
-              "Artifact promotion could not be durably saved; the last working artifact is retained.",
-            )
-          );
+            this.eventStore.append({
+                workspaceId: room.id, runId, actorId: 'verification', actorType: 'system', eventType: 'candidate.verification_recorded', inputRevision: specificationRevision, contentHash: evidence.candidateHash, payload: {
+                    evidence
+                }
+            });
+            if (await this.save(room, 'build.verification_recorded', 'verification', 'system') === false)
+                throw new Error('Verification evidence could not be durably saved. The previous artifact is retained.');
+            assertPromotionEvidence(evidence, working, compiled, requirements, specificationRevision);
+            if (!shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room)) {
+                this.eventStore.transitionRun({
+                    workspaceId: room.id, runId, kind: 'builder', state: 'cancelled', inputRevision: specificationRevision, attempt: attempts, error: 'A newer workspace revision superseded this build.'
+                });
+                this.eventStore.transitionTask({
+                    workspaceId: room.id, taskId: runId, state: 'stale', evidenceStatus: 'stale', blocker: 'A newer specification revision superseded this candidate.'
+                });
+                this.workflowPhase(room, 'queued', {
+                    supersededTaskId: runId
+                });
+                continue;
+            }
+            this.assertOwned(room);
+            await this.config.durableStore?.assertCoordinator?.(room.id);
+            this.assertOwned(room);
+            if (fingerprint !== buildFingerprint(room))
+                throw new Error('A newer specification superseded this candidate.');
+            const priorPromotion = {
+                versions: [...room.versions], aiRuns: [...room.aiRuns], runWindow: room.runWindow, fingerprint: room.lastBuiltFingerprint, requirements: room.lastBuiltRequirements, recoveryCheckpoint: room.recoveryCheckpoint, budgetWindow: room.budgetWindow
+            };
+            const preparedArtifact = bodyFromBytes(versionArtifactBytes(room.id, {
+                id: Math.max(0, ...room.versions.map(version => version.id), ...(room.artifactHistory || []).map(version => version.id)) + 1, files: working, bundle: compiled.javascript, css: compiled.css
+            }), 'application/vnd.cocreate.product+json');
+            await this.config.durableStore?.publishArtifactBodies?.(room.id, [preparedArtifact]);
+            this.assertOwned(room);
+            await this.config.durableStore?.assertCoordinator?.(room.id);
+            this.assertOwned(room);
+            if (controller.signal.aborted || !shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room))
+                throw new Error('A newer specification superseded this candidate.');
+            await room.intentCommit?.done;
+            this.assertOwned(room);
+            if (controller.signal.aborted || fingerprint !== buildFingerprint(room))
+                throw new ProviderError('cancelled', 'Accepted intent changed.');
+            await this.tools.execute('project.promote', {
+                files: working
+            }, {
+                ...toolContext, verification: {
+                    report: evidence, requirements, compiled
+                }
+            });
+            await room.intentCommit?.done;
+            this.assertOwned(room);
+            if (controller.signal.aborted || fingerprint !== buildFingerprint(room)) {
+                const oldFiles = room.versions.at(-1)?.files;
+                if (oldFiles)
+                    persistProject(room.id, oldFiles);
+                throw new ProviderError('cancelled', 'Accepted intent changed.');
+            }
+            const aiRun = this.finalizeRun(room, {
+                runId, setup: frozenSetup, routing, builderModel: frozenBuilder.model, outcome: 'promoted', operationsApplied: true, compilationPassed: true, evidence
+            }), version: StoredVersion = {
+                id: Math.max(0, ...room.versions.map(version => version.id), ...(room.artifactHistory || []).map(version => version.id)) + 1, specificationRevision, createdAt: now(), summary: plan.summary, fileCount: working.length, conflicts: plan.conflicts, files: working, bundle: compiled.javascript, css: compiled.css, decisions: plan.decisions, specification: plan.specification, aiRun
+            }, budget = room.budgetWindow && {
+                reservedUsd: room.budgetWindow.reservedUsd, actualUsd: room.budgetWindow.actualUsd, uncertainUsd: room.budgetWindow.uncertainUsd, maximumUsd: room.budgetWindow.maximumUsd
+            };
+            room.recoveryCheckpoint = undefined;
+            room.pendingPromotion = version.id;
+            room.versions.push(version);
+            room.versions = room.versions.slice(-6);
+            room.lastBuiltFingerprint = fingerprint;
+            room.lastBuiltRequirements = requirements;
+            room.lastBuildAt = Date.now();
+            room.pendingBuildSince = undefined;
+            room.status = 'Updated';
+            room.budgetWindow = undefined;
+            for (const submission of queuedSubmissions)
+                submission.status = 'built';
+            let committed = false, promotionError: unknown;
+            try {
+                committed = await this.save(room, 'product.promoted', 'builder', 'builder') !== false;
+            }
+            catch (error) {
+                promotionError = error;
+            }
+            finally {
+                room.pendingPromotion = undefined;
+            }
+            if (!committed) {
+                room.versions = priorPromotion.versions;
+                room.aiRuns = priorPromotion.aiRuns;
+                room.runWindow = priorPromotion.runWindow;
+                room.lastBuiltFingerprint = priorPromotion.fingerprint;
+                room.lastBuiltRequirements = priorPromotion.requirements;
+                room.recoveryCheckpoint = priorPromotion.recoveryCheckpoint;
+                room.budgetWindow = priorPromotion.budgetWindow;
+                for (const submission of queuedSubmissions)
+                    submission.status = 'queued';
+                const oldFiles = room.versions.at(-1)?.files;
+                let owned = true;
+                try {
+                    this.assertOwned(room);
+                }
+                catch {
+                    owned = false;
+                }
+                if (oldFiles && owned)
+                    persistProject(room.id, oldFiles);
+                throw promotionError || new Error('Artifact promotion could not be durably saved; the last working artifact is retained.');
+            }
+            this.compiledVersions.add(version);
+            this.eventStore.transitionRun({
+                workspaceId: room.id, runId, kind: 'builder', state: 'ready', inputRevision: specificationRevision, attempt: attempts, payload: {
+                    versionId: version.id, fileCount: version.fileCount, requirementIds: requirements.map(item => item.id), configuration, budget
+                }
+            });
+            this.eventStore.transitionTask({
+                workspaceId: room.id, taskId: runId, state: 'completed', evidenceStatus: evidence.status === 'passed' ? 'passed' : 'unverified', artifactVersion: version.id, payload: {
+                    compilationPassed: true, functionalVerification: evidence.status, candidateHash: evidence.candidateHash
+                }
+            });
+            this.workflowPhase(room, 'completed', {
+                taskId: runId, artifactVersion: version.id, verification: evidence.status === 'passed' ? 'passed' : 'unverified'
+            });
+            await this.save(room, 'build.completed', 'builder', 'builder');
+            this.broadcastState(room);
         }
-        this.eventStore.transitionRun({
-          workspaceId: room.id,
-          runId,
-          kind: "builder",
-          state: "ready",
-          inputRevision: specificationRevision,
-          attempt: attempts,
-          payload: {
-            versionId: version.id,
-            fileCount: version.fileCount,
-            requirementIds: requirements.map((item) => item.id),
-            configuration,
-            budget,
-          },
-        });
-        this.eventStore.transitionTask({
-          workspaceId: room.id,
-          taskId: runId,
-          state: "completed",
-          evidenceStatus: "unverified",
-          artifactVersion: version.id,
-          payload: {
-            compilationPassed: true,
-            functionalVerification: "not_run",
-          },
-        });
-        this.workflowPhase(room, "completed", {
-          taskId: runId,
-          artifactVersion: version.id,
-          verification: "unverified",
-        });
-        await this.save(room, "build.completed", "builder", "builder");
-        this.broadcastState(room);
-      } catch (error) {
-        await room.intentCommit?.done;
-        try {
-          this.assertOwned(room);
-        } catch {
-          return;
+        catch (error) {
+            await room.intentCommit?.done;
+            try {
+                this.assertOwned(room);
+            }
+            catch {
+                return;
+            }
+            const message = error instanceof Error ? error.message : String(error);
+            if (this.cancelled(error)) {
+                this.eventStore.transitionRun({
+                    workspaceId: room.id, runId, kind: 'builder', state: 'cancelled', inputRevision: specificationRevision, error: message
+                });
+                this.eventStore.transitionTask({
+                    workspaceId: room.id, taskId: runId, state: 'cancelled', evidenceStatus: 'unverified', blocker: message
+                });
+                this.workflowPhase(room, 'cancelled', {
+                    taskId: runId, reason: message
+                });
+                room.status = room.agentTasks.size ? 'Understanding edits' : hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.length ? 'Updated' : 'Waiting for ideas';
+                this.broadcastState(room);
+                return;
+            }
+            if (!shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room)) {
+                this.eventStore.transitionRun({
+                    workspaceId: room.id, runId, kind: 'builder', state: 'cancelled', inputRevision: specificationRevision, error: 'A newer workspace revision superseded this build.'
+                });
+                this.eventStore.transitionTask({
+                    workspaceId: room.id, taskId: runId, state: 'stale', evidenceStatus: 'stale', blocker: 'A newer specification revision superseded this candidate.'
+                });
+                this.workflowPhase(room, 'queued', {
+                    supersededTaskId: runId
+                });
+                continue;
+            }
+            this.finalizeRun(room, {
+                runId, setup: frozenSetup, routing, builderModel: frozenBuilder.model, outcome: 'failed', operationsApplied, compilationPassed, evidence
+            });
+            this.eventStore.transitionRun({
+                workspaceId: room.id, runId, kind: 'builder', state: 'failed', inputRevision: specificationRevision, error: message, payload: {
+                    configuration, budget: room.budgetWindow
+                }
+            });
+            this.eventStore.transitionTask({
+                workspaceId: room.id, taskId: runId, state: 'failed', evidenceStatus: 'failed', blocker: message
+            });
+            this.workflowPhase(room, 'failed', {
+                taskId: runId, reason: message
+            });
+            room.status = 'Error';
+            room.lastError = `${message} Build r${specificationRevision}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : 'Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.'}`;
+            await this.save(room, 'build.failed', 'builder', 'builder');
+            this.broadcastState(room);
+            return;
         }
-        const message = error instanceof Error ? error.message : String(error);
-        if (this.cancelled(error)) {
-          this.eventStore.transitionRun({
-            workspaceId: room.id,
-            runId,
-            kind: "builder",
-            state: "cancelled",
-            inputRevision: specificationRevision,
-            error: message,
-          });
-          this.eventStore.transitionTask({
-            workspaceId: room.id,
-            taskId: runId,
-            state: "cancelled",
-            evidenceStatus: "unverified",
-            blocker: message,
-          });
-          this.workflowPhase(room, "cancelled", {
-            taskId: runId,
-            reason: message,
-          });
-          room.status = room.agentTasks.size
-            ? "Understanding edits"
-            : hasOpenContradictions(room.conflictGroups)
-              ? "Decision needed"
-              : room.versions.length
-                ? "Updated"
-                : "Waiting for ideas";
-          this.broadcastState(room);
-          return;
+        finally {
+            if (room.buildController === controller)
+                room.buildController = undefined;
         }
-        if (
-          !shouldPromoteRevision(revision, room.requestedRevision) ||
-          fingerprint !== buildFingerprint(room)
-        ) {
-          this.eventStore.transitionRun({
-            workspaceId: room.id,
-            runId,
-            kind: "builder",
-            state: "cancelled",
-            inputRevision: specificationRevision,
-            error: "A newer workspace revision superseded this build.",
-          });
-          this.eventStore.transitionTask({
-            workspaceId: room.id,
-            taskId: runId,
-            state: "stale",
-            evidenceStatus: "stale",
-            blocker:
-              "A newer specification revision superseded this candidate.",
-          });
-          this.workflowPhase(room, "queued", { supersededTaskId: runId });
-          continue;
-        }
-        this.finalizeRun(room, {
-          runId,
-          setup: frozenSetup,
-          routing,
-          builderModel: frozenBuilder.model,
-          outcome: "failed",
-          operationsApplied: false,
-          compilationPassed: false,
-        });
-        this.eventStore.transitionRun({
-          workspaceId: room.id,
-          runId,
-          kind: "builder",
-          state: "failed",
-          inputRevision: specificationRevision,
-          error: message,
-          payload: { configuration, budget: room.budgetWindow },
-        });
-        this.eventStore.transitionTask({
-          workspaceId: room.id,
-          taskId: runId,
-          state: "failed",
-          evidenceStatus: "failed",
-          blocker: message,
-        });
-        this.workflowPhase(room, "failed", { taskId: runId, reason: message });
-        room.status = "Error";
-        room.lastError = `${message} Build r${specificationRevision}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : "No working artifact has been promoted."} Submit a smaller change or reconnect the selected builder and Retry build.`;
-        this.save(room, "build.failed", "builder", "builder");
-        this.broadcastState(room);
-        return;
-      } finally {
-        if (room.buildController === controller)
-          room.buildController = undefined;
-      }
-      if (
-        shouldPromoteRevision(revision, room.requestedRevision) &&
-        fingerprint === buildFingerprint(room)
-      )
-        return;
+        if (shouldPromoteRevision(revision, room.requestedRevision) && fingerprint === buildFingerprint(room))
+            return;
     }
-  }
+}
   mutateIntent(
     room: Room,
     participantId: string,
@@ -3752,154 +3075,31 @@ export class RoomManager {
   view(room: Room): RoomView {
     this.normalize(room);
     if (room.intentCommit)
-      room = {
-        ...room,
-        ...room.intentCommit.projection,
-        intentCommit: undefined,
-      };
-    const participants = [...room.participants.values()],
-      safe = room.ai.connections!.map(({ encryptedKey, ...connection }) => ({
-        ...connection,
-        hasCredential:
-          !!encryptedKey ||
-          !providerDefaults[connection.provider].requiresCredential,
-      })),
-      personal = room.ai.personal,
-      builder = room.ai.builder,
-      primary =
-        builder &&
-        room.ai.connections!.find((item) => item.id === builder.connectionId),
-      currentProduct = [...room.versions]
-        .reverse()
-        .find(
-          (version: StoredVersion) =>
-            version.id !== room.pendingPromotion && !!version.files?.length,
-        ),
-      ai: AIConnection = {
-        status: this.hasAI(room) ? "connected" : "disconnected",
-        connections: safe,
-        personal,
-        builder,
-        participantOverrides: room.ai.participantOverrides,
-        savedCustom: room.ai.savedCustom,
-        participants,
-        setup: room.ai.setup,
-        temporary: this.byok.status(room.id),
-        provider:
-          room.ai.setup?.mode === "byok_lease"
-            ? "openrouter"
-            : primary?.provider,
-        baseUrl: primary?.baseUrl,
-        apiFormat: primary?.apiFormat,
-        personalModel: personal?.model,
-        builderModel: builder?.model,
-      };
-    const storedWorkflow = this.eventStore.ensureWorkflow(room.id),
-      activityCursor = this.eventStore.latestSequence(room.id),
-      activity = this.eventStore.activityForWorkspace(
-        room.id,
-        Math.max(0, activityCursor - 30),
-        30,
-      ),
-      tasks = this.eventStore.tasksForWorkspace(room.id).slice(-20),
-      lastVerifiedArtifact = currentProduct
-        ? {
-            versionId: currentProduct.id,
-            summary: currentProduct.summary,
-            createdAt: currentProduct.createdAt,
-            verification: currentProduct.aiRun?.verification.verified
-              ? ("passed" as const)
-              : ("unverified" as const),
-          }
-        : undefined,
-      workflow = {
-        id: storedWorkflow.workflowId,
-        schemaVersion: 1,
-        phase: storedWorkflow.phase,
-        revision: storedWorkflow.revision,
-        controllerId: storedWorkflow.controllerId,
-        controlEpoch: storedWorkflow.controlEpoch,
-        updatedAt: storedWorkflow.updatedAt,
-        tasks,
-        activity,
-        activityCursor,
-        lastVerifiedArtifact,
-      };
-    const physicalUsage = aggregatePhysicalUsage(
-      this.config.durableStore
-        ? [...(room.providerLedger?.values() || [])]
-        : this.eventStore.allProviderRequestRecordsForWorkspace(room.id),
-    );
-    const setupPurposes = new Set<ProviderRequestPurpose>([
-        "connection_test",
-        "capability_text",
-        "capability_personal",
-        "capability_builder",
-      ]),
-      setupCalls = room.providerCalls.filter(
-        (call) =>
-          setupPurposes.has(call.purpose) && call.outcome !== "dispatching",
-      ),
-      setupUsage: AIUsage = setupCalls.reduce(
-        (total, call) => ({
-          requests: total.requests + 1,
-          personalRequests: total.personalRequests,
-          builderRequests: total.builderRequests,
-          inputTokens: total.inputTokens + (call.usage.inputTokens || 0),
-          outputTokens: total.outputTokens + (call.usage.outputTokens || 0),
-          cachedInputTokens:
-            (total.cachedInputTokens || 0) +
-            (call.usage.cachedInputTokens || 0),
-          cacheWriteTokens:
-            (total.cacheWriteTokens || 0) + (call.usage.cacheWriteTokens || 0),
-          reasoningTokens:
-            (total.reasoningTokens || 0) + (call.usage.reasoningTokens || 0),
-          estimatedCostUsd:
-            (total.estimatedCostUsd || 0) + (call.estimatedChargeUsd || 0),
-          uncertainCostUsd:
-            (total.uncertainCostUsd || 0) +
-            (call.chargeIncomplete ? call.estimatedChargeUsd || 0 : 0),
-        }),
-        emptyUsage(),
-      );
-    return {
-      interpretationHistory: room.interpretationHistory,
-      intentCorrections: room.intentCorrections,
-      intentBuildPending: room.intentBuildPending,
-      requirementRevisions: room.requirementRevisions,
-      roomId: room.id,
-      ownerId: room.ownerId,
-      ai,
-      status: room.status,
-      workflow,
-      participants,
-      requirements: room.sharedRequirements,
-      conflictGroups: room.conflictGroups,
-      contradictions: room.contradictions,
-      specificationRevision: room.specificationRevision,
-      latestVersion: currentProduct?.id ?? null,
-      versions: room.artifactHistory?.length
-        ? room.artifactHistory.filter(
-            (version) =>
-              version.id !== room.pendingPromotion && version.downloadable,
-          )
-        : room.versions
-            .filter((version) => !!version.files?.length)
-            .map(({ source, bundle, ...v }) => v),
-      aiRuns: room.aiRuns,
-      providerCalls: room.providerCalls.slice(-100),
-      setupUsage,
-      physicalUsage,
-      lastError: room.lastError,
-      debounceMs: this.config.debounceMs,
-      buildDebounceMs: this.buildDebounceMs,
-      buildCooldownMs: this.buildCooldownMs,
-      usage: { ...room.usage },
-      savedAt: room.savedAt,
-      persistRevision: room.persistRevision,
-      requirementsRevision: room.specificationRevision,
+        room = {
+            ...room, ...room.intentCommit.projection, intentCommit: undefined
+        };
+    const participants = [...room.participants.values()], safe = room.ai.connections!.map(({ encryptedKey, ...connection }) => ({
+        ...connection, hasCredential: !!encryptedKey || !providerDefaults[connection.provider].requiresCredential
+    })), personal = room.ai.personal, builder = room.ai.builder, primary = builder && room.ai.connections!.find(item => item.id === builder.connectionId), currentProduct = [...room.versions].reverse().find((version: StoredVersion) => version.id !== room.pendingPromotion && !!version.files?.length), ai: AIConnection = {
+        status: this.hasAI(room) ? 'connected' : 'disconnected', connections: safe, personal, builder, participantOverrides: room.ai.participantOverrides, savedCustom: room.ai.savedCustom, participants, setup: room.ai.setup, temporary: this.byok.status(room.id), provider: room.ai.setup?.mode === 'byok_lease' ? 'openrouter' : primary?.provider, baseUrl: primary?.baseUrl, apiFormat: primary?.apiFormat, personalModel: personal?.model, builderModel: builder?.model
     };
-  }
+    const storedWorkflow = this.eventStore.ensureWorkflow(room.id), activityCursor = this.eventStore.latestSequence(room.id), activity = this.eventStore.activityForWorkspace(room.id, Math.max(0, activityCursor - 30), 30), tasks = this.eventStore.tasksForWorkspace(room.id).slice(-20), lastVerifiedArtifact = currentProduct ? {
+        versionId: currentProduct.id, summary: currentProduct.summary, createdAt: currentProduct.createdAt, verification: currentProduct.aiRun?.verification.verified ? 'passed' as const : 'unverified' as const
+    } : undefined, workflow = {
+        id: storedWorkflow.workflowId, schemaVersion: 1, phase: storedWorkflow.phase, revision: storedWorkflow.revision, controllerId: storedWorkflow.controllerId, controlEpoch: storedWorkflow.controlEpoch, updatedAt: storedWorkflow.updatedAt, tasks, activity, activityCursor, lastVerifiedArtifact
+    };
+    const physicalUsage = aggregatePhysicalUsage(this.config.durableStore ? [...(room.providerLedger?.values() || [])] : this.eventStore.allProviderRequestRecordsForWorkspace(room.id));
+    const setupPurposes = new Set<ProviderRequestPurpose>(['model_discovery', 'connection_test', 'capability_text', 'capability_personal', 'capability_builder']), setupCalls = room.providerCalls.filter(call => setupPurposes.has(call.purpose) && call.outcome !== 'dispatching'), setupUsage: AIUsage = setupCalls.reduce((total, call) => ({
+        requests: total.requests + 1, personalRequests: total.personalRequests, builderRequests: total.builderRequests, inputTokens: total.inputTokens + (call.usage.inputTokens || 0), outputTokens: total.outputTokens + (call.usage.outputTokens || 0), cachedInputTokens: (total.cachedInputTokens || 0) + (call.usage.cachedInputTokens || 0), cacheWriteTokens: (total.cacheWriteTokens || 0) + (call.usage.cacheWriteTokens || 0), reasoningTokens: (total.reasoningTokens || 0) + (call.usage.reasoningTokens || 0), estimatedCostUsd: (total.estimatedCostUsd || 0) + (call.estimatedChargeUsd || 0), uncertainCostUsd: (total.uncertainCostUsd || 0) + (call.chargeIncomplete ? (call.estimatedChargeUsd || 0) : 0)
+    }), emptyUsage());
+    return {
+        buildProgress: buildProgressFor(room, currentProduct), interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, requirementRevisions: room.requirementRevisions, workflowBudget: room.executionBudget && {
+            id: room.executionBudget.id, calls: room.executionBudget.calls, maximumCalls: room.executionBudget.maximumCalls, reservedUsd: room.executionBudget.reservedUsd, maximumUsd: room.executionBudget.maximumUsd, uncertainCalls: room.executionBudget.uncertainCalls, closed: room.executionBudget.closed, legacyAllowanceUnknown: room.executionBudget.legacyAllowanceUnknown
+        }, roomId: room.id, ownerId: room.ownerId, ai, status: room.status, workflow, participants, requirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, latestVersion: currentProduct?.id ?? null, versions: room.artifactHistory?.length ? room.artifactHistory.filter(version => version.id !== room.pendingPromotion && version.downloadable) : room.versions.filter(version => !!version.files?.length).map(({ source, bundle, ...v }) => v), aiRuns: room.aiRuns, providerCalls: room.providerCalls.slice(-100), setupUsage, physicalUsage, lastError: room.lastError, debounceMs: this.config.debounceMs, buildDebounceMs: this.buildDebounceMs, buildCooldownMs: this.buildCooldownMs, usage: {
+            ...room.usage
+        }, savedAt: room.savedAt, persistRevision: room.persistRevision, requirementsRevision: room.specificationRevision
+    };
+}
   version(room: Room, id: number) {
     return (
       room.versions.find(
@@ -3965,4 +3165,108 @@ export class RoomManager {
     this.rooms.clear();
     this.eventStore.close();
   }
+private compiledVersions = new WeakSet<StoredVersion>();
+
+private accountingQueue<T>(room: Room, action: () => Promise<T>): Promise<T> {
+    const pending = (room.budgetQueue || Promise.resolve()).catch(() => {
+    }).then(action);
+    room.budgetQueue = pending;
+    return pending;
+}
+
+async resetWorkflowBudget(room: Room, participantId: string, requestId: string, expectedScopeId: string) {
+    return this.accountingQueue(room, async () => {
+        this.assertOwned(room);
+        if (room.ownerId !== participantId)
+            throw new Error('Only the project owner may reset the workflow allowance.');
+        if (!requestId || requestId.length > 100 || !expectedScopeId)
+            throw new Error('Provide a request ID and the current budget scope ID.');
+        const receiptKey = JSON.stringify([participantId, requestId]);
+        const previous = room.budgetResetReceipts?.[receiptKey];
+        if (previous) {
+            if (previous.scopeId !== expectedScopeId)
+                throw new Error('Budget reset request ID was reused with another scope.');
+            return previous;
+        }
+        if (room.buildTask || room.buildTimer || room.agentTasks.size || room.submissions.some(item => ['submitted', 'interpreting'].includes(item.status)))
+            throw new Error('Wait for active work before resetting the workflow allowance.');
+        if (room.executionBudget?.id !== expectedScopeId)
+            throw new Error('The budget scope changed. Reload before resetting.');
+        await this.config.durableStore?.assertCoordinator?.(room.id);
+        await this.config.authorizeBudgetReset?.(room.id, participantId);
+        this.assertOwned(room);
+        if (room.buildTask || room.buildTimer || room.agentTasks.size || room.submissions.some(item => ['submitted', 'interpreting'].includes(item.status)) || room.executionBudget?.id !== expectedScopeId)
+            throw new Error('Work or the budget scope changed while authorizing the reset.');
+        const receipt = {
+            scopeId: expectedScopeId, requestId
+        };
+        room.executionBudget = openBudget('workflow', room.ai.setup?.maximumSpendUsd);
+        room.budgetWindow = undefined;
+        (room.budgetResetReceipts ||= {})[receiptKey] = receipt;
+        if (await this.save(room, 'workflow.budget_reset', participantId, 'user') === false) {
+            this.loseOwnership(room.id);
+            throw new ProviderAccountingError('Budget reset persistence is uncertain. Reconnect to recover its receipt.');
+        }
+        return receipt;
+    });
+}
+
+private queueCapturedSubmission(room: Room, submission: StoredSubmission, saved: boolean | Promise<unknown> = Promise.resolve()) {
+    room.submissionTasks ??= new Map();
+    const existing = room.submissionTasks.get(submission.id);
+    if (existing)
+        return existing;
+    const execute = async () => {
+        if (await saved === false) {
+            this.restoreCapturedSubmission(room, submission, 'Submission persistence failed; edits retained. Submit again.');
+            throw new Error(submission.error);
+        }
+        if (submission.status !== 'submitted' || room.buildAdmissionClosed || room.buildTask)
+            return;
+        this.assertOwned(room);
+        await this.runAgent(room, submission.participantId, submission.capturedChanges || [], submission);
+    };
+    const deferred = room.buildAdmissionClosed || !!room.buildTask;
+    const task = (deferred ? Promise.resolve() : (room.steeringQueue || Promise.resolve()).catch(() => {
+    })).then(execute);
+    if (!deferred)
+        room.steeringQueue = task;
+    room.submissionTasks.set(submission.id, task);
+    void task.finally(() => {
+        if (room.submissionTasks?.get(submission.id) === task)
+            room.submissionTasks.delete(submission.id);
+        if (deferred && submission.status === 'submitted' && !room.buildAdmissionClosed && !room.buildTask && this.rooms.has(room.id) && !this.lostOwnership.has(room.id)) {
+            this.resumeCapturedSubmissions(room);
+        }
+    }).catch(() => {
+    });
+    return task;
+}
+
+private restoreCapturedSubmission(room: Room, submission: StoredSubmission, message: string) {
+    const batch = submission.capturedChanges || [];
+    const pending = room.pending.get(submission.participantId) || [];
+    room.pending.set(submission.participantId, [...batch.filter(edit => !pending.some(item => item.seq === edit.seq)), ...pending]);
+    submission.status = 'failed';
+    submission.error = message;
+}
+
+private resumeCapturedSubmissions(room: Room) {
+    if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
+        return;
+    if (room.status === 'Error' || !this.hasAI(room)) {
+        for (const submission of room.submissions.filter(item => item.status === 'submitted')) {
+            this.restoreCapturedSubmission(room, submission, 'Build stopped; your captured edits were retained. Submit again explicitly.');
+        }
+        void this.save(room, 'submission.deferred_restored', 'coordinator', 'system');
+        return;
+    }
+    const waiting = room.submissions.filter(item => item.status === 'submitted');
+    if (waiting.length)
+        room.pendingBuildSince ??= Date.now();
+    for (const submission of waiting)
+        void this.queueCapturedSubmission(room, submission).catch(() => {
+        });
+}
+
 }

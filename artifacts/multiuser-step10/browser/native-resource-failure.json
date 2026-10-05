@@ -1,0 +1,22 @@
+{
+  "phase": "browser-failure",
+  "checkpoints": [],
+  "status": "Error",
+  "error": "Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r2; 3/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.",
+  "acceptedRevision": 2,
+  "versions": [],
+  "interpreterCalls": 2,
+  "builderCalls": 1,
+  "runs": [
+    {
+      "outcome": "failed",
+      "verification": {
+        "operationsApplied": true,
+        "compilationPassed": false,
+        "requirementSatisfaction": "not_measured",
+        "regressionCheck": "not_run",
+        "verified": false
+      }
+    }
+  ]
+}

@@ -1,0 +1,379 @@
+TAP version 13
+# (node:8000) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Developer / Medium resolves one validated connection and exposes honest rates
+ok 1 - Developer / Medium resolves one validated connection and exposes honest rates
+  ---
+  duration_ms: 1.8072
+  type: 'test'
+  ...
+# Subtest: Developer effort levels expose distinct bounded executor output allowances
+ok 2 - Developer effort levels expose distinct bounded executor output allowances
+  ---
+  duration_ms: 0.8057
+  type: 'test'
+  ...
+# Subtest: complexity is deterministic and does not spend a model call
+ok 3 - complexity is deterministic and does not spend a model call
+  ---
+  duration_ms: 0.3301
+  type: 'test'
+  ...
+# Subtest: evaluation requires repeated task evidence and counts repairs in total cost
+ok 4 - evaluation requires repeated task evidence and counts repairs in total cost
+  ---
+  duration_ms: 0.4416
+  type: 'test'
+  ...
+# Subtest: Developer routing respects the remaining budget
+ok 5 - Developer routing respects the remaining budget
+  ---
+  duration_ms: 0.7147
+  type: 'test'
+  ...
+# Subtest: all three modes are explicit and unimplemented workflows remain unavailable
+ok 6 - all three modes are explicit and unimplemented workflows remain unavailable
+  ---
+  duration_ms: 0.2552
+  type: 'test'
+  ...
+# Subtest: discovery without passed capability checks is unavailable and actionable
+ok 7 - discovery without passed capability checks is unavailable and actionable
+  ---
+  duration_ms: 0.2517
+  type: 'test'
+  ...
+# Subtest: applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch
+ok 8 - applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch
+  ---
+  duration_ms: 330.2889
+  type: 'test'
+  ...
+# Subtest: legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history
+ok 9 - legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history
+  ---
+  duration_ms: 213.961
+  type: 'test'
+  ...
+# Subtest: manual assignments remain Custom after migration and activation
+ok 10 - manual assignments remain Custom after migration and activation
+  ---
+  duration_ms: 119.304
+  type: 'test'
+  ...
+# (node:13708) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+ok 11 - empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+  ---
+  duration_ms: 9031.5387
+  type: 'test'
+  ...
+# Subtest: upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+ok 12 - upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+  ---
+  duration_ms: 325.0079
+  type: 'test'
+  ...
+# Subtest: missing/corrupt stored bodies are explicit failures, distinct from an empty project
+ok 13 - missing/corrupt stored bodies are explicit failures, distinct from an empty project
+  ---
+  duration_ms: 331.38
+  type: 'test'
+  ...
+# Subtest: private bucket and project-bound artifact identity fail closed; no public URL is created
+ok 14 - private bucket and project-bound artifact identity fail closed; no public URL is created
+  ---
+  duration_ms: 106.9556
+  type: 'test'
+  ...
+# Subtest: authenticated lazy historical reads reject revoked users, including revocation during download
+ok 15 - authenticated lazy historical reads reject revoked users, including revocation during download
+  ---
+  duration_ms: 933.5922
+  type: 'test'
+  ...
+# Subtest: an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+not ok 16 - an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+  ---
+  duration_ms: 8841.1159
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\artifact-restoration.test.ts:241:1'
+  failureType: 'testCodeFailure'
+  error: 'Controlled publication gate was not reached'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    Timeout.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\artifact-restoration.test.ts:236:102)
+    listOnTimeout (node:internal/timers:585:17)
+    process.processTimers (node:internal/timers:521:7)
+  ...
+# Subtest: lease loss after private body upload cannot promote or start another physical attempt
+ok 17 - lease loss after private body upload cannot promote or start another physical attempt
+  ---
+  duration_ms: 7834.8242
+  type: 'test'
+  ...
+# Subtest: synchronous publication failure clears the pending gate and preserves the previous product
+ok 18 - synchronous publication failure clears the pending gate and preserves the previous product
+  ---
+  duration_ms: 8497.958
+  type: 'test'
+  ...
+# Subtest: legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+ok 19 - legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+  ---
+  duration_ms: 156.5864
+  type: 'test'
+  ...
+# Subtest: new promotion after a retained-product rollback never overwrites an archived version identity
+ok 20 - new promotion after a retained-product rollback never overwrites an archived version identity
+  ---
+  duration_ms: 8287.9522
+  type: 'test'
+  ...
+# {"policyVersion":"list-behavior-v1","specificationRevision":3,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf","checkedAt":"2026-10-04T15:50:17.249Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."},{"kind":"favorites","version":"list-behavior-v1","implemented":true,"passed":true,"message":"The favorite state toggles and restores without removing items."},{"kind":"sort","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Sorting changes list order into alphabetical order without losing items."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_980895587501","requirementRevision":1,"criteriaHash":"242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f","criteria":[{"criterionHash":"8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c","checks":["favorites"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_d6b0094d5067","requirementRevision":1,"criteriaHash":"6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df","criteria":[{"criterionHash":"dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875","checks":["sort"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"}
+# Subtest: real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+ok 21 - real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+  ---
+  duration_ms: 9514.4519
+  type: 'test'
+  ...
+# Subtest: compiling controls without behavior fail; retained feature regressions are checked on every candidate
+ok 22 - compiling controls without behavior fail; retained feature regressions are checked on every candidate
+  ---
+  duration_ms: 23873.8895
+  type: 'test'
+  ...
+# Subtest: unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+ok 23 - unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+  ---
+  duration_ms: 5734.1307
+  type: 'test'
+  ...
+# Subtest: actual verification browser denies a private host file and loopback network and removes its child/profile
+ok 24 - actual verification browser denies a private host file and loopback network and removes its child/profile
+  ---
+  duration_ms: 2052.3319
+  type: 'test'
+  ...
+# Subtest: browser CPU and protocol output remain inside the reused Job Object bounds
+ok 25 - browser CPU and protocol output remain inside the reused Job Object bounds
+  ---
+  duration_ms: 14034.5045
+  type: 'test'
+  ...
+# Subtest: cancellation and wall limits terminate browser execution and leave no child jobs
+ok 26 - cancellation and wall limits terminate browser execution and leave no child jobs
+  ---
+  duration_ms: 3302.408
+  type: 'test'
+  ...
+# (node:13012) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: Current outcome of Step 01 scenario: simultaneous-slow
+ok 27 - Current outcome of Step 01 scenario: simultaneous-slow
+  ---
+  duration_ms: 8557.9607
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: failed-interpreter
+ok 28 - Current outcome of Step 01 scenario: failed-interpreter
+  ---
+  duration_ms: 7151.3496
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: later-steering
+ok 29 - Current outcome of Step 01 scenario: later-steering
+  ---
+  duration_ms: 6271.2448
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: continuous-arrivals
+ok 30 - Current outcome of Step 01 scenario: continuous-arrivals
+  ---
+  duration_ms: 12059.8771
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: ambiguous-reference
+ok 31 - Current outcome of Step 01 scenario: ambiguous-reference
+  ---
+  duration_ms: 444.4413
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: invented-passage
+ok 32 - Current outcome of Step 01 scenario: invented-passage
+  ---
+  duration_ms: 572.1384
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: incorrect-product
+ok 33 - Current outcome of Step 01 scenario: incorrect-product
+  ---
+  duration_ms: 6900.8045
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: snapshot-body-gap
+ok 34 - Current outcome of Step 01 scenario: snapshot-body-gap
+  ---
+  duration_ms: 175.2335
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: projection-growth
+ok 35 - Current outcome of Step 01 scenario: projection-growth
+  ---
+  duration_ms: 219.5608
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: isolation-policy
+ok 36 - Current outcome of Step 01 scenario: isolation-policy
+  ---
+  duration_ms: 103.5774
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: restart-budget
+ok 37 - Current outcome of Step 01 scenario: restart-budget
+  ---
+  duration_ms: 147.6989
+  type: 'test'
+  ...
+# (node:3988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+not ok 38 - required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+  ---
+  duration_ms: 6648.0015
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\reliability.test.ts:20:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r1; 2/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build.{"tool":"project.bundle","error":"Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained.","isolation":{"code":"isolation_resource_limit","exitCode":125,"nativeExitCode":3221225540,"peakProcessBytes":336744448}}
+    
+    'Error' !== 'Updated'
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Updated'
+  actual: 'Error'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\reliability.test.ts:34:86)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+ok 39 - unavailable verification browser fails before builder spending and never reuses legacy covered evidence
+  ---
+  duration_ms: 6639.9838
+  type: 'test'
+  ...
+# Subtest: CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+ok 40 - CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text
+  ---
+  duration_ms: 11.3596
+  type: 'test'
+  ...
+# Subtest: physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+ok 41 - physical recovery calls and spending reservations cannot exceed their shared frozen bounds
+  ---
+  duration_ms: 119.2731
+  type: 'test'
+  ...
+# Subtest: output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+ok 42 - output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON
+  ---
+  duration_ms: 38.4645
+  type: 'test'
+  ...
+# Subtest: a second output exhaustion stops a smaller task with actionable checkpoint evidence
+ok 43 - a second output exhaustion stops a smaller task with actionable checkpoint evidence
+  ---
+  duration_ms: 61.5453
+  type: 'test'
+  ...
+# Subtest: coordinator leases serialize owners and fence expired workers after takeover
+ok 44 - coordinator leases serialize owners and fence expired workers after takeover
+  ---
+  duration_ms: 96.5068
+  type: 'test'
+  ...
+# Subtest: remote coordinator renewal cannot silently reacquire ownership for an old worker
+ok 45 - remote coordinator renewal cannot silently reacquire ownership for an old worker
+  ---
+  duration_ms: 2.4458
+  type: 'test'
+  ...
+# Subtest: remote saves commit in revision order and acknowledge the actual snapshot
+ok 46 - remote saves commit in revision order and acknowledge the actual snapshot
+  ---
+  duration_ms: 169.4714
+  type: 'test'
+  ...
+# Subtest: failed cloud snapshots reject flushes and interrupted captured edits return to their author
+ok 47 - failed cloud snapshots reject flushes and interrupted captured edits return to their author
+  ---
+  duration_ms: 101.321
+  type: 'test'
+  ...
+# Subtest: context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+ok 48 - context overflow is distinct from output exhaustion and does not trigger paid recovery calls
+  ---
+  duration_ms: 13.1034
+  type: 'test'
+  ...
+# Subtest: interpretation submits every captured source without silently clipping old edits or long text
+ok 49 - interpretation submits every captured source without silently clipping old edits or long text
+  ---
+  duration_ms: 13.9078
+  type: 'test'
+  ...
+# Subtest: failed cloud acceptance restores the accepted baseline and the captured participant draft
+ok 50 - failed cloud acceptance restores the accepted baseline and the captured participant draft
+  ---
+  duration_ms: 136.6058
+  type: 'test'
+  ...
+# Subtest: an exhausted recovery leaves the previously promoted and compiled artifact available
+ok 51 - an exhausted recovery leaves the previously promoted and compiled artifact available
+  ---
+  duration_ms: 5851.8513
+  type: 'test'
+  ...
+# Subtest: independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+ok 52 - independent participants submit in durable capture order, retain later build inputs and saved drafts on reload
+  ---
+  duration_ms: 10251.0932
+  type: 'test'
+  ...
+# Subtest: ownership loss after compilation blocks promotion; command replay adds no physical call
+not ok 53 - ownership loss after compilation blocks promotion; command replay adds no physical call
+  ---
+  duration_ms: 4435.6614
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\reliability.test.ts:214:1'
+  failureType: 'testCodeFailure'
+  error: 'Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r1; 2/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build.'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'Error'
+  actual: 'Error'
+  operator: 'notStrictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\reliability.test.ts:223:131)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+ok 54 - unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs
+  ---
+  duration_ms: 5171.9998
+  type: 'test'
+  ...
+1..54
+# tests 54
+# suites 0
+# pass 51
+# fail 3
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 192874.0108

@@ -1,0 +1,7 @@
+ISOLATION_STARTED 3500 cocreate.isolation.589a9c3508084f21bb4c2ff0e661e60d
+
+[1004/140324.180:FATAL:third_party\crashpad\crashpad\client\crashpad_client_win.cc:323] Check failed: . CreateNamedPipe: Access is denied. (0x5)
+
+ISOLATION_EXIT 2147483651
+
+EXIT 125

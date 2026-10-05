@@ -284,187 +284,80 @@ const sleep = (ms: number, signal?: AbortSignal) =>
       { once: true },
     );
   });
-async function request(
-  url: string,
-  init: RequestInit,
-  timeoutMs: number,
-  signal?: AbortSignal,
-  retries = 2,
-) {
-  for (let attempt = 0; ; attempt++) {
-    const controller = new AbortController(),
-      timer = setTimeout(() => controller.abort(), timeoutMs),
-      abort = () => controller.abort(),
-      context = accounting.getStore(),
-      callId = randomUUID(),
-      startedAt = new Date().toISOString(),
-      body = typeof init.body === "string" ? init.body : "",
-      estimatedInputTokens = Buffer.byteLength(body),
-      base = context && {
-        callId,
-        workspaceId: context.workspaceId,
-        workflowRunId: context.workflowRunId,
-        submissionId: context.submissionId,
-        parentCallId: context.parentCallId,
-        purpose: context.purpose,
-        retryReason: attempt
-          ? `transport retry ${attempt}`
-          : context.retryReason,
-        provider: context.provider,
-        model: context.model,
-        configurationVersion: context.configurationVersion,
-        startedAt,
-        estimatedInputTokens,
-        estimatedOutputTokens: context.estimatedOutputTokens,
-        usage: {},
-        usageStatus: "estimated" as const,
-      };
-    if (
-      context?.maxInputTokens &&
-      estimatedInputTokens > context.maxInputTokens
-    )
-      throw new ProviderError(
-        "context_limit",
-        "The complete provider request exceeds this model’s input budget.",
-      );
-    signal?.addEventListener("abort", abort, { once: true });
-    if (base)
-      try {
-        await context!.record({ ...base, outcome: "dispatching" });
-      } catch (error) {
-        clearTimeout(timer);
-        signal?.removeEventListener("abort", abort);
-        throw error;
-      }
-    try {
-      const response = await fetch(url, { ...init, signal: controller.signal }),
-        raw = await response.text();
-      if (!response.ok) {
-        const error = classify(
-          response.status,
-          parseMessage(raw, response.status),
-          response.headers.get("retry-after"),
-        );
+async function request(url: string, init: RequestInit, timeoutMs: number, signal?: AbortSignal, retries = 2) {
+    for (let attempt = 0;; attempt++) {
+        const controller = new AbortController(), timer = setTimeout(() => controller.abort(), timeoutMs), abort = () => controller.abort(), context = accounting.getStore(), callId = randomUUID(), startedAt = new Date().toISOString(), body = typeof init.body === 'string' ? init.body : '', estimatedInputTokens = Buffer.byteLength(body), base = context && {
+            callId, workspaceId: context.workspaceId, workflowRunId: context.workflowRunId, submissionId: context.submissionId, parentCallId: context.parentCallId, purpose: context.purpose, retryReason: attempt ? `transport retry ${attempt}` : context.retryReason, provider: context.provider, model: context.model, configurationVersion: context.configurationVersion, startedAt, estimatedInputTokens, estimatedOutputTokens: context.estimatedOutputTokens, usage: {}, usageStatus: 'estimated' as const
+        };
+        if (context?.maxInputTokens && estimatedInputTokens > context.maxInputTokens)
+            throw new ProviderError('context_limit', 'The complete provider request exceeds this model’s input budget.');
+        signal?.addEventListener('abort', abort, {
+            once: true
+        });
         if (base)
-          await context!.record({
-            ...base,
-            endedAt: new Date().toISOString(),
-            outcome: "failed",
-            usageStatus: "unknown",
-            errorKind: error.kind,
-            providerRequestId:
-              response.headers.get("x-request-id") ||
-              response.headers.get("request-id") ||
-              undefined,
-          });
-        if (error.retryable && attempt < retries) {
-          await sleep(
-            error.retryAfterMs ?? Math.min(2000, 250 * 2 ** attempt),
-            signal,
-          );
-          continue;
+            try {
+                await context!.record({
+                    ...base, outcome: 'dispatching'
+                });
+            }
+            catch (error) {
+                clearTimeout(timer);
+                signal?.removeEventListener('abort', abort);
+                throw error;
+            }
+        try {
+            const response = await fetch(url, {
+                ...init, signal: controller.signal
+            }), raw = await response.text();
+            if (!response.ok) {
+                const error = classify(response.status, parseMessage(raw, response.status), response.headers.get('retry-after'));
+                if (base)
+                    await context!.record({
+                        ...base, endedAt: new Date().toISOString(), outcome: 'failed', usageStatus: 'unknown', errorKind: error.kind, providerRequestId: response.headers.get('x-request-id') || response.headers.get('request-id') || undefined
+                    });
+                if (error.retryable && attempt < retries) {
+                    await sleep(error.retryAfterMs ?? Math.min(2000, 250 * 2 ** attempt), signal);
+                    continue;
+                }
+                throw error;
+            }
+            let json: any;
+            try {
+                json = raw ? JSON.parse(raw) : {};
+            }
+            catch {
+                throw new ProviderError('invalid_output', 'The provider returned a non-JSON API response.');
+            }
+            if (base) {
+                const terminationReason = json.choices?.[0]?.finish_reason ?? json.incomplete_details?.reason ?? json.stop_reason ?? json.candidates?.[0]?.finishReason ?? json.done_reason ?? json.status;
+                const reported = usage(json.usage ?? json.usageMetadata ?? json, response.headers), hasUsage = Object.values(reported).some(value => typeof value === 'number');
+                await context!.record({
+                    ...base, endedAt: new Date().toISOString(), outcome: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'failed' : 'succeeded', terminationReason, errorKind: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'truncated' : undefined, providerRequestId: response.headers.get('x-request-id') || response.headers.get('request-id') || response.headers.get('openai-request-id') || undefined, usage: reported, providerCostUsd: typeof json.usage?.cost === 'number' && Number.isFinite(json.usage.cost) && json.usage.cost >= 0 ? json.usage.cost : undefined, usageStatus: hasUsage ? (reported.inputTokens !== undefined && reported.outputTokens !== undefined ? 'measured' : 'incomplete') : 'unknown'
+                });
+            }
+            return {
+                json, headers: response.headers
+            };
         }
-        throw error;
-      }
-      let json: any;
-      try {
-        json = raw ? JSON.parse(raw) : {};
-      } catch {
-        throw new ProviderError(
-          "invalid_output",
-          "The provider returned a non-JSON API response.",
-        );
-      }
-      if (base) {
-        const terminationReason =
-          json.choices?.[0]?.finish_reason ??
-          json.incomplete_details?.reason ??
-          json.stop_reason ??
-          json.candidates?.[0]?.finishReason ??
-          json.done_reason ??
-          json.status;
-        const reported = usage(
-            json.usage ?? json.usageMetadata ?? json,
-            response.headers,
-          ),
-          hasUsage = Object.values(reported).some(
-            (value) => typeof value === "number",
-          );
-        await context!.record({
-          ...base,
-          endedAt: new Date().toISOString(),
-          outcome: /length|max_tokens|max_output_tokens/i.test(
-            terminationReason || "",
-          )
-            ? "failed"
-            : "succeeded",
-          terminationReason,
-          errorKind: /length|max_tokens|max_output_tokens/i.test(
-            terminationReason || "",
-          )
-            ? "truncated"
-            : undefined,
-          providerRequestId:
-            response.headers.get("x-request-id") ||
-            response.headers.get("request-id") ||
-            response.headers.get("openai-request-id") ||
-            undefined,
-          usage: reported,
-          providerCostUsd: Number.isFinite(Number(json.usage?.cost))
-            ? Number(json.usage.cost)
-            : undefined,
-          usageStatus: hasUsage
-            ? reported.inputTokens !== undefined &&
-              reported.outputTokens !== undefined
-              ? "measured"
-              : "incomplete"
-            : "unknown",
-        });
-      }
-      return { json, headers: response.headers };
-    } catch (error) {
-      if (error instanceof ProviderAccountingError) throw error;
-      const normalized =
-        error instanceof ProviderError
-          ? error
-          : signal?.aborted
-            ? new ProviderError("cancelled", "Provider request was cancelled.")
-            : controller.signal.aborted
-              ? new ProviderError("timeout", "The provider request timed out.")
-              : new ProviderError(
-                  "network",
-                  "Could not reach the provider endpoint.",
-                );
-      if (
-        base &&
-        !(error instanceof ProviderError && error.kind !== "invalid_output")
-      )
-        await context!.record({
-          ...base,
-          endedAt: new Date().toISOString(),
-          outcome:
-            normalized.kind === "cancelled"
-              ? "cancelled"
-              : normalized.kind === "timeout" || normalized.kind === "network"
-                ? "unknown"
-                : "failed",
-          usage: normalized.usage || {},
-          usageStatus: normalized.usage ? "incomplete" : "unknown",
-          errorKind: normalized.kind,
-        });
-      if (
-        (normalized.kind === "network" || normalized.kind === "timeout") &&
-        attempt < retries
-      ) {
-        await sleep(Math.min(2000, 250 * 2 ** attempt), signal);
-        continue;
-      }
-      throw normalized;
-    } finally {
-      clearTimeout(timer);
-      signal?.removeEventListener("abort", abort);
+        catch (error) {
+            if (error instanceof ProviderAccountingError)
+                throw error;
+            const normalized = error instanceof ProviderError ? error : signal?.aborted ? new ProviderError('cancelled', 'Provider request was cancelled.') : controller.signal.aborted ? new ProviderError('timeout', 'The provider request timed out.') : new ProviderError('network', 'Could not reach the provider endpoint.');
+            if (base && !(error instanceof ProviderError && error.kind !== 'invalid_output'))
+                await context!.record({
+                    ...base, endedAt: new Date().toISOString(), outcome: normalized.kind === 'cancelled' ? 'cancelled' : normalized.kind === 'timeout' || normalized.kind === 'network' ? 'unknown' : 'failed', usage: normalized.usage || {}, usageStatus: normalized.usage ? 'incomplete' : 'unknown', errorKind: normalized.kind
+                });
+            if ((normalized.kind === 'network' || normalized.kind === 'timeout') && attempt < retries) {
+                await sleep(Math.min(2000, 250 * 2 ** attempt), signal);
+                continue;
+            }
+            throw normalized;
+        }
+        finally {
+            clearTimeout(timer);
+            signal?.removeEventListener('abort', abort);
+        }
     }
-  }
 }
 const usage = (input: any, headers?: Headers): Usage => {
   const baseInput = Number(

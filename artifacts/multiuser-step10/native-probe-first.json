@@ -1,0 +1,23 @@
+{
+  "scope": "Three real Windows preflight plus isolated minimum React builds; no provider calls, policy and limits unchanged",
+  "rows": [
+    {
+      "repeat": 1,
+      "passed": true,
+      "ms": 3744,
+      "bytes": 607801
+    },
+    {
+      "repeat": 2,
+      "passed": true,
+      "ms": 2303,
+      "bytes": 607801
+    },
+    {
+      "repeat": 3,
+      "passed": true,
+      "ms": 2342,
+      "bytes": 607801
+    }
+  ]
+}

@@ -1,0 +1,10 @@
+{
+  "scope": "HTTP readiness only; existing runtime unchanged, no inference or new browser interaction claim",
+  "health": {
+    "status": "ok",
+    "service": "cocreate-app"
+  },
+  "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S",
+  "viteClient": true,
+  "status": 200
+}

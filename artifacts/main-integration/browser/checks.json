@@ -1,0 +1,133 @@
+{
+  "scope": "Three independent signed local owner/editor/editor headless profiles, real SQLite and Windows isolated compiler/browser, loopback provider and SDK-backed controlled Storage/PostgREST. No hosted identity/SQL/RLS/live billing/deployment.",
+  "participants": 3,
+  "checkpoints": [
+    {
+      "phase": "concurrent",
+      "revision": 2,
+      "version": 1,
+      "physicalCalls": 3
+    },
+    {
+      "phase": "continuous-and-failed",
+      "buildingRevision": 3,
+      "revision": 5,
+      "version": 2,
+      "interpreterCalls": 5,
+      "builderCalls": 3
+    },
+    {
+      "phase": "corrected-reconnected",
+      "revision": 6,
+      "artifact": 3,
+      "usage": {
+        "recorded": {
+          "requests": 9,
+          "personalRequests": 0,
+          "builderRequests": 0,
+          "inputTokens": 900,
+          "outputTokens": 450,
+          "estimatedCostUsd": 0,
+          "uncertainCostUsd": 0,
+          "cachedInputTokens": 0,
+          "cacheWriteTokens": 0,
+          "reasoningTokens": 0
+        },
+        "generation": {
+          "requests": 9,
+          "personalRequests": 0,
+          "builderRequests": 0,
+          "inputTokens": 900,
+          "outputTokens": 450,
+          "estimatedCostUsd": 0,
+          "uncertainCostUsd": 0,
+          "cachedInputTokens": 0,
+          "cacheWriteTokens": 0,
+          "reasoningTokens": 0
+        },
+        "setup": {
+          "requests": 0,
+          "personalRequests": 0,
+          "builderRequests": 0,
+          "inputTokens": 0,
+          "outputTokens": 0,
+          "estimatedCostUsd": 0,
+          "uncertainCostUsd": 0
+        },
+        "unknownUsageRequests": 0,
+        "recordedFrom": "2026-10-05T17:01:53.983Z",
+        "coverage": "partial"
+      },
+      "budget": {
+        "id": "cab797d9-2ad2-4f00-8792-edac7fb34676",
+        "calls": 6,
+        "maximumCalls": 24,
+        "reservedUsd": 0,
+        "uncertainCalls": 6,
+        "closed": true
+      },
+      "accepted": [
+        "req_03a42be85bf7",
+        "req_15656091b08d",
+        "req_9000bc354acf",
+        "req_980895587501",
+        "req_d6b0094d5067"
+      ],
+      "extraInference": 0
+    },
+    {
+      "phase": "sqlite-takeover",
+      "fromEpoch": 1,
+      "toEpoch": 2,
+      "clientsConverged": true,
+      "staleRenewalDenied": true,
+      "extraInference": 0
+    }
+  ],
+  "candidates": [
+    {
+      "revision": 2,
+      "requirements": 2
+    },
+    {
+      "revision": 3,
+      "requirements": 3
+    },
+    {
+      "revision": 5,
+      "requirements": 5
+    },
+    {
+      "revision": 6,
+      "requirements": 5
+    }
+  ],
+  "interpreterCalls": 5,
+  "builderCalls": 4,
+  "physicalCalls": 9,
+  "reportedTokens": 1350,
+  "concurrentCallerOnly": true,
+  "deferredCapturesBehindFixedCandidate": true,
+  "failedChecksRetainArtifact": true,
+  "noAutomaticFunctionalRepair": true,
+  "inferenceFreeCorrectionReplayReconnectReload": true,
+  "foreignCorrectionDenied": true,
+  "viewerSubmitDenied": true,
+  "clientStateAndUsageConverged": true,
+  "activeLocalCompetitorDenied": true,
+  "cacheReplacement": {
+    "oldEpoch": 2,
+    "scope": "Stopped coordinator, empty derived cache, new instance; competing stale epochs covered separately by focused tests",
+    "checkpoint": true,
+    "archivedZip": true,
+    "renderedPreview": true,
+    "receiptReplay": true,
+    "extraInference": 0
+  },
+  "coveredChecksPassUnknownCriteriaUnverified": true,
+  "responsiveWidths": [
+    1440,
+    390
+  ],
+  "referenceComparison": "pending"
+}

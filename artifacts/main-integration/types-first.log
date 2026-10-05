@@ -1,0 +1,3 @@
+server/rooms.ts(940,16): error TS2304: Cannot find name 'WorkflowBudget'.
+server/verification.ts(6,10): error TS2305: Module '"./generator.js"' has no exported member 'previewHtml'.
+src/App.tsx(5,10): error TS2459: Module '"./workspace/BuildAccounting"' declares 'BuildAccounting' locally, but it is not exported.

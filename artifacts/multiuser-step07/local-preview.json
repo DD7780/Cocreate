@@ -1,0 +1,10 @@
+{
+  "recordedAt": "2026-10-04T10:54:14.450Z",
+  "previousPid": 6212,
+  "serverPid": 10552,
+  "health": 200,
+  "client": 200,
+  "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S",
+  "activeSubmissionsBefore": 0,
+  "inferenceInvoked": false
+}

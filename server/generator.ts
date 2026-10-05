@@ -42,19 +42,20 @@ export type AgentChange = {
   after: string;
 };
 export type AIConfig = {
-  mode: "demo" | "openai";
-  apiKey?: string;
-  model: string;
-  baseUrl?: string;
-  apiFormat?: AIFormat;
-  provider?: AIProvider;
-  maxInputTokens?: number;
-  maxOutputTokens?: number;
-  workflowInstruction?: string;
-  presetVersion?: string;
-  pricingVersion?: string;
-  checkpoint?: (value: RecoveryCheckpoint) => Promise<void>;
-  previousRequirements?: SharedRequirement[];
+    mode: 'demo' | 'openai';
+    apiKey?: string;
+    model: string;
+    baseUrl?: string;
+    apiFormat?: AIFormat;
+    provider?: AIProvider;
+    maxInputTokens?: number;
+    maxOutputTokens?: number;
+    workflowInstruction?: string;
+    presetVersion?: string;
+    pricingVersion?: string;
+    checkpoint?: (value: RecoveryCheckpoint) => Promise<void>;
+    previousRequirements?: SharedRequirement[];
+    verificationChecks?: string[];
 };
 export const DEFAULT_PROJECT_OUTPUT_TOKENS = 12_000;
 const MAX_SOURCE = 30_000,
@@ -455,118 +456,46 @@ const mergeUsage = (first: Usage, second: Usage): Usage => {
     rateLimitReset,
   };
 };
-export async function generateProjectPlan(
-  config: AIConfig,
-  requirements: SharedRequirement[],
-  currentFiles: ProjectFile[] | undefined,
-  compilerError?: string,
-  signal?: AbortSignal,
-): Promise<ModelResult<ProjectPlan>> {
-  if (!config.apiKey)
-    throw new Error(
-      "AI connection is unavailable. Ask the workspace owner to reconnect it.",
-    );
-  const previous = new Map(
-    (config.previousRequirements || []).map((item) => [item.id, item]),
-  );
-  const changedRequirements = requirements.filter((item) => {
-      const old = previous.get(item.id);
-      return (
-        !old ||
-        old.description !== item.description ||
-        JSON.stringify(old.acceptanceCriteria) !==
-          JSON.stringify(item.acceptanceCriteria)
-      );
-    }),
-    removedRequirements = (config.previousRequirements || []).filter(
-      (item) => !requirements.some((current) => current.id === item.id),
-    );
-  const project = budgetProjectFiles(currentFiles, 36_000),
-    emphasis = config.workflowInstruction
-      ? ` Workflow emphasis: ${config.workflowInstruction} Explicit accepted requirements always take precedence over this emphasis.`
-      : "",
-    instructions =
-      "You are the room’s one serialized coding agent. Maintain a real small React and TypeScript frontend from the accepted shared specification. Return validated file operations, never shell commands. Every operation must include type, path, and content; use an empty content string for delete operations. Return one complete JSON object and correctly escape newlines, tabs, backslashes, and quotes inside every file-content string. For complex applications, prefer several focused source files over one oversized App.tsx operation. You may write or delete project-relative files only under src/. Use only React, react-dom/client, relative modules, CSS, JSON, and the provided localStorage interface. Do not use network requests, dynamic imports, browser database APIs, parent-window access, or external assets. Preserve unaffected working features. Focus operations on changedRequirements and removedRequirements; acceptedRequirements describes the complete final baseline, not a request to regenerate unchanged features. Implement only the accepted requirements supplied here; proposals, questions, ambiguous notes, and raw canvas text are deliberately excluded. Resolve reversible details with sensible defaults. src/main.tsx must remain the entrypoint. When a validation or compiler error is supplied, repair it without discarding earlier behavior." +
-      emphasis,
-    request = (repairError?: string) =>
-      callOpenAI<ProjectPlan>(
-        config.apiKey!,
-        config.model,
-        instructions,
-        JSON.stringify({
-          acceptedRequirements: requirements.map(compactSharedRequirement),
-          changedRequirements: changedRequirements.map(
-            compactSharedRequirement,
-          ),
-          removedRequirements: removedRequirements.map(
-            compactSharedRequirement,
-          ),
-          baselineKnown: config.previousRequirements !== undefined,
-          currentProject: project.files,
-          omittedUnchangedFiles: project.omitted,
-          compilerError:
-            [compilerError, repairError]
-              .filter(Boolean)
-              .join("\n")
-              .slice(0, 3_000) || null,
-        }),
-        projectSchema,
-        config.baseUrl,
-        config.apiFormat,
-        config.provider,
-        signal,
-        config.maxOutputTokens ?? DEFAULT_PROJECT_OUTPUT_TOKENS,
-        false,
-      );
-  let first: ModelResult<ProjectPlan>;
-  try {
-    first = await request();
-  } catch (error) {
-    if (!(error instanceof ProviderError) || error.kind !== "truncated")
-      throw error;
-    return recoverProjectPlan({
-      provider: providerConfig(
-        config.apiKey,
-        config.baseUrl || providerDefaults[config.provider || "openai"].baseUrl,
-        config.apiFormat || "responses",
-        config.provider || "openai",
-      ),
-      model: config.model,
-      maxOutputTokens: config.maxOutputTokens ?? DEFAULT_PROJECT_OUTPUT_TOKENS,
-      instructions,
-      schema: projectSchema,
-      requirements,
-      changedRequirements,
-      removedRequirements,
-      currentFiles,
-      signal,
-      initialUsage: error.usage,
-      checkpoint: config.checkpoint,
-    });
-  }
-  try {
-    applyOperations(currentFiles, first.value.operations);
-    return first;
-  } catch (error) {
-    if (signal?.aborted) throw error;
-    const message = error instanceof Error ? error.message : String(error),
-      repaired = await request(
-        `Project operation validation failed: ${message}`,
-      );
+export async function generateProjectPlan(config: AIConfig, requirements: SharedRequirement[], currentFiles: ProjectFile[] | undefined, compilerError?: string, signal?: AbortSignal): Promise<ModelResult<ProjectPlan>> {
+    if (!config.apiKey)
+        throw new Error('AI connection is unavailable. Ask the workspace owner to reconnect it.');
+    const previous = new Map((config.previousRequirements || []).map(item => [item.id, item]));
+    const changedRequirements = requirements.filter(item => {
+        const old = previous.get(item.id);
+        return !old || old.description !== item.description || JSON.stringify(old.acceptanceCriteria) !== JSON.stringify(item.acceptanceCriteria);
+    }), removedRequirements = (config.previousRequirements || []).filter(item => !requirements.some(current => current.id === item.id));
+    const project = budgetProjectFiles(currentFiles, 36000), emphasis = config.workflowInstruction ? ` Workflow emphasis: ${config.workflowInstruction} Explicit accepted requirements always take precedence over this emphasis.` : '', instructions = 'You are the room’s one serialized coding agent. Maintain a real small React and TypeScript frontend from the accepted shared specification. Return validated file operations, never shell commands. Every operation must include type, path, and content; use an empty content string for delete operations. Return one complete JSON object and correctly escape newlines, tabs, backslashes, and quotes inside every file-content string. For complex applications, prefer several focused source files over one oversized App.tsx operation. You may write or delete project-relative files only under src/. Use only React, react-dom/client, relative modules, CSS, JSON, and the provided localStorage interface. Do not use network requests, dynamic imports, browser database APIs, parent-window access, or external assets. Preserve unaffected working features. Focus operations on changedRequirements and removedRequirements; acceptedRequirements describes the complete final baseline, not a request to regenerate unchanged features. Implement only the accepted requirements supplied here; proposals, questions, ambiguous notes, and raw canvas text are deliberately excluded. Resolve reversible details with sensible defaults. src/main.tsx must remain the entrypoint. When a validation or compiler error is supplied, repair it without discarding earlier behavior.' + emphasis + (config.verificationChecks?.length ? ' Required observable behavior checks: ' + config.verificationChecks.join(', ') + '. Use a visible semantic list (ul/ol/role=list/tbody or articles), item names in h2/h3/h4, and at least two representative entries. Search/filter must be an accessible labeled input or select that narrows and clears the list. Favorites use an accessible Favorite button with aria-pressed or labeled checkbox that toggles and restores. Sorting uses an accessible Sort button/select and changes alphabetical item order without loss. Preserve every retained covered behavior. These trusted checks are fixed; generated tests and claims cannot replace them.' : ''), request = (repairError?: string) => callOpenAI<ProjectPlan>(config.apiKey!, config.model, instructions, JSON.stringify({
+        acceptedRequirements: requirements.map(compactSharedRequirement), changedRequirements: changedRequirements.map(compactSharedRequirement), removedRequirements: removedRequirements.map(compactSharedRequirement), baselineKnown: config.previousRequirements !== undefined, requiredBehaviorChecks: config.verificationChecks || [], currentProject: project.files, omittedUnchangedFiles: project.omitted, compilerError: [compilerError, repairError].filter(Boolean).join('\n').slice(0, 3000) || null
+    }), projectSchema, config.baseUrl, config.apiFormat, config.provider, signal, config.maxOutputTokens ?? DEFAULT_PROJECT_OUTPUT_TOKENS, false);
+    let first: ModelResult<ProjectPlan>;
     try {
-      applyOperations(currentFiles, repaired.value.operations);
-    } catch (repairError) {
-      const repairMessage =
-        repairError instanceof Error
-          ? repairError.message
-          : String(repairError);
-      throw new Error(
-        `Builder returned invalid project operations after repair. ${repairMessage}`,
-      );
+        first = await request();
     }
-    return {
-      value: repaired.value,
-      usage: mergeUsage(first.usage, repaired.usage),
-    };
-  }
+    catch (error) {
+        if (!(error instanceof ProviderError) || error.kind !== 'truncated')
+            throw error;
+        return recoverProjectPlan({
+            provider: providerConfig(config.apiKey, config.baseUrl || providerDefaults[config.provider || 'openai'].baseUrl, config.apiFormat || 'responses', config.provider || 'openai'), model: config.model, maxOutputTokens: config.maxOutputTokens ?? DEFAULT_PROJECT_OUTPUT_TOKENS, instructions, schema: projectSchema, requirements, changedRequirements, removedRequirements, currentFiles, signal, initialUsage: error.usage, checkpoint: config.checkpoint
+        });
+    }
+    ;
+    try {
+        applyOperations(currentFiles, first.value.operations);
+        return first;
+    }
+    catch (error) {
+        if (signal?.aborted)
+            throw error;
+        const message = error instanceof Error ? error.message : String(error), repaired = await request(`Project operation validation failed: ${message}`);
+        try {
+            applyOperations(currentFiles, repaired.value.operations);
+        }
+        catch (repairError) {
+            const repairMessage = repairError instanceof Error ? repairError.message : String(repairError);
+            throw new Error(`Builder returned invalid project operations after repair. ${repairMessage}`);
+        }
+        return {
+            value: repaired.value, usage: mergeUsage(first.usage, repaired.usage)
+        };
+    }
 }

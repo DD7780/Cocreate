@@ -1,0 +1,8 @@
+{
+  "BeforeFreeMiB": 1304.0,
+  "AfterFreeMiB": 1605.0,
+  "TrimmedProcessCount": 11,
+  "ApplicationsClosed": 0,
+  "SettingsChanged": 0,
+  "Scope": "Explicit user-authorized one-time desktop working-set trim; no process list published"
+}

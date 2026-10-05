@@ -1,0 +1,234 @@
+TAP version 13
+# (node:28604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a clear restaurant website assignment is accepted even when a model labels the batch as proposal
+ok 1 - a clear restaurant website assignment is accepted even when a model labels the batch as proposal
+  ---
+  duration_ms: 22.287
+  type: 'test'
+  ...
+# Subtest: classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation
+ok 2 - classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation
+  ---
+  duration_ms: 0.8472
+  type: 'test'
+  ...
+# Subtest: mixed contribution keeps request, proposal, and question separate
+ok 3 - mixed contribution keeps request, proposal, and question separate
+  ---
+  duration_ms: 43.4296
+  type: 'test'
+  ...
+# Subtest: missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates
+ok 4 - missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates
+  ---
+  duration_ms: 7.3778
+  type: 'test'
+  ...
+# Subtest: targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions
+ok 5 - targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions
+  ---
+  duration_ms: 276.5482
+  type: 'test'
+  ...
+# (node:20156) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: serial acceptance and deferred capture order survive SQLite restart without replay spending
+ok 6 - serial acceptance and deferred capture order survive SQLite restart without replay spending
+  ---
+  duration_ms: 900.09
+  type: 'test'
+  ...
+# Subtest: a failed authority check does not poison capture order or spend the later caller allowance twice
+ok 7 - a failed authority check does not poison capture order or spend the later caller allowance twice
+  ---
+  duration_ms: 251.9677
+  type: 'test'
+  ...
+# Subtest: all provider adapters discover and generate through their native shapes
+ok 8 - all provider adapters discover and generate through their native shapes
+  ---
+  duration_ms: 266.4
+  type: 'test'
+  ...
+# Subtest: classified failures, validation, truncation, retry and cancellation are explicit
+ok 9 - classified failures, validation, truncation, retry and cancellation are explicit
+  ---
+  duration_ms: 149.7257
+  type: 'test'
+  ...
+# Subtest: structured truncation uses one budgeted compact retry and preserves both usage records
+ok 10 - structured truncation uses one budgeted compact retry and preserves both usage records
+  ---
+  duration_ms: 67.6104
+  type: 'test'
+  ...
+# Subtest: adapter metadata does not require fake Ollama credentials
+ok 11 - adapter metadata does not require fake Ollama credentials
+  ---
+  duration_ms: 0.4586
+  type: 'test'
+  ...
+# Subtest: nested OpenRouter provider errors expose the actionable upstream message
+ok 12 - nested OpenRouter provider errors expose the actionable upstream message
+  ---
+  duration_ms: 26.9423
+  type: 'test'
+  ...
+# Subtest: provider usage normalizes cached and included reasoning tokens without double counting
+ok 13 - provider usage normalizes cached and included reasoning tokens without double counting
+  ---
+  duration_ms: 17.2673
+  type: 'test'
+  ...
+# Subtest: structured parsing locally repairs raw string newlines and trailing commas
+ok 14 - structured parsing locally repairs raw string newlines and trailing commas
+  ---
+  duration_ms: 16.8861
+  type: 'test'
+  ...
+# Subtest: an incomplete JSON envelope is treated as truncation and gets the bounded compact retry
+ok 15 - an incomplete JSON envelope is treated as truncation and gets the bounded compact retry
+  ---
+  duration_ms: 22.3948
+  type: 'test'
+  ...
+# Subtest: physical request ledger records transport and structured repair calls separately
+ok 16 - physical request ledger records transport and structured repair calls separately
+  ---
+  duration_ms: 62.4932
+  type: 'test'
+  ...
+# Subtest: shared requirements keep a stable identity across collaborators and canvas locations
+ok 17 - shared requirements keep a stable identity across collaborators and canvas locations
+  ---
+  duration_ms: 11.1635
+  type: 'test'
+  ...
+# Subtest: a proposal remains visible but is excluded from builder input
+ok 18 - a proposal remains visible but is excluded from builder input
+  ---
+  duration_ms: 0.5454
+  type: 'test'
+  ...
+# Subtest: opposed accepted requirements create one focused consequential conflict
+ok 19 - opposed accepted requirements create one focused consequential conflict
+  ---
+  duration_ms: 34.9965
+  type: 'test'
+  ...
+# Subtest: same-subject colors form one durable multi-option group
+ok 20 - same-subject colors form one durable multi-option group
+  ---
+  duration_ms: 4.6783
+  type: 'test'
+  ...
+# Subtest: different subjects and conditional scopes remain compatible
+ok 21 - different subjects and conditional scopes remain compatible
+  ---
+  duration_ms: 1.3749
+  type: 'test'
+  ...
+# Subtest: proposals never enter accepted conflict groups
+ok 22 - proposals never enter accepted conflict groups
+  ---
+  duration_ms: 0.4736
+  type: 'test'
+  ...
+# Subtest: explicit selections stay pending, then resolve or disagree without model voting
+ok 23 - explicit selections stay pending, then resolve or disagree without model voting
+  ---
+  duration_ms: 2.1693
+  type: 'test'
+  ...
+# Subtest: legacy pairwise contradictions migrate without losing identity or affected contributors
+ok 24 - legacy pairwise contradictions migrate without losing identity or affected contributors
+  ---
+  duration_ms: 1.0116
+  type: 'test'
+  ...
+# Subtest: selection submissions are authorized, revision-safe, and idempotent
+ok 25 - selection submissions are authorized, revision-safe, and idempotent
+  ---
+  duration_ms: 1.7554
+  type: 'test'
+  ...
+# Subtest: unresolved alternatives are excluded while independent accepted work remains eligible
+ok 26 - unresolved alternatives are excluded while independent accepted work remains eligible
+  ---
+  duration_ms: 1.9581
+  type: 'test'
+  ...
+# Subtest: explicit withdrawal removes only that collaborator source and preserves supported intent
+ok 27 - explicit withdrawal removes only that collaborator source and preserves supported intent
+  ---
+  duration_ms: 0.8753
+  type: 'test'
+  ...
+# (node:19536) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+ok 28 - physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+  ---
+  duration_ms: 1.0917
+  type: 'test'
+  ...
+# Subtest: SQLite accounting restores more than the recent 500 calls without double counting
+ok 29 - SQLite accounting restores more than the recent 500 calls without double counting
+  ---
+  duration_ms: 2104.9165
+  type: 'test'
+  ...
+# Subtest: optional token fields remain optional and replay cannot replace a newer final usage record
+ok 30 - optional token fields remain optional and replay cannot replace a newer final usage record
+  ---
+  duration_ms: 52.6364
+  type: 'test'
+  ...
+# (node:15472) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+ok 31 - physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade
+  ---
+  duration_ms: 4.211
+  type: 'test'
+  ...
+# Subtest: ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+ok 32 - ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed
+  ---
+  duration_ms: 0.6355
+  type: 'test'
+  ...
+# Subtest: concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+ok 33 - concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts
+  ---
+  duration_ms: 1100.5314
+  type: 'test'
+  ...
+# Subtest: owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+ok 34 - owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference
+  ---
+  duration_ms: 202.7343
+  type: 'test'
+  ...
+# Subtest: remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+ok 35 - remote reservation acknowledgement precedes HTTP; uncertain save fences further calls
+  ---
+  duration_ms: 133.9608
+  type: 'test'
+  ...
+# Subtest: work starting during owner authorization cannot reset an active allowance
+ok 36 - work starting during owner authorization cannot reset an active allowance
+  ---
+  duration_ms: 217.8173
+  type: 'test'
+  ...
+1..36
+# tests 36
+# suites 0
+# pass 36
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10081.5189

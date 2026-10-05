@@ -1,0 +1,129 @@
+(node:27820) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{
+  "scenario": "continuous-arrivals",
+  "observations": {
+    "promotionsWhileArriving": 4,
+    "callsBeforeFinalRelease": 5,
+    "arrivals": 5,
+    "staleCandidates": 0,
+    "finalPromotions": 5,
+    "lastAcceptedToPromotionMs": 3029,
+    "promotedVersions": 5
+  },
+  "attempts": [
+    {
+      "phase": "interpretation",
+      "queueMs": 46.9751,
+      "providerMs": 0.06530000000003611
+    },
+    {
+      "phase": "builder",
+      "providerMs": 30.822200000000066
+    },
+    {
+      "phase": "interpretation",
+      "queueMs": 3195.2725,
+      "providerMs": 0.023000000000138243
+    },
+    {
+      "phase": "builder",
+      "providerMs": 46.53530000000046
+    },
+    {
+      "phase": "interpretation",
+      "queueMs": 2709.5371999999998,
+      "providerMs": 0.022100000000136788
+    },
+    {
+      "phase": "builder",
+      "providerMs": 62.74039999999968
+    },
+    {
+      "phase": "interpretation",
+      "queueMs": 3125.232899999999,
+      "providerMs": 0.022800000000643195
+    },
+    {
+      "phase": "builder",
+      "providerMs": 77.93080000000009
+    },
+    {
+      "phase": "interpretation",
+      "queueMs": 3119.6112999999987,
+      "providerMs": 0.03510000000096625
+    },
+    {
+      "phase": "builder",
+      "providerMs": 7.544200000000274
+    }
+  ],
+  "physicalAttempts": [
+    {
+      "phase": "interpretation",
+      "durationMs": 36,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 57,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "interpretation",
+      "durationMs": 43,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 86,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "interpretation",
+      "durationMs": 50,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 138,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "interpretation",
+      "durationMs": 105,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 185,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "interpretation",
+      "durationMs": 142,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    },
+    {
+      "phase": "builder",
+      "durationMs": 143,
+      "outcome": "succeeded",
+      "usageStatus": "measured"
+    }
+  ],
+  "reportedUsage": {
+    "calls": 10,
+    "inputTokens": 100,
+    "outputTokens": 200,
+    "unknownCalls": 0
+  }
+}

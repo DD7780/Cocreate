@@ -1,0 +1,15 @@
+(node:3028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"repeat":1,"scenario":"simultaneous-slow","state":"started"}
+{"repeat":1,"scenario":"simultaneous-slow","passed":false}
+{"repeat":1,"scenario":"failed-interpreter","state":"started"}
+{"repeat":1,"scenario":"failed-interpreter","passed":true}
+{"repeat":2,"scenario":"simultaneous-slow","state":"started"}
+{"repeat":2,"scenario":"simultaneous-slow","passed":false}
+{"repeat":2,"scenario":"failed-interpreter","state":"started"}
+{"repeat":2,"scenario":"failed-interpreter","passed":true}
+{"repeat":3,"scenario":"simultaneous-slow","state":"started"}
+{"repeat":3,"scenario":"simultaneous-slow","passed":true}
+{"repeat":3,"scenario":"failed-interpreter","state":"started"}
+{"repeat":3,"scenario":"failed-interpreter","passed":true}
+{"comparisonTrials":36,"actualQueue":{"captures":3,"accepted":3,"queueToProviderMs":[98,239,401],"captureToAcceptedMs":[228.17469999999958,376.14150000000063,542.2701999999999],"physicalCalls":3,"replayExtraCalls":0,"restartExtraCalls":0,"replayStatus":"queued","recoveredSubmissionStatus":"queued","restartedReceipts":"Completed interpretations and their receipts remain queued for a future explicit build; no automatic inference","builderSchedulingSuppressed":true,"boundary":"Actual RoomManager capture-order interpretation and local SQLite; no generated product"},"nativeBaselinePassed":4,"nativeBaselineTotal":6,"report":"artifacts/multiuser-step09/evaluation.json"}

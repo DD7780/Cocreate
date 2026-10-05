@@ -1,3 +1,4 @@
+import type {WorkflowBudget} from "./workflow-budget.js";
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import type { WebSocket } from "ws";
@@ -210,7 +211,7 @@ export type Room = {
     total: number;
     artifactRef?: string;
   };
-  executionBudget?: { calls: number; reservedUsd: number; maximumUsd?: number };
+  executionBudget?: WorkflowBudget;
   conflictGroups: ConflictGroup[];
   contradictions: Contradiction[];
   specificationRevision: number;
@@ -246,4 +247,15 @@ export type Room = {
   saveTimer?: NodeJS.Timeout;
   persistRevision: number;
   savedAt?: string;
+buildAdmissionClosed?: boolean;
+buildNeedsRestart?: boolean;
+collectionEndsAt?: number;
+lastAcceptedAt?: number;
+buildingRevision?: number;
+submissionTasks?: Map<string, Promise<void>>;
+budgetQueue?: Promise<unknown>;
+budgetResetReceipts?: Record<string, {
+    scopeId: string;
+    requestId: string;
+}>;
 };
