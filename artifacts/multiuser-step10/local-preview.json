@@ -1,0 +1,20 @@
+{
+  "roomStatus": 200,
+  "checkedAt": "2026-10-05T16:25:19.2529308Z",
+  "healthStatus": 200,
+  "scope": "Read-only primary SQLite idle guard and HTTP startup/health checks; no browser visual or hosted acceptance claim; no synthetic fixtures inserted into the primary room.",
+  "health": {
+    "status": "ok",
+    "service": "cocreate-app"
+  },
+  "viteStatus": 200,
+  "localAuthentication": true,
+  "idleGuard": {
+    "roomId": "f3Up_EmJ0X31-j7RR0XnEP6S",
+    "status": "Waiting for ideas",
+    "activeSubmissions": 0,
+    "versions": 0,
+    "readOnly": true
+  },
+  "url": "http://localhost:5173/r/f3Up_EmJ0X31-j7RR0XnEP6S"
+}

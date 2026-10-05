@@ -1,0 +1,201 @@
+{
+  "phase": "browser-failure",
+  "checkpoints": [
+    {
+      "phase": "concurrent",
+      "revision": 2,
+      "version": 1,
+      "physicalCalls": 3
+    }
+  ],
+  "status": "Error",
+  "error": "Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r5; 5/24 physical calls used. Working artifact v2 retained. Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.",
+  "acceptedRevision": 5,
+  "versions": [
+    {
+      "id": 1,
+      "revision": 2
+    },
+    {
+      "id": 2,
+      "revision": 3
+    }
+  ],
+  "interpreterCalls": 5,
+  "builderCalls": 3,
+  "runs": [
+    {
+      "outcome": "promoted",
+      "verification": {
+        "operationsApplied": true,
+        "compilationPassed": true,
+        "evidence": {
+          "policyVersion": "list-behavior-v1",
+          "specificationRevision": 2,
+          "sourceHash": "ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4",
+          "candidateHash": "00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a",
+          "planHash": "4e406d25f26a64139b1bdafeceb344f9c6c165b246fb0918f9d3b471e5f1cddf",
+          "checkedAt": "2026-10-05T15:48:35.688Z",
+          "browserVersion": "HeadlessChrome/154.0.8037.92",
+          "checks": [
+            {
+              "kind": "filter",
+              "version": "list-behavior-v1",
+              "implemented": true,
+              "passed": true,
+              "message": "Filtering narrows the list; clearing restores it."
+            },
+            {
+              "kind": "favorites",
+              "version": "list-behavior-v1",
+              "implemented": true,
+              "passed": true,
+              "message": "The favorite state toggles and restores without removing items."
+            }
+          ],
+          "requirements": [
+            {
+              "requirementId": "req_3fb819102acc",
+              "requirementRevision": 1,
+              "criteriaHash": "0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9",
+              "criteria": [
+                {
+                  "criterionHash": "622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89",
+                  "checks": [
+                    "filter"
+                  ],
+                  "status": "passed"
+                }
+              ],
+              "implementation": "observed",
+              "status": "verified"
+            },
+            {
+              "requirementId": "req_980895587501",
+              "requirementRevision": 1,
+              "criteriaHash": "242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f",
+              "criteria": [
+                {
+                  "criterionHash": "8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c",
+                  "checks": [
+                    "favorites"
+                  ],
+                  "status": "passed"
+                }
+              ],
+              "implementation": "observed",
+              "status": "verified"
+            }
+          ],
+          "status": "passed"
+        },
+        "requirementSatisfaction": "passed",
+        "regressionCheck": "passed",
+        "verified": true
+      }
+    },
+    {
+      "outcome": "promoted",
+      "verification": {
+        "operationsApplied": true,
+        "compilationPassed": true,
+        "evidence": {
+          "policyVersion": "list-behavior-v1",
+          "specificationRevision": 3,
+          "sourceHash": "ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4",
+          "candidateHash": "00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a",
+          "planHash": "f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf",
+          "checkedAt": "2026-10-05T15:48:41.774Z",
+          "browserVersion": "HeadlessChrome/154.0.8037.92",
+          "checks": [
+            {
+              "kind": "filter",
+              "version": "list-behavior-v1",
+              "implemented": true,
+              "passed": true,
+              "message": "Filtering narrows the list; clearing restores it."
+            },
+            {
+              "kind": "favorites",
+              "version": "list-behavior-v1",
+              "implemented": true,
+              "passed": true,
+              "message": "The favorite state toggles and restores without removing items."
+            },
+            {
+              "kind": "sort",
+              "version": "list-behavior-v1",
+              "implemented": true,
+              "passed": true,
+              "message": "Sorting changes list order into alphabetical order without losing items."
+            }
+          ],
+          "requirements": [
+            {
+              "requirementId": "req_3fb819102acc",
+              "requirementRevision": 1,
+              "criteriaHash": "0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9",
+              "criteria": [
+                {
+                  "criterionHash": "622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89",
+                  "checks": [
+                    "filter"
+                  ],
+                  "status": "passed"
+                }
+              ],
+              "implementation": "observed",
+              "status": "verified"
+            },
+            {
+              "requirementId": "req_980895587501",
+              "requirementRevision": 1,
+              "criteriaHash": "242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f",
+              "criteria": [
+                {
+                  "criterionHash": "8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c",
+                  "checks": [
+                    "favorites"
+                  ],
+                  "status": "passed"
+                }
+              ],
+              "implementation": "observed",
+              "status": "verified"
+            },
+            {
+              "requirementId": "req_d6b0094d5067",
+              "requirementRevision": 1,
+              "criteriaHash": "6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df",
+              "criteria": [
+                {
+                  "criterionHash": "dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875",
+                  "checks": [
+                    "sort"
+                  ],
+                  "status": "passed"
+                }
+              ],
+              "implementation": "observed",
+              "status": "verified"
+            }
+          ],
+          "status": "passed"
+        },
+        "requirementSatisfaction": "passed",
+        "regressionCheck": "passed",
+        "verified": true
+      }
+    },
+    {
+      "outcome": "failed",
+      "verification": {
+        "operationsApplied": true,
+        "compilationPassed": false,
+        "requirementSatisfaction": "not_measured",
+        "regressionCheck": "not_run",
+        "verified": false
+      }
+    }
+  ]
+}

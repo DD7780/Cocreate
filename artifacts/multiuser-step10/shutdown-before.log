@@ -1,0 +1,27 @@
+TAP version 13
+# (node:12844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: server shutdown drains authenticated HTTP before closing durable state
+not ok 1 - server shutdown drains authenticated HTTP before closing durable state
+  ---
+  duration_ms: 3167.9776
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\server-shutdown.test.ts:9:1'
+  failureType: 'testCodeFailure'
+  error: 'database is not open'
+  code: 'ERR_INVALID_STATE'
+  stack: |-
+    EventStore.hasWorkspace (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\event-store.ts:192:52)
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\server-shutdown.test.ts:32:45)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 0
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 5553.4425

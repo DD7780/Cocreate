@@ -1,0 +1,50 @@
+{
+  "date": "2026-10-05",
+  "files": [
+    "README.md",
+    "context.md",
+    "product.md",
+    "instructions.md",
+    "api.md",
+    "docs/harness/architecture.md",
+    "docs/harness/checklist.md",
+    "docs/harness/decisions.md",
+    "docs/harness/reliability-verification.md",
+    "docs/harness/multiuser-step10-handoff.md"
+  ],
+  "localLinksChecked": 259,
+  "missingFilesOrAnchors": [],
+  "decisionIds": 52,
+  "uniqueDecisionIds": true,
+  "unfilledPlaceholders": false,
+  "diffCheck": "passed",
+  "artifactScan": {
+    "scope": "Static Step 10 text/JSON/source files; no live preview logs or process identities staged",
+    "patterns": [
+      "provider token",
+      "signed session JWT",
+      "private key"
+    ],
+    "findings": []
+  },
+  "manualReview": [
+    "Shutdown ingress/HTTP drain before durable disposal; no request schema changes",
+    "Windows numeric diagnostic ABI and cumulative association semantics; unchanged policy limits",
+    "Disposable synthetic browser fixture authority/usage assertions and scoped cleanup",
+    "Canonical allowance supersession and historical evidence retained",
+    "Final blocked/current/restored/mobile screenshots inspected; broader visual acceptance pending"
+  ],
+  "filesSha256": {
+    "README.md": "320d1998286a3e88dfd20c0c1a56866f83654e50a3bfc7d20bfd1ac2340af303",
+    "context.md": "108dcd92cb3d4d6e3b3ee25cb4251bed6e965ae60e8e758d9f1ea34a992778b7",
+    "product.md": "37151f9e5a1995f109274427a655454a96d774a7bd3af04bb1d98a19ed369cbd",
+    "instructions.md": "3f4e384f569a1cb7aa18db9a32ff5f094d90f685800e302ddfbbb3285bbc4c8b",
+    "api.md": "6fa0e3ed8bf228c92e1280d49e50c883ec452690cdfcf2d2434fe815ba3f852d",
+    "docs/harness/architecture.md": "4d802056374ae6c0004354e8835271eed7d289aa5976256d7d4afb2c33dc7920",
+    "docs/harness/checklist.md": "8fd890863afe46d4e2b8e4f2e555205e8b75ab69fb3afaa63f36723a68a9416e",
+    "docs/harness/decisions.md": "041da97384081e503f5e1b948d986acb4e0af794637fdf45a016d72e64ede55b",
+    "docs/harness/reliability-verification.md": "20f3166206aafbf63433559ad6cf49fdc27b19dceb75c235939408aebef64ec7",
+    "docs/harness/multiuser-step10-handoff.md": "043a24f030533cb7b55c3e1bc4b1ef029179ada4cd40a5b98c6a7df99d3f641b"
+  },
+  "evidenceNormalization": "Trailing whitespace on two blank lines in focused-tests-first.log removed for staged diff hygiene; all failed results and diagnostics retained."
+}

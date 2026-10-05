@@ -1,6 +1,6 @@
 # 2guys1canvas implemented API contracts
 
-Source-inspected 2026-10-04 through Step 09 topology evaluation; runtime routes remain unchanged. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-05 through Step 10 integration review; runtime routes remain unchanged. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 
@@ -76,6 +76,8 @@ Primary submissions persist complete captured author batches, accepted-baseline 
 Retry build does not reinterpret edits. It uses current selected models/accepted requirements and can reuse a checkpoint only for the same fingerprint. Public reinterpretation is retired. The internal diagnostic method reuses only recorded caller edits and frozen accepted metadata on the steering queue, checks coordinator ownership, independently validates output, and rejects settled decisions/withdrawals. It is not a public correction or funding path.
 
 Workflow activity exposes ordered safe summaries, not raw payloads, private document content, unrestricted logs or reasoning. Cursor is last returned event (or supplied cursor on empty); latestCursor/hasMore support backlog pagination. Current serialized builds are durable tasks before dispatch with source revision, assignment, acceptance criteria, run link and evidence. The recovery manifest is internal checkpoint work, not concurrent task scheduling.
+
+Step 10 changes no HTTP/WebSocket route or request schema. Server shutdown stops HTTP ingress and drains in-flight responses before closing SQLite/coordinator state; a new process/client must recover canonical state and preserve receipt identity. Native isolation failures retain bounded numeric job accounting (user/kernel 100 ns ticks, process/termination counts, wall milliseconds) alongside existing memory/exit diagnostics; this is operator evidence, not new model authority or a higher quota.
 
 Step 09 adds no HTTP/WebSocket, worker, shared-interpreter or model-selection contract. Interpretation remains serial. After restart, completed interpretations can remain `queued` awaiting an explicit build; deferred `submitted`/`interpreting` captures recover as failed receipts and author drafts without inference. Exact receipt replay does not reinterpret or start work. The [Step 09 evaluation](docs/harness/multiuser-step09-handoff.md) is an operator-only controlled runner.
 

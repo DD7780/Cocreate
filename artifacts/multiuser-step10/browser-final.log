@@ -1,0 +1,19 @@
+(node:25672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"484c6adf-c0c2-4a09-9f0e-20b77354abfc","correlationId":"deefdf31-90d9-43b5-b7ae-1d6d08b76f06"}
+{"event":"collaboration.connected","connectionId":"a7dc9367-77ec-4ad7-b70a-66c203ec043d","correlationId":"0f986a36-fac6-4b8f-adb0-4fe195fe8a44"}
+{"event":"collaboration.connected","connectionId":"10875586-407a-47b1-b701-9e1baa27f438","correlationId":"8549b6ad-3474-4f50-80e2-3affe0c0927c"}
+{"phase":"fixture-tool-error","tool":"project.bundle","code":"isolation_resource_limit","cause":{"exitCode":125,"limit":"kernel","diagnostic":"ISOLATION_STARTED 8232 cocreate.isolation.3ba23e8f06ce42d0b7f96ac28084319a\r\nISOLATION_PEAK_BYTES 356098048 357261312\r\nISOLATION_EXIT 3221225540\r\n"}}
+{"phase":"browser-failure","checkpoints":[],"status":"Error","error":"Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r2; 3/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.","acceptedRevision":2,"versions":[],"interpreterCalls":2,"builderCalls":1,"runs":[{"outcome":"failed","verification":{"operationsApplied":true,"compilationPassed":false,"requirementSatisfaction":"not_measured","regressionCheck":"not_run","verified":false}}]}
+{"event":"collaboration.disconnected","connectionId":"484c6adf-c0c2-4a09-9f0e-20b77354abfc","code":1001}
+{"event":"collaboration.disconnected","connectionId":"10875586-407a-47b1-b701-9e1baa27f438","code":1006}
+{"event":"collaboration.disconnected","connectionId":"a7dc9367-77ec-4ad7-b70a-66c203ec043d","code":1006}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-harness-integration.ts:21
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: verified baseline
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-harness-integration.ts:21:9)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\scripts\verify-harness-integration.ts:132:19)
+
+Node.js v22.23.2

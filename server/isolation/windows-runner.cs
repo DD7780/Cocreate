@@ -17,6 +17,7 @@ public static class IsolationRunner {
  [StructLayout(LayoutKind.Sequential)] struct BASIC_LIMIT { public long processTime,jobTime; public uint flags; public UIntPtr minWorking,maxWorking; public uint active; public UIntPtr affinity; public uint priority,scheduling; }
  [StructLayout(LayoutKind.Sequential)] struct IO_COUNTERS { public ulong readOps,writeOps,otherOps,readBytes,writeBytes,otherBytes; }
  [StructLayout(LayoutKind.Sequential)] struct EXTENDED_LIMIT { public BASIC_LIMIT basic; public IO_COUNTERS io; public UIntPtr processMemory,jobMemory,peakProcess,peakJob; }
+ [StructLayout(LayoutKind.Sequential)] struct BASIC_ACCOUNTING { public long userTime,kernelTime,periodUserTime,periodKernelTime; public uint pageFaults,processes,activeProcesses,terminatedProcesses; }
  [DllImport("userenv.dll",CharSet=CharSet.Unicode)] static extern int CreateAppContainerProfile(string name,string display,string description,IntPtr capabilities,uint count,out IntPtr sid);
  [DllImport("userenv.dll",CharSet=CharSet.Unicode)] static extern int DeleteAppContainerProfile(string name);
  [DllImport("advapi32.dll")] static extern IntPtr FreeSid(IntPtr sid);
@@ -27,6 +28,7 @@ public static class IsolationRunner {
  [DllImport("kernel32.dll",CharSet=CharSet.Unicode,SetLastError=true)] static extern IntPtr CreateJobObject(IntPtr attributes,string name);
  [DllImport("kernel32.dll",SetLastError=true)] static extern bool SetInformationJobObject(IntPtr job,int kind,ref EXTENDED_LIMIT value,uint bytes);
  [DllImport("kernel32.dll",SetLastError=true)] static extern bool QueryInformationJobObject(IntPtr job,int kind,ref EXTENDED_LIMIT value,uint bytes,out uint returned);
+ [DllImport("kernel32.dll",EntryPoint="QueryInformationJobObject",SetLastError=true)] static extern bool QueryJobAccounting(IntPtr job,int kind,ref BASIC_ACCOUNTING value,uint bytes,out uint returned);
  [DllImport("kernel32.dll",SetLastError=true)] static extern bool AssignProcessToJobObject(IntPtr job,IntPtr process);
  [DllImport("kernel32.dll")] static extern bool TerminateJobObject(IntPtr job,uint code);
  [DllImport("kernel32.dll")] static extern bool TerminateProcess(IntPtr process,uint code);
@@ -100,6 +102,8 @@ public static class IsolationRunner {
    uint code;Check(GetExitCodeProcess(process.process,out code),"exit status");
    EXTENDED_LIMIT observed=new EXTENDED_LIMIT();uint observedBytes;
    if(QueryInformationJobObject(job,9,ref observed,(uint)Marshal.SizeOf(typeof(EXTENDED_LIMIT)),out observedBytes))Console.Error.WriteLine("ISOLATION_PEAK_BYTES "+observed.peakProcess+" "+observed.peakJob);
+   BASIC_ACCOUNTING accounting=new BASIC_ACCOUNTING();
+   if(QueryJobAccounting(job,1,ref accounting,(uint)Marshal.SizeOf(typeof(BASIC_ACCOUNTING)),out observedBytes))Console.Error.WriteLine("ISOLATION_ACCOUNTING "+accounting.userTime+" "+accounting.kernelTime+" "+accounting.processes+" "+accounting.terminatedProcesses+" "+clock.ElapsedMilliseconds);
    if(code!=0)Console.Error.WriteLine("ISOLATION_EXIT "+code);return code==0?0:125;
   } catch(Exception error) {Console.Error.WriteLine("ISOLATION_UNAVAILABLE "+error.Message+" code="+(error is Win32Exception?((Win32Exception)error).NativeErrorCode:error.HResult));return 126;}
   finally {
