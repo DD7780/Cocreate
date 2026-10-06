@@ -1,5 +1,7 @@
 # Repository graph coverage and source-map checkpoints
 
+Pre-launch AST checkpoint 2026-10-07: Graphify 0.9.78 refreshed 2,058 nodes, 4,914 edges and 113 communities using the ignored workspace runtime, without LLM calls. [Query and refresh evidence](../artifacts/prelaunch-beta/graphify-final.log) accompany the landing/beta change. Optional SQL AST parser is still absent; migration statements and prepared database checks require direct review/authorized execution. This does not refresh every curated document semantic, historical inventory or old label, and establishes no hosted behavior.
+
 Full cleanup checkpoint refreshed 2026-10-04 with Graphify 0.9.61 and its Windows workflow after the authorized codebase cleanup. Graph coverage is separate from application, hosted-provider and deployment verification.
 
 ## GitHub integration AST refresh (2026-10-04)

@@ -1,0 +1,19 @@
+✔ anonymous registration commits before success, retries dedupe, and restart preserves consent and limits (223.2626ms)
+✔ failed durable writes cannot show registration success; rate window expiry allows safe retry (38.2297ms)
+✔ registration requires valid email and explicit consent, and forwarded rate identities require Worker proof (0.4684ms)
+✔ approval is fresh private authority, owner retains access, and approval grants no foreign membership (5.0888ms)
+✔ pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval (1.1627ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"45b606f1-0140-40f1-951c-39a6e44cbc57"}
+{"event":"collaboration.connected","connectionId":"54958bbb-28df-4d34-aa65-12bdb163d2d2","correlationId":"f686538c-a22c-43ab-a571-7d876254f8c3"}
+{"event":"collaboration.disconnected","connectionId":"54958bbb-28df-4d34-aa65-12bdb163d2d2","code":4403}
+{"event":"collaboration.connected","connectionId":"b99bfd63-28d3-4f47-b3be-51ba92284737","correlationId":"9a6f6b11-f6fe-416c-83c1-31b5a8386cf2"}
+{"event":"collaboration.disconnected","connectionId":"b99bfd63-28d3-4f47-b3be-51ba92284737","code":4403}
+✔ unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery (230.3105ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 6
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3184.6455

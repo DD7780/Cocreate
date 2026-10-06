@@ -1,8 +1,16 @@
 # Current harness architecture
 
-Source-audited 2026-10-05 through Step 10 integration review. This document describes current boundaries. [Product](../../product.md) owns accepted behavior; [checklist](checklist.md) owns status; [decisions](decisions.md) owns rationale; [API](../../api.md) owns contracts. See the [Step 01 baseline](multiuser-step01-baseline.md) and individual step handoffs for separately scoped evidence.
+Source-audited 2026-10-07 through pre-launch/private beta work. This document describes current boundaries. [Product](../../product.md) owns accepted behavior; [checklist](checklist.md) owns status; [decisions](decisions.md) owns rationale; [API](../../api.md) owns contracts. See the [Step 01 baseline](multiuser-step01-baseline.md) and individual step handoffs for separately scoped evidence.
 
 ## Runtime map
+
+The public `/` landing is lazily loaded by `src/main.tsx`; `/app` enters the existing project list. Callback/recovery execute before the client BetaAccess component. It polls `/api/beta/access` every 30 seconds, failing closed on unavailable approval. Server checks remain authoritative.
+
+`server/beta.ts` accepts anonymous consented email registration. Hosted persistence uses a service-role-only, security-invoker RPC that atomically counts abuse attempts and inserts unique normalized email/consent-version/time. Local development uses separate private SQLite with WAL/FULL synchronization and transactions; hosted failure cannot fall back to it. A honeypot and cross-site origin check accompany durable fixed-window limits: five attempts/client/15 minutes, 500 globally/hour, including retries. Worker-overwritten opaque client keys carry purpose-separated HMAC proof; arbitrary forwarded-IP headers cannot select identities. Expiring counters contain no raw IP; shared NATs share limits. This is proportionate protection, not comprehensive bot detection.
+
+`SupabasePlatform.requireMembership` and `requireSharePermission` read fresh server-private `beta_access`; list/create and invitation acceptance check separately. Existing room middleware, socket upgrade/message/delivery, historical artifact reads and deferred dispatch inherit beta enforcement. Existing roles remain required. Owner UUID/flag is trusted administrator-managed database configuration. A silent revoked socket can remain connected until its next protected message/delivery, but denied delivery returns no protected data.
+
+The prepared [beta migration](../../supabase/migrations/20261006204612_prelaunch_beta_access.sql) restricts existing table/Storage policies through a private self-only helper and checks existing SECURITY DEFINER create/accept RPCs before side effects. Waitlist, approval and rate tables enable RLS and revoke client grants. No new project role or administrative browser endpoint exists. See [rollout and approval operations](prelaunch-beta-handoff.md); migration/pgTAP execution remain unperformed.
 
 | Boundary | Source and responsibility |
 | --- | --- |

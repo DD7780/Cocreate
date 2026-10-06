@@ -1,0 +1,39 @@
+✖ anonymous registration commits before success, retries dedupe, and restart preserves consent and limits (566.4531ms)
+✔ failed durable writes cannot show registration success; rate window expiry allows safe retry (84.6363ms)
+✔ registration requires valid email and explicit consent, and forwarded rate identities require Worker proof (0.6116ms)
+✔ approval is fresh private authority, owner retains access, and approval grants no foreign membership (5.6399ms)
+✔ pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval (1.012ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"49859110-b259-4ce1-be0d-7417839e75c7"}
+{"event":"collaboration.connected","connectionId":"0e4d917a-2f9d-42a6-8d27-c739e8d5b1ef","correlationId":"74c18ca8-c972-45bc-896b-3e9246fad814"}
+{"event":"collaboration.disconnected","connectionId":"0e4d917a-2f9d-42a6-8d27-c739e8d5b1ef","code":4403}
+{"event":"collaboration.connected","connectionId":"f97b3e8f-6fc8-4713-9906-bdb09b0c7b10","correlationId":"843e1a61-9294-4e7e-8599-87eee6dffbd2"}
+{"event":"collaboration.disconnected","connectionId":"f97b3e8f-6fc8-4713-9906-bdb09b0c7b10","code":4403}
+✔ unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery (323.0316ms)
+ℹ tests 6
+ℹ suites 0
+ℹ pass 5
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 8531.2128
+
+✖ failing tests:
+
+test at tests\beta-access.test.ts:17:1
+✖ anonymous registration commits before success, retries dedupe, and restart preserves consent and limits (566.4531ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  503 !== 200
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\beta-access.test.ts:25:43)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 503,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

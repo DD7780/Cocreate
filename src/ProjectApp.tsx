@@ -124,7 +124,10 @@ async function request<T>(
 const selectedId = () =>
   location.pathname.match(/^\/projects\/([0-9a-f-]{36})$/i)?.[1] || "";
 const intendedDestination = () =>
-  safeLocalDestination(new URLSearchParams(location.search).get("returnTo"));
+  safeLocalDestination(
+    new URLSearchParams(location.search).get("returnTo"),
+    "/app",
+  );
 const authMessage = (
   error: { code?: string; message?: string } | null | undefined,
 ) =>
@@ -133,6 +136,17 @@ const authMessage = (
     : error
       ? "Unable to sign in. Check your credentials or use password recovery."
       : "";
+
+function clearProjectSessionCache() {
+  sessionStorage.clear();
+  Object.keys(localStorage)
+    .filter(
+      (key) =>
+        key.startsWith("cocreate-session-") ||
+        key.startsWith("cocreate-product-storage-"),
+    )
+    .forEach((key) => localStorage.removeItem(key));
+}
 
 function ConfigurationError() {
   return (
@@ -295,8 +309,8 @@ function Login() {
   };
   return (
     <AuthShell
-      title="Build together"
-      intro="Sign in to open your private projects, collaborate in the shared canvas, and reopen durable work from any device."
+      title="Beta tester sign-in"
+      intro="Sign in with your existing account. Application access requires separate beta approval; your private projects keep their membership permissions."
     >
       <button
         className="oauth-button"
@@ -1487,14 +1501,7 @@ function Projects({ session }: { session: Session }) {
     }
   };
   const signOut = async () => {
-    sessionStorage.clear();
-    Object.keys(localStorage)
-      .filter(
-        (key) =>
-          key.startsWith("cocreate-session-") ||
-          key.startsWith("cocreate-product-storage-"),
-      )
-      .forEach((key) => localStorage.removeItem(key));
+    clearProjectSessionCache();
     await supabase?.auth.signOut();
     location.replace("/login");
   };
@@ -1605,6 +1612,92 @@ export function ProjectApp() {
     return null;
   }
   if (location.pathname === "/reset-password") return <ResetPassword />;
+  return <BetaAccess key={session.user.id} session={session} />;
+}
+
+function BetaAccess({ session }: { session: Session }) {
+  const [approved, setApproved] = useState<boolean | null>(null),
+    [error, setError] = useState(""),
+    [checking, setChecking] = useState(false);
+  const check = useCallback(async () => {
+    setChecking(true);
+    setError("");
+    try {
+      const status = await request<{ approved: boolean }>(
+        "/api/beta/access",
+        session,
+      );
+      setApproved(status.approved);
+    } catch (failure) {
+      setApproved(null);
+      setError(
+        failure instanceof Error
+          ? failure.message
+          : "Access could not be verified.",
+      );
+    } finally {
+      setChecking(false);
+    }
+  }, [session]);
+  useEffect(() => {
+    void check();
+    const timer = setInterval(() => void check(), 30_000);
+    return () => clearInterval(timer);
+  }, [check]);
+  const switchAccount = async () => {
+    clearProjectSessionCache();
+    sessionStorage.setItem(
+      authReturnKey,
+      safeLocalDestination(`${location.pathname}${location.search}`, "/app"),
+    );
+    const result = await supabase!.auth.signOut();
+    if (result.error) {
+      setError("Sign-out failed. Please try again.");
+      return;
+    }
+    location.replace(
+      `/login?returnTo=${encodeURIComponent(safeLocalDestination(`${location.pathname}${location.search}`, "/app"))}`,
+    );
+  };
+  if (approved !== true)
+    return (
+      <AuthShell
+        title={
+          approved === false
+            ? "Your beta access is pending"
+            : "Checking beta access"
+        }
+        intro={
+          approved === false
+            ? "You’re signed in. The owner needs to approve your beta access before you can open the application."
+            : "Verifying your access with the server."
+        }
+      >
+        <p>Signed in as {session.user.email || "your account"}.</p>
+        {location.pathname.startsWith("/invite/") && (
+          <p>
+            Your invitation has not been accepted or erased. Return to this link
+            after approval, before its expiry.
+          </p>
+        )}
+        {error && (
+          <p className="form-error" role="alert">
+            {error}
+          </p>
+        )}
+        <button
+          className="primary wide"
+          disabled={checking}
+          onClick={() => void check()}
+        >
+          {checking ? "Checking…" : "Check access again"}
+        </button>
+        <button className="oauth-button" onClick={() => void switchAccount()}>
+          Log out / switch account
+        </button>
+        <a href="/">Return to the public page</a>
+      </AuthShell>
+    );
   const inviteToken = location.pathname.match(/^\/invite\/([^/]+)$/)?.[1];
   if (inviteToken)
     return (
@@ -1613,6 +1706,11 @@ export function ProjectApp() {
   if (
     ["/login", "/signup", "/forgot-password", "/"].includes(location.pathname)
   )
-    location.replace("/projects");
+    location.replace(
+      safeLocalDestination(
+        new URLSearchParams(location.search).get("returnTo"),
+        "/app",
+      ),
+    );
   return <Projects session={session} />;
 }

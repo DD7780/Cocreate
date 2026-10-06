@@ -280,3 +280,7 @@ Accepted 2026-10-04 after the user identified the supplied key as Vercel-issued.
 Historical integration note (2026-10-04): the cleanup branch used D-0043/D-0044 for cleanup and Vercel routing; that integration assigned D-0049/D-0050. The 2026-10-05 main merge moves these records to D-0053/D-0054. The incoming branch retains D-0043 for device recovery and D-0044 for local JSON recovery. Dated snapshots retain their original numbering.
 
 Main integration note (2026-10-05): retain roadmap D-0049/D-0050/D-0051/D-0052. Cleanup and Vercel audit routing are D-0053/D-0054 after this merge; their rationale and dated history remain unchanged.
+
+## D-0055 — Public waitlist and separate private beta authority
+
+Accepted 2026-10-07. Keep the landing and app on one existing origin. Save consented interest durably/private without account creation or enumeration. Existing Supabase identity plus administrator-managed UUID approval/owner configuration establish access; interest, beta permission and membership remain separate. Fresh lookups and prepared restrictive RLS/RPC/Storage gates retain roles and revocation. Pending invitations preserve their token and expiry. Use existing trusted Supabase administration for manual approval rather than adding a dashboard. Local compatibility is not hosted access control. No email, tracking, paid inference, migration application or deployment belongs to this slice.

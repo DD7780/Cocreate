@@ -40,6 +40,8 @@ Reuse accessible controls, editor formatting, participant colors, keyboard navig
 
 ## Permissions, persistence and sharing
 
+Hosted beta additionally requires a fresh administrator-owned approval record; preserve project-role checks. Global owner/approval authority must never come from email, project ownership, browser code or user metadata. Registration saves interest only. Keep auth/recovery public and pending invitation acceptance mutation-free. The beta migration remains prepared until authorized rollout; local compatibility auth must not become the public pre-launch deployment.
+
 Enforce authorization in code, not prompts or UI. Supabase account UUID and current project membership confer hosted authority. Never identify an owner by display name/email, restore room-link ownership in hosted mode, publish private artifact buckets or silently replace failed Postgres with SQLite/JSON. Recheck reads/mutations and socket delivery against current membership. Do not promise proactive instantaneous revocation of a silent socket beyond implemented checks.
 
 Cloud saved receipts identify the actual committed immutable revision, insertion clocks and deletion ranges. Local transactions never acknowledge cloud commits. Validate Yjs bytes in an isolated document before hydration; preserve/quarantine unreadable originals and use only hash-verified recovery history. Cache keys are room/participant scoped, contain no credentials and confer no permission. Fail visibly on cache errors; transport changes require flush/reconnect checks. Device recovery is not full offline startup.

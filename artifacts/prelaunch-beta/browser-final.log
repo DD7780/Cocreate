@@ -1,0 +1,44 @@
+{
+  "scope": "Controlled local HTTP, SQLite and mocked account/approval UI. No hosted database, live identity, email or provider verification.",
+  "desktop": {
+    "width": 1440,
+    "scroll": 1425
+  },
+  "tablet": {
+    "width": 768,
+    "scroll": 753
+  },
+  "mobile": {
+    "width": 390,
+    "scroll": 375
+  },
+  "narrow": {
+    "width": 320,
+    "scroll": 320
+  },
+  "zoom200": {
+    "width": 720,
+    "scroll": 705
+  },
+  "reducedMotion": true,
+  "keyboardSkip": true,
+  "waitlist": "You’re registered. We’ll email you when a beta spot is available.",
+  "durableBeforeSuccess": true,
+  "errorRetryAvailable": true,
+  "login": true,
+  "recovery": true,
+  "pendingInvite": {
+    "preserved": true,
+    "switch": true,
+    "workspace": false,
+    "path": "/invite/retained-token"
+  },
+  "accountSwitch": {
+    "returnTo": "/invite/retained-token",
+    "cacheCleared": true
+  },
+  "approvedApp": true,
+  "revocation": true,
+  "ownerApp": true,
+  "publicWhileSignedIn": true
+}

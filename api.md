@@ -1,8 +1,19 @@
 # 2guys1canvas implemented API contracts
 
-Source-inspected 2026-10-05 through Step 10 integration review; runtime routes remain unchanged. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-07 through pre-launch/private beta work. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
+
+Pre-launch routes share the existing origin. `/` is public; `/app` enters the approved project list; existing login/signup/callback/recovery/project/invitation paths retain their contracts.
+
+| Method/path | Authority | Contract |
+| --- | --- | --- |
+| POST `/api/beta/waitlist` | Anonymous | `{email:string, consent:true, website?:""}`; normalized email ≤254 characters. Durable unique insert then 200 `{message:"You’re registered. We’ll email you when a beta spot is available."}` for initial/duplicate/retry attempts. No account lookup/creation or email. |
+| GET `/api/beta/access` | Verified Supabase bearer | `{approved:boolean}` for that account only; `no-store`. Missing/invalid identity 401; unavailable lookup 503. |
+
+Registration returns 400 for invalid input/missing consent, 403 for cross-site origin, 429 with `Retry-After: 900` for durable rate limits, and a generic 503 retry error for failed persistence. Five attempts/client/15-minute fixed window and 500 globally/hour include duplicates. No public registration read/list/approval route exists.
+
+Hosted membership/sharing/list/create/accept require fresh beta access alongside current project authority. Pending access returns 403; unavailable lookup fails closed. Room middleware, socket upgrade/message/delivery, previews/downloads, historical reads and deferred dispatch inherit the gate. Invitation acceptance checks before the transactional RPC, preserving a pending invite and original expiry. Callback/recovery precede the UI gate and return paths remain same-origin validated. The [prepared policies](supabase/migrations/20261006204612_prelaunch_beta_access.sql) and [operator process](docs/harness/prelaunch-beta-handoff.md) are rollout prerequisites. Local compatibility auth is not hosted beta control.
 
 HTTP/socket requests use the client host; local default is `http://localhost:5173`. JSON body limit is 40 KB. Prefer `Authorization: Bearer <token>` over the currently supported room-route token query parameter; never log credentials or authenticated URLs.
 

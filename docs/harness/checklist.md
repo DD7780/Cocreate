@@ -1,5 +1,16 @@
 # Harness status and outstanding work
 
+## Pre-launch registration and private beta — 2026-10-07
+
+- [x] Public Studio Ivory landing at `/`, labeled product example, repeated waitlist CTA, existing beta sign-in, honest current/planned model and local-cost copy, FAQ and static future-walkthrough area. Existing workspace and project/auth/recovery URLs are retained.
+- [x] Durable private consented waitlist, normalized-email deduplication/retry, generic account-independent responses, honeypot/origin checks and durable bounded abuse counters. No account creation, email or tracking added.
+- [x] Separate fresh server-owned beta permission/owner configuration and project membership. Existing API/socket/message/delivery/preview/download/historical-read/deferred-dispatch guards inherit the gate. Pending accounts have recheck/logout/switch controls; invitation acceptance waits without consuming the link.
+- [x] Focused local/mocked security checks **6/6**, complete correctly permissioned local Windows suite **224/224**, zero failures/skips. Initial wrong-mode focused and interrupted sandbox-native runs remain retained separately.
+- [x] Controlled browser form/keyboard/reduced-motion, 320/390/768/1440 widths, 200% equivalent layout, login/recovery, pending invite, approval/owner and revocation checks pass. Font requests were blocked in this fixture; screenshots are in [browser evidence](../../artifacts/prelaunch-beta/browser/checks.json).
+- [x] Strict types, production build and import boundaries pass; AST graph refresh reports 2,058 nodes/4,914 edges/113 communities, no LLM calls. Optional SQL parser is absent.
+- [x] Prepared private schema/grants, restrictive direct Data API/Storage policies, guarded create/accept RPCs and [12-check pgTAP suite](../../supabase/tests/beta_access.test.sql); exact trusted-administrator operations are in [the handoff](prelaunch-beta-handoff.md).
+- [ ] Authorize SQL target/migration application and seed the verified owner's UUID before any hosted release. Run prepared pgTAP, advisors and independent hosted user/REST/RPC/Storage/socket/invitation/callback checks. No migration, deployment, live identity/email/provider or real RLS/Storage verification ran here.
+
 Updated 2026-10-05 through Step 10 local integration and final harness review; Linux/kernel and real Storage/RLS/SQL/deployment acceptance remain pending. This is the canonical active completion record. Product targets are in [product.md](../../product.md), contracts in [api.md](../../api.md), and boundaries in [architecture.md](architecture.md). Do not treat acceptance, source implementation and runtime verification as the same status.
 
 ## Main integration of Steps 6–10 (2026-10-05)

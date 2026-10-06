@@ -1,5 +1,7 @@
 # 2guys1canvas
 
+The public pre-launch page lives at `/`; beta sign-in is `/login` and the approved app entry is `/app`. Existing project/callback/recovery/invitation URLs remain supported. See [pre-launch owner operations](docs/harness/prelaunch-beta-handoff.md) before hosted rollout: prepare the beta migration, configure the verified owner's UUID, and manually approve testers through trusted Supabase administration. Waitlist interest does not create an account or grant membership. Local mode is development compatibility only; it is not the private-beta deployment.
+
 A multiplayer workflow workspace: co-write a brief, submit your own steering, inspect accepted requirements/tasks/usage and share versioned frontend artifacts. Developer is the only active workflow. Writing, autosave, navigation and reconnect never invoke inference.
 
 ## Start locally

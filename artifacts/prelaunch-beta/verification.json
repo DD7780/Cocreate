@@ -1,0 +1,107 @@
+{
+  "date": "2026-10-07",
+  "base": "ee014a146631393c9fcb6222a910f3af06bc13b2",
+  "destination": "main",
+  "implementation": "complete locally; hosted rollout pending",
+  "checks": {
+    "full": {
+      "tests": 224,
+      "passed": 224,
+      "failed": 0,
+      "log": "artifacts/prelaunch-beta/full-tests.log",
+      "scope": "Windows local/native regression run; final presentation/account-switch fixes additionally checked by final browser/types/build"
+    },
+    "focused": {
+      "passed": 6,
+      "failed": 0,
+      "log": "artifacts/prelaunch-beta/focused-tests.log"
+    },
+    "types": {
+      "passed": true,
+      "log": "artifacts/prelaunch-beta/types-final.log"
+    },
+    "build": {
+      "passed": true,
+      "log": "artifacts/prelaunch-beta/build-final.log"
+    },
+    "boundaries": {
+      "violations": 0,
+      "providerCalls": 0,
+      "log": "artifacts/prelaunch-beta/boundaries.log"
+    },
+    "browser": {
+      "passed": true,
+      "report": "artifacts/prelaunch-beta/browser/checks.json",
+      "scope": "Controlled local HTTP, SQLite and mocked account/approval UI. No hosted database, live identity, email or provider verification.",
+      "zoom": "200% equivalent viewport; not browser chrome zoom control"
+    },
+    "contrast": {
+      "body": 13.36190285785046,
+      "muted": 5.862614180654289,
+      "cta": 6.418143672637481,
+      "inputBorder": 3.7452213209738088
+    },
+    "graph": {
+      "nodes": 2058,
+      "edges": 4914,
+      "llmCalls": 0,
+      "log": "artifacts/prelaunch-beta/graphify-final.log",
+      "sqlParser": false
+    },
+    "documents": {
+      "checked": 253,
+      "broken": []
+    },
+    "preview": {
+      "url": "http://localhost:5173/",
+      "authMode": "local development compatibility",
+      "health": "ok",
+      "existingRoomHttp": 200,
+      "readOnlyState": "artifacts/prelaunch-beta/local-preview.json"
+    }
+  },
+  "schema": {
+    "migration": "supabase/migrations/20261006204612_prelaunch_beta_access.sql",
+    "createdWith": "Supabase CLI 2.120.0 migration new",
+    "applied": false,
+    "pgtapPrepared": 12,
+    "pgtapExecuted": false,
+    "advisorsExecuted": false
+  },
+  "hosted": {
+    "verified": false,
+    "ownerConfigured": false,
+    "manualApprovalDocument": "docs/harness/prelaunch-beta-handoff.md"
+  },
+  "deployed": false,
+  "emailSent": false,
+  "trackingAdded": false,
+  "paidInference": false,
+  "appDependenciesChanged": false,
+  "sourceSha256": {
+    "server/beta.ts": "50b943140aff841b534b9c74f23a60107b52a749254390cb5b71852ed3f8845b",
+    "server/index.ts": "58553c4aa399f0861d8d5c8d29cc808495708289d9f2dc7a1e0cecdab08813a5",
+    "server/supabase-platform.ts": "63fab2d2849d96222505a8ff85b5b9d329a1dae3204dce7eab8a50bdf2b3446b",
+    "src/main.tsx": "abfd042df14604b7eee28dbc0b2efd506707c0295171764dd0efe2bc11fdc7b9",
+    "src/LandingPage.tsx": "06a7e64e62ba7da449960179d0918420a18e19a3540f08a1c2e212733f1b34d7",
+    "src/landing.css": "e6a870df8480796edd304823dcd69fb1ecbe0571615868b9de4a29203edd5a90",
+    "src/ProjectApp.tsx": "03e02ef849053638bc1e419afc9e6ab8b9048462b18ea620e65b985ae48443cc",
+    "worker/container.js": "ef3dd2f4b25ffbf4d6b1468e071b0f78e781cbea47f79dc98fa96dd476f0605a",
+    "tests/beta-access.test.ts": "64afe1364a9725f4ea20f3d78f282dd20853ac82ea2d87ce62c630d8a1904fc8",
+    "scripts/verify-prelaunch-beta.ts": "26961e24254fbc5dad420b239850d9805ea1cba235514172cf346b9cabea3fb2",
+    "supabase/migrations/20261006204612_prelaunch_beta_access.sql": "919e467202e8dae7f5e00f47996253e37cfe8bd768920dc2366f38dbf5b786e1",
+    "supabase/tests/beta_access.test.sql": "a60181282887dfa2c99778b3a300413dc076ebf49ed2dc04129093ac8fdf355d"
+  },
+  "documentSha256": {
+    "README.md": "0c4a6219680b63815e112289c25ca6d5152142b453946be3911f67d4a6a47e8d",
+    "api.md": "689d4c892d8984f55192b702bb81244306b13f966d17cadbd88997dae0a3e224",
+    "context.md": "5be1705d34123e1ec2a742eabece19847a4977eb05cfa0b8e49fa96eaffc88bf",
+    "instructions.md": "0bb6ec55b84d65a657d083d24a0f7dbaacc2c72bb6e16c49503be338173b0322",
+    "product.md": "5143786e717cd2b78ea99d29b77270582a4a095876c0f58100e644d86fffaeab",
+    "docs/harness/architecture.md": "db06b24ddc0a3713095a7347436d87dcd43b31e3693b1eb72c1cd6caf9fab901",
+    "docs/harness/checklist.md": "95339c998131f4fbd421307a582f22f759bdb48c8fe3a8b734441c676e5aac1b",
+    "docs/harness/decisions.md": "5193d749044f4ac28f1ca374bf9cc9d06c57d8a05741d12ac8cb604a89f6891f",
+    "docs/harness/prelaunch-beta-handoff.md": "89f3671039c29cb2f224aaade259f500ff16fc785fdf97f60a308d4f8b664729",
+    "graphify-out/SOURCE_MAP.md": "cfdf6c73e87bcbc950269581989a808cd163b085369e88e63e124f85f8c3e35d"
+  }
+}

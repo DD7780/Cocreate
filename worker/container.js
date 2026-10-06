@@ -54,6 +54,14 @@ export default {
     }
 
     try {
+      if (url.pathname === '/api/beta/waitlist' && env.SESSION_SECRET) {
+        const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(env.SESSION_SECRET), {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
+        const sign = async (value) => [...new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)))].map(byte=>byte.toString(16).padStart(2,'0')).join('');
+        const headers = new Headers(request.headers);
+        headers.set('x-cocreate-waitlist-key', await sign(`waitlist-ip:${request.headers.get('CF-Connecting-IP') || 'unknown'}`));
+        headers.set('x-cocreate-waitlist-proof', await sign('waitlist-proxy-v1'));
+        request = new Request(request, {headers});
+      }
       return await getContainer(env.COCREATE_CONTAINER, "primary").fetch(
         request,
       );

@@ -1,6 +1,8 @@
 # 2guys1canvas current handoff
 
-Updated 2026-10-05 for Step 10 integration review. Explicit user instructions take precedence. Local completion and hosted readiness remain separate.
+Updated 2026-10-07 for pre-launch registration/private beta. Explicit user instructions take precedence. Local completion and hosted readiness remain separate.
+
+Current work adds public `/`, consented durable private waitlist registration and `/app` beta gating alongside project roles. See [the pre-launch handoff](docs/harness/prelaunch-beta-handoff.md) for owner UUID configuration, manual approval/revocation and verification. The migration and database tests are prepared, not applied; configure the owner's verified UUID before hosted rollout. No hosted migration, deployment, email, tracking or paid inference ran. Local auth remains development compatibility and the workspace is retained. Earlier integration notes below are dated history; the merged-main handoff records completed Steps 1–10.
 
 GitHub integration: the local cleanup checkout now includes `origin/codex/byok-mvp` through `472698a`, retaining the shared-contract/module cleanup and Jev gateway audit. Default/local-auth builds and boundary checks pass. The fresh full suite passed 188/191 before focused reruns; CPU-limit timing and final controlled intent-UI acceptance remain unresolved. See [current sync evidence](docs/harness/checklist.md#historical-github-branch-integration-2026-10-04); prior Step 05 counts are incoming dated evidence.
 

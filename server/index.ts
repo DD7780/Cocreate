@@ -34,6 +34,7 @@ import type {
 import { coordinatorResponse } from "./coordinator-response.js";
 import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
+import { registerBetaRoutes } from "./beta.js";
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -73,6 +74,7 @@ export async function createCoCreateServer(options: Options = {}) {
     app.use(express.json({
         limit: '40kb'
     }));
+    const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
     app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
         status: 'configuration-error', service: 'cocreate-app', error: platformState.error
     }) : res.json({
@@ -821,6 +823,7 @@ export async function createCoCreateServer(options: Options = {}) {
         await new Promise<void>(resolve => wss.close(() => resolve()));
         await drained;
         manager.shutdown();
+        closeBeta();
         await platformState.platform?.coordinator.close();
     };
     return {

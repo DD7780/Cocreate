@@ -7,6 +7,7 @@ import * as Y from 'yjs';
 import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
 import { encryptSecret, decryptSecret, type EncryptedSecret } from './credentials.js';
 import type { ProviderRequestRecord } from '../shared/types.js';
+import { betaDenied } from './beta.js';
 
 export type ProjectRole = 'owner' | 'editor' | 'viewer';
 export type ProjectSummary = {
@@ -60,12 +61,14 @@ export class SupabasePlatform {
   }
 
   async requireMembership(projectId:string,userId:string,allowed:ProjectRole[]=['owner','editor','viewer']) {
+    await this.requireBetaAccess(userId);
     const membership=await this.membership(projectId,userId);
     if(!membership||!allowed.includes(membership.role)) throw Object.assign(new Error('You do not have permission to access this project.'),{status:403});
     return membership.role;
   }
 
   async requireSharePermission(projectId:string,userId:string) {
+    await this.requireBetaAccess(userId);
     const membership=await this.membership(projectId,userId);
     if(!membership||(membership.role!=='owner'&&!membership.canShare))throw Object.assign(new Error('You do not have permission to manage project sharing.'),{status:403});
     return membership;
@@ -121,6 +124,7 @@ export class SupabasePlatform {
 
   async listProjects(accessToken:string,options:{search?:string;archived?:boolean;offset?:number;limit?:number}={}) {
     const user=await this.verifyUser(accessToken);
+    await this.requireBetaAccess(user.id);
     const client=this.userClient(accessToken),limit=Math.min(50,Math.max(1,options.limit||30)),offset=Math.max(0,options.offset||0);
     let query=client.from('projects').select('id,owner_id,title,workflow_mode,archived_at,created_at,updated_at,project_members!inner(role,user_id,can_share)',{count:'exact'})
       .eq('project_members.user_id',user.id)
@@ -134,6 +138,7 @@ export class SupabasePlatform {
 
   async createProject(accessToken:string,title='Untitled project',workflowMode:ProjectSummary['workflowMode']='developer') {
     const user=await this.verifyUser(accessToken),client=this.userClient(accessToken);
+    await this.requireBetaAccess(user.id);
     const projectTitle=normalizeProjectTitle(title);
     const {data,error}=await client.rpc('create_project',{project_title:projectTitle,project_mode:workflowMode}).single();fail('Project creation failed',error);
     const row=data as unknown as ProjectRow;
@@ -253,7 +258,21 @@ export class SupabasePlatform {
   }
 
   async acceptInvite(accessToken:string,token:string) {
-    await this.verifyUser(accessToken);const {data,error}=await this.userClient(accessToken).rpc('accept_project_invite',{invite_hash:hashToken(token)});fail('Invite acceptance failed',error);return String(data);
+    const user=await this.verifyUser(accessToken);await this.requireBetaAccess(user.id);const {data,error}=await this.userClient(accessToken).rpc('accept_project_invite',{invite_hash:hashToken(token)});fail('Invite acceptance failed',error);return String(data);
+  }
+
+  async hasBetaAccess(userId:string):Promise<boolean> {
+    const {data,error}=await this.admin.from('beta_access').select('is_owner,revoked_at').eq('user_id',userId).maybeSingle();
+    if(error) throw Object.assign(new Error('Beta approval lookup is unavailable.'),{status:503});
+    return !!data && (data.is_owner === true || data.revoked_at === null);
+  }
+  async requireBetaAccess(userId:string) {
+    if(!await this.hasBetaAccess(userId)) throw betaDenied();
+  }
+  async registerWaitlist(email:string,clientKey:string):Promise<boolean> {
+    const {data,error}=await this.admin.rpc('register_beta_waitlist',{registration_email:email,client_key:clientKey});
+    if(error || typeof data !== 'boolean') throw new Error('Waitlist persistence is unavailable.');
+    return data;
   }
 
   private async privateArtifactBucket() {
@@ -394,6 +413,7 @@ export class SupabasePlatform {
 
 export function supabasePlatformFromEnv(env=process.env) {
   const hosted=env.COCREATE_HOSTED==='true',mode=env.COCREATE_AUTH_MODE||(hosted?'supabase':'local');
+  if(hosted&&mode==='local')return {mode:'supabase' as const,platform:null,error:'Hosted application access requires Supabase authentication and beta approval.'};
   if(mode==='local')return {mode:'local' as const,platform:null,error:null};
   const url=env.SUPABASE_URL,publishableKey=env.SUPABASE_PUBLISHABLE_KEY,secretKey=env.SUPABASE_SECRET_KEY;
   if(!url||!publishableKey||!secretKey)return {mode:'supabase' as const,platform:null,error:'SUPABASE_URL, SUPABASE_PUBLISHABLE_KEY, and server-only SUPABASE_SECRET_KEY are required.'};
