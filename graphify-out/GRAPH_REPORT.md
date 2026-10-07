@@ -1,7 +1,7 @@
 # Graph Report - Devoffice  (2026-10-08)
 
 ## Corpus Check
-- 203 files · ~187,161 words
+- 203 files · ~187,454 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 13 file(s) not represented in the graph (top: (none) 5, .css 5, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `f54dda15`
+- Built from commit: `73fd559d`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -160,7 +160,7 @@ Nodes (13): [command,file], MANAGED_CATALOG_SOURCE, MANAGED_CATALOG_VERSION, MAN
 
 ### Community 7 - "isolation.ts"
 Cohesion: 0.06
-Nodes (48): Acceptance evidence and handoff, Blocked deployment repair packet — 2026-10-08, Current execution status, Custom-domain private beta release packet, Linux verification follow-up â€” 2026-10-08, Outcome and bounded scope, Prepared changes and compatibility, Verification, execution and recovery plan (+40 more)
+Nodes (48): Acceptance evidence and handoff, Blocked deployment repair packet — 2026-10-08, Current execution status, Custom-domain private beta release packet, Linux verification follow-up — 2026-10-08, Outcome and bounded scope, Prepared changes and compatibility, Verification, execution and recovery plan (+40 more)
 
 ### Community 8 - "requirements.ts"
 Cohesion: 0.11
@@ -462,15 +462,15 @@ Nodes (4): Authority and changes, Documentation validation and remaining limits,
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
-- **Why does `RoomManager` connect `RoomManager` to `tool-registry.ts`, `EventStore`, `ref_node_assert`, `supabase-platform.ts`, `reliability.test.ts`, `ref_node_crypto`, `fixtures/multiuser-baseline.ts`, `rooms.ts`, `Step 09 - Conditional interpretation concurrency and topology evaluation`, `index.ts`, `room-state.ts`, `artifact-restoration.test.ts`, `ref_node_fs`?**
-  _High betweenness centrality (0.049) - this node is a cross-community bridge._
+- **Why does `yjs` connect `ref_node_assert` to `live-collaboration-check.mjs`, `supabase-platform.ts`, `CoCreateProvider`, `reliability.test.ts`, `ref_node_crypto`, `project.ts`, `fixtures/multiuser-baseline.ts`, `measure-responsiveness.ts`, `package.json`, `rooms.ts`, `index.ts`, `room-state.ts`, `artifact-restoration.test.ts`, `App.tsx`, `local-drafts.test.ts`?**
+  _High betweenness centrality (0.050) - this node is a cross-community bridge._
 - **Are the 33 inferred relationships involving `createCoCreateServer()` (e.g. with `.applyRecommendedAI()` and `.assignAI()`) actually correct?**
   _`createCoCreateServer()` has 33 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `supabase`, `$schema`, `singleQuote` to the rest of the system?**
   _597 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `RoomManager` be split into smaller, more focused modules?**
   _Cohesion score 0.07704042715484363 - nodes in this community are weakly interconnected._
-- **Why does `yjs` connect `ref_node_assert` to `live-collaboration-check.mjs`, `supabase-platform.ts`, `CoCreateProvider`, `reliability.test.ts`, `ref_node_crypto`, `project.ts`, `fixtures/multiuser-baseline.ts`, `measure-responsiveness.ts`, `package.json`, `rooms.ts`, `index.ts`, `room-state.ts`, `artifact-restoration.test.ts`, `App.tsx`, `local-drafts.test.ts`?**
+- **Why does `RoomManager` connect `RoomManager` to `tool-registry.ts`, `EventStore`, `ref_node_assert`, `supabase-platform.ts`, `reliability.test.ts`, `ref_node_crypto`, `fixtures/multiuser-baseline.ts`, `rooms.ts`, `Step 09 - Conditional interpretation concurrency and topology evaluation`, `index.ts`, `room-state.ts`, `artifact-restoration.test.ts`, `ref_node_fs`?**
   _High betweenness centrality (0.049) - this node is a cross-community bridge._
 - **Should `README.md` be split into smaller, more focused modules?**
   _Cohesion score 0.11904761904761904 - nodes in this community are weakly interconnected._

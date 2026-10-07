@@ -10150,7 +10150,7 @@
       "file_type": "code",
       "norm_label": "assertverificationbrowseravailable()",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L127"
+      "source_location": "L128"
     },
     {
       "id": "server_isolation_browser_browserexecutable",
@@ -18446,7 +18446,7 @@
       "node_kind": "heading",
       "norm_label": "acceptance evidence and handoff",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L56"
+      "source_location": "L111"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_blocked_deployment_repair_packet_2026_10_08",
@@ -18458,7 +18458,7 @@
       "node_kind": "heading",
       "norm_label": "blocked deployment repair packet \u2014 2026-10-08",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L83"
+      "source_location": "L165"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_current_execution_status",
@@ -18470,7 +18470,7 @@
       "node_kind": "heading",
       "norm_label": "current execution status",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L52"
+      "source_location": "L103"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
@@ -18485,16 +18485,16 @@
       "source_location": "L1"
     },
     {
-      "id": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_\u00e2_2026_10_08",
-      "label": "Linux verification follow-up \u00e2\u20ac\u201d 2026-10-08",
+      "id": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_2026_10_08",
+      "label": "Linux verification follow-up \u2014 2026-10-08",
       "_origin": "ast",
       "community": 7,
       "community_name": "isolation.ts",
       "file_type": "document",
       "node_kind": "heading",
-      "norm_label": "linux verification follow-up a\u20ac\u201d 2026-10-08",
+      "norm_label": "linux verification follow-up \u2014 2026-10-08",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L11"
+      "source_location": "L21"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_outcome_and_bounded_scope",
@@ -18506,7 +18506,7 @@
       "node_kind": "heading",
       "norm_label": "outcome and bounded scope",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L5"
+      "source_location": "L9"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_prepared_changes_and_compatibility",
@@ -18518,7 +18518,7 @@
       "node_kind": "heading",
       "norm_label": "prepared changes and compatibility",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L33"
+      "source_location": "L65"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_verification_execution_and_recovery_plan",
@@ -18530,7 +18530,7 @@
       "node_kind": "heading",
       "norm_label": "verification, execution and recovery plan",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L41"
+      "source_location": "L81"
     },
     {
       "id": "docs_harness_prelaunch_domain_release_verified_targets_and_current_state",
@@ -18542,7 +18542,7 @@
       "node_kind": "heading",
       "norm_label": "verified targets and current state",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L21"
+      "source_location": "L41"
     },
     {
       "id": "public_favicon_file",
@@ -29230,7 +29230,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L128",
+      "source_location": "L129",
       "weight": 1.0
     },
     {
@@ -29242,7 +29242,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L129",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -29254,7 +29254,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L129",
+      "source_location": "L130",
       "weight": 1.0
     },
     {
@@ -29266,7 +29266,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L131",
+      "source_location": "L132",
       "weight": 1.0
     },
     {
@@ -63322,57 +63322,13 @@
     },
     {
       "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
-      "target": "docs_harness_prelaunch_domain_release_verified_targets_and_current_state",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L21",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
-      "target": "docs_harness_prelaunch_domain_release_prepared_changes_and_compatibility",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L33",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
-      "target": "docs_harness_prelaunch_domain_release_verification_execution_and_recovery_plan",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L41",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
-      "target": "docs_harness_prelaunch_domain_release_outcome_and_bounded_scope",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L5",
-      "weight": 1.0
-    },
-    {
-      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
       "target": "docs_harness_prelaunch_domain_release_current_execution_status",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L52",
+      "source_location": "L103",
       "weight": 1.0
     },
     {
@@ -63383,7 +63339,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L56",
+      "source_location": "L111",
       "weight": 1.0
     },
     {
@@ -63394,18 +63350,62 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L83",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
-      "source": "docs_harness_prelaunch_domain_release_outcome_and_bounded_scope",
-      "target": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_\u00e2_2026_10_08",
+      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
+      "target": "docs_harness_prelaunch_domain_release_verified_targets_and_current_state",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L11",
+      "source_location": "L41",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
+      "target": "docs_harness_prelaunch_domain_release_prepared_changes_and_compatibility",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/harness/prelaunch-domain-release.md",
+      "source_location": "L65",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
+      "target": "docs_harness_prelaunch_domain_release_verification_execution_and_recovery_plan",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/harness/prelaunch-domain-release.md",
+      "source_location": "L81",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_harness_prelaunch_domain_release_custom_domain_private_beta_release_packet",
+      "target": "docs_harness_prelaunch_domain_release_outcome_and_bounded_scope",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/harness/prelaunch-domain-release.md",
+      "source_location": "L9",
+      "weight": 1.0
+    },
+    {
+      "source": "docs_harness_prelaunch_domain_release_outcome_and_bounded_scope",
+      "target": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_2026_10_08",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "docs/harness/prelaunch-domain-release.md",
+      "source_location": "L21",
       "weight": 1.0
     },
     {
@@ -68962,7 +68962,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -80950,7 +80950,7 @@
       "weight": 1.0
     },
     {
-      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_\u00e2_2026_10_08",
+      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_2026_10_08",
       "target": "server_isolation_assertisolationavailable",
       "relation": "references",
       "_origin": "ast",
@@ -80958,7 +80958,7 @@
       "confidence_score": 0.95,
       "context": "assertIsolationAvailable",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L15",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -81118,7 +81118,7 @@
       "weight": 1.0
     },
     {
-      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_\u00e2_2026_10_08",
+      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_2026_10_08",
       "target": "scripts_codebase_audit_main",
       "relation": "references",
       "_origin": "ast",
@@ -81126,11 +81126,11 @@
       "confidence_score": 0.95,
       "context": "main",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L13",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
-      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_\u00e2_2026_10_08",
+      "source": "docs_harness_prelaunch_domain_release_linux_verification_follow_up_2026_10_08",
       "target": "server_isolation_prepareisolation",
       "relation": "references",
       "_origin": "ast",
@@ -81138,7 +81138,7 @@
       "confidence_score": 0.95,
       "context": "prepareIsolation",
       "source_file": "docs/harness/prelaunch-domain-release.md",
-      "source_location": "L15",
+      "source_location": "L29",
       "weight": 1.0
     },
     {
@@ -83737,5 +83737,5 @@
       "source_file": "product.md"
     }
   ],
-  "built_at_commit": "f54dda15be8364096866d63b57bcf140f5981aae"
+  "built_at_commit": "73fd559d7666ebc7ab93dcb0fba1e902189f1d5f"
 }

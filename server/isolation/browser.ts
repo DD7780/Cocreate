@@ -27,7 +27,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
   const linux = ['--as=' + isolationPolicy.linuxAddressSpaceBytes, '--cpu=' + isolationPolicy.cpuSeconds,
     '--nproc=' + isolationPolicy.linuxTasksPerUser, '--fsize=' + isolationPolicy.outputBytes, '--nofile=64', '--', '/usr/bin/bwrap',
-    '--unshare-all', '--die-with-parent', '--new-session', '--clearenv', '--preserve-fds', '2',
+    // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
+    '--unshare-all', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
     '--bind', path.join(workspace, 'browser-profile'), '/profile', '--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp'];
   for (const directory of ['/lib', '/lib64', '/usr/lib']) if (process.platform === 'linux' && fs.existsSync(directory)) linux.push('--ro-bind', directory, directory);

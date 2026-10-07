@@ -1,93 +1,188 @@
 # Custom-domain private beta release packet
 
+
+
 Prepared 2026-10-08. Reuse the pre-launch implementation from `7e954b8`; this packet owns the requested hosted rollout. Preparation, database observation, configuration changes and deployed acceptance must be recorded separately.
+
+
 
 ## Outcome and bounded scope
 
+
+
 `https://2guys1canvas.com/` must serve the public landing and consented waitlist; `/login` remains public and `/app` retains authenticated beta approval plus project roles. Initially only the verified founder (owner) and cofounder (ordinary approval) enter the application. Existing projects, memberships, invitations, snapshots, artifacts, credentials, inference and Studio Ivory remain intact. Public release is a separate future authorization; it may change beta admission but must preserve authentication and project privacy.
+
+
 
 Allowed configuration/code files: `wrangler.jsonc`, `worker/container.js`, a small standard-URL legacy redirect helper and existing Cloudflare contract tests. The Worker change is necessary to preserve old project/invitation links without leaving a second application origin. No workspace/UI rewrite, new identity system, public artifact bucket, automatic approval, email, tracking, purchased domain or inference. Canonical steering and release evidence are in scope. Shared contracts remain unchanged.
 
+
+
 ### Linux verification follow-up — 2026-10-08
+
+
 
 The owner reports saving production branch `main`, disabling **Builds for non-production branches**, and saving the separate Supabase redirect `https://2guys1canvas.com/api/auth/callback?next=**`. These are owner-confirmed dashboard settings, not an independent Auth API read. The existing Site URL/exact callback report remains; preserve other entries and Google's upstream callback. No Workers Previews migration was requested or performed.
 
+
+
 Bounded scope extends to `.github/workflows/code-checks.yml` and its documentation/evidence. Graphify's scoped runtime query identified Dockerfile, `prepareIsolation`, `assertIsolationAvailable`, browser isolation and their existing adversity tests; source confirms the workflow lacks their OS dependencies. Reuse the production Dockerfile rather than a second image or browser installer. The verification branch uses GitHub's disposable Ubuntu 22.04 runner; no PR, registry push, Supabase preview branch or production deployment is created by the workflow. Existing import/type/build and full regression requirements remain.
+
+
 
 The test container runs as the image's non-root `node` user, without host volumes, Docker socket, network, secrets or added capabilities, under a 1 GiB outer memory limit. Docker's outer seccomp filter and AppArmor profile are disabled only for this disposable CI container to permit Bubblewrap's nested user/mount/PID/network namespaces; the application's Bubblewrap, Node permission, CPU/address-space/task/output/wall and cleanup boundaries remain unchanged. This environment choice is explicit and is not Cloudflare kernel acceptance or a production configuration change. See [Docker seccomp documentation](https://docs.docker.com/engine/security/seccomp/). Compiler and browser readiness must pass before the full suite; a failed preflight remains a release blocker. Image building uses the four existing public Vite variables from Wrangler, with no administrative credentials. Published candidate `c5693024f9868ec5570acf122f8b31c5288ab90c` to `codex/prelaunch-beta`; [GitHub run](https://github.com/DD7780/Cocreate/actions/runs/37680815765) is in progress. Supabase Preview reports skipped and its branch list still contains only existing main. Read-only Cloudflare deployment inspection still observes `e0caa8b5-661c-4772-b13f-9b75471dd1c3` at 100%, with no new deployment as of 2026-10-07T20:17:57.957Z. Main remains `7e954b8`; no production deployment was performed. See [deployment check](../../artifacts/prelaunch-domain-release/branch-deployment-check.json) and [preparation checks](../../artifacts/prelaunch-domain-release/ci-preparation.json).
 
+
+
 Graphify scoped query found `worker/container.js`, `server/index.ts`, `server/supabase-platform.ts`, `server/beta.ts`, `src/supabase.ts` and Cloudflare/beta tests. Source verification retains the native WebSocket-aware `primary` proxy, hosted-only Supabase container authentication, fresh beta and membership checks, fixed durable registration RPC and safe same-origin callback return validation. The Docker image preflights real Linux isolation; failures must never select a host-execution or local-auth fallback.
+
+
 
 ## Verified targets and current state
 
+
+
 Read-only inspection used the existing Wrangler OAuth connection and existing Postgres connection; the database transaction explicitly reported `transaction_read_only=on`. No credential is recorded in this packet.
 
+
+
 - Cloudflare account `fc419457dc350fcfada2b0a3f00bfe3e`, Worker `cocreate`, container application `a034de25-d538-4e4d-bdf0-bfc09824b341`.
+
 - Active zone `2guys1canvas.com` (`9fc613d7751283d49e42549adef3b0bf`) belongs to that account; its existing custom domain points to `cocreate` production. No registrar purchase or nameserver transfer is required.
+
 - Supabase project `dnsapasubeoxxsgkiotw`; frontend/runtime references agree with the deployed Worker. Both user-specified accounts were verified as existing, email-confirmed and not deleted through trusted `auth.users` administration. Their UUIDs stay in ignored operator evidence, not public source.
+
 - Live Worker version `e0caa8b5-661c-4772-b13f-9b75471dd1c3` (63), uploaded 2026-10-06 UTC. Its origin variables still select `workers.dev`. The container image was last changed 2026-10-05 UTC; no source revision attestation exists. A Worker version is not proof that the latest app image was deployed.
+
 - Container network is private, with no assigned public IPv4/IPv6. One basic instance: 0.25 vCPU, 1 GiB RAM, 4 GB disk. `workers.dev` and preview entrypoints are currently enabled.
+
 - The database records all nine repository migrations, including coordinator fencing `20261001104120`, dispatch hardening `20261003203000` and beta policies `20261006204612`. The earlier prepared/unapplied documents are historical leads, superseded by this current read. Do not reapply, repair history or reset the database blindly.
+
 - Initial inspection found no approval rows; the requested owner/ordinary approvals were subsequently saved (two active rows) and the private waitlist has no registrations. The artifact bucket is private. Baseline counts: 30 projects, 33 memberships, 30 snapshots and 21 provider-ledger rows. Counts alone do not establish body integrity or recovery.
+
+
 
 ## Prepared changes and compatibility
 
+
+
 The configuration selects `https://2guys1canvas.com` for runtime public/allowed origins and Vite callback origin, reuses the existing custom domain and explicitly disables version preview URLs. The historical `workers.dev` endpoint remains only for GET/HEAD redirects preserving project/invitation paths and query parameters; mutations and WebSocket upgrades on it are rejected without proxying to the app. Redirect targets use the trusted canonical origin and assign pathname/search separately, so double-slash paths cannot change the destination host. Domain registration, TLS and existing secrets are retained. Sessions/PKCE verifiers are origin-scoped: users must sign in on the custom domain, and a flow started before cutover may need restarting; do not transfer credentials in redirect URLs.
+
+
 
 Before deployment, inspect and preserve Supabase Site URL and redirect entries, then add exact custom-domain callback and recovery paths required by the existing client. Do not replace unrelated callback entries or Google configuration. Google's upstream redirect stays `https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/callback`. The newly connected Supabase integration confirms the correct healthy project, but exposes no Auth settings read/update tool. Browser control fails during Windows sandbox startup; dashboard URL Configuration has been confirmed by the owner, without an independent Auth configuration read. Read-only database credentials cannot update Auth service settings.
 
+
+
 Only the verified founder receives `is_owner=true`; the cofounder receives ordinary beta permission with `is_owner=false`. No project membership or role is changed. Use explicit UUIDs rechecked immediately before the transaction; abort unless exactly those two confirmed accounts match. The existing [approval process](prelaunch-beta-handoff.md#exact-owner-and-approval-process) applies. A missing approval is different from a missing membership.
+
+
 
 ## Verification, execution and recovery plan
 
+
+
 1. Compare live migration bodies/grants/policies with repository SQL, retaining any drift as a blocker. New migration application is unnecessary if the current definitions match.
+
 2. Finish local focused/full tests, types, build and `pnpm check:boundaries`; record the exact candidate commit and diff. Build the Linux image with the configured public variables, then run actual compiler/browser isolation and controlled adversity in an authorized disposable intended runtime before publishing. No paid provider call is needed.
+
 3. Verify push-trigger behavior. GitHub check runs confirm Cloudflare Builds and Supabase integration trigger on pushes; the repository workflow also runs checks. The last Cloudflare build failed uploading a container layer to its registry (user-provided timeout log); its follow-on missing-image error does not establish an application compilation failure. Existing GitHub job logs separately show generated execution isolation unavailable on Ubuntu. The workflow installs Node/dependencies but does not prepare its required Bubblewrap/browser runtime; a successful image upload would not prove kernel acceptance. A push is a deployment action, not source-only publication.
+
 4. Preserve current deployment/image identifiers and private database counts/fingerprints. Apply only explicitly reviewed missing compatible changes, then the two approval records and Auth URL configuration. Deploy the verified image/Worker to the existing account/domain. Verify HTTPS and live origins, and disable alternate protected entrypoints.
+
 5. Check anonymous landing/login, durable registration/duplicate/no-account effect, authenticated pending/owner/cofounder sessions, direct API/socket/preview/download/Data API/Storage denial, unrelated private projects, invitation preservation, safe callback/recovery, revocation and storage/project integrity. Designated test data only. SQL role probes and mocks must not be described as independent real sessions.
+
 6. Keep the beta data and restrictive policies on failure. Prefer restoring a verified compatible gated release; never restore an ungated image or publish local auth. Old readers may drop durable receipt/history fields or lack artifact-schema-v1 support; application rollback requires explicit compatibility review, writer drain and preserved canonical records. No SQL down/reset/drop or artifact deletion is an automatic rollback.
+
+
 
 Public landing traffic currently wakes the shared application container; the existing 30-minute idle sleep remains. [Cloudflare pricing](https://developers.cloudflare.com/containers/platform/pricing/) includes Workers Paid ($5/month) plus metered container resources. The basic instance costs approximately $0.009/hour RAM and $0.001008/hour disk above included allowances; CPU is $0.000020 per consumed vCPU-second (up to approximately $0.018/hour at 0.25 vCPU continuously busy), plus applicable requests/egress. A continuously awake instance could therefore add approximately $7.21/month RAM/disk or up to $20.17/month including continuous full CPU, before allowances, using 720 hours; this is an estimate, not an invoice. Existing Supabase plan/egress charges are not established. No plan upgrade, model credits or domain purchase is authorized by this packet.
 
+
+
 ## Current execution status
+
+
 
 Preparation in progress. The two requested approvals were written and verified without changing project membership. No migration, Auth setting change, deployment or live waitlist insertion has occurred in this task. Independent hosted sessions, exact Auth URL configuration, Linux image build/preflight remain required; push-trigger behavior is confirmed. Docker is absent from the available local paths and WSL reports not installed. The connected Supabase database tools do not expose Auth configuration. Retain existing secrets and use owner-completed dashboard URL Configuration rather than credentials in chat. The final full-suite result and two earlier failures are retained separately in the verification manifest. SQL role probes use transaction-local authenticated identities and rollback-only revocation, not independent signed-in sessions.
 
+
+
 ## Acceptance evidence and handoff
+
+
 
 Connected Supabase follow-up, 2026-10-08: the security advisor was run after plugin installation. [Raw findings and interpretation](../../artifacts/prelaunch-domain-release/supabase-advisor-resume.json) preserve its warnings; this is read-only administration, with no policy or Auth changes. Live counts remain two active approvals/one owner, and the artifact bucket is private. The only listed database branch is the existing main project. The three beta tables intentionally have RLS with no browser policies and no client grants. Authenticated create/accept/role RPC grants are intentional and their fresh beta/Auth UID guards remain in the matching migration. Do not remove them simply to clear the advisor.
 
+
+
 The advisor also flags `rls_auto_enable` EXECUTE grants. Catalog inspection identifies the documented auto-RLS event trigger, with `RETURNS event_trigger`, `search_path=pg_catalog` and `ensure_rls` attachment. The [anonymous RPC probe](../../artifacts/prelaunch-domain-release/event-trigger-rpc-probe.json) returned 400/0A000 (`cannot display a value of type event_trigger`), not successful execution; no DDL or records were written. Its internal DDL-command inspection is restricted to event context in [PostgreSQL 17](https://www.postgresql.org/docs/17/functions-event-triggers.html). Retain the finding without claiming a general RPC bypass. Leaked-password protection is reported disabled; the [Auth setting](https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection) was not changed and no plan upgrade was authorized. Auth URL settings still cannot be read through the connected tools.
+
+
 
 To obtain fresh Linux verification without publishing production, the owner confirmed Cloudflare production main and non-production builds disabled. This dashboard report permits the codex/prelaunch-beta check branch; do not infer exclusions from older check runs. Existing local candidate `898cece` and test failures remain unchanged; this follow-up adds database-advisor evidence only.
 
+
+
 All 280 local document file links resolve after the connected follow-up (277 in the initial candidate), and decision headings are unique. Source/docs whitespace checks pass. The staged raw TAP/table logs retain generated trailing whitespace, so the whole evidence diff check reports it; raw failures were not rewritten to conceal that output.
+
+
 
 Source preparation is based on `7e954b8858ec6fa4e093c4cd94a95742ed1e0ef4`; the containing commit is the reviewable candidate, not a deployed attestation. [Verification manifest](../../artifacts/prelaunch-domain-release/verification.json) binds source file hashes and test counts; source publication is held because it triggers deployment. No migration is pending among the nine listed in [live history](../../artifacts/prelaunch-domain-release/live-initial.json). [Definition/grant audit](../../artifacts/prelaunch-domain-release/database-audit.json), [approval write proof](../../artifacts/prelaunch-domain-release/approvals.json) and [real role probes](../../artifacts/prelaunch-domain-release/sql-role-checks.json) establish their stated narrow scope. Founder/cofounder see only their existing 26/6 membership-covered projects. Transaction-local revoked cofounder reads/create/accept are denied before side effects, with rollback restoring approval; private waitlist reads are denied.
 
+
+
 Local full runs: first 221/225, second 211/226, final 222/226. First run retained timing failures and a stale canonical-origin expectation (corrected). Second run retained a locked test-owned browser directory and cascading cleanup assertions plus a timed continuous-arrivals check. Only that completed directory was removed after checking the exact workspace path and absence of its processes. Unchanged affected/domain/auth/isolation rerun passes 34/34, beta checks 6/6 and continuous-arrivals 1/1. These reruns do not turn failed full logs into passing runs. [Types](../../artifacts/prelaunch-domain-release/types.log), [build](../../artifacts/prelaunch-domain-release/build.log), [direct boundary audit](../../artifacts/prelaunch-domain-release/boundaries.log), [Worker dry run](../../artifacts/prelaunch-domain-release/worker-dry-run.log) and [AST refresh](../../artifacts/prelaunch-domain-release/graphify.log) pass; no intended Linux kernel/container acceptance is claimed.
+
+
 
 The owner reports saving Site URL, the exact callback entry and separate `https://2guys1canvas.com/api/auth/callback?next=**` for the existing safe invite/recovery return parameter. Independent hosted callback/recovery remains pending. Preserve existing entries and Google upstream callback. The connected Supabase integration confirms project health but has no Auth configuration method. Native browser control fails during Windows sandbox setup; this is an environment failure, not an automatic approval rejection.
 
+
+
 Final full-suite failures involve isolated resource-limit outcomes during ordinary compile, retained-artifact promotion, collaborative generation and functional-failure reporting. The raw log retains the exact assertions. No quotas, deadlines, cleanup assertions or host-fallback rules were weakened. The existing container SSH path was also checked through supported Wrangler with a read-only `id` command; the service returned WebSocket 400, so no remote shell or runtime proof was obtained. No SSH key/configuration was added. [SSH failure](../../artifacts/prelaunch-domain-release/container-ssh-probe.log).
+
+
 
 Baseline recovery identifiers: Worker `e0caa8b5-661c-4772-b13f-9b75471dd1c3`; container app version 35, image `sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf`. They identify existing state, not a verified safe rollback of the new gated release. Preserve approvals/waitlist/policies and project data on failure. Never roll back to ungated/local-auth behavior; stop/drain writes and verify receipt/artifact format compatibility before any reader downgrade. No reset, destructive down migration or artifact cleanup is authorized.
 
+
+
 Next operator work: prepare and exercise a disposable intended Linux compiler/browser runtime without inference, confirm Auth URLs, publish the candidate through the existing image/Worker build, and inspect registry/CI outcomes. Then run independent anonymous, pending, owner and cofounder sessions with designated data; verify real persistence/deduplication, no account/access grant, project isolation, direct API/socket/preview/download/Storage denial, invite preservation, recovery, revocation and retained project/artifact bodies. The current [live anonymous probes](../../artifacts/prelaunch-domain-release/live-anonymous-initial.json) observed the old image; no live waitlist registration was created. Existing counts/private fingerprints are a baseline, not complete artifact-integrity proof.
 
+
+
 Manual beta operations remain the existing [trusted administrator process](prelaunch-beta-handoff.md#exact-owner-and-approval-process): inspect private waitlist SQL, verify a confirmed Auth UUID, approve or revoke ordinary beta access, and grant project membership separately through existing project sharing/invitations. Approval must never set owner status for an ordinary tester. Public release is a separate future policy operation; authentication and private-project roles remain required.
+
+
 
 First GitHub Linux run: import boundaries, app build and the exact production Dockerfile build passed (local CI image `sha256:3eb10a8501c09042a38b51df0c5f4efac025541d68a4bba744b2ba8fff934412`). Compiler readiness failed with `bwrap: Failed to make / slave: Permission denied`; browser readiness also failed, and full tests were skipped. The raw [first CI log](../../artifacts/prelaunch-domain-release/linux-ci-first.log) is retained. The retry removes Docker's outer AppArmor restriction only in the disposable secret-free/no-network/no-mounts test container, to test the cause rather than bypass Bubblewrap. No application limit, assertion, fallback or production setting changes. [AppArmor documentation](https://docs.docker.com/engine/security/apparmor/). Cloudflare acceptance remains separate.
 
 
-## Blocked deployment repair packet � 2026-10-08
+
+
+
+## Blocked deployment repair packet — 2026-10-08
+
+
 
 The new explicit deployment request requires stale routing, API fallback and Linux runtime diagnosis separately. Fresh read-only observations retain Worker e0caa8b5 at 100%, nine applied migrations, exactly two active approvals, one confirmed owner/cofounder each, a private artifact bucket and zero waitlist registrations. Public GET beta/access still returns SPA HTML and invalid POST waitlist 404; these routes exist in source. Forwarding uses the unchanged primary native proxy. Old image provenance is not attested, and source/API absence is not caused by a failed new-image compile: both CI Dockerfile builds passed. Direct application startup eagerly preflights the compiler before HTTP binding; browser readiness is checked before covered build dispatch. The failing CI boundary is isolated job startup, not image construction.
 
+
+
 Allowed follow-up files: CI workflow, server/index.ts, server/isolation/browser.ts, existing Cloudflare route tests, canonical steering/evidence/graph. Unknown API GETs currently hit the SPA catch-all; return JSON 404 before SPA handling while preserving the exact GET /api/auth/callback route. Preserve all authorization and existing app paths. Retain launcher stderr on an early browser pipe error so readiness diagnostics identify the failing OS stage without exposing environment/input.
+
+
 
 After separate AppArmor repair, Linux CI still denies mounting private proc. Docker's default masked proc submounts can block nested proc creation. Test the documented systempaths=unconfined option only on the existing disposable non-root, capability-free, network-free, volume-free test container. This removes outer Docker masks, never Bubblewrap or application limits, and is not Cloudflare acceptance. [Docker run reference](https://docs.docker.com/reference/cli/docker/container/run/) and [rootless BuildKit's proc explanation](https://github.com/moby/buildkit/blob/master/docs/rootless.md) describe the requirement. If the actual platform cannot supply it, retain failure and prepare a concrete supported alternative; never deploy an essential broken build path or silently ship reduced functionality.
 
+
+
 Run route/startup and import/type checks locally; refresh AST after changes. CI must demonstrate compiler/browser readiness, actual normal compile and existing full adversity/regression tests, with raw failure logs retained. Independently inspect Cloudflare capabilities before treating this runner as intended-kernel acceptance. No migration reapplication, account/member changes, email or provider spend belongs to this repair.
 
+
+
 Local repair verification: route/beta focused checks pass 12/12, strict types and import boundaries pass. Initial route test wrongly expected hosted authentication in its local compatibility fixture (11/12); corrected expectation reflects the absent hosted route, still requiring JSON 404. Raw first/final logs are retained. No application quota/security assertion changed. Latest AST output is recorded in repair-graphify.log. CI masked-proc repair has not yet run.
+
+
+Third Linux run (73fd559): image/build/boundaries and actual compiler readiness pass after the supported non-root Docker systempaths configuration. Browser fails independently with Bubblewrap unknown --preserve-fds; the retained launcher diagnostic now identifies it. Bubblewrap v0.8.0 source passes inherited user FDs to its exec child by default, while Node spawn lists only CDP pipes 3/4. Remove the unsupported option; retain the pipes, private namespaces and every existing resource bound. [Versioned source](https://raw.githubusercontent.com/containers/bubblewrap/v0.8.0/bubblewrap.c). Next Linux readiness/full checks pending; no production change.
