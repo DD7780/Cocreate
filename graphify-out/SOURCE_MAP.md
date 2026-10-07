@@ -1,5 +1,7 @@
 # Repository graph coverage and source-map checkpoints
 
+Deployment repair AST refresh 2026-10-08: supported structure updated without LLM calls; [raw refresh](../artifacts/prelaunch-domain-release/repair-graphify.log). SQL parser remains unavailable; this does not refresh historical semantic layers or prove live behavior.
+
 Linux CI preparation AST checkpoint 2026-10-08: 2,069 nodes, 4,936 edges, 122 communities; zero LLM calls. SQL parser remains absent and curated semantic labels remain dated. Application runtime/hosted acceptance is separate.
 
 Custom-domain AST checkpoint 2026-10-08: 2,067 nodes, 4,930 edges, 108 communities; [refresh](../artifacts/prelaunch-domain-release/graphify.log), zero LLM calls. SQL parser is absent, and previous community labels/curated semantics remain dated. Live migration status is separately observed applied in the [release packet](../docs/harness/prelaunch-domain-release.md); AST output proves no hosted behavior.

@@ -52,6 +52,33 @@ test('the application exposes a container readiness endpoint',async()=>{
   }finally{await instance.stop()}
 });
 
+test('unknown API paths return JSON errors while the existing auth callback reaches the SPA', async () => {
+  const prior = process.env.NODE_ENV;
+  process.env.NODE_ENV = 'production';
+  const instance = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});
+  try {
+    const {url} = await instance.start();
+    for (const method of ['GET', 'POST']) {
+      const response = await fetch(`${url}/api/unknown-release-check`, {method});
+      assert.equal(response.status, 404);
+      assert.match(response.headers.get('content-type') || '', /application\/json/);
+      assert.deepEqual(await response.json(), {error:'API route not found.'});
+    }
+    for (const route of ['/api/auth/callback?next=%2Fapp', '/login', '/app', '/']) {
+      const response = await fetch(url + route);
+      assert.equal(response.status, 200);
+      assert.match(response.headers.get('content-type') || '', /text\/html/);
+    }
+    const denied = await fetch(`${url}/api/beta/access`);
+    // Local compatibility does not register the hosted beta route; it must still never return SPA HTML.
+    assert.equal(denied.status, 404);
+    assert.match(denied.headers.get('content-type') || '', /application\/json/);
+  } finally {
+    await instance.stop();
+    prior === undefined ? delete process.env.NODE_ENV : process.env.NODE_ENV = prior;
+  }
+});
+
 test('the Cloudflare container uses the native WebSocket-aware proxy',()=>{
   const worker=fs.readFileSync(path.join(root,'worker/container.js'),'utf8');
   const dockerfile=fs.readFileSync(path.join(root,'Dockerfile'),'utf8');

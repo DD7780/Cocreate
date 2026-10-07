@@ -1,0 +1,108 @@
+TAP version 13
+# (node:18572) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+ok 1 - anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+  ---
+  duration_ms: 510.158
+  type: 'test'
+  ...
+# Subtest: failed durable writes cannot show registration success; rate window expiry allows safe retry
+ok 2 - failed durable writes cannot show registration success; rate window expiry allows safe retry
+  ---
+  duration_ms: 50.7808
+  type: 'test'
+  ...
+# Subtest: registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+ok 3 - registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+  ---
+  duration_ms: 0.9606
+  type: 'test'
+  ...
+# Subtest: approval is fresh private authority, owner retains access, and approval grants no foreign membership
+ok 4 - approval is fresh private authority, owner retains access, and approval grants no foreign membership
+  ---
+  duration_ms: 5.9245
+  type: 'test'
+  ...
+# Subtest: pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+ok 5 - pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+  ---
+  duration_ms: 1.6385
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"d7e135bd-c210-4a5a-b533-6b785c98f8f5"}
+# {"event":"collaboration.connected","connectionId":"0280cabf-2dac-41ab-a885-8e68bbdcc470","correlationId":"3b657e73-e970-40ec-9372-3ef1a0af4a3d"}
+# {"event":"collaboration.disconnected","connectionId":"0280cabf-2dac-41ab-a885-8e68bbdcc470","code":4403}
+# {"event":"collaboration.connected","connectionId":"8a60b46c-2b6b-48fb-91fa-8c4c57734556","correlationId":"b2e1cada-0374-4ac4-a7e3-321218bac600"}
+# {"event":"collaboration.disconnected","connectionId":"8a60b46c-2b6b-48fb-91fa-8c4c57734556","code":4403}
+# Subtest: unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+ok 6 - unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+  ---
+  duration_ms: 195.6922
+  type: 'test'
+  ...
+# (node:19980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the pre-launch deployment binds hosted auth and callbacks to the custom domain
+ok 7 - the pre-launch deployment binds hosted auth and callbacks to the custom domain
+  ---
+  duration_ms: 2.0648
+  type: 'test'
+  ...
+# Subtest: legacy links preserve their destination without allowing host escape or protected ingress
+ok 8 - legacy links preserve their destination without allowing host escape or protected ingress
+  ---
+  duration_ms: 4.4276
+  type: 'test'
+  ...
+# Subtest: the application exposes a container readiness endpoint
+ok 9 - the application exposes a container readiness endpoint
+  ---
+  duration_ms: 76.5009
+  type: 'test'
+  ...
+# Subtest: unknown API paths return JSON errors while the existing auth callback reaches the SPA
+not ok 10 - unknown API paths return JSON errors while the existing auth callback reaches the SPA
+  ---
+  duration_ms: 116.3143
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\cloudflare-container.test.ts:55:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    404 !== 401
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 401
+  actual: 404
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\cloudflare-container.test.ts:73:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the Cloudflare container uses the native WebSocket-aware proxy
+ok 11 - the Cloudflare container uses the native WebSocket-aware proxy
+  ---
+  duration_ms: 1.8985
+  type: 'test'
+  ...
+# Subtest: direct application startup refuses unavailable isolation before binding a server
+ok 12 - direct application startup refuses unavailable isolation before binding a server
+  ---
+  duration_ms: 1970.7558
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 11
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 14048.5202

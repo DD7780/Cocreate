@@ -790,6 +790,11 @@ export async function createCoCreateServer(options: Options = {}) {
             rejectUpgrade(socket, 400, 'malformed_request', correlationId);
         }
     });
+    // The client handles the existing PKCE callback; other unknown APIs must not return SPA success.
+    app.use('/api', (req, res, next) => {
+        if (req.method === 'GET' && req.path === '/auth/callback') return next();
+        res.status(404).json({error: 'API route not found.'});
+    });
     if (options.serveClient !== false) {
         if (process.env.NODE_ENV === 'production') {
             app.use(express.static(path.join(process.cwd(), 'dist')));

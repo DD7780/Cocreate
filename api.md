@@ -6,6 +6,8 @@ Source-inspected 2026-10-07 through pre-launch/private beta work. This reference
 
 ## Transport and authorization
 
+Unknown `/api` routes return HTTP 404 JSON `{error:"API route not found."}` before SPA fallback. The existing GET `/api/auth/callback` still reaches the client for PKCE/recovery processing. This repair is source/local verified and pending production deployment.
+
 Pre-launch routes share the existing origin. `/` is public; `/app` enters the approved project list; existing login/signup/callback/recovery/project/invitation paths retain their contracts.
 
 | Method/path | Authority | Contract |

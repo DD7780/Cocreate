@@ -85,6 +85,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
         code === 125 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
+      if (failure && failure.cause === undefined) failure.cause = error.cause;
       stop(error);
     }
     for (const task of pending.values()) task.reject(failure || unavailable());

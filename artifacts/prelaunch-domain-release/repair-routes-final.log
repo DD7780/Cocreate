@@ -1,0 +1,91 @@
+TAP version 13
+# (node:1540) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+ok 1 - anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+  ---
+  duration_ms: 391.0869
+  type: 'test'
+  ...
+# Subtest: failed durable writes cannot show registration success; rate window expiry allows safe retry
+ok 2 - failed durable writes cannot show registration success; rate window expiry allows safe retry
+  ---
+  duration_ms: 102.2597
+  type: 'test'
+  ...
+# Subtest: registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+ok 3 - registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+  ---
+  duration_ms: 0.8995
+  type: 'test'
+  ...
+# Subtest: approval is fresh private authority, owner retains access, and approval grants no foreign membership
+ok 4 - approval is fresh private authority, owner retains access, and approval grants no foreign membership
+  ---
+  duration_ms: 8.5835
+  type: 'test'
+  ...
+# Subtest: pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+ok 5 - pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+  ---
+  duration_ms: 1.2024
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"131b0946-d6cb-47ee-ae55-7284e1f51e3d"}
+# {"event":"collaboration.connected","connectionId":"da4a240c-6175-4eb5-9fda-afc0563115dc","correlationId":"cd4df6f0-3ac7-471f-8837-ef8f8451a250"}
+# {"event":"collaboration.disconnected","connectionId":"da4a240c-6175-4eb5-9fda-afc0563115dc","code":4403}
+# {"event":"collaboration.connected","connectionId":"426d08bd-34c4-401a-bfb3-05eaf1f58582","correlationId":"d72f6017-4b6a-4d6f-82d6-d6874441284f"}
+# {"event":"collaboration.disconnected","connectionId":"426d08bd-34c4-401a-bfb3-05eaf1f58582","code":4403}
+# Subtest: unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+ok 6 - unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+  ---
+  duration_ms: 362.6345
+  type: 'test'
+  ...
+# (node:11676) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the pre-launch deployment binds hosted auth and callbacks to the custom domain
+ok 7 - the pre-launch deployment binds hosted auth and callbacks to the custom domain
+  ---
+  duration_ms: 2.3028
+  type: 'test'
+  ...
+# Subtest: legacy links preserve their destination without allowing host escape or protected ingress
+ok 8 - legacy links preserve their destination without allowing host escape or protected ingress
+  ---
+  duration_ms: 4.1248
+  type: 'test'
+  ...
+# Subtest: the application exposes a container readiness endpoint
+ok 9 - the application exposes a container readiness endpoint
+  ---
+  duration_ms: 65.8093
+  type: 'test'
+  ...
+# Subtest: unknown API paths return JSON errors while the existing auth callback reaches the SPA
+ok 10 - unknown API paths return JSON errors while the existing auth callback reaches the SPA
+  ---
+  duration_ms: 87.7764
+  type: 'test'
+  ...
+# Subtest: the Cloudflare container uses the native WebSocket-aware proxy
+ok 11 - the Cloudflare container uses the native WebSocket-aware proxy
+  ---
+  duration_ms: 2.2736
+  type: 'test'
+  ...
+# Subtest: direct application startup refuses unavailable isolation before binding a server
+ok 12 - direct application startup refuses unavailable isolation before binding a server
+  ---
+  duration_ms: 1887.8621
+  type: 'test'
+  ...
+1..12
+# tests 12
+# suites 0
+# pass 12
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 7173.8748
