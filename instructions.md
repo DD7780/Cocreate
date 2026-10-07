@@ -1,6 +1,6 @@
 # 2guys1canvas contributor instructions
 
-Production release note (2026-10-08): GitHub pushes currently trigger Cloudflare Builds and the Supabase integration. Treat a push as deployment, preserving Auth redirects and passing the intended Linux runtime checks first. Existing approvals are UUID-based server authority; do not infer authority from account email. [Current release packet](docs/harness/prelaunch-domain-release.md).
+Production release note (2026-10-08): Main pushes trigger Cloudflare production builds. On 2026-10-08 the owner confirmed non-production builds disabled, permitting codex/prelaunch-beta verification without a Cloudflare production build. Preserve Auth redirects, check integration effects and pass intended Linux runtime checks before main publication. Existing approvals are UUID-based server authority; do not infer authority from account email. [Current release packet](docs/harness/prelaunch-domain-release.md).
 
 Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-05; this document owns contributor rules, not completion claims.
 

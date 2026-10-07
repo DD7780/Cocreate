@@ -6,7 +6,8 @@ permissions:
   contents: read
 jobs:
   verify:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
@@ -14,9 +15,49 @@ jobs:
           version: 10.18.3
       - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
         with:
-          node-version: 24
+          node-version: 22
           cache: pnpm
       - run: pnpm install --frozen-lockfile
       - run: pnpm check:boundaries
-      - run: pnpm test
       - run: pnpm build
+      - name: Build the production Dockerfile
+        id: image
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import {spawnSync} from 'node:child_process';
+          const {image_vars} = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8')).containers[0];
+          const names = ['VITE_COCREATE_AUTH_MODE', 'VITE_COCREATE_APP_ORIGIN', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];
+          const args = ['build', '--tag', 'cocreate-check'];
+          for (const name of names) {
+            if (typeof image_vars[name] !== 'string') throw new Error(`Missing public build variable: ${name}`);
+            args.push('--build-arg', `${name}=${image_vars[name]}`);
+          }
+          const result = spawnSync('docker', [...args, '.'], {stdio: 'inherit'});
+          if (result.error) throw result.error;
+          process.exit(result.status ?? 1);
+          NODE
+      - name: Preflight actual compiler boundary
+        id: compiler
+        run: >-
+          docker run --rm --network none --cap-drop ALL
+          --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --memory 1g --memory-swap 1g --pids-limit 256
+          cocreate-check node --import tsx scripts/prepare-isolation.ts
+      - name: Preflight actual browser boundary
+        id: browser
+        if: ${{ !cancelled() && steps.image.outcome == 'success' }}
+        run: >-
+          docker run --rm --network none --cap-drop ALL
+          --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --memory 1g --memory-swap 1g --pids-limit 256
+          cocreate-check node --import tsx --input-type=module -e
+          'import {assertVerificationBrowserAvailable} from "./server/isolation/browser.ts"; await assertVerificationBrowserAvailable(); console.log("Actual Linux browser boundary passed; no inference");'
+      - name: Full regression suite in the production image
+        if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' }}
+        run: >-
+          docker run --rm --network none --cap-drop ALL
+          --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --memory 1g --memory-swap 1g --pids-limit 256
+          --env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local
+          cocreate-check sh -c 'node --import tsx --test --test-concurrency=1 tests/*.test.ts'

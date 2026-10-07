@@ -522,9 +522,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791400689.0669992,
-    "seen": 1791400721.4724836,
-    "ast_hash": "223ac95ec02593ec2e85aa566810ac04",
+    "mtime": 1791401620.9447255,
+    "seen": 1791404073.575457,
+    "ast_hash": "803042ecc48230b5e4633578c89cac0b",
     "semantic_hash": ""
   },
   "api.md": {
@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791400688.9582355,
-    "seen": 1791400721.4724836,
-    "ast_hash": "2abc5f80fcbe9f405803777a4de897e8",
+    "mtime": 1791404044.8712585,
+    "seen": 1791404073.5764563,
+    "ast_hash": "3e46b4fb4098ed005f23b0ca6ef3010d",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791400689.065,
-    "seen": 1791400721.4724836,
-    "ast_hash": "1a21fd7e572967c58139797c8f3cd1b8",
+    "mtime": 1791404044.87677,
+    "seen": 1791404073.5764563,
+    "ast_hash": "d056e0dec8f9c1e3286de27d8296f597",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791321062.672248,
-    "seen": 1791321099.1433141,
-    "ast_hash": "f20677407b22f0737681fc8822bfc544",
+    "mtime": 1791404044.87577,
+    "seen": 1791404073.5783882,
+    "ast_hash": "88fa02407f61c429f2af2cc66d0e8240",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -600,9 +600,9 @@
     "semantic_hash": "95c22307038019e494bdd0e4cb25546d"
   },
   "instructions.md": {
-    "mtime": 1791400688.983998,
-    "seen": 1791400721.4826229,
-    "ast_hash": "c86da759929d87bf31666d878902d13b",
+    "mtime": 1791404044.8732545,
+    "seen": 1791404073.5866766,
+    "ast_hash": "a2abe6e9ff8751ed310b80bf78827285",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791319119.2036157,
-    "seen": 1791320275.0039437,
-    "ast_hash": "f1233ab6e3e064caf837ded0a322618f",
+    "mtime": 1791404012.2565486,
+    "seen": 1791404073.575457,
+    "ast_hash": "3626492f32c9c6b36dc8330bd258369e",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-domain-release.md": {
-    "mtime": 1791400915.4606013,
-    "seen": 1791400989.5432525,
-    "ast_hash": "e058c2a0148de45acc34e0557bbd9441",
+    "mtime": 1791404044.8787708,
+    "seen": 1791404073.5846763,
+    "ast_hash": "3835bf3596473d27b0cdb97658e4823e",
     "semantic_hash": ""
   },
   "worker/legacy-origin.ts": {

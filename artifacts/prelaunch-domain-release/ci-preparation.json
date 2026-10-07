@@ -1,0 +1,10 @@
+{
+  "scope": "Embedded Node build syntax and static container configuration; workflow reviewed manually, YAML parser unavailable, Docker unavailable locally",
+  "checks": "passed",
+  "owner_reported": {
+    "production_branch": "main",
+    "nonproduction_builds": false,
+    "supabase_query_callback_saved": true
+  },
+  "runtime_results": "pending"
+}
