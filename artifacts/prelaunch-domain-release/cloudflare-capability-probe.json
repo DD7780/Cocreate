@@ -1,20 +1,29 @@
 {
   "scope": "Temporary administrator SSH authority; fixed read-only capability command only",
-  "started": "2026-10-07T21:09:05.349Z",
-  "keyName": "prelaunch-readonly-probe-0b30a291-622d-4d68-988b-32e0edba6b77",
+  "started": "2026-10-07T21:30:25.992Z",
+  "keyName": "prelaunch-readonly-probe-8742ebeb-9392-4204-8147-d0236224da92",
   "imageChanged": false,
   "rolloutRequested": false,
   "instance": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f",
   "originalVersion": 35,
   "changedVersion": 35,
+  "handshake": {
+    "checkedAt": "2026-10-07T21:30:31.430Z",
+    "scope": "SSH handshake response metadata only; no key/config mutation or remote command",
+    "controlPlaneStatus": 200,
+    "bridgeHost": "ssh.containers.cloudflare.com",
+    "bridgeStatus": 400,
+    "response": "{\"success\":false,\"result\":null,\"errors\":[{\"code\":1000,\"message\":\"{\\\"error\\\":\\\"SSH_MISSING_KEYS: no ssh keys found\\\"}\"}],\"messages\":[]}",
+    "transportError": true
+  },
   "ssh": {
     "status": 255,
     "stdout": "",
-    "stderr": "\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mWeb socket error: Unexpected server response: 400\u001b[0m\n\n\n🪵  Logs were written to \"C:\\Users\\QUTA4\\AppData\\Roaming\\xdg.config\\.wrangler\\logs\\wrangler-2026-10-07_21-09-09_497.log\"\nConnection closed by UNKNOWN port 65535\r\n"
+    "stderr": "\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mWeb socket error: Unexpected server response: 400\u001b[0m\n\n\n🪵  Logs were written to \"C:\\Users\\QUTA4\\AppData\\Roaming\\xdg.config\\.wrangler\\logs\\wrangler-2026-10-07_21-30-35_564.log\"\nConnection closed by UNKNOWN port 65535\r\n"
   },
   "restoredVersion": 35,
   "authorizedKeyCountAfter": 0,
   "authorityRestored": true,
-  "finished": "2026-10-07T21:09:16.227Z",
+  "finished": "2026-10-07T21:30:43.341Z",
   "temporaryFilesRemoved": true
 }

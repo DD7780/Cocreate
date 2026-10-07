@@ -10042,7 +10042,7 @@
       "file_type": "code",
       "norm_label": "assertisolationavailable()",
       "source_file": "server/isolation.ts",
-      "source_location": "L163"
+      "source_location": "L172"
     },
     {
       "id": "server_isolation_browser_assertverificationbrowseravailable",
@@ -10114,7 +10114,7 @@
       "file_type": "code",
       "norm_label": "compileisolated()",
       "source_file": "server/isolation.ts",
-      "source_location": "L154"
+      "source_location": "L163"
     },
     {
       "id": "server_isolation_compiler_worker_setup",
@@ -29288,7 +29288,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation.ts",
-      "source_location": "L164",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -29300,7 +29300,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation.ts",
-      "source_location": "L165",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -29312,7 +29312,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation.ts",
-      "source_location": "L166",
+      "source_location": "L175",
       "weight": 1.0
     },
     {
@@ -29444,7 +29444,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation.ts",
-      "source_location": "L155",
+      "source_location": "L164",
       "weight": 1.0
     },
     {
@@ -29456,7 +29456,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation.ts",
-      "source_location": "L156",
+      "source_location": "L165",
       "weight": 1.0
     },
     {
@@ -68994,17 +68994,6 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/isolation.ts",
-      "source_location": "L154",
-      "weight": 1.0
-    },
-    {
-      "source": "server_isolation",
-      "target": "server_isolation_assertisolationavailable",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "server/isolation.ts",
       "source_location": "L163",
       "weight": 1.0
     },
@@ -69017,6 +69006,17 @@
       "confidence_score": 1.0,
       "source_file": "server/isolation.ts",
       "source_location": "L17",
+      "weight": 1.0
+    },
+    {
+      "source": "server_isolation",
+      "target": "server_isolation_assertisolationavailable",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "server/isolation.ts",
+      "source_location": "L172",
       "weight": 1.0
     },
     {
@@ -83989,5 +83989,5 @@
       "source_file": "product.md"
     }
   ],
-  "built_at_commit": "dbd5cfc9a643203e6f2629998ea78041a6af49fb"
+  "built_at_commit": "b124935504b8615c4e0669e37d8cdf199f9961e8"
 }

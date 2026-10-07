@@ -103,7 +103,7 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
   fs.mkdirSync(workspace,{recursive:true});
   const wallMs=Math.min(isolationPolicy.wallMs,Math.max(10,options.wallMs??isolationPolicy.wallMs));
   const command=process.platform==='win32'?{executable:path.join(runtime,'runner.exe'),args:[runtime,workspace,profile,String(process.pid),String(wallMs),options.osProbe?'os-probe':'restricted']}:linuxCommand(runtime,workspace,options.osProbe===true);
-  let child:ChildProcess|undefined,aborted=false,limited=false,timedOut=false;
+  let child:ChildProcess|undefined,aborted=false,limited=false,timedOut=false,linuxPid=0;
   try{
     fs.writeFileSync(path.join(workspace,'input.json'),serialized);
     return await new Promise((resolve,reject)=>{
@@ -129,7 +129,7 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
           statusBuffer+=chunk;let end:number;
           while((end=statusBuffer.indexOf('\n'))>=0){
             const line=statusBuffer.slice(0,end);statusBuffer=statusBuffer.slice(end+1);
-            try{const value=JSON.parse(line);const pid=value['child-pid'];if(Number.isSafeInteger(pid)&&pid>0){options.onStarted?.(pid);options.onStarted=undefined;}if(Number.isInteger(value['exit-code']))sandboxExit=value['exit-code'];}
+            try{const value=JSON.parse(line);const pid=value['child-pid'];if(Number.isSafeInteger(pid)&&pid>0){linuxPid=pid;options.onStarted?.(pid);options.onStarted=undefined;}if(Number.isInteger(value['exit-code']))sandboxExit=value['exit-code'];}
             catch{stop('limit');}
           }
         });
@@ -147,6 +147,15 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
   }finally{
     // Resolve/reject only after the launcher has closed its kill-on-close Job Object/process group.
     if(process.platform==='win32')await trustedProcess(path.join(runtime,'runner.exe'),['cleanup',profile],runtime).catch(()=>{});
+    if(process.platform==='linux'&&linuxPid){
+      // The namespace init can outlive its monitor briefly; the image's init reaps its exit.
+      let removed=false;
+      for(let attempt=0;attempt<100;attempt++){
+        try{process.kill(linuxPid,0);}catch(error){if((error as NodeJS.ErrnoException).code==='ESRCH'){removed=true;break;}throw unavailable();}
+        await new Promise(resolve=>setTimeout(resolve,5));
+      }
+      if(!removed){const error=unavailable();error.cause={phase:'cleanup',diagnostic:'Sandbox PID remains after launcher exit; verify the init reaper.'};throw error;}
+    }
     const root=path.resolve(runtimeDirectory,'jobs');if(path.dirname(path.resolve(workspace))!==root)throw unavailable();
     fs.rmSync(workspace,{recursive:true,force:true,maxRetries:3,retryDelay:50});
   }

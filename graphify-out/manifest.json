@@ -864,9 +864,9 @@
     "semantic_hash": ""
   },
   "server/isolation.ts": {
-    "mtime": 1791408095.1783452,
-    "seen": 1791408166.1295745,
-    "ast_hash": "47120fd77e8c6fd92f4d670d8de0dd22",
+    "mtime": 1791408456.501104,
+    "seen": 1791408540.119558,
+    "ast_hash": "b1582502464636ed2774f445a7676e37",
     "semantic_hash": ""
   },
   "server/isolation/compiler-worker.cjs": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-domain-release.md": {
-    "mtime": 1791408040.863022,
-    "seen": 1791408166.1603255,
-    "ast_hash": "dce7d700c3e44f9d297740a136405c0e",
+    "mtime": 1791408412.032626,
+    "seen": 1791408540.1565065,
+    "ast_hash": "7861cd2b636da499a97401e643ba2a5e",
     "semantic_hash": ""
   },
   "worker/legacy-origin.ts": {

@@ -1,0 +1,9 @@
+{
+  "checkedAt": "2026-10-07T21:30:31.430Z",
+  "scope": "SSH handshake response metadata only; no key/config mutation or remote command",
+  "controlPlaneStatus": 200,
+  "bridgeHost": "ssh.containers.cloudflare.com",
+  "bridgeStatus": 400,
+  "response": "{\"success\":false,\"result\":null,\"errors\":[{\"code\":1000,\"message\":\"{\\\"error\\\":\\\"SSH_MISSING_KEYS: no ssh keys found\\\"}\"}],\"messages\":[]}",
+  "transportError": true
+}
