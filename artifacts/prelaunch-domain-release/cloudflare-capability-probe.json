@@ -1,0 +1,20 @@
+{
+  "scope": "Temporary administrator SSH authority; fixed read-only capability command only",
+  "started": "2026-10-07T21:09:05.349Z",
+  "keyName": "prelaunch-readonly-probe-0b30a291-622d-4d68-988b-32e0edba6b77",
+  "imageChanged": false,
+  "rolloutRequested": false,
+  "instance": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f",
+  "originalVersion": 35,
+  "changedVersion": 35,
+  "ssh": {
+    "status": 255,
+    "stdout": "",
+    "stderr": "\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mWeb socket error: Unexpected server response: 400\u001b[0m\n\n\n🪵  Logs were written to \"C:\\Users\\QUTA4\\AppData\\Roaming\\xdg.config\\.wrangler\\logs\\wrangler-2026-10-07_21-09-09_497.log\"\nConnection closed by UNKNOWN port 65535\r\n"
+  },
+  "restoredVersion": 35,
+  "authorizedKeyCountAfter": 0,
+  "authorityRestored": true,
+  "finished": "2026-10-07T21:09:16.227Z",
+  "temporaryFilesRemoved": true
+}

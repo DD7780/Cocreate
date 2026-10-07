@@ -63,7 +63,7 @@ jobs:
           --security-opt apparmor=unconfined --security-opt systempaths=unconfined
           --memory 1g --memory-swap 1g --pids-limit 256
           cocreate-check node --import tsx scripts/diagnose-linux-browser.ts
-      - name: Focused actual compiler checks
+      - name: Actual compiler and resource adversity checks
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' }}
         run: >-
           docker run --rm --network none --cap-drop ALL
@@ -71,7 +71,7 @@ jobs:
           --security-opt apparmor=unconfined --security-opt systempaths=unconfined
           --memory 1g --memory-swap 1g --pids-limit 256
           cocreate-check node --import tsx --test --test-concurrency=1
-          --test-name-pattern='ordinary compilation|candidate imports' tests/generated-isolation.test.ts
+          tests/generated-isolation.test.ts
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' }}
         run: >-
