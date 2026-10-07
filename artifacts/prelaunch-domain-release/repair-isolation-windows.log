@@ -1,0 +1,70 @@
+TAP version 13
+# Subtest: ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+ok 1 - ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+  ---
+  duration_ms: 12950.3894
+  type: 'test'
+  ...
+# Subtest: OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+ok 2 - OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+  ---
+  duration_ms: 708.8706
+  type: 'test'
+  ...
+# Subtest: restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+ok 3 - restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+  ---
+  duration_ms: 690.3469
+  type: 'test'
+  ...
+# Subtest: candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+ok 4 - candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+  ---
+  duration_ms: 6891.6
+  type: 'test'
+  ...
+# Subtest: wall timeout terminates a running child and cleans its private input
+ok 5 - wall timeout terminates a running child and cleans its private input
+  ---
+  duration_ms: 676.218
+  type: 'test'
+  ...
+# Subtest: cancellation waits for real child termination and cleanup; pre-abort starts nothing
+ok 6 - cancellation waits for real child termination and cleanup; pre-abort starts nothing
+  ---
+  duration_ms: 201.3802
+  type: 'test'
+  ...
+# Subtest: memory exhaustion cannot escape the OS bound and leaves no child work
+ok 7 - memory exhaustion cannot escape the OS bound and leaves no child work
+  ---
+  duration_ms: 420.6653
+  type: 'test'
+  ...
+# Subtest: unavailable isolation fails explicitly and cannot fall back to host compilation
+ok 8 - unavailable isolation fails explicitly and cannot fall back to host compilation
+  ---
+  duration_ms: 1.0188
+  type: 'test'
+  ...
+# Subtest: CPU bound stops a busy child before the longer wall deadline
+ok 9 - CPU bound stops a busy child before the longer wall deadline
+  ---
+  duration_ms: 15835.8669
+  type: 'test'
+  ...
+# Subtest: untrusted output is bounded before it reaches application memory or artifacts
+ok 10 - untrusted output is bounded before it reaches application memory or artifacts
+  ---
+  duration_ms: 321.5537
+  type: 'test'
+  ...
+1..10
+# tests 10
+# suites 0
+# pass 10
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 39109.4129

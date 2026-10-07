@@ -528,21 +528,21 @@
     "semantic_hash": ""
   },
   "api.md": {
-    "mtime": 1791405975.6435814,
-    "seen": 1791406244.679765,
-    "ast_hash": "2a3376cce79ea2eedc368ca2666399fb",
+    "mtime": 1791407921.5040748,
+    "seen": 1791408166.1531062,
+    "ast_hash": "b4183e5d79451b5fe8e5c29ced9ab783",
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791405975.6425805,
-    "seen": 1791406244.679765,
-    "ast_hash": "cd45cbee8fab67b5d49db7474efadb59",
+    "mtime": 1791407921.4753861,
+    "seen": 1791408166.1531062,
+    "ast_hash": "70987e6dfcf4f264988ba60044d9eab2",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791404044.87677,
-    "seen": 1791404073.5764563,
-    "ast_hash": "d056e0dec8f9c1e3286de27d8296f597",
+    "mtime": 1791407921.5030665,
+    "seen": 1791408166.1531062,
+    "ast_hash": "3e5a1a60df4dbd0bc7b20f148210b5d8",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791405975.6445825,
-    "seen": 1791406244.6822703,
-    "ast_hash": "d9bc23eb05c20dba604a6b1f17c1288b",
+    "mtime": 1791407921.5084867,
+    "seen": 1791408166.155107,
+    "ast_hash": "058229666b8fb5344f2611946e84b6cc",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -600,9 +600,9 @@
     "semantic_hash": "95c22307038019e494bdd0e4cb25546d"
   },
   "instructions.md": {
-    "mtime": 1791404044.8732545,
-    "seen": 1791404073.5866766,
-    "ast_hash": "a2abe6e9ff8751ed310b80bf78827285",
+    "mtime": 1791407921.479128,
+    "seen": 1791408166.1623266,
+    "ast_hash": "6f9f3a24512ec764c956bdd816494956",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -612,9 +612,9 @@
     "semantic_hash": ""
   },
   "product.md": {
-    "mtime": 1791400688.9592338,
-    "seen": 1791400721.4826229,
-    "ast_hash": "9e9050a31254bfaa1c8b679422c9615b",
+    "mtime": 1791407921.5060754,
+    "seen": 1791408166.1623266,
+    "ast_hash": "1e378a6469c97d4a2c78e28b43462d1f",
     "semantic_hash": ""
   },
   "public/favicon.svg": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791406585.8671293,
-    "seen": 1791406608.6631248,
-    "ast_hash": "f2641dad30fbdf41c06f09a0086465d8",
+    "mtime": 1791407729.679261,
+    "seen": 1791408166.1531062,
+    "ast_hash": "888a92527134cbd12158eafa2a91bb16",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -864,9 +864,9 @@
     "semantic_hash": ""
   },
   "server/isolation.ts": {
-    "mtime": 1791055943.2322357,
-    "seen": 1791320275.0039437,
-    "ast_hash": "2c474484b367ed1982953fbb683c11a0",
+    "mtime": 1791408095.1783452,
+    "seen": 1791408166.1295745,
+    "ast_hash": "47120fd77e8c6fd92f4d670d8de0dd22",
     "semantic_hash": ""
   },
   "server/isolation/compiler-worker.cjs": {
@@ -918,9 +918,9 @@
     "semantic_hash": ""
   },
   "tests/generated-isolation.test.ts": {
-    "mtime": 1791215775.8508604,
-    "seen": 1791320275.0039437,
-    "ast_hash": "b2d47e7cdbd2c9ce87664dc22e1561c4",
+    "mtime": 1791408098.713028,
+    "seen": 1791408166.147106,
+    "ast_hash": "dd7e023d88fdaf5d1f33c39c3f9ef701",
     "semantic_hash": ""
   },
   "tests/intent-corrections.test.ts": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-domain-release.md": {
-    "mtime": 1791406590.3012369,
-    "seen": 1791406608.671155,
-    "ast_hash": "5e8edee62a548df260c3aa8453af9fb0",
+    "mtime": 1791408040.863022,
+    "seen": 1791408166.1603255,
+    "ast_hash": "dce7d700c3e44f9d297740a136405c0e",
     "semantic_hash": ""
   },
   "worker/legacy-origin.ts": {
@@ -1239,6 +1239,12 @@
     "mtime": 1791406585.8658276,
     "seen": 1791406608.628994,
     "ast_hash": "c24450a6e74e68c8a9709403dafe356c",
+    "semantic_hash": ""
+  },
+  "docs/harness/prelaunch-linux-runtime-alternative.md": {
+    "mtime": 1791407862.7915764,
+    "seen": 1791408166.1603255,
+    "ast_hash": "19f2b983b26a0d85b1f95b4623a45123",
     "semantic_hash": ""
   }
 }

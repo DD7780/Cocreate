@@ -1,0 +1,7 @@
+warning: in the working copy of 'artifacts/prelaunch-domain-release/branch-deployment-check.json', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'pnpm-workspace.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'server/isolation.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/generated-isolation.test.ts', LF will be replaced by CRLF the next time Git touches it
+Audited 139 files; 1 static candidates; 0 boundary violations.
+Jev: 0 physical requests, 0 input tokens with known usage, known-usage estimate $0.000000; unknown requests retain their reservation.
+Report: artifacts/codebase-audit/report.json

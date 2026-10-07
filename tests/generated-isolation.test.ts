@@ -20,17 +20,17 @@ test('ordinary compilation runs in the real OS boundary and never evaluates cand
   assert.match((await bundleProject(literal)).javascript,/Candidate execution marker/);noJobs();
 });
 
-test('AppContainer without Node permissions denies an existing private host file, writes and live loopback network',{skip:process.platform!=='win32'},async()=>{
+test('OS boundary without Node permissions denies an existing private host file, writes and live loopback network',async()=>{
   const outside=fs.mkdtempSync(path.join(os.tmpdir(),'isolation-private-fixture-')),secret=path.join(outside,'private.txt');
   fs.writeFileSync(secret,'synthetic private sentinel');let connects=0;
   const server=net.createServer(socket=>{connects++;socket.destroy()});server.listen(0,'127.0.0.1');await once(server,'listening');
   const address=server.address();assert.ok(address&&typeof address!=='string');
   const prior=process.env.COCREATE_SYNTHETIC_SECRET;process.env.COCREATE_SYNTHETIC_SECRET='synthetic-only';
   try{
-    const result=await runIsolated({operation:'probe',outside:secret,port:address.port},{osProbe:true}) as any;
+    let pid=0;const result=await runIsolated({operation:'probe',outside:secret,port:address.port},{osProbe:true,onStarted:value=>pid=value}) as any;
     assert.equal(result.readOutside.allowed,false);assert.equal(result.writeOutside.allowed,false);
     assert.equal(result.network.allowed,false);assert.equal(connects,0);assert.equal(result.environment.includes('COCREATE_SYNTHETIC_SECRET'),false);
-    assert.equal(fs.readFileSync(secret,'utf8'),'synthetic private sentinel');noChild(result.pid);noJobs();
+    assert.equal(fs.readFileSync(secret,'utf8'),'synthetic private sentinel');assert.ok(pid);noChild(pid);noJobs();
   }finally{prior===undefined?delete process.env.COCREATE_SYNTHETIC_SECRET:process.env.COCREATE_SYNTHETIC_SECRET=prior;await new Promise<void>(resolve=>server.close(()=>resolve()));assert.equal(path.dirname(path.resolve(outside)),path.resolve(os.tmpdir()));fs.rmSync(outside,{recursive:true,force:true})}
 });
 
@@ -39,9 +39,9 @@ test('restricted process strips injection/secrets and denies subprocesses, worke
   const keys=['NODE_OPTIONS','SUPABASE_SECRET_KEY','OPENAI_API_KEY','SESSION_SECRET','COCREATE_SYNTHETIC_SECRET'];const prior=keys.map(key=>process.env[key]);
   for(const key of keys)process.env[key]='synthetic injection or secret';
   try{
-    const result=await runIsolated({operation:'probe',outside:path.resolve('context.md'),port:address.port}) as any;
+    let pid=0;const result=await runIsolated({operation:'probe',outside:path.resolve('context.md'),port:address.port},{onStarted:value=>pid=value}) as any;
     assert.equal(result.readOutside.allowed,false);assert.equal(result.writeOutside.allowed,false);assert.equal(result.spawn.allowed,false);assert.equal(result.worker.allowed,false);assert.equal(result.network.allowed,false);
-    assert.ok(keys.every(key=>!result.environment.includes(key)));noChild(result.pid);noJobs();
+    assert.ok(keys.every(key=>!result.environment.includes(key)));assert.ok(pid);noChild(pid);noJobs();
   }finally{keys.forEach((key,index)=>{prior[index]===undefined?delete process.env[key]:process.env[key]=prior[index]});await new Promise<void>(resolve=>server.close(()=>resolve()))}
 });
 
@@ -67,7 +67,7 @@ test('cancellation waits for real child termination and cleanup; pre-abort start
 
 test('memory exhaustion cannot escape the OS bound and leaves no child work',async()=>{
   let pid=0;
-  await assert.rejects(runIsolated({operation:'allocate'},{onStarted:value=>pid=value}),(error:IsolationError)=>error.code==='isolation_resource_limit');
+  await assert.rejects(runIsolated({operation:'allocate'},{onStarted:value=>pid=value}),(error:IsolationError)=>{assert.equal(error.code,'isolation_resource_limit',JSON.stringify(error.cause));return true;});
   assert.equal(isolationPolicy.windowsMemoryBytes,512*1024*1024);assert.ok(pid);noChild(pid);noJobs();
 });
 
@@ -81,7 +81,7 @@ test('unavailable isolation fails explicitly and cannot fall back to host compil
 test('CPU bound stops a busy child before the longer wall deadline',async()=>{
   let pid=0;const started=Date.now();
   await assert.rejects(runIsolated({operation:'spin'},{onStarted:value=>pid=value}),(error:IsolationError)=>{
-    assert.equal(error.code,'isolation_resource_limit');
+    assert.equal(error.code,'isolation_resource_limit',JSON.stringify(error.cause));
     if(process.platform==='win32'){
       const diagnostic=(error.cause as {diagnostic?:string})?.diagnostic||'';
       const accounting=/ISOLATION_ACCOUNTING (\d+) (\d+) (\d+) (\d+) (\d+)/.exec(diagnostic);

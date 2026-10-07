@@ -1,6 +1,6 @@
 # 2guys1canvas contributor instructions
 
-Production release note (2026-10-08): Main pushes trigger Cloudflare production builds. On 2026-10-08 the owner confirmed non-production builds disabled, permitting codex/prelaunch-beta verification without a Cloudflare production build. Preserve Auth redirects, check integration effects and pass intended Linux runtime checks before main publication. Existing approvals are UUID-based server authority; do not infer authority from account email. [Current release packet](docs/harness/prelaunch-domain-release.md).
+Production release note (2026-10-08): main pushes trigger Cloudflare production builds; the owner reports non-production builds disabled. Use codex/prelaunch-beta for verification and preserve integration settings. Compiler readiness/compile/import checks have actual Linux CI evidence; browser startup fails under the 2 GiB virtual-address bound. Never remove this bound alone to make readiness green. A replacement physical-memory mechanism requires actual per-job enforcement/cleanup proof, an accepted policy decision and intended Cloudflare capability checks. The approved temporary SSH probe failed at its transport; task authority/files were removed. Preserve Auth redirects, approvals and project roles. [Current packet](docs/harness/prelaunch-domain-release.md).
 
 Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-05; this document owns contributor rules, not completion claims.
 

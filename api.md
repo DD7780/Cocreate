@@ -2,7 +2,7 @@
 
 Release audit 2026-10-08: source contracts below are not proof of current deployment. Live `/api/beta/access` returned SPA HTML and waitlist POST returned 404. Prepared Worker routing redirects legacy GET/HEAD links to the custom domain while preserving path/query; legacy mutations and WebSocket upgrades return 421 without application proxying. Canonical requests retain existing app authorization. [Execution and evidence](docs/harness/prelaunch-domain-release.md).
 
-Source-inspected 2026-10-07 through pre-launch/private beta work. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-08 through the blocked release repair. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 
@@ -158,7 +158,7 @@ Local GET/POST `/ai/recommendation` and POST `/ai/effort` are owner-only compati
 
 Update this reference with route/type/message changes and actual validation. Source inspection here is not a live session, SQL execution or deployment claim.
 
-Step 04 changes no HTTP command or model tool selection surface. `project.bundle` receives the coordinator AbortSignal and records `isolated-process` plus policy version in tool evidence. Actual OS preflight precedes builder dispatch. Unavailable isolation, cancellation and resource/timeout failures retain the existing artifact and stop without unsafe fallback or provider repair. An explicit retry is required after operator repair. Docker startup also preflights; prepared Linux configuration remains unverified in the intended kernel. See [Step 04 handoff](docs/harness/multiuser-step04-handoff.md).
+Step 04 changes no HTTP command or model tool selection surface. `project.bundle` receives the coordinator AbortSignal and records `isolated-process` plus policy version in tool evidence. Actual OS preflight precedes builder dispatch. Unavailable isolation, cancellation and resource/timeout failures retain the existing artifact and stop without unsafe fallback or provider repair. An explicit retry is required after operator repair. Docker startup also preflights; Linux compiler readiness and normal compile/import checks now pass in disposable CI, while browser preflight fails under its address-space ceiling; intended Cloudflare kernel and full adversity remain unverified. See [Step 04 handoff](docs/harness/multiuser-step04-handoff.md).
 
 ## Step 05 intent command contracts
 

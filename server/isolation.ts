@@ -81,11 +81,13 @@ export type IsolatedRequest = { operation:'compile';files:ProjectFile[] } |
 export type IsolationOptions = {signal?:AbortSignal;wallMs?:number; onStarted?:(pid:number)=>void;
   /** Operator-owned boundary test only; compile always retains Node permissions. */
   osProbe?:boolean };
-function linuxCommand(runtime:string,workspace:string){
+function linuxCommand(runtime:string,workspace:string,osProbe:boolean){
   // Fresh user/PID/network/IPC/mount namespaces; only runtime and candidate input are visible.
-  const args=['--as='+isolationPolicy.linuxAddressSpaceBytes,'--cpu='+isolationPolicy.cpuSeconds,'--nproc='+isolationPolicy.linuxTasksPerUser,'--fsize='+maxOutput,'--nofile=64','--','/usr/bin/bwrap','--unshare-all','--die-with-parent','--new-session','--clearenv','--ro-bind',runtime,'/runtime','--ro-bind',workspace,'/job','--ro-bind',process.execPath,'/node','--proc','/proc','--dev','/dev','--tmpfs','/tmp'];
+  const args=['--as='+isolationPolicy.linuxAddressSpaceBytes,'--cpu='+isolationPolicy.cpuSeconds,'--nproc='+isolationPolicy.linuxTasksPerUser,'--fsize='+maxOutput,'--nofile=64','--','/usr/bin/bwrap','--json-status-fd','3','--unshare-all','--die-with-parent','--new-session','--clearenv','--ro-bind',runtime,'/runtime','--ro-bind',workspace,'/job','--ro-bind',process.execPath,'/node','--proc','/proc','--dev','/dev','--tmpfs','/tmp'];
   for(const directory of ['/lib','/lib64','/usr/lib'])if(fs.existsSync(directory))args.push('--ro-bind',directory,directory);
-  args.push('--setenv','NODE_ENV','production','--setenv','UV_THREADPOOL_SIZE','1','--chdir','/job','/node','--permission','--allow-fs-read=/runtime','--allow-fs-read=/job','--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
+  args.push('--setenv','NODE_ENV','production','--setenv','UV_THREADPOOL_SIZE','1','--chdir','/job','/node');
+  if(!osProbe)args.push('--permission','--allow-fs-read=/runtime','--allow-fs-read=/job');
+  args.push('--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
   return {executable:'/usr/bin/prlimit',args};
 }
 /** Internal trusted primitive. No HTTP/model output can choose operations, commands or runtime flags. */
@@ -100,29 +102,44 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
   const serialized=JSON.stringify(payload);if(Buffer.byteLength(serialized)>maxOutput)throw new IsolationError('isolation_resource_limit','Compiler input exceeded its bound.');
   fs.mkdirSync(workspace,{recursive:true});
   const wallMs=Math.min(isolationPolicy.wallMs,Math.max(10,options.wallMs??isolationPolicy.wallMs));
-  const command=process.platform==='win32'?{executable:path.join(runtime,'runner.exe'),args:[runtime,workspace,profile,String(process.pid),String(wallMs),options.osProbe?'os-probe':'restricted']}:linuxCommand(runtime,workspace);
+  const command=process.platform==='win32'?{executable:path.join(runtime,'runner.exe'),args:[runtime,workspace,profile,String(process.pid),String(wallMs),options.osProbe?'os-probe':'restricted']}:linuxCommand(runtime,workspace,options.osProbe===true);
   let child:ChildProcess|undefined,aborted=false,limited=false,timedOut=false;
   try{
     fs.writeFileSync(path.join(workspace,'input.json'),serialized);
     return await new Promise((resolve,reject)=>{
-      let stdout='',stderr='',done=false,force:NodeJS.Timeout|undefined;
+      let stdout='',stderr='',statusBuffer='',statusBytes=0,sandboxExit:number|undefined,done=false,force:NodeJS.Timeout|undefined;
       const stop=(reason:'abort'|'timeout'|'limit')=>{
         aborted ||= reason==='abort';timedOut ||=reason==='timeout';limited ||=reason==='limit';
         if(process.platform==='win32'){try{fs.writeFileSync(path.join(workspace,'cancel'),'cancel')}catch{};force??=setTimeout(()=>child?.kill(),1000)}
         else if(child?.pid){try{process.kill(-child.pid,'SIGKILL')}catch{child.kill()}}
       };
       const abort=()=>stop('abort');
-      child=spawn(command.executable,command.args,{cwd:workspace,env:hostEnvironment(),windowsHide:true,detached:process.platform!=='win32',stdio:['ignore','pipe','pipe']});
+      child=spawn(command.executable,command.args,{cwd:workspace,env:hostEnvironment(),windowsHide:true,detached:process.platform!=='win32',stdio:process.platform==='linux'?['ignore','pipe','pipe','pipe']:['ignore','pipe','pipe']});
       const timer=setTimeout(()=>stop('timeout'),wallMs+500);
       options.signal?.addEventListener('abort',abort,{once:true});if(options.signal?.aborted)abort();
       const finish=(error?:Error,result?:unknown)=>{if(done)return;done=true;clearTimeout(timer);clearTimeout(force);options.signal?.removeEventListener('abort',abort);error?reject(error):resolve(result)};
       child.stdout!.on('data',chunk=>{if(limited)return;stdout+=chunk;if(Buffer.byteLength(stdout)>maxOutput)stop('limit')});
       child.stderr!.on('data',chunk=>{if(limited)return;stderr+=chunk;if(Buffer.byteLength(stderr)>16_000)stop('limit');const match=stderr.match(/ISOLATION_STARTED (\d+)/);if(match){options.onStarted?.(Number(match[1]));options.onStarted=undefined}});
+      // Bubblewrap writes host-visible lifecycle IDs on this pipe and closes it in the sandbox child.
+      if(process.platform==='linux'){
+        const status=child.stdio[3] as NodeJS.ReadableStream;
+        status.on('error',()=>stop('limit'));
+        status.on('data',chunk=>{
+          statusBytes+=Buffer.byteLength(chunk);if(statusBytes>16_000){stop('limit');return;}
+          statusBuffer+=chunk;let end:number;
+          while((end=statusBuffer.indexOf('\n'))>=0){
+            const line=statusBuffer.slice(0,end);statusBuffer=statusBuffer.slice(end+1);
+            try{const value=JSON.parse(line);const pid=value['child-pid'];if(Number.isSafeInteger(pid)&&pid>0){options.onStarted?.(pid);options.onStarted=undefined;}if(Number.isInteger(value['exit-code']))sandboxExit=value['exit-code'];}
+            catch{stop('limit');}
+          }
+        });
+      }
       child.once('error',()=>finish(unavailable()));
       child.once('close',code=>{
         if(aborted)return finish(cancelled());
         if(timedOut||code===124)return finish(new IsolationError('isolation_timeout','Generated execution exceeded its wall-time bound and was removed.'));
-        if(limited||code===125){const error=new IsolationError('isolation_resource_limit','Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained.');error.cause={exitCode:code,limit:limited?'output':'kernel',diagnostic:stderr.slice(0,2000)};return finish(error);}
+        const linuxResource=process.platform==='linux'&&((sandboxExit===137||sandboxExit===152)||(/out of memory|allocation failed/i.test(stderr)||(request.operation==='allocate'&&/allocation failed/i.test(stdout))));
+        if(limited||code===125||linuxResource){const error=new IsolationError('isolation_resource_limit','Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained.');error.cause={exitCode:code,limit:limited?'output':'kernel',diagnostic:stderr.slice(0,2000)};return finish(error);}
         if(code!==0){const error=unavailable();error.cause={exitCode:code,diagnostic:stderr.slice(0,2000)};return finish(error);}
         try{const response=JSON.parse(stdout);if(!response||typeof response.ok!=='boolean')throw Error();if(!response.ok)return finish(new Error('Candidate compilation failed: '+String(response.error).slice(0,1000)));finish(undefined,response.result)}catch{return finish(unavailable())}
       });
