@@ -55,6 +55,23 @@ jobs:
           --memory 1g --memory-swap 1g --pids-limit 256
           cocreate-check node --import tsx --input-type=module -e
           'import {assertVerificationBrowserAvailable} from "./server/isolation/browser.ts"; await assertVerificationBrowserAvailable(); console.log("Actual Linux browser boundary passed; no inference");'
+      - name: Diagnose trusted browser version reservation
+        if: ${{ !cancelled() && steps.image.outcome == 'success' && steps.browser.outcome == 'failure' }}
+        run: >-
+          docker run --rm --network none --cap-drop ALL
+          --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
+          --memory 1g --memory-swap 1g --pids-limit 256
+          cocreate-check node --import tsx scripts/diagnose-linux-browser.ts
+      - name: Focused actual compiler checks
+        if: ${{ !cancelled() && steps.compiler.outcome == 'success' }}
+        run: >-
+          docker run --rm --network none --cap-drop ALL
+          --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
+          --memory 1g --memory-swap 1g --pids-limit 256
+          cocreate-check node --import tsx --test --test-concurrency=1
+          --test-name-pattern='ordinary compilation|candidate imports' tests/generated-isolation.test.ts
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' }}
         run: >-
