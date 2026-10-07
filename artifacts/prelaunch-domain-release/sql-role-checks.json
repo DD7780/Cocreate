@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-07T19:08:40.486Z",
+  "scope": "Real Postgres role/RLS probes with transaction-local Auth UID; not independent signed-in sessions. Only an uncommitted cofounder revocation is tested, then rolled back.",
+  "checks": [
+    {
+      "identity": "founder",
+      "approved": true,
+      "membershipOnlyProjects": 26,
+      "extraProjects": 0
+    },
+    {
+      "identity": "cofounder",
+      "approved": true,
+      "membershipOnlyProjects": 6,
+      "extraProjects": 0
+    },
+    {
+      "boundary": "direct-create",
+      "denied": true
+    },
+    {
+      "boundary": "invite-before-consumption",
+      "denied": true
+    },
+    {
+      "boundary": "private-waitlist-read",
+      "denied": true
+    },
+    {
+      "boundary": "transaction-local-revocation",
+      "approved": false,
+      "visibleProjects": 0
+    }
+  ],
+  "approvalRestored": true
+}

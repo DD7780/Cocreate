@@ -1,0 +1,104 @@
+{
+  "checkedAt": "2026-10-07T19:33:40.860812+00:00",
+  "status": "prepared, not pushed or deployed; hosted release acceptance pending",
+  "baseCommit": "7e954b8858ec6fa4e093c4cd94a95742ed1e0ef4",
+  "sourceSha256": {
+    "wrangler.jsonc": "01a53ec852cac39e92279fdd5132c33b71c7499a82bbc72322789b5fad6cc8d5",
+    "worker/container.js": "e5e0df256ae0b2e1229cdbbc57d9949d3c7436afe197f1660610f485b33f0361",
+    "worker/legacy-origin.ts": "f2793c6ea06acf4af395cf12139385d3d08bf77aa33d76b034bc283bed99a7df",
+    "tests/cloudflare-container.test.ts": "d6c4739ec975bd420271810e2d818269bc5417af41cb8da0bb27420d5799f2c7",
+    "tests/project-auth.test.ts": "ec3461d13b8abc89573993baf26a54db3df0f00405c42b5a9d992597e11a0ed2"
+  },
+  "targets": {
+    "domain": "https://2guys1canvas.com",
+    "app": "https://2guys1canvas.com/app",
+    "worker": "cocreate",
+    "account": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "supabase": "dnsapasubeoxxsgkiotw"
+  },
+  "database": {
+    "migrationsObservedApplied": 9,
+    "latestFunctionBodiesMatch": 21,
+    "migrationAppliedByThisTask": false,
+    "approvalsWritten": {
+      "founder": "owner",
+      "cofounder": "ordinary"
+    },
+    "membershipChanges": false,
+    "checks": "transaction-local role/Auth UID and rollback-only revocation; not independent signed-in sessions"
+  },
+  "tests": {
+    "full-tests-first.log": {
+      "tests": 225,
+      "pass": 221,
+      "fail": 4,
+      "skipped": 0
+    },
+    "full-tests-second.log": {
+      "tests": 226,
+      "pass": 211,
+      "fail": 15,
+      "skipped": 0
+    },
+    "full-tests.log": {
+      "tests": 226,
+      "pass": 222,
+      "fail": 4,
+      "skipped": 0
+    },
+    "focused-final.log": {
+      "tests": 34,
+      "pass": 34,
+      "fail": 0,
+      "skipped": 0
+    },
+    "beta-final.log": {
+      "tests": 6,
+      "pass": 6,
+      "fail": 0,
+      "skipped": 0
+    },
+    "reliability-retry.log": {
+      "tests": 1,
+      "pass": 1,
+      "fail": 0,
+      "skipped": 0
+    }
+  },
+  "local": {
+    "types": "pass",
+    "build": "pass; existing chunk-size warning",
+    "boundaries": "pass; repository script executed directly after pnpm11 wrapper failure; pinned config unchanged",
+    "workerDryRun": "pass; containers-rollout none, no deployment",
+    "graph": "AST-only 2067 nodes,4930 edges,108 communities; SQL parser unavailable"
+  },
+  "auth": {
+    "siteUrlAndExactCallback": "owner reports saved; not independently read",
+    "callbackQueryPattern": "awaiting owner confirmation",
+    "settingsTool": "connected Supabase project tool lacks Auth settings; browser control fails Windows sandbox startup"
+  },
+  "hosted": {
+    "workerVersion": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+    "containerApp": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+    "containerImage": "sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+    "deployedSourceRevision": null,
+    "waitlistPost": 404,
+    "betaAccessGet": "HTML200 from old app image",
+    "anonymousProtectedHttp": "401",
+    "canonicalNoAuthWebSocket": "403 origin mismatch",
+    "legacyNoAuthWebSocket": 401
+  },
+  "externalFailures": {
+    "cloudflare": "user-supplied build log: registry layer PUT timed out awaiting response headers, then missing-image/Docker exit1; signed upload URL omitted",
+    "github": "job112511789988 logs show generated isolation unavailable on Ubuntu; current workflow omits required OS/browser setup",
+    "containerSsh": "supported CLI read-only id probe failed with WebSocket400; SSH not enabled/reconfigured by this task"
+  },
+  "releaseBlockers": [
+    "Auth query-pattern confirmation and real callback/recovery acceptance",
+    "Intended Linux image/compiler/browser/adversity acceptance; no local Docker/WSL",
+    "Deploy new image and domain routing together; push triggers Cloudflare/Supabase",
+    "Independent anonymous/pending/owner/cofounder HTTP/socket/Storage/invitation/revocation checks; durable live waitlist test and project/artifact integrity"
+  ],
+  "noEmailTrackingInference": true,
+  "documentation": {"relativeFileLinks": 277, "missing": 0, "duplicateDecisionHeadings": 0, "sourceAndDocsDiffCheck": "pass", "rawEvidenceDiffCheck": "fails on retained TAP/table trailing whitespace; raw logs preserved"}
+}

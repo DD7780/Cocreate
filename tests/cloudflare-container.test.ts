@@ -4,8 +4,43 @@ import fs from 'node:fs';
 import path from 'node:path';
 import test from 'node:test';
 import {createCoCreateServer} from '../server/index.js';
+import {legacyOriginResponse} from '../worker/legacy-origin.js';
 
 const root=process.cwd();
+
+test('the pre-launch deployment binds hosted auth and callbacks to the custom domain',()=>{
+  const config=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
+  const origin='https://2guys1canvas.com';
+  assert.equal(config.vars.COCREATE_PUBLIC_ORIGIN,origin);
+  assert.equal(config.vars.COCREATE_APP_ORIGINS,origin);
+  assert.equal(config.workers_dev,true);
+  assert.equal(config.vars.COCREATE_LEGACY_ORIGIN,'https://cocreate.susan981314271.workers.dev');
+  assert.equal(config.preview_urls,false);
+  assert.deepEqual(config.routes,[{pattern:new URL(origin).hostname,custom_domain:true}]);
+  assert.equal(config.containers.length,1);
+  const image=config.containers[0].image_vars;
+  assert.equal(image.VITE_COCREATE_APP_ORIGIN,origin);
+  assert.equal(image.VITE_COCREATE_AUTH_MODE,'supabase');
+  assert.equal(image.VITE_SUPABASE_URL,config.vars.SUPABASE_URL);
+  assert.equal(image.VITE_SUPABASE_PUBLISHABLE_KEY,config.vars.SUPABASE_PUBLISHABLE_KEY);
+  assert.ok(Object.keys(image).every(name=>!/(SECRET|PASSWORD|SERVICE_ROLE|OWNER|BETA_ACCESS)/.test(name)));
+});
+
+test('legacy links preserve their destination without allowing host escape or protected ingress',()=>{
+  const canonical='https://2guys1canvas.com',legacy='https://cocreate.susan981314271.workers.dev';
+  const response=legacyOriginResponse(new Request(`${legacy}/invite/retained-token?next=%2Fapp`),canonical,legacy)!;
+  assert.equal(response.status,308);
+  assert.equal(response.headers.get('Location'),`${canonical}/invite/retained-token?next=%2Fapp`);
+  assert.equal(response.headers.get('Cache-Control'),'no-store');
+  assert.equal(legacyOriginResponse(new Request(`${legacy}/app`,{method:'HEAD'}),canonical,legacy)!.status,308);
+  const escape=legacyOriginResponse(new Request(`${legacy}//attacker.invalid/path?next=https%3A%2F%2Fattacker.invalid`),canonical,legacy)!;
+  assert.equal(new URL(escape.headers.get('Location')!).origin,canonical);
+  assert.equal(legacyOriginResponse(new Request(`${legacy}/api/projects`,{method:'POST'}),canonical,legacy)!.status,421);
+  assert.equal(legacyOriginResponse(new Request(`${legacy}/ws`,{headers:{Upgrade:'websocket'}}),canonical,legacy)!.status,421);
+  assert.equal(legacyOriginResponse(new Request(`${canonical}/api/projects`),canonical,legacy),null);
+  assert.equal(legacyOriginResponse(new Request(`${legacy}/app`),'https://attacker.invalid/path',legacy)!.status,503);
+  assert.equal(legacyOriginResponse(new Request(`${legacy}/app`),'invalid origin',legacy)!.status,503);
+});
 
 test('the application exposes a container readiness endpoint',async()=>{
   const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});

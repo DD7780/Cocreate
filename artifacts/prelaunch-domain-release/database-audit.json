@@ -1,0 +1,289 @@
+{
+  "checkedAt": "2026-10-07T19:00:19.44Z",
+  "scope": "real Postgres read-only catalog/body audit; no role mutation or fixture writes",
+  "matches": [
+    {
+      "name": "public.is_project_member",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.current_project_role",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.create_project",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.accept_project_invite",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.protect_project_identity",
+      "file": "202609240001_projects_auth_persistence.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.storage_project_id",
+      "file": "202609240001_projects_auth_persistence.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.create_project_invite",
+      "file": "202609250001_email_invitations_and_sharing.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.resend_project_invite",
+      "file": "202609300001_preserve_invites_and_idempotent_delivery.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.initialize_managed_funding",
+      "file": "202609270001_managed_ai_funding.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=public, pg_temp"
+      ]
+    },
+    {
+      "name": "public.reserve_managed_request",
+      "file": "202609270001_managed_ai_funding.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=public, pg_temp"
+      ]
+    },
+    {
+      "name": "public.settle_managed_request",
+      "file": "202609270001_managed_ai_funding.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=public, pg_temp"
+      ]
+    },
+    {
+      "name": "public.create_project_invite_v2",
+      "file": "202609300001_preserve_invites_and_idempotent_delivery.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.resend_project_invite_v2",
+      "file": "202609300001_preserve_invites_and_idempotent_delivery.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.record_project_provider_request",
+      "file": "202609300002_provider_request_ledger.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.claim_workflow_coordinator",
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.release_workflow_coordinator",
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.commit_workflow_snapshot",
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.append_workflow_document_update",
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.record_workflow_provider_dispatch",
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "private.has_beta_access",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    },
+    {
+      "name": "public.register_beta_waitlist",
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "present": true,
+      "bodyMatches": true,
+      "searchPath": [
+        "search_path=\"\""
+      ]
+    }
+  ],
+  "grants": [
+    {
+      "table_name": "beta_access",
+      "role": "anon",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_access",
+      "role": "authenticated",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_access",
+      "role": "service_role",
+      "read": true,
+      "insert": true,
+      "update": true,
+      "delete": true
+    },
+    {
+      "table_name": "beta_registration_attempts",
+      "role": "anon",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_registration_attempts",
+      "role": "authenticated",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_registration_attempts",
+      "role": "service_role",
+      "read": true,
+      "insert": true,
+      "update": true,
+      "delete": true
+    },
+    {
+      "table_name": "beta_waitlist",
+      "role": "anon",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_waitlist",
+      "role": "authenticated",
+      "read": false,
+      "insert": false,
+      "update": false,
+      "delete": false
+    },
+    {
+      "table_name": "beta_waitlist",
+      "role": "service_role",
+      "read": true,
+      "insert": true,
+      "update": true,
+      "delete": true
+    }
+  ],
+  "storage": [
+    {
+      "policyname": "artifact_objects_member_select",
+      "permissive": "PERMISSIVE",
+      "roles": "{authenticated}",
+      "cmd": "SELECT",
+      "qual": "((bucket_id = 'cocreate-artifacts'::text) AND is_project_member(storage_project_id(name)))",
+      "with_check": null
+    },
+    {
+      "policyname": "beta_artifact_access_required",
+      "permissive": "RESTRICTIVE",
+      "roles": "{authenticated}",
+      "cmd": "ALL",
+      "qual": "((bucket_id <> 'cocreate-artifacts'::text) OR ( SELECT private.has_beta_access() AS has_beta_access))",
+      "with_check": "((bucket_id <> 'cocreate-artifacts'::text) OR ( SELECT private.has_beta_access() AS has_beta_access))"
+    }
+  ],
+  "appPolicyCount": 20,
+  "appPoliciesValid": true
+}

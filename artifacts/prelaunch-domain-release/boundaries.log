@@ -1,0 +1,9 @@
+warning: in the working copy of 'docs/harness/decisions.md', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'pnpm-workspace.yaml', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/cloudflare-container.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'tests/project-auth.test.ts', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'worker/container.js', LF will be replaced by CRLF the next time Git touches it
+warning: in the working copy of 'wrangler.jsonc', LF will be replaced by CRLF the next time Git touches it
+Audited 138 files; 1 static candidates; 0 boundary violations.
+Jev: 0 physical requests, 0 input tokens with known usage, known-usage estimate $0.000000; unknown requests retain their reservation.
+Report: artifacts/codebase-audit/report.json

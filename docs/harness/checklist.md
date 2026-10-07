@@ -1,5 +1,21 @@
 # Harness status and outstanding work
 
+## Custom-domain release — 2026-10-08
+
+This current audit supersedes historical prepared/unapplied status only; earlier dated test reports remain unchanged. [Release packet](prelaunch-domain-release.md), [verification manifest](../../artifacts/prelaunch-domain-release/verification.json).
+
+- [x] Verify existing Cloudflare account/Worker/custom domain, healthy connected Supabase project and the two confirmed Auth identities through trusted administration.
+- [x] Observe all nine migrations already applied and all 21 latest SQL function bodies matching; inspect private grants/restrictive beta and Storage policies. No migration reset/reapplication.
+- [x] Write only founder owner and cofounder ordinary beta approvals; preserve project membership. Real transaction-local role tests cover membership-only reads, rollback-only revocation and denied create/invite/private waitlist reads. These are not independent signed-in sessions.
+- [x] Prepare canonical domain origins and safe legacy GET/HEAD redirects; reject alternate mutations/socket ingress and disable version preview URLs. Existing workspace/theme/auth/invites retained.
+- [x] Types, build, direct import-boundary script and Worker dry run pass; AST refresh 2,067 nodes/4,930 edges/108 communities, zero LLM calls. Pnpm11 launcher failure retained; pinned workspace/lock/package files have no content changes. Focused affected/domain/auth/isolation 34/34, beta 6/6 and baseline retry 1/1 pass without weaker assertions.
+- [-] Full runs are retained separately: first 221/225, second 211/226; final 222/226 with 4 failures involving isolated resource-limit outcomes. Result is in the manifest. Full failures and focused retries are distinct evidence.
+- [x] Confirm pushes trigger external Cloudflare/Supabase builds. Read GitHub logs showing unavailable Linux isolation; user-provided Cloudflare log shows container registry layer upload timeout. No source publication or deployment in this task.
+- [ ] Owner reports Site URL/exact callback saved; confirm query callback pattern and verify actual hosted callback/recovery. Integration lacks Auth configuration and native browser control fails during setup.
+- [ ] Prepare/exercise intended Linux image/compiler/browser/adversity; publish the verified image and canonical routing together. Current live image lacks beta/waitlist routes; deployed source revision remains unattested.
+- [ ] Independent anonymous/pending/owner/cofounder sessions, durable live registration/deduplication, direct REST/Storage/HTTP/socket/preview/download controls, unrelated private projects, invite/recovery/revocation and project/artifact integrity. Prepared pgTAP and real coordinator contention remain unrun. No email/tracking/provider spend.
+
+
 ## Pre-launch registration and private beta — 2026-10-07
 
 - [x] Public Studio Ivory landing at `/`, labeled product example, repeated waitlist CTA, existing beta sign-in, honest current/planned model and local-cost copy, FAQ and static future-walkthrough area. Existing workspace and project/auth/recovery URLs are retained.
@@ -149,7 +165,7 @@ Integrated `origin/codex/byok-mvp` through `472698a` (five commits since the com
 ## Immediate verification and operational work
 
 - [ ] **Reference available; comparison pending.** Compare [supplied image](references/shared-context-reference.jpg) at its reference viewport, then responsive sidebar/card/actions, readable contrast and keyboard access. Current Studio Ivory is not a verified match. The earlier missing-image fact remains in the dated report.
-- [ ] Review/apply both prepared coordinator migrations only under separate authorization, then run the Step 02 real Postgres contention runner and independent-instance takeover, stale epoch/atomic commit and membership checks. Repository status remains **prepared/unapplied**; no newer applied evidence was found. Hosted code fails closed without its RPCs.
+- [ ] Run the Step 02 real Postgres contention runner and independent-instance takeover, stale epoch/atomic commit and membership checks against an authorized disposable target. The 2026-10-08 audit observed both coordinator migrations applied with matching source definitions; do not reapply or repair history blindly. Hosted code fails closed without its RPCs.
 - [ ] Independent hosted account checks: simultaneous submissions, third participant's unsubmitted draft, edit/reconnect/reload, submission during build, duplicate command, state/usage/artifact convergence, viewer denial and revoked access. Local browser sessions do not close these criteria.
 - [ ] Authorized live BYOK checks: full generation, output-exhaustion recovery, provider completion metadata/account limits, bounded spending/calls, failure retention, reconnect/retry, owner/editor authority and actual provider accounting. Earlier real-key interpretation stopped at an obsolete gate and does not prove successful live builds.
 - [ ] Live invitations: configure a verified sender/key, authorized test recipient and verify provider acceptance plus inbox/webhook result; account confirmation/recovery SMTP and fresh/expired/reused/cancelled auth flows also need designated accounts. No email was sent in this cleanup.

@@ -10,7 +10,7 @@ import { decodePersistedYjsUpdate, encodePostgresBytea } from '../server/yjs-per
 import * as Y from 'yjs';
 
 const deployedPublicEnv={
-  VITE_COCREATE_APP_ORIGIN:'https://cocreate.susan981314271.workers.dev',
+  VITE_COCREATE_APP_ORIGIN:'https://2guys1canvas.com',
   VITE_SUPABASE_URL:'https://dnsapasubeoxxsgkiotw.supabase.co',
   VITE_SUPABASE_PUBLISHABLE_KEY:'sb_publishable_synthetic',
 };
@@ -40,7 +40,7 @@ test('public auth configuration is explicit and derives the Worker callback',()=
     url:deployedPublicEnv.VITE_SUPABASE_URL,
     publishableKey:deployedPublicEnv.VITE_SUPABASE_PUBLISHABLE_KEY,
     appOrigin:deployedPublicEnv.VITE_COCREATE_APP_ORIGIN,
-    redirectTo:'https://cocreate.susan981314271.workers.dev/api/auth/callback',
+    redirectTo:'https://2guys1canvas.com/api/auth/callback',
   });
   assert.equal(resolved.error,null);
   assert.match(resolveSupabaseAuthConfig({}).error||'',/Missing build variables/);
@@ -55,7 +55,7 @@ test('Wrangler uses matching server and Vite build-time Supabase configuration',
   assert.equal(image.VITE_SUPABASE_URL,wrangler.vars.SUPABASE_URL);
   assert.equal(image.VITE_SUPABASE_PUBLISHABLE_KEY,wrangler.vars.SUPABASE_PUBLISHABLE_KEY);
   assert.equal(image.VITE_COCREATE_APP_ORIGIN,wrangler.vars.COCREATE_APP_ORIGINS);
-  assert.equal(image.VITE_COCREATE_APP_ORIGIN,'https://cocreate.susan981314271.workers.dev');
+  assert.equal(image.VITE_COCREATE_APP_ORIGIN,'https://2guys1canvas.com');
 });
 
 test('Google callback exchanges once, reports errors, and restores only local destinations',async()=>{

@@ -1,0 +1,19 @@
+{
+  "checkedAt": "2026-10-07T19:05:36.065Z",
+  "project": "dnsapasubeoxxsgkiotw",
+  "action": "Requested founder owner + ordinary cofounder approval",
+  "approvals": [
+    {
+      "identity": "cofounder",
+      "is_owner": false,
+      "active": true
+    },
+    {
+      "identity": "founder",
+      "is_owner": true,
+      "active": true
+    }
+  ],
+  "sqlMigrationsApplied": [],
+  "projectMembershipWrites": 0
+}

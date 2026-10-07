@@ -1,0 +1,97 @@
+{
+  "checkedAt": "2026-10-07T18:51:41.854Z",
+  "mode": "read-only",
+  "account": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "project": "dnsapasubeoxxsgkiotw",
+  "zones": [
+    {
+      "id": "9fc613d7751283d49e42549adef3b0bf",
+      "name": "2guys1canvas.com",
+      "status": "active",
+      "account": "fc419457dc350fcfada2b0a3f00bfe3e",
+      "nameservers": [
+        "amit.ns.cloudflare.com",
+        "eve.ns.cloudflare.com"
+      ]
+    }
+  ],
+  "domains": [
+    {
+      "hostname": "2guys1canvas.com",
+      "service": "cocreate",
+      "environment": "production",
+      "zone_id": "9fc613d7751283d49e42549adef3b0bf"
+    }
+  ],
+  "subdomain": {
+    "enabled": true,
+    "previews_enabled": true
+  },
+  "migrations": [
+    {
+      "version": "202609240001",
+      "name": "projects_auth_persistence"
+    },
+    {
+      "version": "202609250001",
+      "name": "email_invitations_and_sharing"
+    },
+    {
+      "version": "202609260001",
+      "name": "repair_yjs_bytea"
+    },
+    {
+      "version": "202609270001",
+      "name": "managed_ai_funding"
+    },
+    {
+      "version": "202609300001",
+      "name": "preserve_invites_and_idempotent_delivery"
+    },
+    {
+      "version": "202609300002",
+      "name": "provider_request_ledger"
+    },
+    {
+      "version": "20261001104120",
+      "name": "workflow_coordinator_fencing"
+    },
+    {
+      "version": "20261003203000",
+      "name": "coordinator_dispatch_updates"
+    },
+    {
+      "version": "20261006204612",
+      "name": "prelaunch_beta_access"
+    }
+  ],
+  "confirmedAccounts": {
+    "founder": true,
+    "cofounder": true,
+    "uuidDetails": "Retained only in ignored operator evidence"
+  },
+  "initialApprovalCount": 0,
+  "dataCounts": {
+    "projects": 30,
+    "project_members": 33,
+    "project_snapshots": 30,
+    "project_provider_requests": 21,
+    "beta_access": 0,
+    "beta_waitlist": 0
+  },
+  "buckets": [
+    {
+      "id": "cocreate-artifacts",
+      "public": false
+    }
+  ],
+  "buildApi": {
+    "status": 403,
+    "errors": [
+      {
+        "code": 10000,
+        "message": "Authentication error"
+      }
+    ]
+  }
+}

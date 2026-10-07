@@ -1,5 +1,7 @@
 # Pre-launch and private beta change packet
 
+Dated source/local handoff from 2026-10-07. The [2026-10-08 custom-domain release packet](prelaunch-domain-release.md) supersedes earlier prepared/unapplied status: live migration history/definitions match, two verified founder approvals are saved, but the latest app image and Auth/domain rollout remain pending. Retain the original evidence below; do not reapply migrations from this historical instruction without checking live history.
+
 Prepared 2026-10-07 from main `ee014a1`. Implemented and locally verified; hosted rollout remains pending.
 
 Outcome: public `/` explains the current product and saves email plus explicit consent. `/app` opens the existing authenticated application only after separate beta approval. Existing project, callback, recovery and invitation URLs remain valid.

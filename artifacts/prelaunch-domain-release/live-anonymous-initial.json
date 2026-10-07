@@ -1,0 +1,183 @@
+{
+  "checkedAt": "2026-10-07T19:02:48.846Z",
+  "scope": "live anonymous probes; no account sessions, registration, email or inference",
+  "requests": [
+    {
+      "url": "https://2guys1canvas.com/",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 1378
+    },
+    {
+      "url": "https://2guys1canvas.com/login",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 1378
+    },
+    {
+      "url": "https://2guys1canvas.com/app",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 1378
+    },
+    {
+      "url": "https://2guys1canvas.com/api/auth/config",
+      "status": 200,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 37,
+      "hosted": true
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/access",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 1378
+    },
+    {
+      "url": "https://2guys1canvas.com/api/projects",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 200
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/state",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/download/1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://2guys1canvas.com/preview/00000000-0000-4000-8000-000000000009/1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/waitlist",
+      "status": 404,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 1095,
+      "success": false
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 440
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/login",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 440
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/app",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 440
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/auth/config",
+      "status": 200,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 37,
+      "hosted": true
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/beta/access",
+      "status": 200,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 440
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/projects",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 200
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/rooms/00000000-0000-4000-8000-000000000009/state",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/rooms/00000000-0000-4000-8000-000000000009/download/1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/preview/00000000-0000-4000-8000-000000000009/1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 43
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/beta/waitlist",
+      "status": 404,
+      "location": null,
+      "contentType": "text/html; charset=utf-8",
+      "byteLength": 157,
+      "success": false
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_access?select=*&limit=1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 192
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_waitlist?select=*&limit=1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 196
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/projects?select=*&limit=1",
+      "status": 401,
+      "location": null,
+      "contentType": "application/json; charset=utf-8",
+      "byteLength": 186
+    }
+  ],
+  "sockets": [
+    {
+      "origin": "https://2guys1canvas.com",
+      "status": 403,
+      "opened": false
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "status": 401,
+      "opened": false
+    }
+  ]
+}

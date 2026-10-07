@@ -1,5 +1,6 @@
 import { Container, getContainer } from "@cloudflare/containers";
 import { env } from "cloudflare:workers";
+import { legacyOriginResponse } from './legacy-origin.js';
 
 const baseEnv = {
   NODE_ENV: "production",
@@ -48,6 +49,8 @@ export class CoCreateContainer extends Container {
 
 export default {
   async fetch(request, env) {
+    const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN);
+    if (redirect) return redirect;
     const url = new URL(request.url);
     if (url.pathname === "/__cocreate/health") {
       return Response.json({ status: "ok", service: "cocreate-worker" });

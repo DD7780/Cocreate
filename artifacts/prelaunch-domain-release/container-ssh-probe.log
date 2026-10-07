@@ -1,0 +1,7 @@
+
+X [ERROR] Web socket error: Unexpected server response: 400
+
+
+[32mIf you think this is a bug then please create an issue at https://github.com/cloudflare/workers-sdk/issues/new/choose[0m
+Note that there is a newer version of Wrangler available (4.148.0). Consider checking whether upgrading resolves this error.
+🪵  Logs were written to "C:\Users\QUTA4\AppData\Roaming\xdg.config\.wrangler\logs\wrangler-2026-10-07_19-31-47_502.log"
