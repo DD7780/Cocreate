@@ -1,0 +1,178 @@
+{
+  "checkedAt": "2026-10-07T19:43:42.934Z",
+  "scope": "Connected Supabase security advisor and read-only catalog review; no schema/grant/Auth changes",
+  "project": "dnsapasubeoxxsgkiotw",
+  "lints": [
+    {
+      "name": "rls_enabled_no_policy",
+      "title": "RLS Enabled No Policy",
+      "level": "INFO",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects cases where row level security (RLS) has been enabled on a table but no RLS policies have been created.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy",
+      "count": 3,
+      "findings": [
+        {
+          "detail": "Table \\`public.beta_access\\` has RLS enabled, but no policies exist",
+          "metadata": {
+            "name": "beta_access",
+            "type": "table",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Table \\`public.beta_registration_attempts\\` has RLS enabled, but no policies exist",
+          "metadata": {
+            "name": "beta_registration_attempts",
+            "type": "table",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Table \\`public.beta_waitlist\\` has RLS enabled, but no policies exist",
+          "metadata": {
+            "name": "beta_waitlist",
+            "type": "table",
+            "schema": "public"
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        }
+      ]
+    },
+    {
+      "name": "anon_security_definer_function_executable",
+      "title": "Public Can Execute SECURITY DEFINER Function",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects `SECURITY DEFINER` functions that are callable without signing in. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if it is not meant to be public.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0028_anon_security_definer_function_executable",
+      "count": 1,
+      "findings": [
+        {
+          "detail": "Function `public.rls_auto_enable()` can be executed by the `anon` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "rls_auto_enable",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        }
+      ]
+    },
+    {
+      "name": "authenticated_security_definer_function_executable",
+      "title": "Signed-In Users Can Execute SECURITY DEFINER Function",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Detects `SECURITY DEFINER` functions that are callable by signed-in users. Revoke `EXECUTE`, switch the function to `SECURITY INVOKER`, or move it out of your exposed API schema if signed-in users should not call it.",
+      "remediation": "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable",
+      "count": 5,
+      "findings": [
+        {
+          "detail": "Function `public.accept_project_invite(invite_hash text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/accept_project_invite`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "accept_project_invite",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "invite_hash text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Function `public.create_project(project_title text, project_mode text)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/create_project`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "create_project",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "project_title text, project_mode text",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Function `public.current_project_role(target_project_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/current_project_role`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "current_project_role",
+            "schema": "public",
+            "language": "sql",
+            "arguments": "target_project_id uuid",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Function `public.is_project_member(target_project_id uuid)` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/is_project_member`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "is_project_member",
+            "schema": "public",
+            "language": "sql",
+            "arguments": "target_project_id uuid",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        },
+        {
+          "detail": "Function `public.rls_auto_enable()` can be executed by the `authenticated` role as a `SECURITY DEFINER` function via `/rest/v1/rpc/rls_auto_enable`. Revoke `EXECUTE` or switch it to `SECURITY INVOKER` if that is not intentional.",
+          "metadata": {
+            "name": "rls_auto_enable",
+            "schema": "public",
+            "language": "plpgsql",
+            "arguments": "",
+            "security_definer": true
+          },
+          "observed_at": "2026-10-07T19:37:31.173Z"
+        }
+      ]
+    },
+    {
+      "name": "auth_leaked_password_protection",
+      "title": "Leaked Password Protection Disabled",
+      "level": "WARN",
+      "facing": "EXTERNAL",
+      "categories": [
+        "SECURITY"
+      ],
+      "description": "Leaked password protection is currently disabled.",
+      "remediation": "https://supabase.com/docs/guides/auth/password-security#password-strength-and-leaked-password-protection",
+      "count": 1,
+      "findings": [
+        {
+          "detail": "Supabase Auth prevents the use of compromised passwords by checking against HaveIBeenPwned.org. Enable this feature to enhance security.",
+          "metadata": {
+            "type": "auth",
+            "entity": "Auth"
+          }
+        }
+      ]
+    }
+  ],
+  "interpretation": {
+    "privateTables": "RLS enabled without client policies is intentional; anon/authenticated table grants were previously verified absent",
+    "projectRpcFunctions": "Authenticated definer functions are intentional, bound to current Auth UID, fresh beta approval and project authority; retain existing create/accept/role contracts",
+    "autoRlsEventTrigger": "returns event_trigger, attached to ensure_rls, fixed pg_catalog search path, follows documented auto-RLS pattern; anonymous RPC probe returns 400/0A000 and performs no DDL; grants remain unchanged",
+    "leakedPasswordProtection": "Reported disabled by the advisor; no Auth setting change or paid plan upgrade performed"
+  },
+  "liveCorroboration": {
+    "activeApprovals": 2,
+    "ownerApprovals": 1,
+    "artifactBucketPublic": false
+  },
+  "limits": [
+    "Not independent signed-in sessions or intended Linux runtime acceptance",
+    "Auth URL configuration is not exposed by the connected tools"
+  ]
+}

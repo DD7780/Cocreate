@@ -99,6 +99,7 @@
     "Deploy new image and domain routing together; push triggers Cloudflare/Supabase",
     "Independent anonymous/pending/owner/cofounder HTTP/socket/Storage/invitation/revocation checks; durable live waitlist test and project/artifact integrity"
   ],
+  "connectedSupabaseFollowUp": {"scope": "read-only security advisor, catalog/count corroboration and rejected anonymous event-trigger RPC", "evidence": "supabase-advisor-resume.json", "rpcProbe": "event-trigger-rpc-probe.json", "activeApprovals": 2, "owners": 1, "artifactBucketPublic": false, "listedDatabaseBranches": ["main"], "authUrlSettingsAvailable": false, "cloudflareBranchControls": "awaiting owner evidence before a Linux verification branch", "changesToSchemaGrantsAuthOrDeployment": false},
   "noEmailTrackingInference": true,
-  "documentation": {"relativeFileLinks": 277, "missing": 0, "duplicateDecisionHeadings": 0, "sourceAndDocsDiffCheck": "pass", "rawEvidenceDiffCheck": "fails on retained TAP/table trailing whitespace; raw logs preserved"}
+  "documentation": {"relativeFileLinks": 280, "initialCandidateRelativeFileLinks": 277, "missing": 0, "duplicateDecisionHeadings": 0, "sourceAndDocsDiffCheck": "pass", "rawEvidenceDiffCheck": "fails on retained TAP/table trailing whitespace; raw logs preserved"}
 }

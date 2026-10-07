@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-07T19:42:07.024Z",
+  "scope": "Anonymous RPC exposure probe of catalog-confirmed event_trigger function; no DDL, registration, account or project writes",
+  "status": 400,
+  "code": "0A000",
+  "message": "cannot display a value of type event_trigger"
+}

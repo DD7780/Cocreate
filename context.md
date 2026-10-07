@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Connected Supabase follow-up 2026-10-08: security advisor/catalog checks corroborate the two approvals and private artifact bucket; findings and the rejected event-trigger RPC probe are in the release packet. No schema/grant/Auth changes or deployment followed plugin installation. Cloudflare branch-control confirmation is pending to find a Linux verification path that does not deploy production; candidate `898cece` and earlier test results remain unchanged.
+
 Current release audit, 2026-10-08: all nine repository migrations were observed applied; 21 latest SQL function bodies match source. The verified founder and cofounder have owner and ordinary beta approval respectively, with existing project membership retained. Transaction-local database role/revocation checks passed; independent hosted sessions and Linux runtime acceptance remain pending. The live image still lacks waitlist routes. See [the release packet](docs/harness/prelaunch-domain-release.md) for evidence and rollout blockers. Historical prepared/unapplied statements below describe earlier runs. No migration was reapplied, email sent or inference invoked.
 
 Updated 2026-10-07 for pre-launch registration/private beta. Explicit user instructions take precedence. Local completion and hosted readiness remain separate.
