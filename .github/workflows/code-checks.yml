@@ -42,6 +42,7 @@ jobs:
         run: >-
           docker run --rm --network none --cap-drop ALL
           --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --security-opt apparmor=unconfined
           --memory 1g --memory-swap 1g --pids-limit 256
           cocreate-check node --import tsx scripts/prepare-isolation.ts
       - name: Preflight actual browser boundary
@@ -50,6 +51,7 @@ jobs:
         run: >-
           docker run --rm --network none --cap-drop ALL
           --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --security-opt apparmor=unconfined
           --memory 1g --memory-swap 1g --pids-limit 256
           cocreate-check node --import tsx --input-type=module -e
           'import {assertVerificationBrowserAvailable} from "./server/isolation/browser.ts"; await assertVerificationBrowserAvailable(); console.log("Actual Linux browser boundary passed; no inference");'
@@ -58,6 +60,7 @@ jobs:
         run: >-
           docker run --rm --network none --cap-drop ALL
           --security-opt no-new-privileges --security-opt seccomp=unconfined
+          --security-opt apparmor=unconfined
           --memory 1g --memory-swap 1g --pids-limit 256
           --env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local
           cocreate-check sh -c 'node --import tsx --test --test-concurrency=1 tests/*.test.ts'
