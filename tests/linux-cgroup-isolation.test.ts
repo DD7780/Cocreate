@@ -78,6 +78,7 @@ test('Linux PID ceiling denies fork growth and whole-group kill removes descenda
     for (let i = 0; i < 1000 && !output && child.exitCode === null; i++) await wait(5);
     assert.match(output, /PID_LIMIT_ENFORCED/);
     assert.match(fs.readFileSync(path.join(group.directory, 'pids.events'), 'utf8'), /^max\s+[1-9]\d*$/m);
+    assert.equal(group.tasksExceeded(), true);
     descendants = fs.readFileSync(path.join(group.directory, 'cgroup.procs'), 'utf8').trim().split(/\s+/).map(Number);
     assert.ok(descendants.length > 1);
     group.kill(); await closed;

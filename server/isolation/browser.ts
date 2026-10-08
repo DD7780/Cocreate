@@ -31,7 +31,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
   const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
-    '--nproc=' + isolationPolicy.linuxTasksPerUser, '--fsize=' + isolationPolicy.outputBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
+    // The attached cgroup limits browser tasks; RLIMIT_NPROC also counts unrelated Node server threads.
+    '--fsize=' + isolationPolicy.outputBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
     '--json-status-fd', '5', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
@@ -111,7 +112,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     exited = true;
     if (code !== 0 && !(finishing && !failure && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && (code === 137 || child.signalCode === 'SIGKILL'))))) {
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
-        code === 125 || code === 153 || /Too many open files/.test(stderr) || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
+        code === 125 || code === 153 || /Too many open files/.test(stderr) || group?.memoryExceeded() || group?.tasksExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
       // Pipe closure can precede the authoritative resource exit; keep explicit cancel/time/output outcomes.
       if (error instanceof IsolationError && error.code === 'isolation_resource_limit' && failure instanceof IsolationError && failure.code === 'isolation_unavailable') failure = error;

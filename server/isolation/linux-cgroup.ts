@@ -53,6 +53,10 @@ export class LinuxJobGroup {
     return /^oom_kill\s+[1-9]\d*$/m.test(fs.readFileSync(path.join(this.directory, 'memory.events'), 'utf8'));
   }
 
+  tasksExceeded(): boolean {
+    return /^max\s+[1-9]\d*$/m.test(fs.readFileSync(path.join(this.directory, 'pids.events'), 'utf8'));
+  }
+
   kill(): void { fs.writeFileSync(path.join(this.directory, 'cgroup.kill'), '1'); }
 
   async cleanup(): Promise<void> {
