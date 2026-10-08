@@ -6,8 +6,16 @@ const spawn = childProcess.spawn;
 Object.defineProperty(childProcess, 'spawn', {value: (file: string, input: readonly string[] | SpawnOptions = [], options?: SpawnOptions) => {
   const args: readonly string[] = Array.isArray(input) ? input : [];
   const settings = Array.isArray(input) ? options : input as SpawnOptions;
-  return spawn(file, file === '/usr/local/bin/cocreate-job-launcher' ? ['/usr/bin/strace', '-f', '-yy',
+  const child = spawn(file, file === '/usr/local/bin/cocreate-job-launcher' ? ['/usr/bin/strace', '-f', '-qq', '-yy',
     '-e', 'trace=ftruncate,truncate', '-e', 'signal=SIGXFSZ', ...args] : args, settings ?? {});
+  if (file === '/usr/local/bin/cocreate-job-launcher') {
+    let bytes = 0;
+    child.stderr?.on('data', chunk => {
+      bytes += Buffer.byteLength(chunk);
+      if (bytes <= 16_000) process.stderr.write(chunk);
+    });
+  }
+  return child;
 }});
 syncBuiltinESMExports();
 try {
