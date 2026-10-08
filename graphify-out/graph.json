@@ -9957,7 +9957,7 @@
       "file_type": "code",
       "norm_label": "assertverificationbrowseravailable()",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L171"
+      "source_location": "L172"
     },
     {
       "id": "server_isolation_browser_browserexecutable",
@@ -29942,7 +29942,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L172",
+      "source_location": "L173",
       "weight": 1.0
     },
     {
@@ -29954,7 +29954,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L173",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -29966,7 +29966,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L173",
+      "source_location": "L174",
       "weight": 1.0
     },
     {
@@ -29978,7 +29978,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L175",
+      "source_location": "L176",
       "weight": 1.0
     },
     {
@@ -30050,7 +30050,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L46",
+      "source_location": "L47",
       "weight": 1.0
     },
     {
@@ -70028,7 +70028,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "server/isolation/browser.ts",
-      "source_location": "L171",
+      "source_location": "L172",
       "weight": 1.0
     },
     {
@@ -85362,5 +85362,5 @@
       "source_file": "product.md"
     }
   ],
-  "built_at_commit": "08dff52102492eec95a6782e8397023bb973d5da"
+  "built_at_commit": "47a0053c6b170467075627c3b904b1afd136e2dc"
 }

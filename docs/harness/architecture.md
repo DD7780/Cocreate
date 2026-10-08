@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Linux's trusted read-only runtime includes Fontconfig configuration and system font files (`/etc/fonts`, `/usr/share/fonts`, `/usr/share/fontconfig`) alongside browser libraries. Font caches live only in the private job profile; no host font cache or private project directory is exposed. This avoids font-error floods without increasing the16,000-byte diagnostic ceiling.
+
 Browser task authority is the64-task leaf/aggregate cgroup, avoiding per-UID accounting of Node server threads. Compiler per-user policy remains unchanged. Browser descriptors are finitely bounded at256, with real EMFILE adversity; completed parent-requested cleanup137 is accepted only after successful action and then verified group/PID/profile removal. Resource counters distinguish physical memory/task failure from transport closure.
 
 Linux verifier startup disables native audio output because PulseAudio's64 MiB memfd exceeds the retained4 MiB file-size ceiling. Supported functional checks remain list/filter/favorites/sort; audio is unverified. SIGXFSZ is a resource-limit outcome. Actual child `/proc` limits are checked alongside physical-memory adversity; no memory/PID/CPU/wall/file/output or network bound is raised.

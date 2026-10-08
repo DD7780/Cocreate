@@ -36,8 +36,9 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
     '--json-status-fd', '5', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
-    '--bind', path.join(workspace, 'browser-profile'), '/profile', '--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp'];
-  for (const directory of ['/lib', '/lib64', '/usr/lib']) if (process.platform === 'linux' && fs.existsSync(directory)) linux.push('--ro-bind', directory, directory);
+    '--bind', path.join(workspace, 'browser-profile'), '/profile', '--setenv', 'HOME', '/profile', '--setenv', 'XDG_CACHE_HOME', '/profile/cache',
+    '--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp'];
+  for (const directory of ['/lib', '/lib64', '/usr/lib', '/etc/fonts', '/usr/share/fonts', '/usr/share/fontconfig']) if (process.platform === 'linux' && fs.existsSync(directory)) linux.push('--ro-bind', directory, directory);
   linux.push('--chdir', '/profile', '/browser/' + path.basename(executable), ...flags, '--user-data-dir=/profile', 'about:blank');
   const command = process.platform === 'win32' ? {executable: path.join(runtime, 'runner.exe'), args: [runtime, workspace, profile, String(process.pid), String(wallMs), 'browser', executable]} :
     process.platform === 'linux' ? {executable: '/usr/bin/prlimit', args: linux} : undefined;

@@ -540,9 +540,9 @@
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791467266.307086,
-    "seen": 1791467288.4000912,
-    "ast_hash": "f706878c20539a8f59c5f4d3de01f9e6",
+    "mtime": 1791467835.8862786,
+    "seen": 1791467860.5964556,
+    "ast_hash": "62e251e147bf2b162f8fa092e83be123",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791463289.1615882,
-    "seen": 1791463388.1446881,
-    "ast_hash": "33b12084052fe2636beadff5b6e4d05b",
+    "mtime": 1791467748.797622,
+    "seen": 1791467860.5954556,
+    "ast_hash": "71c637b8e94f87b9d82b1f15d8acfee1",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "server/isolation/browser.ts": {
-    "mtime": 1791467266.3000844,
-    "seen": 1791467288.3770862,
-    "ast_hash": "f6e86f2b589d6cfb7a869340a84afeac",
+    "mtime": 1791467835.8832715,
+    "seen": 1791467860.5713367,
+    "ast_hash": "797b113f1fa137c62a9c24eb80b75740",
     "semantic_hash": ""
   },
   "server/isolation/list-observer.cjs": {
@@ -1248,9 +1248,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-release-repair.md": {
-    "mtime": 1791467266.304085,
-    "seen": 1791467288.4080944,
-    "ast_hash": "dfcb073412dd7434fc01e12f880039e2",
+    "mtime": 1791467835.885272,
+    "seen": 1791467860.604459,
+    "ast_hash": "44636c117390a60598267f6da613704b",
     "semantic_hash": ""
   },
   "scripts/prepare-ci-cgroup.sh": {
@@ -1296,8 +1296,8 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1791466877.7637496,
-    "seen": 1791467288.3640854,
+    "mtime": 1791467288.8237312,
+    "seen": 1791467860.5598202,
     "ast_hash": "38d00f37ef98e4cf88af7b4c20481def",
     "semantic_hash": ""
   },

@@ -72,12 +72,13 @@ jobs:
           sh scripts/run-linux-check.sh node --import tsx --test --test-concurrency=1
           tests/generated-isolation.test.ts
       - name: Actual browser physical-memory and authority adversity
+        id: browser_adversity
         if: ${{ !cancelled() && steps.browser.outcome == 'success' }}
         run: >-
           sh scripts/run-linux-check.sh node --import tsx --test --test-concurrency=1
           tests/linux-cgroup-isolation.test.ts tests/candidate-verification.test.ts
       - name: Full regression suite in the production image
-        if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' }}
+        if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' && steps.browser_adversity.outcome == 'success' }}
         run: >-
           sh scripts/run-linux-check.sh sh -c 'node --import tsx --test --test-concurrency=1 tests/*.test.ts'
       - name: Remove empty disposable cgroups
