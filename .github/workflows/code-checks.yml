@@ -65,10 +65,7 @@ jobs:
           RUN apt-get update && apt-get install -y --no-install-recommends strace && rm -rf /var/lib/apt/lists/*
           DOCKER
           sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh
-          sh /tmp/cocreate-file-diagnose.sh timeout 30s strace -f -yy \
-            -e trace=ftruncate,truncate,write,pwrite64 -e raw=write,pwrite64 -e signal=SIGXFSZ \
-            node --import tsx --input-type=module -e \
-            'import {assertVerificationBrowserAvailable} from "./server/isolation/browser.ts"; await assertVerificationBrowserAvailable();'
+          sh /tmp/cocreate-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts
       - name: Actual compiler and resource adversity checks
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' }}
         run: >-
