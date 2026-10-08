@@ -19,8 +19,14 @@ Object.defineProperty(childProcess, 'spawn', {value: (file: string, input: reado
 }});
 syncBuiltinESMExports();
 try {
-  const {assertVerificationBrowserAvailable} = await import('../server/isolation/browser.js');
-  await assertVerificationBrowserAvailable();
+  const {assertVerificationBrowserAvailable, withIsolatedBrowser} = await import('../server/isolation/browser.js');
+  if (process.argv.includes('--output')) {
+    await withIsolatedBrowser(async browser => {
+      const {targetId} = await browser.call('Target.createTarget', {url: 'about:blank'});
+      const {sessionId} = await browser.call('Target.attachToTarget', {targetId, flatten: true});
+      await browser.call('Runtime.evaluate', {expression: "'x'.repeat(5*1024*1024)", returnByValue: true}, sessionId);
+    });
+  } else await assertVerificationBrowserAvailable();
 } finally {
   childProcess.spawn = spawn;
   syncBuiltinESMExports();
