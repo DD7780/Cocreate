@@ -5,7 +5,7 @@ import path from 'node:path';
 import {spawn, type ChildProcess} from 'node:child_process';
 import {once} from 'node:events';
 import {LinuxJobGroup, linuxJobLauncher} from '../server/isolation/linux-cgroup.js';
-import {withIsolatedBrowser, linuxBrowserFileDescriptors} from '../server/isolation/browser.js';
+import {withIsolatedBrowser, linuxBrowserFileDescriptors, linuxBrowserFileBytes} from '../server/isolation/browser.js';
 import {IsolationError} from '../server/isolation.js';
 
 const linux = {skip: process.platform !== 'linux'};
@@ -53,6 +53,19 @@ test('Linux CPU accounting includes busy descendants in the same finite job budg
     group.kill(); await closed;
   } finally {child.kill('SIGKILL'); await group.cleanup();}
   await removed(child.pid!); for (const pid of descendants) await removed(pid); noGroups();
+});
+
+test('Linux browser file-size ceiling rejects growth and cleans the bounded job', linux, async () => {
+  const group = LinuxJobGroup.create();
+  const child = probe("import fs from 'node:fs';fs.ftruncateSync(fs.openSync('/tmp/browser-file-ceiling-probe','w'),9*1024*1024)", ['--fsize=' + linuxBrowserFileBytes]);
+  const closed = once(child, 'close');
+  try {
+    await group.attach(child);
+    await closed;
+    assert.equal(child.signalCode, 'SIGXFSZ');
+    assert.equal(fs.statSync('/tmp/browser-file-ceiling-probe').size, 0);
+  } finally {child.kill('SIGKILL'); await group.cleanup(); fs.rmSync('/tmp/browser-file-ceiling-probe', {force:true});}
+  await removed(child.pid!); noGroups();
 });
 
 test('Linux browser file-descriptor ceiling rejects growth and cleans the bounded job', linux, async () => {
@@ -121,7 +134,7 @@ test('Linux PID ceiling denies fork growth and whole-group kill removes descenda
 test('real Linux browser physical-memory exhaustion kills its job while the application survives', linux, async () => {
   let pid = 0;
   await assert.rejects(withIsolatedBrowser(async browser => {
-    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max file size\s+4194304\s+4194304\s+bytes[ \t]*$/m);
+    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max file size\s+8388608\s+8388608\s+bytes[ \t]*$/m);
     assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max open files\s+256\s+256\s+files[ \t]*$/m);
     const {targetId} = await browser.call('Target.createTarget', {url: 'about:blank'});
     const {sessionId} = await browser.call('Target.attachToTarget', {targetId, flatten: true});

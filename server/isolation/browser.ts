@@ -10,6 +10,8 @@ export type BrowserProtocol = {
   call(method: string, params?: object, sessionId?: string): Promise<any>;
 };
 export const linuxBrowserFileDescriptors = 256;
+// Native Mojo transfers include framing; the parent still rejects protocol output above 4 MiB.
+export const linuxBrowserFileBytes = 8 * 1024 * 1024;
 const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.');
 export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFICATION_BROWSER ||
   (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium-headless-shell'));
@@ -32,7 +34,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
   const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
     // The attached cgroup limits browser tasks; RLIMIT_NPROC also counts unrelated Node server threads.
-    '--fsize=' + isolationPolicy.outputBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
+    '--fsize=' + linuxBrowserFileBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
     '--json-status-fd', '5', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
