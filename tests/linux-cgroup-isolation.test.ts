@@ -57,12 +57,14 @@ test('Linux CPU accounting includes busy descendants in the same finite job budg
 
 test('Linux browser file-size ceiling rejects growth and cleans the bounded job', linux, async () => {
   const group = LinuxJobGroup.create();
-  const child = probe("import fs from 'node:fs';fs.ftruncateSync(fs.openSync('/tmp/browser-file-ceiling-probe','w'),9*1024*1024)", ['--fsize=' + linuxBrowserFileBytes]);
+  const child = probe("import fs from 'node:fs';try{fs.ftruncateSync(fs.openSync('/tmp/browser-file-ceiling-probe','w'),9*1024*1024);throw Error('File ceiling was not enforced')}catch(error){if(error.code!=='EFBIG')throw error;console.log('FILE_LIMIT_ENFORCED:EFBIG')}", ['--fsize=' + linuxBrowserFileBytes]);
+  let output = ''; child.stdout!.on('data', chunk => output += chunk);
   const closed = once(child, 'close');
   try {
     await group.attach(child);
     await closed;
-    assert.equal(child.signalCode, 'SIGXFSZ');
+    assert.equal(child.exitCode, 0);
+    assert.match(output, /FILE_LIMIT_ENFORCED:EFBIG/);
     assert.equal(fs.statSync('/tmp/browser-file-ceiling-probe').size, 0);
   } finally {child.kill('SIGKILL'); await group.cleanup(); fs.rmSync('/tmp/browser-file-ceiling-probe', {force:true});}
   await removed(child.pid!); noGroups();
