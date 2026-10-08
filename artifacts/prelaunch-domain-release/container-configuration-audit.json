@@ -1,8 +1,8 @@
 {
-  "checkedAt": "2026-10-07T21:08:34.860Z",
+  "checkedAt": "2026-10-08T07:07:03.394Z",
   "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
   "name": "cocreate-cocreatecontainer",
-  "version": 35,
+  "version": 37,
   "max_instances": 1,
   "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
   "configurationFields": [

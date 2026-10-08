@@ -1,0 +1,103 @@
+{
+  "preparedAt": "2026-10-07T21:34:25.689Z",
+  "status": "prepared only; no rollout requested",
+  "application": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+  "workerVersion": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "resourceHash": "9ad25fe648c67e254cc26a6e58472cc7e41fbae44d635c22a0d8962a17571a45",
+  "risk": "Two same-image configuration rollouts may replace/restart the single production instance. Application warm state may need recovery. No main/Worker/image change.",
+  "steps": [
+    {
+      "action": "Reverify source/image/resources, live data fingerprints and exactly two approvals; abort on drift"
+    },
+    {
+      "action": "Add one temporary task key as previously explicitly approved"
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/fc419457dc350fcfada2b0a3f00bfe3e/containers/applications/a034de25-d538-4e4d-bdf0-bfc09824b341/rollouts",
+      "body": {
+        "description": "Temporary read-only SSH capability activation",
+        "strategy": "rolling",
+        "step_percentage": 100,
+        "kind": "full_auto",
+        "target_configuration": {
+          "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+          "wrangler_ssh": {
+            "enabled": true
+          },
+          "authorized_keys": [
+            {
+              "name": "task-owned-random-name",
+              "public_key": "runtime-generated-ssh-ed25519-public-key"
+            }
+          ],
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker"
+        }
+      }
+    },
+    {
+      "action": "Wait for completion; confirm same image/resources; run fixed read-only identity/kernel/cgroup/Bubblewrap probe"
+    },
+    {
+      "action": "Restore original empty task-key authority with configuration/image drift guards"
+    },
+    {
+      "method": "POST",
+      "path": "/accounts/fc419457dc350fcfada2b0a3f00bfe3e/containers/applications/a034de25-d538-4e4d-bdf0-bfc09824b341/rollouts",
+      "body": {
+        "description": "Remove temporary SSH capability authority",
+        "strategy": "rolling",
+        "step_percentage": 100,
+        "kind": "full_auto",
+        "target_configuration": {
+          "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+          "wrangler_ssh": {
+            "enabled": true
+          },
+          "authorized_keys": [],
+          "vcpu": 0.25,
+          "memory": "1GiB",
+          "memory_mib": 1024,
+          "disk": {
+            "size_mb": 4000,
+            "size": "4GB"
+          },
+          "network": {
+            "assign_ipv6": "none",
+            "assign_ipv4": "none",
+            "mode": "private"
+          },
+          "command": [],
+          "entrypoint": [],
+          "runtime": "firecracker"
+        }
+      }
+    },
+    {
+      "action": "Wait for completion; verify runtime bridge refuses SSH_MISSING_KEYS; confirm Worker/image/resources and data integrity; delete task key files"
+    }
+  ],
+  "notRequested": [
+    "new image",
+    "Worker deployment",
+    "main push",
+    "inference",
+    "email",
+    "hosting migration"
+  ]
+}

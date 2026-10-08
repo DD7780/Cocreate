@@ -1,0 +1,42 @@
+{
+  "beforeAt": "2026-10-07T21:38:12.308Z",
+  "afterAt": "2026-10-08T06:59:53.430Z",
+  "mode": "Read-only full database-row fingerprints; no Storage body proof",
+  "tables": {
+    "projects": {
+      "beforeCount": 30,
+      "afterCount": 30,
+      "rowsUnchanged": true
+    },
+    "project_members": {
+      "beforeCount": 33,
+      "afterCount": 33,
+      "rowsUnchanged": true
+    },
+    "project_invites": {
+      "beforeCount": 5,
+      "afterCount": 5,
+      "rowsUnchanged": true
+    },
+    "project_snapshots": {
+      "beforeCount": 30,
+      "afterCount": 30,
+      "rowsUnchanged": true
+    },
+    "artifact_versions": {
+      "beforeCount": 0,
+      "afterCount": 0,
+      "rowsUnchanged": true
+    },
+    "beta_access": {
+      "beforeCount": 2,
+      "afterCount": 2,
+      "rowsUnchanged": true
+    },
+    "beta_waitlist": {
+      "beforeCount": 0,
+      "afterCount": 0,
+      "rowsUnchanged": true
+    }
+  }
+}

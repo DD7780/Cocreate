@@ -528,21 +528,21 @@
     "semantic_hash": ""
   },
   "api.md": {
-    "mtime": 1791407921.5040748,
-    "seen": 1791408166.1531062,
-    "ast_hash": "b4183e5d79451b5fe8e5c29ced9ab783",
+    "mtime": 1791443191.6288018,
+    "seen": 1791443277.0396597,
+    "ast_hash": "e0c7b6a737f84e7cf6e239e8eb9b623b",
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791407921.4753861,
-    "seen": 1791408166.1531062,
-    "ast_hash": "70987e6dfcf4f264988ba60044d9eab2",
+    "mtime": 1791443191.62268,
+    "seen": 1791443277.0396597,
+    "ast_hash": "a9b161c8432f860171ab4a6686b59fd5",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791407921.5030665,
-    "seen": 1791408166.1531062,
-    "ast_hash": "3e5a1a60df4dbd0bc7b20f148210b5d8",
+    "mtime": 1791443191.6268017,
+    "seen": 1791443277.0396597,
+    "ast_hash": "95e0dff882a0ebbf28f3a6bae4525ee3",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791407921.5084867,
-    "seen": 1791408166.155107,
-    "ast_hash": "058229666b8fb5344f2611946e84b6cc",
+    "mtime": 1791443191.6318018,
+    "seen": 1791443277.0426629,
+    "ast_hash": "0b14328de1ad4c301930bafc17340af5",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -600,9 +600,9 @@
     "semantic_hash": "95c22307038019e494bdd0e4cb25546d"
   },
   "instructions.md": {
-    "mtime": 1791407921.479128,
-    "seen": 1791408166.1623266,
-    "ast_hash": "6f9f3a24512ec764c956bdd816494956",
+    "mtime": 1791443191.6252966,
+    "seen": 1791443277.0523,
+    "ast_hash": "e5d97cca18cfbaa4018ea491a5ce3dea",
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
@@ -1224,9 +1224,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-domain-release.md": {
-    "mtime": 1791408412.032626,
-    "seen": 1791408540.1565065,
-    "ast_hash": "7861cd2b636da499a97401e643ba2a5e",
+    "mtime": 1791443191.638448,
+    "seen": 1791443277.0513015,
+    "ast_hash": "c63ac076979ffc3e3f64aa0de5aa779b",
     "semantic_hash": ""
   },
   "worker/legacy-origin.ts": {
@@ -1242,9 +1242,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-linux-runtime-alternative.md": {
-    "mtime": 1791407862.7915764,
-    "seen": 1791408166.1603255,
-    "ast_hash": "19f2b983b26a0d85b1f95b4623a45123",
+    "mtime": 1791443191.6363842,
+    "seen": 1791443277.0513015,
+    "ast_hash": "44be3dd564d527f572c7aabfe3ab046f",
     "semantic_hash": ""
   }
 }

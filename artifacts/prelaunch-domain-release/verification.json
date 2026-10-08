@@ -1,13 +1,20 @@
 {
-  "checkedAt": "2026-10-07T19:33:40.860812+00:00",
-  "status": "prepared, not pushed or deployed; hosted release acceptance pending",
+  "checkedAt": "2026-10-08T07:06:31.639447+00:00",
+  "status": "source repairs on codex/prelaunch-beta; compiler Linux10/10; browser/full/Cloudflare capability/hosted acceptance blocked; both authorized same-image operator rollouts complete and SSH restored; no new beta release or main push",
   "baseCommit": "7e954b8858ec6fa4e093c4cd94a95742ed1e0ef4",
   "sourceSha256": {
     "wrangler.jsonc": "01a53ec852cac39e92279fdd5132c33b71c7499a82bbc72322789b5fad6cc8d5",
     "worker/container.js": "e5e0df256ae0b2e1229cdbbc57d9949d3c7436afe197f1660610f485b33f0361",
     "worker/legacy-origin.ts": "f2793c6ea06acf4af395cf12139385d3d08bf77aa33d76b034bc283bed99a7df",
-    "tests/cloudflare-container.test.ts": "d6c4739ec975bd420271810e2d818269bc5417af41cb8da0bb27420d5799f2c7",
-    "tests/project-auth.test.ts": "ec3461d13b8abc89573993baf26a54db3df0f00405c42b5a9d992597e11a0ed2"
+    "tests/cloudflare-container.test.ts": "fbb2a4eae90b297243427966da28d88f89c7dd090ac32ca73e43be96a79696a1",
+    "tests/project-auth.test.ts": "ec3461d13b8abc89573993baf26a54db3df0f00405c42b5a9d992597e11a0ed2",
+    "Dockerfile": "40771d0216f3feb598426f89f62f0a50162f440c49a0e0378d516abbe3b77a02",
+    ".github/workflows/code-checks.yml": "170cb9b7be7a499127274aaad2f48a35d90123a4cc5fed8174117e852812c34e",
+    "server/index.ts": "5a7d6d5d277760287f7325bd9eed22a8b161a4b15fd0a6c5e0a45b4fccf12657",
+    "server/isolation.ts": "f8dd539b72148c30df8f95cf4988d5b58fbbfbb8590662811c6d7779a0bd2829",
+    "server/isolation/browser.ts": "42f7d71c969f8fe1e6f750b889dd6d20738ade04936e3b6b8f81d6f4b136a789",
+    "scripts/diagnose-linux-browser.ts": "9f01e35154c95a97cea6c9be6011d173657796b01c3e6015ec0c334826df1fce",
+    "tests/generated-isolation.test.ts": "8ebc051f268c671cb34885803c44b8229a73bd4934d5d6dfcee6b306e7e02d83"
   },
   "targets": {
     "domain": "https://2guys1canvas.com",
@@ -25,7 +32,8 @@
       "cofounder": "ordinary"
     },
     "membershipChanges": false,
-    "checks": "transaction-local role/Auth UID and rollback-only revocation; not independent signed-in sessions"
+    "checks": "transaction-local role/Auth UID and rollback-only revocation; not independent signed-in sessions",
+    "freshReadOnlyEvidence": "database-repair-final.json"
   },
   "tests": {
     "full-tests-first.log": {
@@ -63,6 +71,22 @@
       "pass": 1,
       "fail": 0,
       "skipped": 0
+    },
+    "repair-routes.log": {
+      "tests": 12,
+      "pass": 11,
+      "fail": 1
+    },
+    "repair-routes-final.log": {
+      "tests": 12,
+      "pass": 12,
+      "fail": 0
+    },
+    "repair-isolation-windows.log": {
+      "tests": 10,
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0
     }
   },
   "local": {
@@ -70,11 +94,14 @@
     "build": "pass; existing chunk-size warning",
     "boundaries": "pass; repository script executed directly after pnpm11 wrapper failure; pinned config unchanged",
     "workerDryRun": "pass; containers-rollout none, no deployment",
-    "graph": "AST-only 2067 nodes,4930 edges,108 communities; SQL parser unavailable"
+    "graph": "AST-only 2079 nodes,4952 edges,121 communities; SQL parser unavailable; semantic labels dated",
+    "repairTypes": "pass; repair-types-reaper.log",
+    "repairBoundaries": "pass; repair-boundaries-reaper.log",
+    "restorationGraphEvidence": "restoration-graphify.log"
   },
   "auth": {
     "siteUrlAndExactCallback": "owner reports saved; not independently read",
-    "callbackQueryPattern": "awaiting owner confirmation",
+    "callbackQueryPattern": "owner confirmed saved; independent callback/recovery acceptance pending",
     "settingsTool": "connected Supabase project tool lacks Auth settings; browser control fails Windows sandbox startup"
   },
   "hosted": {
@@ -86,20 +113,137 @@
     "betaAccessGet": "HTML200 from old app image",
     "anonymousProtectedHttp": "401",
     "canonicalNoAuthWebSocket": "403 origin mismatch",
-    "legacyNoAuthWebSocket": 401
+    "legacyNoAuthWebSocket": 401,
+    "containerConfigurationVersion": 37,
+    "sameImageRolloutEvidence": "restoration-final.json",
+    "freshPublicRoot": 200,
+    "freshAuthConfig": {
+      "status": 200,
+      "mode": "supabase"
+    }
   },
   "externalFailures": {
     "cloudflare": "user-supplied build log: registry layer PUT timed out awaiting response headers, then missing-image/Docker exit1; signed upload URL omitted",
-    "github": "job112511789988 logs show generated isolation unavailable on Ubuntu; current workflow omits required OS/browser setup",
-    "containerSsh": "supported CLI read-only id probe failed with WebSocket400; SSH not enabled/reconfigured by this task"
+    "github": "current Dockerfile build/compiler preflight/adversity pass; browser preflight fails under RLIMIT_AS; full suite skipped",
+    "containerSsh": "two same-image rollouts completed; probe inactive before command; version37 running deployment zero keys, runtime SSH_MISSING_KEYS and task file removal verified"
   },
   "releaseBlockers": [
-    "Auth query-pattern confirmation and real callback/recovery acceptance",
-    "Intended Linux image/compiler/browser/adversity acceptance; no local Docker/WSL",
-    "Deploy new image and domain routing together; push triggers Cloudflare/Supabase",
-    "Independent anonymous/pending/owner/cofounder HTTP/socket/Storage/invitation/revocation checks; durable live waitlist test and project/artifact integrity"
+    "Chromium browser startup incompatible with current address-space limit; verified per-job physical-memory alternative and accepted policy decision required",
+    "Actual Cloudflare guest namespace/cgroup capability proof; corrected running-instance SSH retry requires additional restart approval, or equivalent supported diagnostic",
+    "Required complete regression suite (Linux full skipped; earlier Windows full222/226 retained)",
+    "New image/canonical Worker deployment and exact source/image attestation; main held until runtime gates pass",
+    "Independent pending/owner/cofounder sessions, callback/recovery/invites, live durable waitlist/deduplication and HTTP/socket/Storage/artifact/revocation/project integrity acceptance"
   ],
-  "connectedSupabaseFollowUp": {"scope": "read-only security advisor, catalog/count corroboration and rejected anonymous event-trigger RPC", "evidence": "supabase-advisor-resume.json", "rpcProbe": "event-trigger-rpc-probe.json", "activeApprovals": 2, "owners": 1, "artifactBucketPublic": false, "listedDatabaseBranches": ["main"], "authUrlSettingsAvailable": false, "cloudflareBranchControls": "awaiting owner evidence before a Linux verification branch", "changesToSchemaGrantsAuthOrDeployment": false},
+  "connectedSupabaseFollowUp": {
+    "scope": "read-only security advisor, catalog/count corroboration and rejected anonymous event-trigger RPC",
+    "evidence": "supabase-advisor-resume.json",
+    "rpcProbe": "event-trigger-rpc-probe.json",
+    "activeApprovals": 2,
+    "owners": 1,
+    "artifactBucketPublic": false,
+    "listedDatabaseBranches": [
+      "main"
+    ],
+    "authUrlSettingsAvailable": false,
+    "cloudflareBranchControls": "owner confirmed production main and nonproduction builds disabled",
+    "changesToSchemaGrantsAuthOrDeployment": false
+  },
   "noEmailTrackingInference": true,
-  "documentation": {"relativeFileLinks": 280, "initialCandidateRelativeFileLinks": 277, "missing": 0, "duplicateDecisionHeadings": 0, "sourceAndDocsDiffCheck": "pass", "rawEvidenceDiffCheck": "fails on retained TAP/table trailing whitespace; raw logs preserved"}
+  "documentation": {
+    "relativeFileLinks": 311,
+    "initialCandidateRelativeFileLinks": 277,
+    "missing": 0,
+    "duplicateDecisionHeadings": 0,
+    "sourceAndDocsDiffCheck": "pass",
+    "rawEvidenceDiffCheck": "fails on retained TAP/table trailing whitespace; raw logs preserved"
+  },
+  "linuxCI": {
+    "commit": "827f62752acf596a8a669dd6a4d128f12a2a0546",
+    "branch": "codex/prelaunch-beta",
+    "run": "https://github.com/DD7780/Cocreate/actions/runs/37690093420",
+    "status": "failure: browser; actual compiler adversity pass 10/10; full suite skipped",
+    "supabasePreview": "skipped",
+    "cloudflareVersion": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+    "cloudflareDeploymentUnchangedAt": "2026-10-08T07:02:53.804Z",
+    "main": "7e954b8858ec6fa4e093c4cd94a95742ed1e0ef4",
+    "ownerReportedSettings": {
+      "productionBranch": "main",
+      "nonproductionBuilds": false,
+      "queryCallbackSaved": true
+    },
+    "workflowSha256": "170cb9b7be7a499127274aaad2f48a35d90123a4cc5fed8174117e852812c34e",
+    "runs": [
+      {
+        "commit": "c5693024f9868ec5570acf122f8b31c5288ab90c",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37680815765",
+        "log": "linux-ci-first.log",
+        "result": "AppArmor slave mount denied"
+      },
+      {
+        "commit": "f54dda15be8364096866d63b57bcf140f5981aae",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37681178898",
+        "log": "linux-ci-second.log",
+        "result": "private proc mount denied"
+      },
+      {
+        "commit": "73fd559d7666ebc7ab93dcb0fba1e902189f1d5f",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37684569224",
+        "log": "linux-ci-third.log",
+        "result": "compiler readiness pass; unsupported browser preserve-fds"
+      },
+      {
+        "commit": "d24b9093328658e52f392f02f36116804842e6a3",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37685306237",
+        "log": "linux-ci-fourth.log",
+        "result": "compiler readiness pass; browser exit133"
+      },
+      {
+        "commit": "a9731377ea560e92d5d127770c4ebed33ca13cb4",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37686023902",
+        "log": "linux-ci-fifth.log",
+        "result": "compiler/import 2/2; trusted browser virtual reservation comparison only"
+      },
+      {
+        "commit": "dbd5cfc9a643203e6f2629998ea78041a6af49fb",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37688137919",
+        "log": "linux-ci-sixth.log",
+        "result": "compiler adversity 4 pass,5 fail,1 skip"
+      },
+      {
+        "commit": "b124935504b8615c4e0669e37d8cdf199f9961e8",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37689050453",
+        "log": "linux-ci-seventh.log",
+        "result": "compiler adversity 3 pass,7 cleanup fail,0 skip"
+      },
+      {
+        "commit": "827f62752acf596a8a669dd6a4d128f12a2a0546",
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/37690093420",
+        "log": "linux-ci-eighth.log",
+        "result": "compiler adversity10/10; browser failure; full skipped"
+      }
+    ],
+    "actualCompiler": {
+      "pass": 10,
+      "fail": 0,
+      "skipped": 0,
+      "scope": "secret/path/network/normal compile/resource/timeout/cancel/cleanup in disposable production image; not Cloudflare kernel"
+    }
+  },
+  "operatorProbe": {
+    "evidence": "cloudflare-rollout-capability-probe.json",
+    "initialFailureEvidence": "cloudflare-rollout-capability-probe-initial.json",
+    "runtimeCapabilitiesVerified": false,
+    "remoteCommandRan": false,
+    "authorityRestored": true,
+    "temporaryFilesRemoved": true,
+    "rolloutRequested": true,
+    "rolloutsCompleted": 2,
+    "activationPlan": "ssh-activation-plan.json",
+    "approval": "owner explicitly approved the two completed same-image rollouts",
+    "restorationEvidence": "restoration-final.json",
+    "dataIntegrityEvidence": "rollout-data-integrity.json",
+    "databaseRowsUnchanged": true,
+    "retryPlan": "ssh-running-instance-retry-plan.json",
+    "additionalRolloutApproval": "not granted; owner asked whether necessary"
+  }
 }

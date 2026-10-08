@@ -1,6 +1,6 @@
 # 2guys1canvas implemented API contracts
 
-Release audit 2026-10-08: source contracts below are not proof of current deployment. Live `/api/beta/access` returned SPA HTML and waitlist POST returned 404. Prepared Worker routing redirects legacy GET/HEAD links to the custom domain while preserving path/query; legacy mutations and WebSocket upgrades return 421 without application proxying. Canonical requests retain existing app authorization. [Execution and evidence](docs/harness/prelaunch-domain-release.md).
+Release audit 2026-10-08: source contracts below are not proof of current deployment. Live `/api/beta/access` returned SPA HTML and waitlist POST returned 404. Same-image operator rollouts changed container configuration 35 → 36 → 37; the Worker and image remain the previous release. Fresh root and Auth configuration return 200, with Supabase mode. Prepared Worker routing redirects legacy GET/HEAD while preserving path/query; legacy mutations and WebSocket upgrades return 421. Canonical requests retain existing app authorization. Runtime SSH now rejects missing keys after verified restoration; no public diagnostic API was added. [Execution and evidence](docs/harness/prelaunch-domain-release.md).
 
 Source-inspected 2026-10-08 through the blocked release repair. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 

@@ -1,0 +1,11 @@
+{
+  "scope": "Read-only trusted administration; not signed-in application sessions",
+  "checked_at": "2026-10-07 21:24:15.165894+00",
+  "active_approvals": 2,
+  "owners": 1,
+  "founder_verified": true,
+  "cofounder_verified": true,
+  "waitlist_records": 0,
+  "artifact_bucket_public": false,
+  "expected_migrations": 9
+}

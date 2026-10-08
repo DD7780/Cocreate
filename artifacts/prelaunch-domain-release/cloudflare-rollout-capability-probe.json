@@ -1,0 +1,49 @@
+{
+  "scope": "Temporary administrator SSH authority; fixed read-only capability command only",
+  "started": "2026-10-07T21:38:49.174Z",
+  "keyName": "prelaunch-readonly-probe-94b81bb1-1875-4278-8741-10af353a2c79",
+  "imageChanged": false,
+  "rolloutRequested": true,
+  "instance": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f",
+  "originalVersion": 35,
+  "changedVersion": 35,
+  "rollouts": [
+    {
+      "id": "ec3e29cc-8e1b-4fe3-97de-2a2ce155d784",
+      "label": "activate",
+      "status": "completed",
+      "targetVersion": 36
+    },
+    {
+      "id": "ee8ba8a0-8642-40ba-9687-5d07095651b7",
+      "label": "restore",
+      "status": "completed",
+      "targetVersion": 37
+    }
+  ],
+  "handshake": {
+    "status": 1
+  },
+  "ssh": {
+    "status": 255,
+    "stdout": "",
+    "stderr": "\u001b[31mX \u001b[41;31m[\u001b[41;97mERROR\u001b[41;31m]\u001b[0m \u001b[1mInstance 8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f not found\u001b[0m\n\n\n🪵  Logs were written to \"C:\\Users\\QUTA4\\AppData\\Roaming\\xdg.config\\.wrangler\\logs\\wrangler-2026-10-07_21-40-36_005.log\"\nConnection closed by UNKNOWN port 65535\r\n"
+  },
+  "authorityRestored": true,
+  "finished": "2026-10-07T21:43:01.028Z",
+  "initialRestoreFailure": "Task rollout restore completion timeout",
+  "restoredVersion": 37,
+  "authorizedKeyCountAfter": 0,
+  "finalBridge": {
+    "checkedAt": "2026-10-08T06:59:42.776Z",
+    "scope": "SSH handshake response metadata only; no key/config mutation or remote command",
+    "controlPlaneStatus": 200,
+    "bridgeHost": "ssh.containers.cloudflare.com",
+    "bridgeStatus": 400,
+    "response": "{\"success\":false,\"result\":null,\"errors\":[{\"code\":1000,\"message\":\"{\\\"error\\\":\\\"SSH_MISSING_KEYS: no ssh keys found\\\"}\"}],\"messages\":[]}",
+    "transportError": true
+  },
+  "temporaryFilesRemoved": true,
+  "verifiedAt": "2026-10-08T07:00:26.899Z",
+  "dataRowsUnchanged": true
+}

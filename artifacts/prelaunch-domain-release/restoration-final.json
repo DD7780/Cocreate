@@ -1,0 +1,155 @@
+{
+  "checkedAt": "2026-10-08T07:02:53.804Z",
+  "application": {
+    "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+    "version": 37,
+    "keyCount": 0,
+    "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+    "nonSshConfigurationPreserved": true
+  },
+  "rollout": {
+    "id": "ee8ba8a0-8642-40ba-9687-5d07095651b7",
+    "status": "completed",
+    "targetVersion": 37,
+    "progress": {
+      "total_steps": 1,
+      "current_step": 1,
+      "updated_instances": 1,
+      "total_instances": 1,
+      "version_distribution": {
+        "target_version_instances": 1,
+        "current_version_instances": 0,
+        "target_version_percentage": 100
+      }
+    },
+    "steps": [
+      {
+        "id": 1,
+        "status": "completed",
+        "reason": "current step(id=1) has the required target instances. moving this step to completed."
+      }
+    ]
+  },
+  "deployments": [
+    {
+      "id": "d0334a84-1b51-4b18-8fb6-fe1b23c6e162",
+      "version": 37,
+      "keyCount": 0,
+      "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+      "currentPlacement": {
+        "id": "7900bf3b-2b51-56c2-e690-cb59006a9524",
+        "created_at": "2026-10-07T21:44:55.494000128Z",
+        "deployment_id": "d0334a84-1b51-4b18-8fb6-fe1b23c6e162",
+        "deployment_version": 37,
+        "terminate": false,
+        "events": [
+          {
+            "id": "6423d15f-27eb-4085-9978-5a2a0e284f6d",
+            "time": "2026-10-07T21:46:41.541Z",
+            "type": "Info",
+            "name": "VMStarted",
+            "message": "the vm started successfully",
+            "details": {
+              "duration": "7.286s"
+            },
+            "statusChange": {
+              "container_status": "stopped",
+              "health": "running"
+            }
+          },
+          {
+            "id": "79b7bd10-604f-48ba-b22e-04465e3ffc15",
+            "time": "2026-10-07T22:02:44.098Z",
+            "type": "Info",
+            "name": "DurableObjectConnected",
+            "message": "a durable object has connected to the container",
+            "details": {},
+            "statusChange": {
+              "durable_object": "connected",
+              "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+            }
+          },
+          {
+            "id": "79d8d45d-d9fa-404b-a987-1592fa73d117",
+            "time": "2026-10-07T22:02:44.367Z",
+            "type": "Info",
+            "name": "ContainerStarted",
+            "message": "the container started successfully",
+            "details": {
+              "duration": "16m10.112s"
+            },
+            "statusChange": {
+              "container_status": "running"
+            }
+          },
+          {
+            "id": "6c69cfb2-94f0-4ba1-ba39-77fc449875d3",
+            "time": "2026-10-08T05:56:30.66Z",
+            "type": "Info",
+            "name": "DurableObjectConnected",
+            "message": "a durable object has connected to the container",
+            "details": {},
+            "statusChange": {
+              "durable_object": "connected",
+              "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+            }
+          },
+          {
+            "id": "5c7b2932-7045-445c-9e9e-b63481b27aff",
+            "time": "2026-10-08T06:17:21.05Z",
+            "type": "Info",
+            "name": "DurableObjectConnected",
+            "message": "a durable object has connected to the container",
+            "details": {},
+            "statusChange": {
+              "durable_object": "connected",
+              "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+            }
+          }
+        ],
+        "status": {
+          "health": "running",
+          "host": "15m806",
+          "container_status": "running",
+          "durable_object": "connected",
+          "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+        },
+        "last_update": "2026-10-08T06:17:21.063000064Z",
+        "durable_object_actor_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+      },
+      "placementsRef": "/deployments/d0334a84-1b51-4b18-8fb6-fe1b23c6e162/placements"
+    }
+  ],
+  "worker": [
+    {
+      "id": "c7b0185d-68de-4672-974d-43ed2dd1aae6",
+      "versions": [
+        {
+          "version_id": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+          "percentage": 100
+        }
+      ]
+    }
+  ],
+  "public": [
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "cacheStatus": null,
+      "age": null,
+      "cacheControl": "public, max-age=0",
+      "bodyHash": "5412d066a62ff884b5efcbf59d86f582f74c7414d38163cb0513821a53da90a0"
+    },
+    {
+      "path": "/api/auth/config",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "cacheStatus": null,
+      "age": null,
+      "cacheControl": null,
+      "bodyHash": "33ba3b52223dfcbfb44f91057a6e9c517167e5a6c4bd8eb57e9c0a04ef0a7859",
+      "authMode": "supabase"
+    }
+  ]
+}

@@ -1,0 +1,21 @@
+{
+  "preparedAt": "2026-10-08T07:03:00Z",
+  "status": "prepared only; no additional rollout requested",
+  "application": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+  "baselineVersion": 37,
+  "workerVersion": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "baselineAuthorizedKeys": [],
+  "risk": "Two additional same-image configuration rollouts can restart the single production container. Main, Worker, image, resources and private data are preserved. Existing two-rollout approval was consumed by the completed attempt.",
+  "correction": "Do not equate rollout or VM health with a running application container. Previous restore placement VM started at 21:46:41Z, but ContainerStarted appeared at 22:02:44Z. The failed activation SSH attempt ran no command.",
+  "steps": [
+    "Read and compare Worker/image/resources/beta cohort/database fingerprints; abort on drift. Confirm current baseline deployment has zero authorized keys and bridge rejects SSH_MISSING_KEYS.",
+    "Create one restricted task-owned Ed25519 key outside OneDrive; add only that public key to the current application configuration. Apply one same-image activation rollout.",
+    "Warm the existing canonical root and wait up to 25 minutes in bounded polls for the exact target deployment/version and primary placement to show container_status=running, health=running and durable_object=connected. Confirm its image/resources/key before any SSH attempt; use its current Durable Object ID.",
+    "Run only the fixed read-only command listed below through authenticated SSH. No production job, cgroup write, secret/environment/project content read or resource adversity.",
+    "In finally, remove the exact task key from application configuration with image/resource/other-key drift guards. Apply one same-image empty-key restoration rollout, including if activation/probe fails.",
+    "Wait for the restored target container to be running. Verify all current deployment key arrays are empty and the runtime bridge rejects SSH_MISSING_KEYS. Verify Worker/image/resources and database fingerprints; delete exact task key files and retain sanitized results. Report incomplete restoration honestly if the platform fails. Do not issue further rollouts automatically."
+  ],
+  "readOnlyCommand": "id; uname -r; /usr/bin/bwrap --version; /usr/bin/findmnt -n -o FSTYPE,OPTIONS /sys/fs/cgroup; test -w /sys/fs/cgroup && echo CGROUP_ROOT_WRITABLE || echo CGROUP_ROOT_NOT_WRITABLE; cat /sys/fs/cgroup/cgroup.controllers 2>/dev/null; cat /proc/sys/kernel/unprivileged_userns_clone 2>/dev/null; cat /proc/sys/user/max_user_namespaces 2>/dev/null",
+  "excluded": ["main push", "new Worker/image", "memory-policy change", "cgroup modification", "candidate execution", "paid inference", "email", "new hosting service"]
+}
