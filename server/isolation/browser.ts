@@ -31,6 +31,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     '--disable-audio-output',
     '--disable-crashpad-for-testing', '--disable-background-networking', '--disable-component-update', '--disable-sync',
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
+  // Checks open pages serially; reuse a renderer instead of growing a pool past the kernel task ceiling.
+  if (process.platform === 'linux') flags.push('--renderer-process-limit=1');
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
   const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
     // The attached cgroup limits browser tasks; RLIMIT_NPROC also counts unrelated Node server threads.

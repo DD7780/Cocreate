@@ -1,0 +1,45 @@
+{
+  "source": "21216a8c7ea17a750b0a169ace85d9b85bc15da1",
+  "run": "https://github.com/DD7780/Cocreate/actions/runs/37805516714",
+  "job": 113408628292,
+  "compiler": {
+    "pass": 10,
+    "fail": 0,
+    "skips": 0
+  },
+  "browser": {
+    "pass": 15,
+    "fail": 0,
+    "skips": 0
+  },
+  "full": {
+    "pass": 237,
+    "fail": 1,
+    "skips": 0
+  },
+  "failure": [
+    "2026-10-08T16:05:09.4065684Z not ok 53 - real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate",
+    "2026-10-08T16:05:09.4066809Z   ---",
+    "2026-10-08T16:05:09.4067521Z   duration_ms: 2572.484878",
+    "2026-10-08T16:05:09.4067853Z   type: 'test'",
+    "2026-10-08T16:05:09.4068273Z   location: '/app/tests/candidate-verification.test.ts:1:1385'",
+    "2026-10-08T16:05:09.4068591Z   failureType: 'testCodeFailure'",
+    "2026-10-08T16:05:09.4068887Z   error: 'Verification renderer exceeded its process bound.'",
+    "2026-10-08T16:05:09.4069177Z   code: 'isolation_resource_limit'",
+    "2026-10-08T16:05:09.4069409Z   stack: |-",
+    "2026-10-08T16:05:09.4069669Z     Socket.<anonymous> (/app/server/isolation/browser.ts:114:15)",
+    "2026-10-08T16:05:09.4069970Z     Socket.emit (node:events:519:28)",
+    "2026-10-08T16:05:09.4070230Z     addChunk (node:internal/streams/readable:561:12)",
+    "2026-10-08T16:05:09.4070585Z     readableAddChunkPushByteMode (node:internal/streams/readable:512:3)",
+    "2026-10-08T16:05:09.4070939Z     Readable.push (node:internal/streams/readable:392:5)",
+    "2026-10-08T16:05:09.4071272Z     Pipe.onStreamRead (node:internal/stream_base_commons:189:23)",
+    "2026-10-08T16:05:22.3555367Z   ...",
+    "2026-10-08T16:05:22.3556200Z # Subtest: compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+    "2026-10-08T16:05:22.3556908Z ok 54 - compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+    "2026-10-08T16:05:22.3557289Z   ---",
+    "2026-10-08T16:05:22.3557462Z   duration_ms: 12953.603103",
+    "2026-10-08T16:05:22.3557657Z   type: 'test'",
+    "2026-10-08T16:05:22.3557816Z   ..."
+  ],
+  "cause": "The actual leaf pids.events max counter identifies process/task bound; limits remain 64 tasks. Serial checks need renderer reuse, not a quota increase."
+}

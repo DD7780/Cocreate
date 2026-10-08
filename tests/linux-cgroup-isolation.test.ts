@@ -28,10 +28,13 @@ test('Linux browser cold starts execute JavaScript repeatedly and clean every de
   for (let attempt = 0; attempt < 3; attempt++) {
     let pid = 0;
     await withIsolatedBrowser(async browser => {
-      const {targetId} = await browser.call('Target.createTarget', {url:'about:blank'});
-      const {sessionId} = await browser.call('Target.attachToTarget', {targetId,flatten:true});
-      const result = await browser.call('Runtime.evaluate', {expression:'1+1',returnByValue:true}, sessionId);
-      assert.equal(result.result.value, 2);
+      for (let page = 0; page < 3; page++) {
+        const {targetId} = await browser.call('Target.createTarget', {url:'about:blank'});
+        const {sessionId} = await browser.call('Target.attachToTarget', {targetId,flatten:true});
+        const result = await browser.call('Runtime.evaluate', {expression:'1+1',returnByValue:true}, sessionId);
+        assert.equal(result.result.value, 2);
+        await browser.call('Target.closeTarget', {targetId});
+      }
     }, {onStarted: value => {pid = value;}});
     assert.ok(pid); await removed(pid); noGroups();
   }
