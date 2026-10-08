@@ -109,8 +109,9 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       try {
         const reply = JSON.parse(message), task = pending.get(reply.id);
         if (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed') {
-          const error = group?.cpuExceeded() || group?.memoryExceeded() || group?.tasksExceeded()
-            ? new IsolationError('isolation_resource_limit', 'Verification renderer exceeded its resource bound.') : unavailable();
+          const resource = group?.cpuExceeded() ? 'CPU' : group?.memoryExceeded() ? 'memory' : group?.tasksExceeded() ? 'process' : undefined;
+          const error = resource
+            ? new IsolationError('isolation_resource_limit', `Verification renderer exceeded its ${resource} bound.`) : unavailable();
           error.cause = {event: reply.method, status: reply.params?.status, errorCode: reply.params?.errorCode};
           stop(error);
         }
