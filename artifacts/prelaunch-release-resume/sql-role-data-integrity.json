@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-08T12:19:55.923Z",
+  "scope": "Full read-only row fingerprints from 11:38 before final native read-only commands/rollback role tests through current check; no Storage body proof",
+  "beforeAt": "2026-10-08T11:38:49.246Z",
+  "checks": {
+    "projects": {
+      "count": 30,
+      "matched": true
+    },
+    "project_members": {
+      "count": 33,
+      "matched": true
+    },
+    "project_invites": {
+      "count": 5,
+      "matched": true
+    },
+    "project_snapshots": {
+      "count": 30,
+      "matched": true
+    },
+    "artifact_versions": {
+      "count": 0,
+      "matched": true
+    },
+    "beta_access": {
+      "count": 2,
+      "matched": true
+    },
+    "beta_waitlist": {
+      "count": 0,
+      "matched": true
+    }
+  },
+  "allMatched": true
+}

@@ -1,17 +1,17 @@
 # Graph Report - Devoffice  (2026-10-08)
 
 ## Corpus Check
-- 213 files · ~194,709 words
+- 214 files · ~195,249 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 13 file(s) not represented in the graph (top: (none) 5, .css 5, .example 1)
 
 ## Summary
-- 2126 nodes · 5011 edges · 121 communities (105 shown, 16 thin omitted)
+- 2126 nodes · 5011 edges · 120 communities (104 shown, 16 thin omitted)
 - Extraction: 97% EXTRACTED · 3% INFERRED · 0% AMBIGUOUS · INFERRED: 172 edges (avg confidence: 0.86)
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `ca7bf55f`
+- Built from commit: `1ca4343a`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -95,7 +95,6 @@
 - verify-intent-ui.ts
 - 2guys1canvas context handoff
 - 2guys1canvas product brief
-- release-fingerprint.mjs
 - managed-catalog.ts
 - .mcp.json
 - ProjectFile
@@ -164,7 +163,7 @@
 - **Feature edit authority and import boundaries** — instructions_feature_packet, instructions_shared_boundary, instructions_source_ownership, instructions_jev_advisory [EXTRACTED 1.00]
 - **Collaborative submission-to-promoted-artifact flow** — product_core_loop, product_capture_order, product_durable_receipts, product_bounded_recovery [EXTRACTED 1.00]
 
-## Communities (121 total, 16 thin omitted)
+## Communities (120 total, 16 thin omitted)
 
 ### Community 0 - "rooms.ts"
 Cohesion: 0.06
@@ -415,8 +414,8 @@ Cohesion: 0.33
 Nodes (5): ignorePatterns, printWidth, $schema, singleQuote, sortPackageJson
 
 ### Community 63 - "ref_node_fs"
-Cohesion: 0.06
-Nodes (30): ref_node_child_process, ref_node_fs, ref_node_net, ref_node_os, ref_node_path, ref_node_vm, browser, output (+22 more)
+Cohesion: 0.05
+Nodes (35): ref_node_child_process, ref_node_fs, ref_node_net, ref_node_os, ref_node_path, ref_node_vm, browser, output (+27 more)
 
 ### Community 64 - "invitation-email.ts"
 Cohesion: 0.33
@@ -469,10 +468,6 @@ Nodes (20): 2026-09-24 — Supabase project transition, 2guys1canvas context han
 ### Community 78 - "2guys1canvas product brief"
 Cohesion: 0.10
 Nodes (20): 2guys1canvas product brief, Accepted workflow pivot (2026-09-19), Active MVP (2026-09-28), Active MVP (2026-09-28), Active presentation update (2026-09-30), Authenticated saved projects (2026-09-24), Current reliability and shared context requirement (2026-10-01), Historical managed-model product brief (+12 more)
-
-### Community 79 - "release-fingerprint.mjs"
-Cohesion: 0.33
-Nodes (5): collect(), config, files, fingerprint, hash
 
 ### Community 80 - "managed-catalog.ts"
 Cohesion: 0.15
@@ -587,23 +582,23 @@ Cohesion: 0.67
 Nodes (3): Transport and authentication, request(), token()
 
 ## Knowledge Gaps
-- **624 isolated node(s):** `supabase`, `$schema`, `singleQuote`, `printWidth`, `sortPackageJson` (+619 more)
-  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 952 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
+- **625 isolated node(s):** `supabase`, `$schema`, `singleQuote`, `printWidth`, `sortPackageJson` (+620 more)
+  These have ≤1 connection - possible missing edges or undocumented components. (Counts symbols only; 953 node(s) total have ≤1 connection when file, concept and rationale nodes are included.)
 - **16 thin communities (<3 nodes) omitted from report** — run `graphify query` to explore isolated nodes.
 
 ## Suggested Questions
 _Questions this graph is uniquely positioned to answer:_
 
 - **Why does `yjs` connect `index.ts` to `live-collaboration-check.mjs`, `rooms.ts`, `reliability.test.ts`, `supabase-platform.ts`, `CoCreateProvider`, `App.tsx`, `fixtures/multiuser-baseline.ts`, `measure-responsiveness.ts`, `ref_node_crypto`, `package.json`, `artifact-restoration.test.ts`, `local-drafts.test.ts`?**
-  _High betweenness centrality (0.055) - this node is a cross-community bridge._
+  _High betweenness centrality (0.058) - this node is a cross-community bridge._
 - **Why does `RoomManager` connect `rooms.ts` to `ai-presets.test.ts`, `tool-registry.ts`, `supabase-platform.ts`, `EventStore`, `reliability.test.ts`, `fixtures/multiuser-baseline.ts`, `ref_node_crypto`, `Step 09 - Conditional interpretation concurrency and topology evaluation`, `Shared response models`, `index.ts`, `artifact-restoration.test.ts`, `workflow-budget.test.ts`, `ref_node_fs`?**
-  _High betweenness centrality (0.053) - this node is a cross-community bridge._
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **Why does `2guys1canvas context handoff` connect `2guys1canvas context handoff` to `context.md`?**
   _High betweenness centrality (0.044) - this node is a cross-community bridge._
 - **Are the 33 inferred relationships involving `createCoCreateServer()` (e.g. with `.applyRecommendedAI()` and `.assignAI()`) actually correct?**
   _`createCoCreateServer()` has 33 INFERRED edges - model-reasoned connections that need verification._
 - **What connects `supabase`, `$schema`, `singleQuote` to the rest of the system?**
-  _624 weakly-connected nodes found - possible documentation gaps or missing edges._
+  _625 weakly-connected nodes found - possible documentation gaps or missing edges._
 - **Should `rooms.ts` be split into smaller, more focused modules?**
   _Cohesion score 0.056844655670487375 - nodes in this community are weakly interconnected._
 - **Should `README.md` be split into smaller, more focused modules?**

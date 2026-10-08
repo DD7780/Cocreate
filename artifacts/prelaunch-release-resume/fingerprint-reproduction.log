@@ -1,0 +1,18 @@
+{"mode":"working-windows-path","result":{"fingerprint":"3725f112f2d0b4e23d0a728506c49f74b7fd853d1a880d3abf34cfca57db46c5","sourceFiles":134,"scope":"Source/build input attestation only; not runtime acceptance"},"byteDifferences":[]}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\prelaunch-release\reproduce-fingerprint.cjs:9
+  if(r.status!==0)throw Error('Git input unavailable: '+name);
+                  ^
+
+Error: Git input unavailable: src/generated/prisma/browser.ts
+    at Object.readFileSync (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\prelaunch-release\reproduce-fingerprint.cjs:9:25)
+    at evalmachine.<anonymous>:23:20
+    at Script.runInContext (node:vm:149:12)
+    at Script.runInNewContext (node:vm:154:17)
+    at Object.runInNewContext (node:vm:310:38)
+    at Object.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\prelaunch-release\reproduce-fingerprint.cjs:13:5)
+    at Module._compile (node:internal/modules/cjs/loader:1781:14)
+    at Object..js (node:internal/modules/cjs/loader:1913:10)
+    at Module.load (node:internal/modules/cjs/loader:1505:32)
+    at Function._load (node:internal/modules/cjs/loader:1309:12)
+
+Node.js v22.23.2

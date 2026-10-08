@@ -10668,18 +10668,6 @@
       "source_location": "L53"
     },
     {
-      "id": "scripts_release_fingerprint_collect",
-      "label": "collect()",
-      "_callable": true,
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "collect()",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L7"
-    },
-    {
       "id": "server_requirements_acceptancefor",
       "label": "acceptanceFor()",
       "_callable": true,
@@ -15752,7 +15740,7 @@
       "node_kind": "heading",
       "norm_label": "fresh evidence",
       "source_file": "docs/harness/prelaunch-release-repair.md",
-      "source_location": "L23"
+      "source_location": "L25"
     },
     {
       "id": "docs_harness_prelaunch_release_repair_pre_launch_release_repair_2026_10_08",
@@ -18030,6 +18018,72 @@
       "source_location": "L22"
     },
     {
+      "id": "scripts_release_fingerprint",
+      "label": "release-fingerprint.mjs",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "release-fingerprint.mjs",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L1"
+    },
+    {
+      "id": "scripts_release_fingerprint_buildfiles",
+      "label": "buildFiles",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "buildfiles",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L8"
+    },
+    {
+      "id": "scripts_release_fingerprint_config",
+      "label": "config",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "config",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L17"
+    },
+    {
+      "id": "scripts_release_fingerprint_files",
+      "label": "files",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "files",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L15"
+    },
+    {
+      "id": "scripts_release_fingerprint_fingerprint",
+      "label": "fingerprint",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "fingerprint",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L28"
+    },
+    {
+      "id": "scripts_release_fingerprint_hash",
+      "label": "hash",
+      "_origin": "ast",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "file_type": "code",
+      "norm_label": "hash",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L19"
+    },
+    {
       "id": "scripts_verify_workspace_ui",
       "label": "verify-workspace-ui.mjs",
       "_origin": "ast",
@@ -19824,61 +19878,6 @@
       "norm_label": "users",
       "source_file": "docs/harness/archive/2026-10-01-pre-consolidation/product.md",
       "source_location": "L68"
-    },
-    {
-      "id": "scripts_release_fingerprint",
-      "label": "release-fingerprint.mjs",
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "release-fingerprint.mjs",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L1"
-    },
-    {
-      "id": "scripts_release_fingerprint_config",
-      "label": "config",
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "config",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L18"
-    },
-    {
-      "id": "scripts_release_fingerprint_files",
-      "label": "files",
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "files",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L6"
-    },
-    {
-      "id": "scripts_release_fingerprint_fingerprint",
-      "label": "fingerprint",
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "fingerprint",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L28"
-    },
-    {
-      "id": "scripts_release_fingerprint_hash",
-      "label": "hash",
-      "_origin": "ast",
-      "community": 79,
-      "community_name": "release-fingerprint.mjs",
-      "file_type": "code",
-      "norm_label": "hash",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L20"
     },
     {
       "id": "server_requirements",
@@ -26539,6 +26538,18 @@
       "type": "external"
     },
     {
+      "id": "ref_node_vm",
+      "label": "ref_node_vm",
+      "_origin": "semantic",
+      "community": 63,
+      "community_name": "ref_node_fs",
+      "external": true,
+      "file_type": "concept",
+      "norm_label": "ref_node_vm",
+      "source_file": "",
+      "type": "external"
+    },
+    {
       "id": "server_isolation_esbuild_cjs",
       "label": "server_isolation_esbuild_cjs",
       "_origin": "semantic",
@@ -26631,17 +26642,6 @@
       "external": true,
       "file_type": "concept",
       "norm_label": "ref_node_sqlite",
-      "source_file": "",
-      "type": "external"
-    },
-    {
-      "id": "ref_node_vm",
-      "label": "ref_node_vm",
-      "community": 63,
-      "community_name": "ref_node_fs",
-      "external": true,
-      "file_type": "concept",
-      "norm_label": "ref_node_vm",
       "source_file": "",
       "type": "external"
     }
@@ -27245,18 +27245,6 @@
       "context": "call",
       "source_file": "scripts/measure-responsiveness.ts",
       "source_location": "L28",
-      "weight": 1.0
-    },
-    {
-      "source": "scripts_release_fingerprint_collect",
-      "target": "scripts_release_fingerprint_collect",
-      "relation": "calls",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "context": "call",
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L11",
       "weight": 1.0
     },
     {
@@ -49162,6 +49150,18 @@
       "weight": 1.0
     },
     {
+      "source": "scripts_release_fingerprint",
+      "target": "ref_node_child_process",
+      "relation": "imports_from",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "context": "import",
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L4",
+      "weight": 1.0
+    },
+    {
       "source": "scripts_verify_artifact_growth",
       "target": "ref_node_fs",
       "relation": "imports_from",
@@ -64280,7 +64280,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "docs/harness/prelaunch-release-repair.md",
-      "source_location": "L23",
+      "source_location": "L25",
       "weight": 1.0
     },
     {
@@ -66366,13 +66366,24 @@
     },
     {
       "source": "scripts_release_fingerprint",
+      "target": "scripts_release_fingerprint_files",
+      "relation": "contains",
+      "_origin": "ast",
+      "confidence": "EXTRACTED",
+      "confidence_score": 1.0,
+      "source_file": "scripts/release-fingerprint.mjs",
+      "source_location": "L15",
+      "weight": 1.0
+    },
+    {
+      "source": "scripts_release_fingerprint",
       "target": "scripts_release_fingerprint_config",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L18",
+      "source_location": "L17",
       "weight": 1.0
     },
     {
@@ -66383,7 +66394,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L20",
+      "source_location": "L19",
       "weight": 1.0
     },
     {
@@ -66399,24 +66410,13 @@
     },
     {
       "source": "scripts_release_fingerprint",
-      "target": "scripts_release_fingerprint_files",
+      "target": "scripts_release_fingerprint_buildfiles",
       "relation": "contains",
       "_origin": "ast",
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L6",
-      "weight": 1.0
-    },
-    {
-      "source": "scripts_release_fingerprint",
-      "target": "scripts_release_fingerprint_collect",
-      "relation": "contains",
-      "_origin": "ast",
-      "confidence": "EXTRACTED",
-      "confidence_score": 1.0,
-      "source_file": "scripts/release-fingerprint.mjs",
-      "source_location": "L7",
+      "source_location": "L8",
       "weight": 1.0
     },
     {
@@ -85261,5 +85261,5 @@
       "source_file": "product.md"
     }
   ],
-  "built_at_commit": "ca7bf55fb5b6b9a9b7dcb72410a600cc48aa39ef"
+  "built_at_commit": "1ca4343a5ee9110f6f2af8d29e16290019b9724c"
 }
