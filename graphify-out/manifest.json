@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791460404.0545788,
-    "seen": 1791460536.8873472,
-    "ast_hash": "670dd60e2901dd15aeaf3088713f2de0",
+    "mtime": 1791464007.8616412,
+    "seen": 1791464033.5424483,
+    "ast_hash": "1433c01ea6677a5e5168f3b448b564e4",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791461404.3468883,
-    "seen": 1791461861.241596,
-    "ast_hash": "f2f832d0a2bfa306944caf0a10ca6819",
+    "mtime": 1791464007.8592632,
+    "seen": 1791464033.5424483,
+    "ast_hash": "9493078d5b703984ff1fcedafe6fb734",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791462780.4062338,
-    "seen": 1791463092.4687963,
-    "ast_hash": "0c4774633136b9d05a7797f3a7099b47",
+    "mtime": 1791464007.8602598,
+    "seen": 1791464033.5454514,
+    "ast_hash": "d63dab4839cbcc3762dd82c9cf93f5d3",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "docs/harness/decisions.md": {
-    "mtime": 1791461404.3478892,
-    "seen": 1791461861.2445931,
-    "ast_hash": "29eae8574dec3514ef0c95299489bb23",
+    "mtime": 1791464007.8582618,
+    "seen": 1791464033.5454514,
+    "ast_hash": "b15fbbd69a03809fc0fdf7e42fb17cb2",
     "semantic_hash": ""
   },
   "docs/harness/migration-plan.md": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "server/isolation/browser.ts": {
-    "mtime": 1791460521.234246,
-    "seen": 1791460536.8647258,
-    "ast_hash": "0d8e7ed6c93c2f857d631a20375c4a52",
+    "mtime": 1791463935.8877928,
+    "seen": 1791464033.5159862,
+    "ast_hash": "7f7001e902ac12ad48f41e50aee16227",
     "semantic_hash": ""
   },
   "server/isolation/list-observer.cjs": {
@@ -1248,9 +1248,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-release-repair.md": {
-    "mtime": 1791463649.4721289,
-    "seen": 1791463674.1727183,
-    "ast_hash": "d2edbf9137c8d66a2d5d9fe87b42f688",
+    "mtime": 1791463935.8893127,
+    "seen": 1791464033.5514474,
+    "ast_hash": "7a987282a7673382fbcee38cd8aa8edc",
     "semantic_hash": ""
   },
   "scripts/prepare-ci-cgroup.sh": {
@@ -1284,9 +1284,9 @@
     "semantic_hash": ""
   },
   "tests/linux-cgroup-isolation.test.ts": {
-    "mtime": 1791460120.322126,
-    "seen": 1791460536.8833468,
-    "ast_hash": "86b48fa06683e73066ef12c951ebd1bc",
+    "mtime": 1791463935.8883,
+    "seen": 1791464033.5374517,
+    "ast_hash": "6113af68e34ea71f6149daddc4963ff2",
     "semantic_hash": ""
   },
   "scripts/release-fingerprint.mjs": {

@@ -1,7 +1,7 @@
 # Graph Report - Devoffice  (2026-10-08)
 
 ## Corpus Check
-- 215 files · ~195,969 words
+- 215 files · ~196,366 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 13 file(s) not represented in the graph (top: (none) 5, .css 5, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `247e4a81`
+- Built from commit: `4844b184`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -582,7 +582,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `RoomManager` connect `RoomManager` to `types.ts`, `SupabasePlatform`, `EventStore`, `tool-registry.ts`, `coordinator-fencing.test.ts`, `ref_node_assert_strict`, `reliability.test.ts`, `fixtures/multiuser-baseline.ts`, `Step 09 - Conditional interpretation concurrency and topology evaluation`, `rooms.ts`, `index.ts`, `artifact-restoration.test.ts`, `workflow-budget.test.ts`, `ref_node_fs`?**
   _High betweenness centrality (0.062) - this node is a cross-community bridge._
 - **Why does `yjs` connect `ref_node_assert_strict` to `live-collaboration-check.mjs`, `SupabasePlatform`, `supabase-platform.ts`, `provider-reconnect.test.ts`, `App.tsx`, `reliability.test.ts`, `fixtures/multiuser-baseline.ts`, `measure-responsiveness.ts`, `package.json`, `rooms.ts`, `index.ts`, `artifact-restoration.test.ts`, `local-drafts.test.ts`?**
-  _High betweenness centrality (0.056) - this node is a cross-community bridge._
+  _High betweenness centrality (0.054) - this node is a cross-community bridge._
 - **Why does `2guys1canvas context handoff` connect `2guys1canvas context handoff` to `context.md`?**
   _High betweenness centrality (0.045) - this node is a cross-community bridge._
 - **Are the 33 inferred relationships involving `createCoCreateServer()` (e.g. with `.applyRecommendedAI()` and `.assignAI()`) actually correct?**

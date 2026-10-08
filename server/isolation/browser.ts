@@ -24,6 +24,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   const wallMs = Math.min(isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
   fs.mkdirSync(path.join(workspace, 'browser-profile'), {recursive: true});
   const flags = ['--headless=new', '--single-process', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
+    // Native PulseAudio allocates a 64 MiB memfd before any page; these checks do not verify audio.
+    '--disable-audio-output',
     '--disable-crashpad-for-testing', '--disable-background-networking', '--disable-component-update', '--disable-sync',
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
@@ -108,7 +110,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     exited = true;
     if (code !== 0 && !(finishing && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && child.signalCode === 'SIGKILL')))) {
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
-        code === 125 || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU limits.') : unavailable();
+        code === 125 || code === 153 || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
       if (failure && failure.cause === undefined) failure.cause = error.cause;
       stop(error);
