@@ -5,7 +5,7 @@ import path from 'node:path';
 import {spawn, type ChildProcess} from 'node:child_process';
 import {once} from 'node:events';
 import {LinuxJobGroup, linuxJobLauncher} from '../server/isolation/linux-cgroup.js';
-import {withIsolatedBrowser} from '../server/isolation/browser.js';
+import {withIsolatedBrowser, linuxBrowserFileDescriptors} from '../server/isolation/browser.js';
 import {IsolationError} from '../server/isolation.js';
 
 const linux = {skip: process.platform !== 'linux'};
@@ -19,9 +19,25 @@ async function removed(pid: number) {
   }
   assert.fail('A job descendant remains after whole-group cleanup.');
 }
-function probe(code: string): ChildProcess {
-  return spawn(linuxJobLauncher, [process.execPath, '--input-type=module', '-e', code], {env: {PATH: '/usr/bin:/bin'}, detached: true, stdio: ['ignore', 'pipe', 'pipe']});
+function probe(code: string, limits: string[] = []): ChildProcess {
+  const target = [process.execPath, '--input-type=module', '-e', code];
+  return spawn(linuxJobLauncher, limits.length ? ['/usr/bin/prlimit', ...limits, '--', ...target] : target, {env: {PATH: '/usr/bin:/bin'}, detached: true, stdio: ['ignore', 'pipe', 'pipe']});
 }
+
+test('Linux browser file-descriptor ceiling rejects growth and cleans the bounded job', linux, async () => {
+  const group = LinuxJobGroup.create();
+  const child = probe("import fs from 'node:fs'; let count=0;for(;count<512;count++){try{fs.openSync('/dev/null','r')}catch(e){if(e.code!=='EMFILE')throw e;console.log('FD_LIMIT_ENFORCED:'+count);break}}setInterval(()=>{},1000)", ['--nofile=' + linuxBrowserFileDescriptors]);
+  let output = ''; child.stdout!.on('data', chunk => output += chunk);
+  const closed = once(child, 'close');
+  try {
+    await group.attach(child);
+    for (let i = 0; i < 400 && !output; i++) await wait(5);
+    assert.match(output, /FD_LIMIT_ENFORCED:/);
+    assert.ok(Number(output.trim().split(':')[1]) < linuxBrowserFileDescriptors);
+    group.kill(); await closed;
+  } finally {child.kill('SIGKILL'); await group.cleanup();}
+  await removed(child.pid!); noGroups();
+});
 
 test('Linux bootstrap drops authority and attaches a stopped trusted child before execution', linux, async () => {
   assert.equal(process.getuid!(), 1000);
@@ -74,6 +90,7 @@ test('real Linux browser physical-memory exhaustion kills its job while the appl
   let pid = 0;
   await assert.rejects(withIsolatedBrowser(async browser => {
     assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max file size\s+4194304\s+4194304\s+bytes$/m);
+    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max open files\s+256\s+256\s+files$/m);
     const {targetId} = await browser.call('Target.createTarget', {url: 'about:blank'});
     const {sessionId} = await browser.call('Target.attachToTarget', {targetId, flatten: true});
     await browser.call('Runtime.evaluate', {expression: 'globalThis.blocks=[];while(true){const block=new Uint8Array(32*1024*1024);block.fill(37);globalThis.blocks.push(block)}'}, sessionId);

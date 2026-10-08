@@ -1,0 +1,11 @@
+Re-extracting code files in . (no LLM needed)...
+[graphify watch] 13 file(s) not classified (no supported extension or shebang), skipped: .dockerignore, .env.example, .gitattributes, .gitignore, .graphifyignore, Dockerfile (+7 more)
+  AST extraction: 100/158 uncached files (63%) [8 workers]
+  AST extraction: 158/158 uncached files (100%) [8 workers]
+  warning: 11 .sql file(s) contributed nothing to the graph because a dependency is missing: tree_sitter_sql not installed. Install it with: pip install "graphifyy[sql]" (#1745)
+[graphify watch] community set changed since labeling (119 saved labels, 114 communities now; renamed 53 community(ies) by their hub). Run `graphify label` to refresh names with the LLM.
+[graphify] backed up curated graph (6 files) -> 2026-10-08/
+[graphify watch] Rebuilt: 2128 nodes, 5016 edges, 114 communities
+[graphify watch] graph.json, graph.html and GRAPH_REPORT.md updated in graphify-out
+Code graph updated. For doc/paper/image changes run /graphify --update in your AI assistant.
+Tip: set GEMINI_API_KEY or GOOGLE_API_KEY to use Gemini for semantic extraction.

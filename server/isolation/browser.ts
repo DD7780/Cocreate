@@ -9,6 +9,7 @@ import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
 export type BrowserProtocol = {
   call(method: string, params?: object, sessionId?: string): Promise<any>;
 };
+export const linuxBrowserFileDescriptors = 256;
 const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.');
 export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFICATION_BROWSER ||
   (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium'));
@@ -30,7 +31,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
   const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
-    '--nproc=' + isolationPolicy.linuxTasksPerUser, '--fsize=' + isolationPolicy.outputBytes, '--nofile=64', '--', '/usr/bin/bwrap',
+    '--nproc=' + isolationPolicy.linuxTasksPerUser, '--fsize=' + isolationPolicy.outputBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
     '--json-status-fd', '5', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
@@ -110,7 +111,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     exited = true;
     if (code !== 0 && !(finishing && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && child.signalCode === 'SIGKILL')))) {
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
-        code === 125 || code === 153 || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
+        code === 125 || code === 153 || /Too many open files/.test(stderr) || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
       if (failure && failure.cause === undefined) failure.cause = error.cause;
       stop(error);
