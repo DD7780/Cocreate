@@ -84,18 +84,21 @@ test('actual verification browser denies a private host file and loopback networ
   }
 });
 
-test('browser CPU and protocol output remain inside the reused Job Object bounds', async () => {
-  for(const expression of ['while(true){}', "'x'.repeat(5*1024*1024)"]) {
+for (const [resource, expression] of [['CPU', 'while(true){}'], ['protocol output', "'x'.repeat(5*1024*1024)"]]) {
+  test(`browser ${resource} remains inside the isolated job bounds`, async () => {
     let pid=0;
     await assert.rejects(withIsolatedBrowser(async browser=>{
       const {targetId}=await browser.call('Target.createTarget',{url:'about:blank'});
       const {sessionId}=await browser.call('Target.attachToTarget',{targetId,flatten:true});
       await browser.call('Runtime.evaluate',{expression,returnByValue:true},sessionId);
-    },{wallMs:20_000,onStarted:child=>{pid=child;}}),error=>error instanceof IsolationError&&error.code==='isolation_resource_limit');
+    },{wallMs:20_000,onStarted:child=>{pid=child;}}),error=>{
+      if (!(error instanceof IsolationError && error.code === 'isolation_resource_limit')) console.error('Resource diagnostic:', resource, error);
+      return error instanceof IsolationError && error.code === 'isolation_resource_limit';
+    });
     assert.ok(pid);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
     assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')),[]);
-  }
-});
+  });
+}
 
 test('cancellation and wall limits terminate browser execution and leave no child jobs', async () => {
   for(const cancel of [true,false]) {
