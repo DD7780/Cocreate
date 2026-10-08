@@ -107,8 +107,10 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       try {
         const reply = JSON.parse(message), task = pending.get(reply.id);
         if (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed') {
-          stop(group?.cpuExceeded() || group?.memoryExceeded() || group?.tasksExceeded()
-            ? new IsolationError('isolation_resource_limit', 'Verification renderer exceeded its resource bound.') : unavailable());
+          const error = group?.cpuExceeded() || group?.memoryExceeded() || group?.tasksExceeded()
+            ? new IsolationError('isolation_resource_limit', 'Verification renderer exceeded its resource bound.') : unavailable();
+          error.cause = {event: reply.method, status: reply.params?.status, errorCode: reply.params?.errorCode};
+          stop(error);
         }
         if (task) {pending.delete(reply.id); reply.error ? task.reject(new Error('Browser protocol command failed.')) : task.resolve(reply.result);}
       } catch {stop(unavailable());}
@@ -146,6 +148,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       }, 25);
     }
     await browser.call('Browser.getVersion');
+    // Browser-level crash events require target discovery; attached renderer sessions alone do not report them.
+    if (group) await browser.call('Target.setDiscoverTargets', {discover: true});
     const result = await action(browser);
     if (failure) throw failure;
     return result;
