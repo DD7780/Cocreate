@@ -291,6 +291,8 @@ Accepted 2026-10-08 through the explicit hosted release request. Use https://2gu
 
 ## D-0057 — Physical-memory browser isolation on the existing runtime
 
+Use Chromium's normal renderer processes on Linux after a repeated single-process startup crash. Preserve the10 CPU-second whole-job budget via trusted cumulative cgroup usage monitoring every25 ms as well as inherited per-process limits; retain512 MiB/64 tasks and20 seconds wall. Missing accounting fails closed. Windows isolation is unchanged. Three cold starts and real busy descendants are required new checks.
+
 Use supported standalone Debian Chromium headless shell for Linux list checks, matching the browser flavor verified on Windows. Full desktop Chromium still fails three functional cases after normal initialization and isolation adversity passes; the alternative remains contingent on actual Linux acceptance, with no host fallback or increased quotas.
 
 Retain64 tasks at both browser leaf and aggregate cgroups rather than browser RLIMIT_NPROC64, which includes unrelated Node threads under the same real UID and blocks normal Chromium initialization. Compiler policy remains unchanged. Browser descriptors are calibrated to a finite256 after real EMFILE startup evidence; a real exhaustion test verifies the ceiling. Completed parent-requested cleanup137 is accepted only without prior failure, with subsequent empty-group/PID/profile proof. Proven resource outcomes replace provisional pipe-unavailable errors; explicit cancellation/time/output failures stay authoritative.

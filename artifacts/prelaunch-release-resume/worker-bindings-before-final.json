@@ -1,0 +1,50 @@
+{
+  "checkedAt": "2026-10-08T14:12:33.476Z",
+  "scope": "Read-only binding names/types only; no credential values",
+  "bindings": [
+    {
+      "name": "COCREATE_APP_ORIGINS",
+      "type": "plain_text"
+    },
+    {
+      "name": "COCREATE_CONTAINER",
+      "type": "durable_object_namespace"
+    },
+    {
+      "name": "COCREATE_PUBLIC_ORIGIN",
+      "type": "plain_text"
+    },
+    {
+      "name": "CREDENTIAL_ENCRYPTION_SECRET",
+      "type": "secret_text"
+    },
+    {
+      "name": "RESEND_API_KEY",
+      "type": "secret_text"
+    },
+    {
+      "name": "SESSION_SECRET",
+      "type": "secret_text"
+    },
+    {
+      "name": "SUPABASE_ARTIFACT_BUCKET",
+      "type": "plain_text"
+    },
+    {
+      "name": "SUPABASE_JWKS_URL",
+      "type": "plain_text"
+    },
+    {
+      "name": "SUPABASE_PUBLISHABLE_KEY",
+      "type": "plain_text"
+    },
+    {
+      "name": "SUPABASE_SECRET_KEY",
+      "type": "secret_text"
+    },
+    {
+      "name": "SUPABASE_URL",
+      "type": "plain_text"
+    }
+  ]
+}

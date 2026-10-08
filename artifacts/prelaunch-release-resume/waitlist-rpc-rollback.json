@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-08T14:33:44.331Z",
+  "scope": "Synthetic waitlist RPC under service_role with guaranteed rollback",
+  "error": {
+    "code": "42883",
+    "message": "operator does not exist: timestamp with time zone <= time with time zone",
+    "where": "PL/pgSQL function public.register_beta_waitlist(text,text) line 5 at SQL statement"
+  },
+  "rolledBack": true
+}

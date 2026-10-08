@@ -1,5 +1,7 @@
 # Custom-domain private beta release packet
 
+Hosted release16e10f6 is active with Worker7b47bfd0/container38/image dd13ffb0. Public landing, durable waitlist/deduplication, recovery form, canonical/www/legacy redirects and anonymous protected boundaries pass real hosted checks. The additive waitlist clock fix is applied (10 migrations); all seven private table fingerprints match the pre-release baseline after synthetic cleanup. A repeated Linux startup crash remains retained; the normal-renderer/aggregate-CPU correction awaits CI. Independent signed-in owner/cofounder/unapproved and actual recovery/invitation completion remain unavailable. [Current packet](prelaunch-release-repair.md).
+
 Latest 2026-10-08 repair supersedes the historical state below: main was pushed to ca7bf55 and skipped by Cloudflare, while the old Worker/image remain active. A successful approved native capability probe observes writable cgroup v2/memory/PID controllers on the existing guest. All temporary Worker versions were restored; image/resources/bindings and zero SSH keys retained, nonce deleted. Physical browser-job isolation and www routing are now candidates awaiting Linux/release gates. See [current packet](prelaunch-release-repair.md); earlier failed probes remain evidence.
 
 Prepared 2026-10-08. Reuse the pre-launch implementation from `7e954b8`; this packet owns the requested hosted rollout. Preparation, database observation, configuration changes and deployed acceptance must be recorded separately.

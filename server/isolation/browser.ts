@@ -24,7 +24,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   const profile = 'cocreate.isolation.' + path.basename(workspace).replaceAll('-', '');
   const wallMs = Math.min(isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
   fs.mkdirSync(path.join(workspace, 'browser-profile'), {recursive: true});
-  const flags = ['--headless=new', '--single-process', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
+  const flags = ['--headless=new', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
     // Native PulseAudio allocates a 64 MiB memfd before any page; these checks do not verify audio.
     '--disable-audio-output',
     '--disable-crashpad-for-testing', '--disable-background-networking', '--disable-component-update', '--disable-sync',
@@ -54,6 +54,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   let sequence = 0, buffer = '', received = 0, stderr = '', failure: Error | undefined, exited = false, finishing = false, forcedTermination = false;
   let linuxPid = 0, sandboxExit: number | undefined;
   let hardStop: NodeJS.Timeout | undefined;
+  let cpuTimer: NodeJS.Timeout | undefined;
   const decoder = new StringDecoder('utf8');
   const pending = new Map<number, {resolve(value: any): void; reject(error: Error): void}>();
   const stop = (error: Error) => {
@@ -133,6 +134,12 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     if (group) {
       try {await group.attach(child, options.signal);}
       catch (error) {stop(error instanceof IsolationError ? error : unavailable()); throw failure;}
+      group.cpuExceeded();
+      // Preserve the CPU budget across all renderer/utility descendants, not just each process.
+      cpuTimer = setInterval(() => {
+        try {if (group!.cpuExceeded()) stop(new IsolationError('isolation_resource_limit', 'Verification exceeded its aggregate CPU bound.'));}
+        catch {stop(unavailable());}
+      }, 25);
     }
     await browser.call('Browser.getVersion');
     const result = await action(browser);
@@ -141,6 +148,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   } finally {
     // The parent terminates the completed untrusted job; browser shutdown code is not a cleanup authority.
     finishing = true;
+    clearInterval(cpuTimer);
     if (!exited && process.platform === 'win32') {
       try {fs.writeFileSync(path.join(workspace, 'cancel'), 'cancel');} catch {child.kill();}
       hardStop ??= setTimeout(() => {forcedTermination = true; child.kill();}, 1_000);

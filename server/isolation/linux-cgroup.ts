@@ -2,7 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
 import type {ChildProcess} from 'node:child_process';
-import {IsolationError} from '../isolation.js';
+import {IsolationError, isolationPolicy} from '../isolation.js';
 
 export const linuxBrowserMemoryBytes = 512 * 1024 * 1024;
 export const linuxJobLauncher = '/usr/local/bin/cocreate-job-launcher';
@@ -55,6 +55,12 @@ export class LinuxJobGroup {
 
   tasksExceeded(): boolean {
     return /^max\s+[1-9]\d*$/m.test(fs.readFileSync(path.join(this.directory, 'pids.events'), 'utf8'));
+  }
+
+  cpuExceeded(): boolean {
+    const usage = fs.readFileSync(path.join(this.directory, 'cpu.stat'), 'utf8').match(/^usage_usec\s+(\d+)$/m);
+    if (!usage) throw unavailable();
+    return Number(usage[1]) >= isolationPolicy.cpuSeconds * 1_000_000;
   }
 
   kill(): void { fs.writeFileSync(path.join(this.directory, 'cgroup.kill'), '1'); }

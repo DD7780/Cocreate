@@ -1,0 +1,54 @@
+{
+  "preparedAt": "2026-10-08",
+  "authorization": "Existing explicit request to fix, deploy and verify; owner reconfirmed the release plan.",
+  "status": "Verified candidate pushed to main; Cloudflare build running; hosted verification pending",
+  "verifiedCandidate": "16e10f6ededf75308070ca3c795bb778b8d20f92",
+  "expectedSourceFingerprint": "42b5e726b9bffc2708ffe52b7670af803a1dfcb39c7ff6ba36aabf6dfffeb2c4",
+  "verificationRun": "https://github.com/DD7780/Cocreate/actions/runs/37790296864",
+  "target": {
+    "account": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "worker": "cocreate",
+    "containerApplication": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+    "canonical": "https://2guys1canvas.com",
+    "www": "https://www.2guys1canvas.com"
+  },
+  "gates": [
+    "Install, strict types, production build and pnpm check:boundaries",
+    "Exact production Dockerfile and fingerprint verification",
+    "Actual compiler/browser readiness and adversity",
+    "Complete Linux regression suite without failures",
+    "Fresh confirmed founder/cofounder approvals, private Storage and migration audit",
+    "Existing hosted auth mode, required secret binding names and canonical origins"
+  ],
+  "execution": [
+    "Fetch main and require it to be an ancestor of the verified candidate; no force push",
+    "Push the verified candidate to main to trigger the existing production Cloudflare Git build",
+    "Observe actual Worker and container image activation; never infer it from GitHub CI alone",
+    "Verify image fingerprint, active identifiers, startup health and canonical/www/legacy behavior",
+    "Verify anonymous APIs/sockets/previews/downloads and durable consented waitlist/deduplication",
+    "Use independent authorized sessions where available; explicitly report unavailable account/recovery/invite checks"
+  ],
+  "resourcesAndCosts": "Existing single basic container allocation only: 0.25 vCPU, 1 GiB RAM, 4 GB disk; normal existing build/runtime usage. No inference, email, tracking or new service.",
+  "preserve": [
+    "Database and private artifact data",
+    "Two existing approvals and project memberships",
+    "Auth callbacks and recovery settings",
+    "Existing Worker secrets and Durable Object binding identity",
+    "Zero operator keys and absence of temporary probe endpoint"
+  ],
+  "rollback": "Keep the restrictive data/beta policies and new Worker fingerprint guard. If startup fails, do not expose the old ungated image; retain fail-closed ingress and repair forward or restore an attested gated image. No down migration, account reset or project deletion.",
+  "linuxResults": {
+    "compiler": 10,
+    "browser": 11,
+    "full": 234,
+    "failures": 0,
+    "skips": 0,
+    "job": 113355583647
+  },
+  "mainPush": {
+    "sha": "16e10f6ededf75308070ca3c795bb778b8d20f92",
+    "fastForward": true,
+    "observedRemote": true
+  },
+  "cloudflareBuild": "https://dash.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/workers/services/view/cocreate/production/builds/b3f0adfa-163d-422f-8b01-1cbc9bcfee6f"
+}

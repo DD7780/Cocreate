@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Hosted release16e10f6 is active with Worker7b47bfd0/container38/image dd13ffb0. Public landing, durable waitlist/deduplication, recovery form, canonical/www/legacy redirects and anonymous protected boundaries pass real hosted checks. The additive waitlist clock fix is applied (10 migrations); all seven private table fingerprints match the pre-release baseline after synthetic cleanup. A repeated Linux startup crash remains retained; the normal-renderer/aggregate-CPU correction awaits CI. Independent signed-in owner/cofounder/unapproved and actual recovery/invitation completion remain unavailable. [Current packet](prelaunch-release-repair.md).
+
 2026-10-08 latest runtime check: font-runtime Linux8/11, compiler10/10; full suite skipped behind critical functional failures. Supported headless-shell alternative is prepared with unchanged bounds; main/production publication remains pending. See [repair packet](prelaunch-release-repair.md).
 
 ## Latest release repair — 2026-10-08

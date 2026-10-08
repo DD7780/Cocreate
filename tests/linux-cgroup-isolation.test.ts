@@ -24,6 +24,37 @@ function probe(code: string, limits: string[] = []): ChildProcess {
   return spawn(linuxJobLauncher, limits.length ? ['/usr/bin/prlimit', ...limits, '--', ...target] : target, {env: {PATH: '/usr/bin:/bin'}, detached: true, stdio: ['ignore', 'pipe', 'pipe']});
 }
 
+test('Linux browser cold starts execute JavaScript repeatedly and clean every descendant', linux, async () => {
+  for (let attempt = 0; attempt < 3; attempt++) {
+    let pid = 0;
+    await withIsolatedBrowser(async browser => {
+      const {targetId} = await browser.call('Target.createTarget', {url:'about:blank'});
+      const {sessionId} = await browser.call('Target.attachToTarget', {targetId,flatten:true});
+      const result = await browser.call('Runtime.evaluate', {expression:'1+1',returnByValue:true}, sessionId);
+      assert.equal(result.result.value, 2);
+    }, {onStarted: value => {pid = value;}});
+    assert.ok(pid); await removed(pid); noGroups();
+  }
+});
+
+test('Linux CPU accounting includes busy descendants in the same finite job budget', linux, async () => {
+  const group = LinuxJobGroup.create();
+  const child = probe("import {spawn} from 'node:child_process';const children=Array.from({length:2},()=>spawn(process.execPath,['-e','while(true){}'],{stdio:'ignore'}));console.log(children.map(c=>c.pid).join(','));setInterval(()=>{},1000)");
+  let output = ''; child.stdout!.on('data', chunk => output += chunk);
+  const closed = once(child, 'close'); let descendants: number[] = [];
+  try {
+    await group.attach(child);
+    for (let i = 0; i < 400 && !output; i++) await wait(5);
+    descendants = output.trim().split(',').map(Number); assert.equal(descendants.length, 2);
+    for (const pid of descendants) assert.ok(Number.isSafeInteger(pid) && pid > 0);
+    for (let i = 0; i < 800 && !group.cpuExceeded(); i++) await wait(25);
+    assert.equal(group.cpuExceeded(), true);
+    for (const pid of descendants) process.kill(pid, 0);
+    group.kill(); await closed;
+  } finally {child.kill('SIGKILL'); await group.cleanup();}
+  await removed(child.pid!); for (const pid of descendants) await removed(pid); noGroups();
+});
+
 test('Linux browser file-descriptor ceiling rejects growth and cleans the bounded job', linux, async () => {
   const group = LinuxJobGroup.create();
   const child = probe("import fs from 'node:fs'; let count=0;for(;count<512;count++){try{fs.openSync('/dev/null','r')}catch(e){if(e.code!=='EMFILE')throw e;console.log('FD_LIMIT_ENFORCED:'+count);break}}setInterval(()=>{},1000)", ['--nofile=' + linuxBrowserFileDescriptors]);

@@ -1,0 +1,140 @@
+{
+  "checkedAt": "2026-10-08T14:28:37.565Z",
+  "scope": "Hosted anonymous HTTP/socket and direct anonymous Data API; no account sessions, email or inference",
+  "requests": [
+    {
+      "url": "https://2guys1canvas.com/__cocreate/app-health",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/login",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/app",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/auth/config",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/access",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/projects",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/state",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/download/1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/preview/00000000-0000-4000-8000-000000000009/1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/does-not-exist",
+      "status": 404,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://www.2guys1canvas.com/",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/"
+    },
+    {
+      "url": "https://www.2guys1canvas.com/login?next=%2Fapp",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/login?next=%2Fapp"
+    },
+    {
+      "url": "https://www.2guys1canvas.com/r/redirect-probe?x=one%20two&y=%2F",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/r/redirect-probe?x=one%20two&y=%2F"
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/login?next=%2Fapp",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/login?next=%2Fapp"
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/beta/waitlist",
+      "status": 421,
+      "type": "text/plain;charset=UTF-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/waitlist",
+      "status": 400,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_access?select=*&limit=1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_waitlist?select=*&limit=1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/projects?select=*&limit=1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null
+    }
+  ],
+  "fingerprint": "42b5e726b9bffc2708ffe52b7670af803a1dfcb39c7ff6ba36aabf6dfffeb2c4",
+  "sockets": [
+    {
+      "origin": "https://2guys1canvas.com",
+      "status": 401,
+      "opened": false
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "status": 421,
+      "opened": false
+    }
+  ],
+  "passed": true
+}

@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-08T14:54:42.424Z",
+  "scope": "Real hosted public UI in a fresh anonymous browser; no identity session, email or inference",
+  "viewports": [
+    {
+      "width": 1440,
+      "cta": 1,
+      "signIn": true,
+      "emailLabel": 1,
+      "consentRequired": true,
+      "overflow": false
+    },
+    {
+      "width": 390,
+      "cta": 1,
+      "signIn": true,
+      "emailLabel": 1,
+      "consentRequired": true,
+      "overflow": false
+    },
+    {
+      "width": 320,
+      "cta": 1,
+      "signIn": true,
+      "emailLabel": 1,
+      "consentRequired": true,
+      "overflow": false
+    }
+  ],
+  "anonymousAppShowsSignIn": true,
+  "passed": false,
+  "error": "Public UI state did not appear: document.body?.innerText.includes('Send recovery email'); {\"url\":\"https://2guys1canvas.com/forgot-password?returnTo=%2Fapp\",\"text\":\"WELCOME TO THE WORKSPACE\\n\\nReset your password\\n\\nWe’ll email recovery instructions if the address belongs to an account.\\n\\nEmail\\nSEND RECOVERY EMAIL\\nSign in\\nCreate account\"}"
+}

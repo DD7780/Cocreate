@@ -1,0 +1,24 @@
+{
+  "checkedAt": "2026-10-08T14:36:31.505Z",
+  "scope": "Prepared function replacement and service-role registration/deduplication/rate/grant checks in one rolled-back transaction",
+  "results": [
+    true,
+    true,
+    true,
+    true,
+    true,
+    false
+  ],
+  "grants": {
+    "anon": false,
+    "authenticated": false,
+    "service_role": true,
+    "definer": false
+  },
+  "durableWithinTransaction": {
+    "count": 1,
+    "consent": "beta-updates-v1"
+  },
+  "passed": true,
+  "rolledBack": true
+}

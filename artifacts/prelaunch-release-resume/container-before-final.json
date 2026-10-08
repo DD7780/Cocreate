@@ -1,0 +1,25 @@
+{
+  "checkedAt": "2026-10-08T14:11:48.968Z",
+  "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+  "name": "cocreate-cocreatecontainer",
+  "version": 37,
+  "max_instances": 1,
+  "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "configurationFields": [
+    "image",
+    "wrangler_ssh",
+    "authorized_keys",
+    "vcpu",
+    "memory",
+    "memory_mib",
+    "disk",
+    "network",
+    "command",
+    "entrypoint",
+    "runtime"
+  ],
+  "ssh": {
+    "enabled": true
+  },
+  "authorizedKeyNames": []
+}

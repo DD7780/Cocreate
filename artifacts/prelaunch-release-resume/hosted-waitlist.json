@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-08T14:54:37.971Z",
+  "scope": "Hosted anonymous synthetic consented registration; private durable SQL read after each response; no email, inference or account session",
+  "submissions": [
+    {
+      "status": 200,
+      "receivedAt": "2026-10-08T14:54:40.367Z",
+      "durableRows": 1,
+      "consent": "beta-updates-v1",
+      "registeredAt": "2026-10-08T14:54:39.209Z",
+      "createdAccounts": 0
+    },
+    {
+      "status": 200,
+      "receivedAt": "2026-10-08T14:54:41.542Z",
+      "durableRows": 1,
+      "consent": "beta-updates-v1",
+      "registeredAt": "2026-10-08T14:54:39.209Z",
+      "createdAccounts": 0
+    }
+  ],
+  "passed": true
+}

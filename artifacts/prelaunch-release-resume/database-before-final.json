@@ -1,0 +1,11 @@
+{
+  "checked_at": "2026-10-08 14:11:53.027198+00",
+  "scope": "Read-only database audit; no identity HTTP sessions",
+  "migrations": 9,
+  "active_approvals": 2,
+  "owners": 1,
+  "designated_approvals": 2,
+  "confirmed_designated_accounts": 2,
+  "registrations": 0,
+  "artifacts_private": true
+}

@@ -1,5 +1,7 @@
 # 2guys1canvas product brief
 
+Hosted release16e10f6 is active with Worker7b47bfd0/container38/image dd13ffb0. Public landing, durable waitlist/deduplication, recovery form, canonical/www/legacy redirects and anonymous protected boundaries pass real hosted checks. The additive waitlist clock fix is applied (10 migrations); all seven private table fingerprints match the pre-release baseline after synthetic cleanup. A repeated Linux startup crash remains retained; the normal-renderer/aggregate-CPU correction awaits CI. Independent signed-in owner/cofounder/unapproved and actual recovery/invitation completion remain unavailable. [Current packet](docs/harness/prelaunch-release-repair.md).
+
 Pre-launch release status, 2026-10-08: the public/private target below is retained. Main ca7bf55 contains prior source repairs, but production still serves the older ungated image. The current candidate adds canonical www redirects and physical browser-job isolation after a successful read-only guest capability probe. Linux adversity/full regression, intended image rollout and independent hosted acceptance remain gates. No reduced-functionality beta was published. See [current repair packet](docs/harness/prelaunch-release-repair.md).
 
 This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-05 through Step 10 integration review; other accepted human product decisions are preserved.

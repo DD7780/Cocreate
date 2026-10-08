@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-08T15:00:08.976Z",
+  "scope": "Remove only this task-created reserved synthetic registration after durable/UI duplicate checks; preserve rate counters and all user data",
+  "removedOnlySyntheticRows": 1,
+  "accountsCreated": 0,
+  "passed": true
+}
