@@ -12,7 +12,7 @@ export type BrowserProtocol = {
 export const linuxBrowserFileDescriptors = 256;
 const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.');
 export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFICATION_BROWSER ||
-  (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium'));
+  (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium-headless-shell'));
 
 /** Trusted CDP lives in the parent. Generated code has no access to its checks, pipes or Node process. */
 export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) => Promise<T>, options: IsolationOptions = {}): Promise<T> {

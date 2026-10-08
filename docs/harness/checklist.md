@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+2026-10-08 latest runtime check: font-runtime Linux8/11, compiler10/10; full suite skipped behind critical functional failures. Supported headless-shell alternative is prepared with unchanged bounds; main/production publication remains pending. See [repair packet](prelaunch-release-repair.md).
+
 ## Latest release repair — 2026-10-08
 
 [Current packet](prelaunch-release-repair.md) supersedes earlier status claims; historical evidence remains dated.

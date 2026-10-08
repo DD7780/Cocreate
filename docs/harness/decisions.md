@@ -291,6 +291,8 @@ Accepted 2026-10-08 through the explicit hosted release request. Use https://2gu
 
 ## D-0057 — Physical-memory browser isolation on the existing runtime
 
+Use supported standalone Debian Chromium headless shell for Linux list checks, matching the browser flavor verified on Windows. Full desktop Chromium still fails three functional cases after normal initialization and isolation adversity passes; the alternative remains contingent on actual Linux acceptance, with no host fallback or increased quotas.
+
 Retain64 tasks at both browser leaf and aggregate cgroups rather than browser RLIMIT_NPROC64, which includes unrelated Node threads under the same real UID and blocks normal Chromium initialization. Compiler policy remains unchanged. Browser descriptors are calibrated to a finite256 after real EMFILE startup evidence; a real exhaustion test verifies the ceiling. Completed parent-requested cleanup137 is accepted only without prior failure, with subsequent empty-group/PID/profile proof. Proven resource outcomes replace provisional pipe-unavailable errors; explicit cancellation/time/output failures stay authoritative.
 
 Startup correction: a real bounded CI trace identifies PulseAudio's64 MiB memfd colliding with the retained4 MiB file-size ceiling. Disable native audio output with Chromium's supported Linux factory switch; this verifier makes no audio acceptance claim. Preserve the file ceiling and classify SIGXFSZ as a resource failure. This is runtime calibration, not a quota increase or broader verification capability.

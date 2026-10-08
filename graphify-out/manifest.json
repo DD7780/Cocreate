@@ -522,9 +522,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791460404.0588925,
-    "seen": 1791460536.8873472,
-    "ast_hash": "15ef3ddd8fe2b42c3822de84704c51fb",
+    "mtime": 1791468483.4923086,
+    "seen": 1791468502.8891168,
+    "ast_hash": "57017b66f29385bfb433f32cf35d1a21",
     "semantic_hash": ""
   },
   "api.md": {
@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791464007.8616412,
-    "seen": 1791464033.5424483,
-    "ast_hash": "1433c01ea6677a5e5168f3b448b564e4",
+    "mtime": 1791468483.4933143,
+    "seen": 1791468502.8891168,
+    "ast_hash": "0c23eb51f81252d75c6bea6c36e2c832",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791467835.8862786,
-    "seen": 1791467860.5964556,
-    "ast_hash": "62e251e147bf2b162f8fa092e83be123",
+    "mtime": 1791468483.4913125,
+    "seen": 1791468502.8891168,
+    "ast_hash": "5bbafdfb7f1fff443b13ded764c5d8b6",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791464007.8602598,
-    "seen": 1791464033.5454514,
-    "ast_hash": "d63dab4839cbcc3762dd82c9cf93f5d3",
+    "mtime": 1791468483.4953132,
+    "seen": 1791468502.891117,
+    "ast_hash": "1dc0a70789c38658f0228fe5cc115ed6",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "docs/harness/decisions.md": {
-    "mtime": 1791467266.3050857,
-    "seen": 1791467288.4030902,
-    "ast_hash": "3f12e48203477e513860b4e6b0fa0bfd",
+    "mtime": 1791468483.4903104,
+    "seen": 1791468502.8921163,
+    "ast_hash": "59ed19fcaffc98f52a777fa1263fbe45",
     "semantic_hash": ""
   },
   "docs/harness/migration-plan.md": {
@@ -606,9 +606,9 @@
     "semantic_hash": ""
   },
   "pnpm-workspace.yaml": {
-    "mtime": 1791461767.6722276,
-    "seen": 1791461861.2495983,
-    "ast_hash": "123380eb81bad5df284d374bb622a0d0",
+    "mtime": 1791468450.5586965,
+    "seen": 1791468502.8985248,
+    "ast_hash": "8e3adc24514f8f0f44a360aa841bdff6",
     "semantic_hash": ""
   },
   "product.md": {
@@ -1074,9 +1074,9 @@
     "semantic_hash": ""
   },
   "server/isolation/browser.ts": {
-    "mtime": 1791467835.8832715,
-    "seen": 1791467860.5713367,
-    "ast_hash": "797b113f1fa137c62a9c24eb80b75740",
+    "mtime": 1791468402.1347802,
+    "seen": 1791468502.8660762,
+    "ast_hash": "c3689b7c48a18804a3e14f5a0a1409d2",
     "semantic_hash": ""
   },
   "server/isolation/list-observer.cjs": {
@@ -1236,9 +1236,9 @@
     "semantic_hash": ""
   },
   "scripts/diagnose-linux-browser.ts": {
-    "mtime": 1791406585.8658276,
-    "seen": 1791406608.628994,
-    "ast_hash": "c24450a6e74e68c8a9709403dafe356c",
+    "mtime": 1791468402.1357782,
+    "seen": 1791468502.8550763,
+    "ast_hash": "b89703cf3d3a1bca3f6ade975a7219b4",
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-linux-runtime-alternative.md": {
@@ -1248,9 +1248,9 @@
     "semantic_hash": ""
   },
   "docs/harness/prelaunch-release-repair.md": {
-    "mtime": 1791467835.885272,
-    "seen": 1791467860.604459,
-    "ast_hash": "44636c117390a60598267f6da613704b",
+    "mtime": 1791468483.489307,
+    "seen": 1791468502.8964887,
+    "ast_hash": "c150defdea0a65b4a17262a8179cd373",
     "semantic_hash": ""
   },
   "scripts/prepare-ci-cgroup.sh": {
@@ -1296,8 +1296,8 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1791467288.8237312,
-    "seen": 1791467860.5598202,
+    "mtime": 1791468446.3892736,
+    "seen": 1791468502.8540757,
     "ast_hash": "38d00f37ef98e4cf88af7b4c20481def",
     "semantic_hash": ""
   },
