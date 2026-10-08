@@ -109,10 +109,12 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   });
   const closed = new Promise<void>(resolve => child.once('close', code => {
     exited = true;
-    if (code !== 0 && !(finishing && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && child.signalCode === 'SIGKILL')))) {
+    if (code !== 0 && !(finishing && !failure && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && (code === 137 || child.signalCode === 'SIGKILL'))))) {
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
         code === 125 || code === 153 || /Too many open files/.test(stderr) || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 || sandboxExit === 153 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU/file limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
+      // Pipe closure can precede the authoritative resource exit; keep explicit cancel/time/output outcomes.
+      if (error instanceof IsolationError && error.code === 'isolation_resource_limit' && failure instanceof IsolationError && failure.code === 'isolation_unavailable') failure = error;
       if (failure && failure.cause === undefined) failure.cause = error.cause;
       stop(error);
     }

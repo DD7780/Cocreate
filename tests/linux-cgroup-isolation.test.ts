@@ -89,8 +89,8 @@ test('Linux PID ceiling denies fork growth and whole-group kill removes descenda
 test('real Linux browser physical-memory exhaustion kills its job while the application survives', linux, async () => {
   let pid = 0;
   await assert.rejects(withIsolatedBrowser(async browser => {
-    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max file size\s+4194304\s+4194304\s+bytes$/m);
-    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max open files\s+256\s+256\s+files$/m);
+    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max file size\s+4194304\s+4194304\s+bytes[ \t]*$/m);
+    assert.match(fs.readFileSync(`/proc/${pid}/limits`, 'utf8'), /^Max open files\s+256\s+256\s+files[ \t]*$/m);
     const {targetId} = await browser.call('Target.createTarget', {url: 'about:blank'});
     const {sessionId} = await browser.call('Target.attachToTarget', {targetId, flatten: true});
     await browser.call('Runtime.evaluate', {expression: 'globalThis.blocks=[];while(true){const block=new Uint8Array(32*1024*1024);block.fill(37);globalThis.blocks.push(block)}'}, sessionId);
