@@ -34,6 +34,8 @@ import {
   supabaseConfigurationError,
 } from "./supabase";
 import { completeOAuthCallback } from "./oauth-callback";
+import { BetaReview } from "./BetaReview";
+import { betaMessageLimit, type BetaRequestState } from "../shared/beta-access";
 
 const Workspace = lazy(() =>
   import("./App").then((module) => ({ default: module.Workspace })),
@@ -1618,7 +1620,10 @@ export function ProjectApp() {
 function BetaAccess({ session }: { session: Session }) {
   const [approved, setApproved] = useState<boolean | null>(null),
     [error, setError] = useState(""),
-    [checking, setChecking] = useState(false);
+    [checking, setChecking] = useState(false),
+    [requestState, setRequestState] = useState<BetaRequestState | null>(null),
+    [message, setMessage] = useState(""),
+    [submitting, setSubmitting] = useState(false);
   const check = useCallback(async () => {
     setChecking(true);
     setError("");
@@ -1628,6 +1633,18 @@ function BetaAccess({ session }: { session: Session }) {
         session,
       );
       setApproved(status.approved);
+      try {
+        setRequestState(
+          await request<BetaRequestState>("/api/beta/request", session),
+        );
+      } catch (failure) {
+        setRequestState(null);
+        setError(
+          failure instanceof Error
+            ? failure.message
+            : "Request status could not be loaded.",
+        );
+      }
     } catch (failure) {
       setApproved(null);
       setError(
@@ -1639,6 +1656,26 @@ function BetaAccess({ session }: { session: Session }) {
       setChecking(false);
     }
   }, [session]);
+  const submitRequest = async () => {
+    setSubmitting(true);
+    setError("");
+    try {
+      await request("/api/beta/request", session, {
+        method: "POST",
+        body: JSON.stringify({ message }),
+      });
+      setMessage("");
+      await check();
+    } catch (failure) {
+      setError(
+        failure instanceof Error
+          ? failure.message
+          : "The request could not be saved.",
+      );
+    } finally {
+      setSubmitting(false);
+    }
+  };
   useEffect(() => {
     void check();
     const timer = setInterval(() => void check(), 30_000);
@@ -1669,11 +1706,75 @@ function BetaAccess({ session }: { session: Session }) {
         }
         intro={
           approved === false
-            ? "You’re signed in. The owner needs to approve your beta access before you can open the application."
+            ? "Confirm your email, then request beta access. Either reviewer can give access; private projects keep their membership permissions."
             : "Verifying your access with the server."
         }
       >
         <p>Signed in as {session.user.email || "your account"}.</p>
+        {requestState?.revoked ? (
+          <p>
+            Your beta access was revoked. Contact a reviewer; submitting another
+            request cannot restore it.
+          </p>
+        ) : requestState?.request?.status === "approved" ? (
+          <p>
+            Your request was approved, but access is currently unavailable.
+            Contact a reviewer.
+          </p>
+        ) : requestState?.request?.status === "pending" ? (
+          <p role="status">
+            Your request is pending review. Submitted{" "}
+            {new Date(requestState.request.requestedAt).toLocaleString()}.
+          </p>
+        ) : (
+          requestState && (
+            <>
+              {requestState.request?.status === "declined" && (
+                <p role="status">
+                  Your request was declined. You may request again{" "}
+                  {requestState.resubmitAt
+                    ? new Date(requestState.resubmitAt).toLocaleString()
+                    : "after seven days"}
+                  .
+                </p>
+              )}
+              <form
+                className="beta-request-form"
+                onSubmit={(event) => {
+                  event.preventDefault();
+                  void submitRequest();
+                }}
+              >
+                <label className="auth-field" htmlFor="beta-message">
+                  <span>Message to reviewers (optional)</span>
+                  <textarea
+                    id="beta-message"
+                    rows={4}
+                    maxLength={betaMessageLimit}
+                    value={message}
+                    onChange={(event) => setMessage(event.target.value)}
+                    aria-describedby="beta-message-help"
+                  />
+                </label>
+                <small id="beta-message-help">
+                  Up to {betaMessageLimit} characters. Waitlist signup is
+                  separate from this account request.
+                </small>
+                <button
+                  className="primary wide"
+                  disabled={
+                    submitting ||
+                    checking ||
+                    (!!requestState.resubmitAt &&
+                      Date.parse(requestState.resubmitAt) > Date.now())
+                  }
+                >
+                  {submitting ? "Saving request…" : "Request beta access"}
+                </button>
+              </form>
+            </>
+          )
+        )}
         {location.pathname.startsWith("/invite/") && (
           <p>
             Your invitation has not been accepted or erased. Return to this link
@@ -1698,6 +1799,8 @@ function BetaAccess({ session }: { session: Session }) {
         <a href="/">Return to the public page</a>
       </AuthShell>
     );
+  if (location.pathname === "/beta/review")
+    return <BetaReview session={session} requestApi={request} />;
   const inviteToken = location.pathname.match(/^\/invite\/([^/]+)$/)?.[1];
   if (inviteToken)
     return (
@@ -1712,5 +1815,14 @@ function BetaAccess({ session }: { session: Session }) {
         "/app",
       ),
     );
-  return <Projects session={session} />;
+  return (
+    <>
+      {requestState?.reviewer && (
+        <a className="beta-review-shortcut" href="/beta/review">
+          Review beta requests
+        </a>
+      )}
+      <Projects session={session} />
+    </>
+  );
 }

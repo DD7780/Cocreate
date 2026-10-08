@@ -23,16 +23,22 @@
   "observability": {
     "enabled": true
   },
+  "triggers": {
+    "crons": [
+      "*/5 * * * *"
+    ]
+  },
   "vars": {
     "COCREATE_APP_ORIGINS": "https://2guys1canvas.com",
     "COCREATE_PUBLIC_ORIGIN": "https://2guys1canvas.com",
+    "COCREATE_EMAIL_FROM": "2guys1canvas <beta@2guys1canvas.com>",
     "COCREATE_LEGACY_ORIGIN": "https://cocreate.susan981314271.workers.dev",
     "COCREATE_WWW_ORIGIN": "https://www.2guys1canvas.com",
     "SUPABASE_ARTIFACT_BUCKET": "cocreate-artifacts",
     "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
     "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co",
-    "COCREATE_RELEASE_FINGERPRINT": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850"
+    "COCREATE_RELEASE_FINGERPRINT": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb"
   },
   "containers": [
     {

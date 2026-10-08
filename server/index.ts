@@ -37,6 +37,7 @@ import { coordinatorResponse } from "./coordinator-response.js";
 import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
+import { registerBetaRequestRoutes } from './beta-requests.js';
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -77,6 +78,7 @@ export async function createCoCreateServer(options: Options = {}) {
         limit: '40kb'
     }));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
+    const closeBetaRequests = platformState.platform ? registerBetaRequestRoutes(app,platformState.platform) : null;
     const releaseFile = '/usr/local/share/cocreate-release.json';
     const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
     if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
@@ -834,6 +836,7 @@ export async function createCoCreateServer(options: Options = {}) {
         await drained;
         manager.shutdown();
         closeBeta();
+        await closeBetaRequests?.();
         await platformState.platform?.coordinator.close();
     };
     return {

@@ -1,6 +1,18 @@
 # Harness status and outstanding work
 
-Release source `915bebd` is active at https://2guys1canvas.com with Worker `21d2caeb`, container version 40 and image `fbe80aa0`. Linux compiler 10/10, browser 15/15 and full regression 238/238 pass on both verification and main, with zero test skips. Hosted anonymous routes, desktop/mobile landing/login/recovery forms, canonical redirects and the approved synthetic durable waitlist/deduplication check pass. Ten migrations, two confirmed beta approvals/one owner and private storage are observed. Independent signed-in account flows and full production adversity remain deferred to the separate pre-launch verification/debugging session at the user's request. No email or paid inference was sent. [Current evidence](prelaunch-release-repair.md).
+Beta request/approval implementation is prepared, with 25/25 focused checks, strict build and boundaries passing. Release gates, additive migration and deployment are in progress. The user will manually verify signed-in requests, reviewer decisions and real inbox delivery; no live test account or email flow is run by this session. [Current feature evidence](beta-access-requests.md). Previous production source `915bebd` remains active until the recorded release gates pass; its [prior release evidence](prelaunch-release-repair.md) remains historical.
+
+## Beta request and approval system — 2026-10-09
+
+- [x] Bounded [change packet](beta-access-requests.md), confirmed UUID reviewer design; cofounder remains ordinary beta user.
+- [x] Confirmed-account request form/status, unique pending persistence, seven-day decline cooldown, no revoked-access revival.
+- [x] Protected review screen, explicit first-wins atomic decisions and independent project-membership gate.
+- [x] Existing Resend transport, escaped token-free links, transactional durable outbox, bounded leased/deduplicated retries and due-mail wake scheduler.
+- [x] Local strict build, boundaries and focused beta/request/SQL/project-auth tests 25/25; invitation regressions pass, no live email/account flow.
+- [ ] Native PostgreSQL contention and established production-image Linux/full CI gates.
+- [ ] Additive production migration, exact verified reviewer grants, main publication and active Worker/image attestation.
+- [ ] Hosted anonymous route smoke checks.
+- [ ] User's manual signed-in request, both reviewer inboxes, explicit decision, requester inbox, app entry, private-project denial and revocation checks. The user explicitly chose manual live testing this time.
 
 ## Current release smoke gate — 2026-10-08
 

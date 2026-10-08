@@ -48,6 +48,20 @@ export class CoCreateContainer extends Container {
 }
 
 export default {
+  async scheduled(_event, env) {
+    if(!env.RESEND_API_KEY || !env.COCREATE_EMAIL_FROM || !env.SUPABASE_SECRET_KEY || !env.SUPABASE_URL)return;
+    // Wake a sleeping container only for durable due mail, using the existing private service key.
+    const response=await fetch(`${env.SUPABASE_URL}/rest/v1/rpc/has_due_beta_email`,{
+      method:'POST',headers:{apikey:env.SUPABASE_SECRET_KEY,Authorization:`Bearer ${env.SUPABASE_SECRET_KEY}`,'Content-Type':'application/json'},
+      body:'{}',signal:AbortSignal.timeout(10_000),
+    });
+    if(!response.ok)throw new Error(`Beta email schedule lookup failed (${response.status}).`);
+    if(await response.json()!==true)return;
+    const container=getContainer(env.COCREATE_CONTAINER,'primary');
+    const readiness=await container.fetch(new Request('http://localhost/__cocreate/app-health'));
+    const health=readiness.ok?await readiness.json():undefined;
+    if(health?.release_fingerprint!==env.COCREATE_RELEASE_FINGERPRINT)throw new Error('Beta email release is still updating.');
+  },
   async fetch(request, env) {
     const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN, env.COCREATE_WWW_ORIGIN);
     if (redirect) return redirect;

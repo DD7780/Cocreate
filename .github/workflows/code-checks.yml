@@ -8,6 +8,18 @@ jobs:
   verify:
     runs-on: ubuntu-22.04
     timeout-minutes: 25
+    services:
+      postgres:
+        image: postgres:17
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: beta_test_only
+          POSTGRES_DB: cocreate_beta_test
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd "pg_isready -U postgres -d cocreate_beta_test"
+          --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
       - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
@@ -20,6 +32,10 @@ jobs:
       - run: pnpm install --frozen-lockfile
       - run: pnpm check:boundaries
       - run: pnpm build
+      - name: Beta request transactions on native PostgreSQL
+        env:
+          COCREATE_BETA_TEST_DATABASE_URL: postgresql://postgres:beta_test_only@127.0.0.1:5432/cocreate_beta_test
+        run: node --import tsx --test --test-concurrency=1 tests/beta-request-sql.test.ts
       - name: Build the production Dockerfile
         id: image
         run: |

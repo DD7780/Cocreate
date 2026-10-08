@@ -1,0 +1,12 @@
+{
+  "date": "2026-10-09",
+  "scope": "Synthetic local SQL/API/provider checks; no hosted accounts or live email",
+  "focusedTests": {"passed": 25, "failed": 0, "skipped": 0},
+  "strictTypeScript": "passed",
+  "viteBuild": "passed; existing large-chunk warning retained",
+  "boundaries": {"files": 151, "violations": 0, "jevRequests": 0},
+  "sqlEngine": "Existing locked PGlite through Prisma development dependency; native concurrent PostgreSQL is a separate CI gate",
+  "graph": {"nodes": 2181, "edges": 5176, "communities": 120, "llmCalls": 0, "limitation": "SQL parser dependency unavailable; exact SQL migration verified by tests"},
+  "releaseFingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb",
+  "hostedAuthenticatedAndInboxAcceptance": "User chose manual testing; not run by agent"
+}
