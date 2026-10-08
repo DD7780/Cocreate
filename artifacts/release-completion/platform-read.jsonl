@@ -1,0 +1,123 @@
+{
+  "kind": "builds",
+  "body": {
+    "unavailable": "Error: Cloudflare read failed: 403 [{\"code\":12004,\"message\":\"Forbidden\"}]"
+  }
+}
+{
+  "kind": "application",
+  "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+  "version": 40,
+  "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:fbe80aa089c4a4735ef2b12822bc3d862adf410ebf7e524a3861a388c04a9156",
+  "keys": 0,
+  "resources": {
+    "vcpu": 0.25,
+    "memory": "1GiB",
+    "disk": {
+      "size_mb": 4000,
+      "size": "4GB"
+    }
+  }
+}
+{
+  "kind": "deployments",
+  "body": [
+    {
+      "id": "d0361e12-906c-4bf8-b09d-7b65ac0b4c22",
+      "version": 40,
+      "app_version": 40,
+      "created_at": "2026-10-08T17:49:04.163000064Z",
+      "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:fbe80aa089c4a4735ef2b12822bc3d862adf410ebf7e524a3861a388c04a9156",
+      "authorizedKeys": 0,
+      "placement": {
+        "id": "6edb2ce2-db9f-ee45-1890-f6d4b98b4c3e",
+        "created_at": "2026-10-08T17:49:08.883000064Z",
+        "deployment_id": "d0361e12-906c-4bf8-b09d-7b65ac0b4c22",
+        "deployment_version": 40,
+        "terminate": false,
+        "events": [
+          {
+            "id": "4644eb71-19c5-40ee-803b-4ae8295e4fde",
+            "time": "2026-10-08T17:49:08.871Z",
+            "type": "Info",
+            "name": "SchedulerPlaced",
+            "message": "there has been a new scheduler placement",
+            "details": {
+              "country_a2": "US",
+              "deployment_id": "d0361e12-906c-4bf8-b09d-7b65ac0b4c22",
+              "host": "15m816",
+              "placement_id": "6edb2ce2-db9f-ee45-1890-f6d4b98b4c3e",
+              "region": "WNAM"
+            },
+            "statusChange": {
+              "deployment_version": 40,
+              "health": "placed",
+              "host": "15m816"
+            }
+          },
+          {
+            "id": "850309f1-22e7-4855-a07e-e4493a99b32c",
+            "time": "2026-10-08T17:50:57.454Z",
+            "type": "Info",
+            "name": "ImagePulled",
+            "message": "the runtime has successfully pulled your image",
+            "details": {
+              "duration": "1m48.493s",
+              "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:fbe80aa089c4a4735ef2b12822bc3d862adf410ebf7e524a3861a388c04a9156",
+              "requested_disk_size": 4000000000
+            },
+            "statusChange": {}
+          },
+          {
+            "id": "a17a3d7c-ff97-4f51-9d23-ffd8adec1774",
+            "time": "2026-10-08T17:51:04.478Z",
+            "type": "Info",
+            "name": "VMStarted",
+            "message": "the vm started successfully",
+            "details": {
+              "duration": "6.539s"
+            },
+            "statusChange": {
+              "container_status": "stopped",
+              "health": "running"
+            }
+          },
+          {
+            "id": "74ce188e-2b0a-45d6-be6b-54704ac59101",
+            "time": "2026-10-08T17:53:38.027Z",
+            "type": "Info",
+            "name": "DurableObjectConnected",
+            "message": "a durable object has connected to the container",
+            "details": {},
+            "statusChange": {
+              "durable_object": "connected",
+              "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+            }
+          },
+          {
+            "id": "b69e2566-97dc-4848-a599-15725b9f14ad",
+            "time": "2026-10-08T17:53:38.285Z",
+            "type": "Info",
+            "name": "ContainerStarted",
+            "message": "the container started successfully",
+            "details": {
+              "duration": "2m40.346s"
+            },
+            "statusChange": {
+              "container_status": "running"
+            }
+          }
+        ],
+        "status": {
+          "health": "running",
+          "host": "15m816",
+          "container_status": "running",
+          "durable_object": "connected",
+          "durable_object_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+        },
+        "last_update": "2026-10-08T17:53:38.294000128Z",
+        "durable_object_actor_id": "8eb24077580db1b2a34eed928a342e790b64009029b980813598d13e73c3046f"
+      }
+    }
+  ]
+}

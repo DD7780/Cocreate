@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-08T18:04:12.619Z",
+  "scope": "Live anonymous desktop/mobile browser only; no registration, authenticated sessions, email or inference",
+  "pages": [],
+  "status": "failed",
+  "error": "Error: UI readiness: !!document.querySelector(\"#waitlist-email\")"
+}

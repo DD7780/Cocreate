@@ -1,0 +1,96 @@
+{
+  "checkedAt": "2026-10-08",
+  "source": "915bebdabe71e495b1fbb14436f783e500a84a50",
+  "fingerprint": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850",
+  "run": 37817447444,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/37817447444",
+  "job": 113449583841,
+  "compiler": {
+    "pass": 10,
+    "fail": 0,
+    "skip": 0
+  },
+  "browser": {
+    "pass": 15,
+    "fail": 0,
+    "skip": 0
+  },
+  "full": {
+    "pass": 238,
+    "fail": 0,
+    "skip": 0
+  },
+  "build": "passed",
+  "boundaries": "0 violations",
+  "localBuild": "passed with pinned pnpm 10.18.3; bundle size warning",
+  "graphify": {
+    "nodes": 2133,
+    "edges": 5028,
+    "communities": 116,
+    "warning": "13 SQL files unextracted because tree_sitter_sql is absent; no LLM calls"
+  },
+  "baseline": [
+    {
+      "entity": "projects",
+      "rows": 30,
+      "fingerprint": "9f7b856e4ff126a462bab6fba0efc733"
+    },
+    {
+      "entity": "members",
+      "rows": 33,
+      "fingerprint": "f6719b63cd76b841aec3687ccf02a22c"
+    },
+    {
+      "entity": "invites",
+      "rows": 5,
+      "fingerprint": "b63c6b4e13ba6b8b3c980ebbae861a96"
+    },
+    {
+      "entity": "snapshots",
+      "rows": 30,
+      "fingerprint": "0964bf044a60ef5174c11d3f3cc96139"
+    },
+    {
+      "entity": "artifacts",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    },
+    {
+      "entity": "approvals",
+      "rows": 2,
+      "fingerprint": "80b67c4665ee7026dfec8f367f6ad161"
+    },
+    {
+      "entity": "waitlist",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e"
+    }
+  ],
+  "mainRun": {
+    "id": 37819029808,
+    "url": "https://github.com/DD7780/Cocreate/actions/runs/37819029808",
+    "job": 113454969288,
+    "compiler": {
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    "browser": {
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    "full": {
+      "pass": 238,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "localFocus": {
+    "pass": 13,
+    "fail": 1,
+    "skip": 0,
+    "limitation": "Windows hidden .codex checkout causes absolute sendFile callback404; bounded absolute-vs-rooted path reproduction is404/200. Main Linux and hosted callback pass."
+  },
+  "deferredByUser": "Independent authenticated sessions, full recovery/invitation and production adversity; separate verification/debugging before launch."
+}

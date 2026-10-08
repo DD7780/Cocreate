@@ -1,6 +1,34 @@
 # Pre-launch release repair — 2026-10-08
 
-Current status: public release16e10f6 is active and hosted acceptance checks pass; the owner confirms sign-in and the exact canonical root showing pre-launch. The normal-renderer Linux reliability follow-up remains on codex/prelaunch-beta until all its required gates pass. Main still contains16e10f6, with Worker7b47bfd0/container38/image dd13ffb0. Earlier blocked states and failed runs below are dated evidence, not current production status.
+Release source `915bebd` is active at https://2guys1canvas.com with Worker `21d2caeb`, container version 40 and image `fbe80aa0`. Linux compiler 10/10, browser 15/15 and full regression 238/238 pass on both verification and main, with zero test skips. Hosted anonymous routes, desktop/mobile landing/login/recovery forms, canonical redirects and the approved synthetic durable waitlist/deduplication check pass. Ten migrations, two confirmed beta approvals/one owner and private storage are observed. Independent signed-in account flows and full production adversity remain deferred to the separate pre-launch verification/debugging session at the user's request. No email or paid inference was sent. [Current evidence](prelaunch-release-repair.md).
+
+
+
+## Final smoke verification and publication — 2026-10-08
+
+The last ordinary functional failure was a kernel process/task rejection: serial Chromium targets overlapped renderer retirement. Source `915bebdabe71e495b1fbb14436f783e500a84a50` reuses renderers with `--renderer-process-limit=1`, without changing enforced memory/task/CPU/time/network/secret/cleanup bounds. No additional pre-launch feature implementation remains. The user explicitly defers exhaustive verification/debugging to a separate session before launch.
+
+| Evidence | Result |
+| --- | --- |
+| Verification CI [37817447444](https://github.com/DD7780/Cocreate/actions/runs/37817447444) and main CI [37819029808](https://github.com/DD7780/Cocreate/actions/runs/37819029808) | Compiler 10/10, browser 15/15, full 238/238; zero test failures/skips |
+| Local pinned pnpm 10.18.3 build and boundaries | Pass, zero boundary violations; existing bundle-size warning |
+| Running image source fingerprint | `4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850` matches candidate/CI |
+| Worker/deployment | `21d2caeb-6d9c-44ae-8aff-9e8c9e71960c` / `b0e80e4c-d3ef-4534-b358-fc38fb1d8d9c` |
+| Container/deployment | Version 40 / `d0361e12-906c-4bf8-b09d-7b65ac0b4c22`; running and connected |
+| Image digest | `fbe80aa089c4a4735ef2b12822bc3d862adf410ebf7e524a3861a388c04a9156` |
+| Resources/SSH | Existing 0.25 vCPU, 1 GiB, 4 GB disk, one instance; zero authorized keys |
+| Hosted HTTP | 23 smoke checks pass; beta 401 JSON/unknown API 404 JSON, protected previews/downloads denied, hosted Supabase mode |
+| Hosted browser | Landing/form at 320/390/1440 px, login, recovery form and anonymous app→login; screenshots inspected |
+| Waitlist | Two HTTP 200 responses; same durable consent/timestamp, one private row, zero accounts; exact row deleted after explicit approval |
+| Live database | 10 migrations; two confirmed approvals/one owner; private bucket, RLS and 21 restrictive policies |
+
+[Candidate/local evidence](../../artifacts/release-completion/verified-candidate.json), [hosted HTTP](../../artifacts/release-completion/hosted-anonymous.json), [browser](../../artifacts/release-completion/browser/checks.json), [database/waitlist](../../artifacts/release-completion/database-verification.json), [Worker](../../artifacts/release-completion/active-worker.json), [health](../../artifacts/release-completion/active-health.json), [DNS](../../artifacts/release-completion/dns.json). Main publication was a normal fast-forward; no force push, migration, role change, email or provider spend. The initial mixed-version 503 is retained as successful fail-closed rollout behavior, not a readiness pass.
+
+Data scope: membership/invite/approval/artifact/waitlist fingerprints match the baseline. One existing project and snapshot updated at 17:57:41 UTC, with counts unchanged; the cause is not established and full-table equality is not claimed. No live record was reverted. Rate-limit accounting from the approved test remains intact.
+
+Limits: independent signed-in owner/cofounder/unapproved HTTP/socket/Storage sessions, recovery/invitation completion, real coordinator contention and full production generated-job adversity are deferred by the user. Hosted startup proves the actual compiler/browser preflight, not exhaustive guest adversity. Current forms were inspected without sending email. Two temporary probe contract mismatches (auth field/sign-in return query) were corrected without source changes; an additional reused-browser-profile readiness failure is retained before the fresh-profile passing run. Local Windows focus is 13/14 because absolute sendFile under the hidden .codex checkout returns404; a bounded absolute-vs-rooted reproduction shows404/200. This pre-existing local path limitation does not replace the main Linux238/238 or hosted callback200 evidence.
+
+Graphify AST refresh: 2,133 nodes, 5,028 edges, 116 communities, no LLM calls. The absent SQL parser omits 13 SQL files; semantic documentation layers remain dated. Rollback: retain the new Worker fingerprint guard and restrictive data policies; use only a previously attested gated Worker/image pair, preserving private data. A mismatched image returns503. Do not restore an ungated/local-auth image or run schema down migrations. Documentation/evidence publication uses a skip-ci commit after the verified source rollout, leaving application/build inputs unchanged.
 
 ## Bounded change packet
 

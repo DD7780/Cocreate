@@ -1,0 +1,9 @@
+{
+  "at": "2026-10-08T18:02:13.254Z",
+  "status": 200,
+  "body": {
+    "status": "ok",
+    "service": "cocreate-app",
+    "release_fingerprint": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850"
+  }
+}

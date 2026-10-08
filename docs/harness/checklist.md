@@ -1,8 +1,19 @@
 # Harness status and outstanding work
 
-Hosted release16e10f6 is active with Worker7b47bfd0/container38/image dd13ffb0. Public landing, durable waitlist/deduplication, recovery form, canonical/www/legacy redirects and anonymous protected boundaries pass real hosted checks. The additive waitlist clock fix is applied (10 migrations); all seven private table fingerprints match the pre-release baseline after synthetic cleanup. A repeated Linux startup crash remains retained; the normal-renderer/aggregate-CPU correction awaits CI. Independent signed-in owner/cofounder/unapproved and actual recovery/invitation completion remain unavailable. [Current packet](prelaunch-release-repair.md).
+Release source `915bebd` is active at https://2guys1canvas.com with Worker `21d2caeb`, container version 40 and image `fbe80aa0`. Linux compiler 10/10, browser 15/15 and full regression 238/238 pass on both verification and main, with zero test skips. Hosted anonymous routes, desktop/mobile landing/login/recovery forms, canonical redirects and the approved synthetic durable waitlist/deduplication check pass. Ten migrations, two confirmed beta approvals/one owner and private storage are observed. Independent signed-in account flows and full production adversity remain deferred to the separate pre-launch verification/debugging session at the user's request. No email or paid inference was sent. [Current evidence](prelaunch-release-repair.md).
 
-2026-10-08 latest runtime check: font-runtime Linux8/11, compiler10/10; full suite skipped behind critical functional failures. Supported headless-shell alternative is prepared with unchanged bounds; main/production publication remains pending. See [repair packet](prelaunch-release-repair.md).
+## Current release smoke gate — 2026-10-08
+
+- [x] Promote `915bebd` to main; both Linux runs pass compiler 10/10, browser 15/15 and full 238/238.
+- [x] Attest active Worker, running version-40 container, image digest and matching source fingerprint.
+- [x] Hosted 23 anonymous HTTP/Data API checks, desktop/mobile browser forms and path/query-preserving HTTPS redirects.
+- [x] Two explicitly approved synthetic waitlist submissions observe the same private consented row/no account; exact test row removed.
+- [x] Fresh migration, approval, RLS/private-bucket and data fingerprint audit; record project/snapshot drift rather than claiming complete equality.
+- [ ] Deferred by explicit user steering: independent owner/cofounder/unapproved sessions, invitation/recovery completion, contention and complete production adversity. These are verification tasks, not additional pre-launch feature implementation.
+
+## Dated release investigation
+
+The remaining dated checklist records earlier failures and pending states; current completion is above.
 
 ## Latest release repair — 2026-10-08
 

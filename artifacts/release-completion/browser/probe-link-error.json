@@ -1,0 +1,7 @@
+{
+  "checkedAt": "2026-10-08T18:00:47.800Z",
+  "scope": "Live anonymous desktop/mobile browser only; no registration, authenticated sessions, email or inference",
+  "pages": [],
+  "status": "failed",
+  "error": "AssertionError [ERR_ASSERTION]: The expression evaluated to a falsy value:\n\n  assert.ok(state.form&&state.consent&&state.signIn)\n"
+}

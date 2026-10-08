@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-08T17:50:40.949Z",
+  "expected": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850",
+  "scope": "Live anonymous HTTP/direct Data API only; no signed-in identities, email or inference",
+  "requests": [
+    {
+      "url": "https://2guys1canvas.com/__cocreate/app-health",
+      "status": 503,
+      "type": "application/json",
+      "location": null,
+      "body": "{\"error\":\"Application release is updating. Retry shortly.\"}"
+    }
+  ],
+  "status": "failed",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n\n503 !== 200\n"
+}

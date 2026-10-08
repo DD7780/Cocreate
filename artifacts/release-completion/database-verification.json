@@ -1,0 +1,102 @@
+{
+  "date": "2026-10-08",
+  "scope": "Explicitly approved two synthetic registrations, exact-row deletion; no account creation/email/inference; private content not exported",
+  "first": {
+    "rows": 1,
+    "consent": "beta-updates-v1",
+    "registered_at": "2026-10-08 18:00:45.385255+00",
+    "created_accounts": 0
+  },
+  "duplicate": {
+    "rows": 1,
+    "consent": "beta-updates-v1",
+    "registered_at": "2026-10-08 18:00:45.385255+00",
+    "created_accounts": 0
+  },
+  "cleanup": {
+    "removed_exact_test_rows": 1
+  },
+  "security": {
+    "audit": {
+      "owners": 1,
+      "tables": [
+        {
+          "rls": true,
+          "table": "beta_access",
+          "anon_select": false,
+          "authenticated_select": false
+        },
+        {
+          "rls": true,
+          "table": "beta_waitlist",
+          "anon_select": false,
+          "authenticated_select": false
+        }
+      ],
+      "private_bucket": true,
+      "effective_approvals": 2,
+      "restrictive_beta_policies": 21,
+      "confirmed_approved_accounts": 2
+    }
+  },
+  "metadata": {
+    "metadata": {
+      "projects_latest_update": "2026-10-08T17:57:41.572236+00:00",
+      "snapshots_latest_commit": "2026-10-08T17:57:41.59274+00:00",
+      "projects_changed_since_probe": 1,
+      "snapshots_changed_since_probe": 1
+    }
+  },
+  "tables": [
+    {
+      "entity": "projects",
+      "rows": 30,
+      "fingerprint": "b44c7d4903c4cfd7c5d3a9a12172861a",
+      "baseline": "9f7b856e4ff126a462bab6fba0efc733",
+      "unchanged": false
+    },
+    {
+      "entity": "members",
+      "rows": 33,
+      "fingerprint": "f6719b63cd76b841aec3687ccf02a22c",
+      "baseline": "f6719b63cd76b841aec3687ccf02a22c",
+      "unchanged": true
+    },
+    {
+      "entity": "invites",
+      "rows": 5,
+      "fingerprint": "b63c6b4e13ba6b8b3c980ebbae861a96",
+      "baseline": "b63c6b4e13ba6b8b3c980ebbae861a96",
+      "unchanged": true
+    },
+    {
+      "entity": "snapshots",
+      "rows": 30,
+      "fingerprint": "083e3613b2574d71c0260585c306f308",
+      "baseline": "0964bf044a60ef5174c11d3f3cc96139",
+      "unchanged": false
+    },
+    {
+      "entity": "artifacts",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e",
+      "baseline": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    },
+    {
+      "entity": "approvals",
+      "rows": 2,
+      "fingerprint": "80b67c4665ee7026dfec8f367f6ad161",
+      "baseline": "80b67c4665ee7026dfec8f367f6ad161",
+      "unchanged": true
+    },
+    {
+      "entity": "waitlist",
+      "rows": 0,
+      "fingerprint": "d41d8cd98f00b204e9800998ecf8427e",
+      "baseline": "d41d8cd98f00b204e9800998ecf8427e",
+      "unchanged": true
+    }
+  ],
+  "limitation": "One project and snapshot updated at 17:57:41 UTC during the active service interval. Cause not established; counts unchanged, no row restoration or all-table equality claim."
+}

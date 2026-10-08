@@ -1,0 +1,173 @@
+{
+  "checkedAt": "2026-10-08T17:55:26.061Z",
+  "expected": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850",
+  "scope": "Live anonymous HTTP/direct Data API only; no signed-in identities, email or inference",
+  "requests": [
+    {
+      "url": "https://2guys1canvas.com/__cocreate/app-health",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"status\":\"ok\",\"service\":\"cocreate-app\",\"release_fingerprint\":\"4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a4770438e809ede5',t:'MTc5MTQ4MjEyNg=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/assets/index-BPNFqXSv.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/auth/config",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"mode\":\"supabase\",\"configured\":true}"
+    },
+    {
+      "url": "https://2guys1canvas.com/login",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a47704496a60ede5',t:'MTc5MTQ4MjEyOA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/app",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a477044d9ec9ede5',t:'MTc5MTQ4MjEyOQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/recover",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a4770451db5eede5',t:'MTc5MTQ4MjEzMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/auth/callback",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a47704560839ede5',t:'MTc5MTQ4MjEzMA=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/access",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Access could not be verified. Try again or sign in again.\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/projects",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"[@supabase/server] The request carried a credential this endpoint cannot use: the Authorization header used the `Bearer` scheme but carried an empty token. Accepted auth mode(s): \\\"user\\\".\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/state",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Sign in and reopen the project.\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/rooms/00000000-0000-4000-8000-000000000009/download/1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Sign in and reopen the project.\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/preview/00000000-0000-4000-8000-000000000009/1",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Sign in and reopen the project.\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/release-test-unknown",
+      "status": 404,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"API route not found.\"}"
+    },
+    {
+      "url": "https://www.2guys1canvas.com/login?next=%2Fapp&check=release",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/login?next=%2Fapp&check=release",
+      "body": ""
+    },
+    {
+      "url": "https://www.2guys1canvas.com/api/beta/waitlist",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/api/beta/waitlist",
+      "body": ""
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/login?next=%2Fapp&check=release",
+      "status": 308,
+      "type": null,
+      "location": "https://2guys1canvas.com/login?next=%2Fapp&check=release",
+      "body": ""
+    },
+    {
+      "url": "https://cocreate.susan981314271.workers.dev/api/beta/waitlist",
+      "status": 421,
+      "type": "text/plain;charset=UTF-8",
+      "location": null,
+      "body": "Use the application on its canonical domain."
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/waitlist",
+      "status": 400,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Enter a valid email and consent to beta invitations and product updates.\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/api/beta/waitlist",
+      "status": 403,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"error\":\"Submit this form from the application website.\"}"
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_waitlist?select=*",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.beta_waitlist TO anon;\",\"message\":\"permission denied for table beta_waitlist\"}"
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/beta_access?select=*",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.beta_access TO anon;\",\"message\":\"permission denied for table beta_access\"}"
+    },
+    {
+      "url": "https://dnsapasubeoxxsgkiotw.supabase.co/rest/v1/projects?select=*",
+      "status": 401,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"code\":\"42501\",\"details\":null,\"hint\":\"Grant the required privileges to the current role with: GRANT SELECT ON public.projects TO anon;\",\"message\":\"permission denied for table projects\"}"
+    }
+  ],
+  "entryAsset": "/assets/index-BPNFqXSv.js",
+  "authConfig": {
+    "mode": "supabase",
+    "configured": true
+  },
+  "status": "passed"
+}

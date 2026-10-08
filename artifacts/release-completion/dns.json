@@ -1,0 +1,30 @@
+[
+  {
+    "host": "2guys1canvas.com",
+    "status": 0,
+    "answers": [
+      {
+        "type": 1,
+        "data": "172.67.139.186"
+      },
+      {
+        "type": 1,
+        "data": "104.21.94.200"
+      }
+    ]
+  },
+  {
+    "host": "www.2guys1canvas.com",
+    "status": 0,
+    "answers": [
+      {
+        "type": 1,
+        "data": "172.67.139.186"
+      },
+      {
+        "type": 1,
+        "data": "104.21.94.200"
+      }
+    ]
+  }
+]

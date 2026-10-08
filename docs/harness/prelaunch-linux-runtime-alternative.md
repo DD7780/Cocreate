@@ -1,6 +1,8 @@
 # Linux browser isolation: bounded alternative and platform questions
 
-Updated 2026-10-08. **Same-host implementation candidate; not deployed or accepted yet.** The approved native fixed read-only probe executed on Cloudflare's actual 6.18.54 guest and observed cgroup2 rw, memory/PID controllers and root writability; node cannot write the root. Current API requires numeric uid:gid. Earlier RPC attempts lacked actual DO propagation readiness; an internal HTTP marker reached the new class before execution. All temporary versions restored the original Worker with unchanged image/resources/bindings, zero SSH keys and removed nonce. [Probe and retained failures](../../artifacts/prelaunch-release-resume/native-capability-probe-http.json), [current packet](prelaunch-release-repair.md). Metadata does not prove actual namespace creation, delegation, job limits or cleanup.
+Release source `915bebd` is active at https://2guys1canvas.com with Worker `21d2caeb`, container version 40 and image `fbe80aa0`. Linux compiler 10/10, browser 15/15 and full regression 238/238 pass on both verification and main, with zero test skips. Hosted anonymous routes, desktop/mobile landing/login/recovery forms, canonical redirects and the approved synthetic durable waitlist/deduplication check pass. Ten migrations, two confirmed beta approvals/one owner and private storage are observed. Independent signed-in account flows and full production adversity remain deferred to the separate pre-launch verification/debugging session at the user's request. No email or paid inference was sent. [Current evidence](prelaunch-release-repair.md).
+
+The investigation and conditional alternatives below are retained historical evidence. The same-host implementation is now active; separate production adversity remains deferred.
 
 ## Evidence and smallest next action
 

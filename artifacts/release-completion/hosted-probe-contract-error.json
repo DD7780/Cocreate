@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-08T17:54:25.441Z",
+  "expected": "4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850",
+  "scope": "Live anonymous HTTP/direct Data API only; no signed-in identities, email or inference",
+  "requests": [
+    {
+      "url": "https://2guys1canvas.com/__cocreate/app-health",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"status\":\"ok\",\"service\":\"cocreate-app\",\"release_fingerprint\":\"4331c38c7e3c1ef26313d326345cd722a21caebac43ce77e762efae0c2061850\"}"
+    },
+    {
+      "url": "https://2guys1canvas.com/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "body": "<!doctype html><html lang=\"en\"><head><meta charset=\"UTF-8\"/><meta name=\"viewport\" content=\"width=device-width,initial-scale=1.0\"/><meta name=\"description\" content=\"2guys1canvas collaborative AI product workspace\"/><title>2guys1canvas</title>  <script type=\"module\" crossorigin src=\"/assets/index-BPNFqXSv.js\"></script>\n  <link rel=\"stylesheet\" crossorigin href=\"/assets/index-cyLHvudv.css\">\n</head><body><div id=\"root\"></div><script>(function(){function c(){var b=a.contentDocument||(a.contentWindow&&a.contentWindow.document);if(b){var d=b.createElement('script');d.innerHTML=\"window.__CF$cv$params={r:'a47702bdeddc7b80',t:'MTc5MTQ4MjA2NQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);\";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body></html>\n"
+    },
+    {
+      "url": "https://2guys1canvas.com/assets/index-BPNFqXSv.js",
+      "status": 200,
+      "type": "text/javascript; charset=utf-8",
+      "location": null
+    },
+    {
+      "url": "https://2guys1canvas.com/api/auth/config",
+      "status": 200,
+      "type": "application/json; charset=utf-8",
+      "location": null,
+      "body": "{\"mode\":\"supabase\",\"configured\":true}"
+    }
+  ],
+  "entryAsset": "/assets/index-BPNFqXSv.js",
+  "authConfig": {
+    "mode": "supabase",
+    "configured": true
+  },
+  "status": "failed",
+  "error": "AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:\n+ actual - expected\n\n+ undefined\n- 'supabase'\n"
+}

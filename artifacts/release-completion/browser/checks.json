@@ -1,0 +1,55 @@
+{
+  "checkedAt": "2026-10-08T18:06:29.172Z",
+  "scope": "Live anonymous desktop/mobile browser only; no registration, authenticated sessions, email or inference",
+  "pages": [
+    {
+      "page": "landing",
+      "width": 1440,
+      "heading": "One canvas.\nMultiple people.\nOne product.",
+      "form": true,
+      "consent": true,
+      "signIn": true,
+      "scroll": 1425
+    },
+    {
+      "page": "landing",
+      "width": 390,
+      "heading": "One canvas.\nMultiple people.\nOne product.",
+      "form": true,
+      "consent": true,
+      "signIn": true,
+      "scroll": 390
+    },
+    {
+      "page": "landing",
+      "width": 320,
+      "heading": "One canvas.\nMultiple people.\nOne product.",
+      "form": true,
+      "consent": true,
+      "signIn": true,
+      "scroll": 320
+    },
+    {
+      "page": "/login",
+      "path": "/login",
+      "text": "2GUYS1CANVAS\nA SHARED SPACE FOR IDEAS\nFrom first thought\nto working thing.\n\nWrite together on one canvas. Submit what changed when you are ready. Follow every decision through to the build.\n\n✦\n◆\n✳\nWRITE TOGETHER / BUILD TOGETHER\n\nWELCOME TO THE WORKSPACE\n\nBeta tester sign-in\n\nSign in with your existing account. Application access requires separate beta approval; your private projects keep their membership permissions.\n\nContinue with Google\nor\nEmail\nPassword\nSIGN IN\nCreate account\nForgot password?\n2guys1canvas requests only basic identity information. It does not request Drive or Gmail access.",
+      "email": true,
+      "password": true
+    },
+    {
+      "page": "/forgot-password?returnTo=%2Fapp",
+      "path": "/forgot-password",
+      "text": "2GUYS1CANVAS\nA SHARED SPACE FOR IDEAS\nFrom first thought\nto working thing.\n\nWrite together on one canvas. Submit what changed when you are ready. Follow every decision through to the build.\n\n✦\n◆\n✳\nWRITE TOGETHER / BUILD TOGETHER\n\nWELCOME TO THE WORKSPACE\n\nReset your password\n\nWe’ll email recovery instructions if the address belongs to an account.\n\nEmail\nSEND RECOVERY EMAIL\nSign in\nCreate account",
+      "email": true,
+      "password": false
+    },
+    {
+      "page": "/app",
+      "path": "/login",
+      "text": "2GUYS1CANVAS\nA SHARED SPACE FOR IDEAS\nFrom first thought\nto working thing.\n\nWrite together on one canvas. Submit what changed when you are ready. Follow every decision through to the build.\n\n✦\n◆\n✳\nWRITE TOGETHER / BUILD TOGETHER\n\nWELCOME TO THE WORKSPACE\n\nBeta tester sign-in\n\nSign in with your existing account. Application access requires separate beta approval; your private projects keep their membership permissions.\n\nContinue with Google\nor\nEmail\nPassword\nSIGN IN\nCreate account\nForgot password?\n2guys1canvas requests only basic identity information. It does not request Drive or Gmail access.",
+      "email": true,
+      "password": true
+    }
+  ],
+  "status": "passed"
+}
