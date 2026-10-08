@@ -106,6 +106,10 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       const message = buffer.slice(0, end); buffer = buffer.slice(end + 1);
       try {
         const reply = JSON.parse(message), task = pending.get(reply.id);
+        if (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed') {
+          stop(group?.cpuExceeded() || group?.memoryExceeded() || group?.tasksExceeded()
+            ? new IsolationError('isolation_resource_limit', 'Verification renderer exceeded its resource bound.') : unavailable());
+        }
         if (task) {pending.delete(reply.id); reply.error ? task.reject(new Error('Browser protocol command failed.')) : task.resolve(reply.result);}
       } catch {stop(unavailable());}
     }

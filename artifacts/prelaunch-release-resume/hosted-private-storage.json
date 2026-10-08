@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-08T15:04:08.373Z",
+  "scope": "Known existing private Storage object tested anonymously; no object body or path published",
+  "privateObjectCount": 70,
+  "objectPathHash": "92b3d81c00f94bb80232ddfefaebc8e90659ab55897d3212d0faa925dfbb88c3",
+  "knownObjectExists": true,
+  "requests": [
+    {
+      "kind": "public",
+      "status": 400,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "kind": "authenticated",
+      "status": 400,
+      "type": "application/json; charset=utf-8"
+    }
+  ],
+  "passed": true
+}

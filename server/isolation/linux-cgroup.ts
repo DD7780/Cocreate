@@ -57,10 +57,15 @@ export class LinuxJobGroup {
     return /^max\s+[1-9]\d*$/m.test(fs.readFileSync(path.join(this.directory, 'pids.events'), 'utf8'));
   }
 
-  cpuExceeded(): boolean {
+  cpuMicroseconds(): number {
     const usage = fs.readFileSync(path.join(this.directory, 'cpu.stat'), 'utf8').match(/^usage_usec\s+(\d+)$/m);
     if (!usage) throw unavailable();
-    return Number(usage[1]) >= isolationPolicy.cpuSeconds * 1_000_000;
+    return Number(usage[1]);
+  }
+
+  cpuExceeded(): boolean {
+    // Stop conservatively before per-process rounded CPU limits can kill only a renderer.
+    return this.cpuMicroseconds() >= isolationPolicy.cpuSeconds * 1_000_000 - 100_000;
   }
 
   kill(): void { fs.writeFileSync(path.join(this.directory, 'cgroup.kill'), '1'); }
