@@ -1,0 +1,32 @@
+{
+  "started": "2026-10-08T10:55:29.428Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "a10ff018e376b93570afd6a1feacc3f48c2e92f6bb9cc5ca21421158aef20b25",
+  "authorityExpiresAt": "2026-10-08T11:25:32.437Z",
+  "probeVersion": "0610d7a6-6b79-4dd3-b450-4a995436559d",
+  "activationDeployment": "33a38a85-182c-4b3c-8557-d992bde4da9f",
+  "readiness": {
+    "status": 404,
+    "type": "application/json",
+    "marker": "317e40d0ba43efa6"
+  },
+  "unauthenticatedDenied": true,
+  "probe": {
+    "status": 503,
+    "type": "application/json",
+    "result": {
+      "error": "Fixed operator capability probe unavailable.",
+      "reason": "The RPC receiver does not implement the method \"operatorCapabilities\"."
+    }
+  },
+  "restorationDeployment": "6b1849a8-d465-41e1-ab74-047e826f348f",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T10:56:05.120Z"
+}

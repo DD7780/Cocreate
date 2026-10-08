@@ -34,6 +34,8 @@ Count every physical provider HTTP attempt by its own ID, purpose and outcome. P
 
 ## Stack and coding
 
+Linux browser repair direction D-0057 uses trusted startup delegation and physical cgroup job bounds, with all app/sandbox capabilities dropped. A stopped parent-death launcher must be attached and verified before candidate execution; aggregate browser bounds and whole-group cleanup remain required. Compiler address/heap limits, scoped mounts, no network/secret environment and CPU/wall/output limits stay intact. Missing controls fail closed. Actual Linux/guest enforcement and independent hosted acceptance are required before release; read-only capability metadata or a Worker-only dry run is insufficient.
+
 Active client: `src/main.tsx`, `src/App.tsx`, React/Vite/TipTap/Yjs. Active server: `server/index.ts`, Express/WebSockets. Public types: `shared/types.ts`, with runtime validation at trust boundaries. Local SQLite/JSON and hosted Postgres have different authority boundaries; consult architecture before changing persistence. Inactive `app/` scaffolding has been removed. Do not add Next.js page, cookie middleware or server-component auth to this SPA without a deliberate migration.
 
 Preserve TypeScript strict mode, pnpm lockfile and local import conventions. Write readable focused functions and explicit boundary types; avoid new compressed modules, unrelated formatting and competing frameworks/package managers. Keep provider requests in adapters, orchestration in the harness, and UI out of provider logic. Validate inputs and structured outputs before use, rather than casting invalid data to trusted types.

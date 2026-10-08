@@ -1,0 +1,2 @@
+server/index.ts(80,32): error TS2304: Cannot find name 'fs'.
+server/index.ts(80,72): error TS2304: Cannot find name 'fs'.

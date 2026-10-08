@@ -1,5 +1,21 @@
 # Harness status and outstanding work
 
+## Latest release repair — 2026-10-08
+
+[Current packet](prelaunch-release-repair.md) supersedes earlier status claims; historical evidence remains dated.
+
+- [x] Explicit main push verified at ca7bf55; its Cloudflare build was skipped. Fresh public recheck still sees index-CuegjVmH.js, HTML beta/unknown API, www404 and the original image.
+- [x] Fresh live read-only SQL confirms nine migrations, exactly two designated confirmed approvals/one owner, zero waitlist rows and private artifact bucket. No reapplication or membership change.
+- [x] Reproduce Linux failure in job 113270320611: image/build/compiler and all 10 compiler adversity tests pass; browser startup fails; full suite skipped.
+- [x] Complete approved fixed native capability probe: actual kernel/cgroup metadata collected as numeric node/root identities; original Worker restored, same version37/image/resources/bindings, zero SSH keys and nonce deleted. Earlier RPC propagation, names-format and expired-auth failures retained.
+- [x] Prepare www same-origin path/query-preserving redirects; focused domain/beta 13/13, strict types/build/import boundaries and controlled landing/pending/invite/approval/revocation UI pass. These are local/mocked checks.
+- [-] Fresh Windows full suite: 227/228, zero skips; retention/retry failure retained. Unchanged focused retry passes 1/1; it does not replace the full result.
+- [-] Implement candidate trusted bootstrap, stopped launcher, cgroup physical memory/PID bounds and full job cleanup. Types pass. Linux normal/resource/authority/cancellation/cleanup and required full suite are pending; no release claim.
+- [x] Candidate Windows focus passes13/13 executable checks with four Linux-only skips. First10/17/three cleanup failures retained; they observed one inactive scratch from the earlier full failure, preserved in ignored quarantine after verifying no runner. No relaxed assertions/bounds. Updated types/boundaries pass and latest AST refresh records2,126 nodes/5,011 edges/121 communities without LLM calls.
+- [x] Prepare immutable image/source fingerprint and Worker forwarding gate for mixed-version rollout; actual hosted browser preflight precedes server binding. Routing/gate8/8 local tests pass. Original missing-import failure retained; no public operator API or credential added.
+- [ ] Publish the exact verified candidate image/Worker, attach www, then attest active revision/digest and Linux guest readiness.
+- [ ] Independently verify hosted anonymous/pending/owner/cofounder, durable waitlist/deduplication, auth/recovery/invites/revocation, APIs/sockets/previews/downloads/direct Storage and unrelated private projects. No email/tracking/provider spend.
+
 ## Custom-domain release — 2026-10-08
 
 This current audit supersedes historical prepared/unapplied status only; earlier dated test reports remain unchanged. [Release packet](prelaunch-domain-release.md), [verification manifest](../../artifacts/prelaunch-domain-release/verification.json).

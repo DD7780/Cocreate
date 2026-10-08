@@ -4,6 +4,7 @@ import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { IsolationError, isolationPolicy, prepareIsolation, type IsolationOptions } from '../isolation.js';
+import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
 
 export type BrowserProtocol = {
   call(method: string, params?: object, sessionId?: string): Promise<any>;
@@ -25,10 +26,11 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   const flags = ['--headless=new', '--single-process', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
     '--disable-crashpad-for-testing', '--disable-background-networking', '--disable-component-update', '--disable-sync',
     '--no-first-run', '--no-default-browser-check', '--disk-cache-size=1', '--media-cache-size=1', '--remote-debugging-pipe'];
-  const linux = ['--as=' + isolationPolicy.linuxAddressSpaceBytes, '--cpu=' + isolationPolicy.cpuSeconds,
+  // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
+  const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
     '--nproc=' + isolationPolicy.linuxTasksPerUser, '--fsize=' + isolationPolicy.outputBytes, '--nofile=64', '--', '/usr/bin/bwrap',
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
-    '--unshare-all', '--die-with-parent', '--new-session', '--clearenv',
+    '--json-status-fd', '5', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv',
     '--ro-bind', path.dirname(executable), '/browser', '--ro-bind', workspace, '/job',
     '--bind', path.join(workspace, 'browser-profile'), '/profile', '--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp'];
   for (const directory of ['/lib', '/lib64', '/usr/lib']) if (process.platform === 'linux' && fs.existsSync(directory)) linux.push('--ro-bind', directory, directory);
@@ -36,12 +38,16 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   const command = process.platform === 'win32' ? {executable: path.join(runtime, 'runner.exe'), args: [runtime, workspace, profile, String(process.pid), String(wallMs), 'browser', executable]} :
     process.platform === 'linux' ? {executable: '/usr/bin/prlimit', args: linux} : undefined;
   if (!command) throw unavailable();
-  const child = spawn(command.executable, command.args, {cwd: workspace, windowsHide: true, detached: process.platform !== 'win32',
+  let group: LinuxJobGroup | undefined;
+  try { if (process.platform === 'linux') group = LinuxJobGroup.create(); }
+  catch (error) { fs.rmSync(workspace, {recursive: true, force: true}); const failure = unavailable(); failure.cause = error; throw failure; }
+  const child = spawn(group ? linuxJobLauncher : command.executable, group ? [command.executable, ...command.args] : command.args, {cwd: workspace, windowsHide: true, detached: process.platform !== 'win32',
     env: process.platform === 'win32' ? {SystemRoot: process.env.SystemRoot || 'C:\\Windows', APPDATA: process.env.APPDATA, LOCALAPPDATA: process.env.LOCALAPPDATA, USERPROFILE: process.env.USERPROFILE} : {PATH: '/usr/bin:/bin', LANG: 'C.UTF-8'},
-    stdio: process.platform === 'win32' ? ['pipe', 'pipe', 'pipe'] : ['ignore', 'ignore', 'pipe', 'pipe', 'pipe']});
+    stdio: process.platform === 'win32' ? ['pipe', 'pipe', 'pipe'] : ['ignore', 'ignore', 'pipe', 'pipe', 'pipe', 'pipe']});
   const input = process.platform === 'win32' ? child.stdin! : child.stdio[3] as NodeJS.WritableStream;
   const output = process.platform === 'win32' ? child.stdout! : child.stdio[4] as NodeJS.ReadableStream;
   let sequence = 0, buffer = '', received = 0, stderr = '', failure: Error | undefined, exited = false, finishing = false, forcedTermination = false;
+  let linuxPid = 0, sandboxExit: number | undefined;
   let hardStop: NodeJS.Timeout | undefined;
   const decoder = new StringDecoder('utf8');
   const pending = new Map<number, {resolve(value: any): void; reject(error: Error): void}>();
@@ -51,7 +57,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       try { fs.writeFileSync(path.join(workspace, 'cancel'), 'cancel'); } catch { child.kill(); }
       hardStop ??= setTimeout(() => {forcedTermination = true; child.kill();}, 1_000);
     }
-    else if (child.pid) { try { process.kill(-child.pid, 'SIGKILL'); } catch { child.kill(); } }
+    else if (child.pid) { try { group?.kill(); } catch {} try { process.kill(-child.pid, 'SIGKILL'); } catch { child.kill(); } }
     for (const task of pending.values()) task.reject(failure);
     pending.clear();
   };
@@ -67,6 +73,24 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     const started = stderr.match(/ISOLATION_STARTED (\d+)/);
     if (started) {options.onStarted?.(Number(started[1])); options.onStarted = undefined;}
   });
+  if (process.platform === 'linux') {
+    let statusBuffer = '', statusBytes = 0;
+    const status = child.stdio.at(5) as NodeJS.ReadableStream;
+    status.on('error', () => stop(unavailable()));
+    status.on('data', chunk => {
+      statusBytes += Buffer.byteLength(chunk);
+      if (statusBytes > 16_000) {stop(unavailable()); return;}
+      statusBuffer += chunk; let end: number;
+      while ((end = statusBuffer.indexOf('\n')) >= 0) {
+        const line = statusBuffer.slice(0, end); statusBuffer = statusBuffer.slice(end + 1);
+        try {
+          const value = JSON.parse(line), pid = value['child-pid'];
+          if (Number.isSafeInteger(pid) && pid > 0) {linuxPid = pid; options.onStarted?.(pid); options.onStarted = undefined;}
+          if (Number.isInteger(value['exit-code'])) sandboxExit = value['exit-code'];
+        } catch {stop(unavailable());}
+      }
+    });
+  }
   output.on('data', chunk => {
     received += Buffer.byteLength(chunk);
     if (received > isolationPolicy.outputBytes) {stop(new IsolationError('isolation_resource_limit', 'Browser output exceeded its bound.')); return;}
@@ -84,7 +108,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     exited = true;
     if (code !== 0 && !(finishing && (code === 122 || (forcedTermination && code === null && child.signalCode === 'SIGTERM') || (process.platform === 'linux' && child.signalCode === 'SIGKILL')))) {
       const error = code === 124 ? new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.') :
-        code === 125 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU limits.') : unavailable();
+        code === 125 || group?.memoryExceeded() || sandboxExit === 137 || sandboxExit === 152 ? new IsolationError('isolation_resource_limit', 'Verification stopped within its memory/process/CPU limits.') : unavailable();
       error.cause = {exitCode: code, phase: finishing ? 'cleanup' : 'execution', diagnostic: stderr.slice(0, 1000)};
       if (failure && failure.cause === undefined) failure.cause = error.cause;
       stop(error);
@@ -99,6 +123,10 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     return new Promise((resolve, reject) => {pending.set(id, {resolve, reject}); input.write(message);});
   }};
   try {
+    if (group) {
+      try {await group.attach(child, options.signal);}
+      catch (error) {stop(error instanceof IsolationError ? error : unavailable()); throw failure;}
+    }
     await browser.call('Browser.getVersion');
     const result = await action(browser);
     if (failure) throw failure;
@@ -109,7 +137,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     if (!exited && process.platform === 'win32') {
       try {fs.writeFileSync(path.join(workspace, 'cancel'), 'cancel');} catch {child.kill();}
       hardStop ??= setTimeout(() => {forcedTermination = true; child.kill();}, 1_000);
-    } else if (!exited && child.pid) {try {process.kill(-child.pid, 'SIGKILL');} catch {child.kill();}}
+    } else if (!exited && child.pid) {try {group?.kill();} catch {} try {process.kill(-child.pid, 'SIGKILL');} catch {child.kill();}}
     await closed; clearTimeout(timer); clearTimeout(hardStop);
     options.signal?.removeEventListener('abort', abort);
     if (process.platform === 'win32') await new Promise<void>(resolve => {
@@ -117,6 +145,15 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       const timeout = setTimeout(() => cleanup.kill(), 3_000);
       cleanup.once('error', () => {clearTimeout(timeout); resolve();}); cleanup.once('close', () => {clearTimeout(timeout); resolve();});
     });
+    if (group) await group.cleanup();
+    if (linuxPid) {
+      let removed = false;
+      for (let attempt = 0; attempt < 400; attempt++) {
+        try {process.kill(linuxPid, 0);} catch (error) {if ((error as NodeJS.ErrnoException).code === 'ESRCH') {removed = true; break;} throw unavailable();}
+        await new Promise(resolve => setTimeout(resolve, 5));
+      }
+      if (!removed) throw unavailable();
+    }
     if (path.dirname(path.resolve(workspace)) !== jobs) throw unavailable();
     fs.rmSync(workspace, {recursive: true, force: true, maxRetries: 5, retryDelay: 100});
     if (failure) throw failure;

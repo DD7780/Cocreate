@@ -1,5 +1,7 @@
 # Pre-launch and private beta change packet
 
+Latest 2026-10-08 status is in [the repair packet](prelaunch-release-repair.md): source main ca7bf55 is published, but production still serves the old ungated image. Fresh SQL observes the required migrations and exactly the designated two approvals. A supported same-host cgroup candidate and www redirect await Linux and hosted verification. Preserve the owner/ordinary approval operations below; no migration or account/member edits are required by this repair.
+
 Dated source/local handoff from 2026-10-07. The [2026-10-08 custom-domain release packet](prelaunch-domain-release.md) supersedes earlier prepared/unapplied status: live migration history/definitions match, two verified founder approvals are saved, but the latest app image and Auth/domain rollout remain pending. Retain the original evidence below; do not reapply migrations from this historical instruction without checking live history.
 
 Prepared 2026-10-07 from main `ee014a1`. Implemented and locally verified; hosted rollout remains pending.

@@ -1,0 +1,34 @@
+{
+  "started": "2026-10-08T11:29:10.753Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "1235bad2b08b2816daad6ada092c650c62d45b761aa8ae4203b3cb5ed8d53871",
+  "authorityExpiresAt": "2026-10-08T11:59:15.635Z",
+  "bindingRepair": "Serialize existing local DO class exactly as Wrangler; omit resolved namespace_id and verify it resolves to the same namespace before activation.",
+  "probeVersion": "7214b11b-52c8-4d3e-926e-a664ef6497ca",
+  "namespaceIdentityPreserved": true,
+  "activationDeployment": "6f5f044d-305c-43fa-b9af-10a17c7a9757",
+  "readiness": {
+    "status": 404,
+    "type": "application/json",
+    "marker": "d23b7f17d4b09553"
+  },
+  "unauthenticatedDenied": true,
+  "probe": {
+    "status": 503,
+    "type": "application/json",
+    "result": {
+      "error": "Fixed operator capability probe unavailable.",
+      "reason": "The RPC receiver does not implement the method \"operatorCapabilities\"."
+    }
+  },
+  "restorationDeployment": "51ca905e-dc37-4a5c-8dc1-9fe91e002e51",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T11:29:30.912Z"
+}

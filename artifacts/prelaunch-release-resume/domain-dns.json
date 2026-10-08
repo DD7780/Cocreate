@@ -1,0 +1,59 @@
+{
+  "checkedAt": "2026-10-08T11:35:14.078Z",
+  "scope": "Read-only custom-domain and public DNS inspection",
+  "domains": [
+    {
+      "hostname": "2guys1canvas.com",
+      "service": "cocreate",
+      "environment": "production",
+      "zone_id": "9fc613d7751283d49e42549adef3b0bf"
+    }
+  ],
+  "dns": [
+    {
+      "name": "2guys1canvas.com",
+      "httpStatus": 200,
+      "status": 0,
+      "answers": [
+        {
+          "name": "2guys1canvas.com",
+          "type": 1,
+          "TTL": 300,
+          "data": "172.67.139.186"
+        },
+        {
+          "name": "2guys1canvas.com",
+          "type": 1,
+          "TTL": 300,
+          "data": "104.21.94.200"
+        }
+      ]
+    },
+    {
+      "name": "www.2guys1canvas.com",
+      "httpStatus": 200,
+      "status": 0,
+      "answers": [
+        {
+          "name": "www.2guys1canvas.com",
+          "type": 1,
+          "TTL": 300,
+          "data": "104.21.94.200"
+        },
+        {
+          "name": "www.2guys1canvas.com",
+          "type": 1,
+          "TTL": 300,
+          "data": "172.67.139.186"
+        }
+      ]
+    }
+  ],
+  "zoneRead": {
+    "status": 403,
+    "success": false,
+    "codes": [
+      10000
+    ]
+  }
+}

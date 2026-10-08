@@ -1,0 +1,20 @@
+{
+  "started": "2026-10-08T10:49:05.734Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "f42bdda324965cc86fbb75eb30d2d3bfc3807a71a2e7379a593002e125f1d5be",
+  "authorityExpiresAt": "2026-10-08T11:19:08.858Z",
+  "probeVersion": "538a2b00-107f-4b6d-9abd-d72be7fd32b4",
+  "activationDeployment": "4173980a-5567-4b53-9081-a9edb03d7864",
+  "unauthenticatedDenied": true,
+  "failure": "Unexpected token '<', \"<!DOCTYPE \"... is not valid JSON",
+  "restorationDeployment": "eff0c882-c2d1-4e28-9d44-b41b6685e15f",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T10:49:20.812Z"
+}

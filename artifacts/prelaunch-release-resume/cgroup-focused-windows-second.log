@@ -1,0 +1,115 @@
+TAP version 13
+# {"policyVersion":"list-behavior-v1","specificationRevision":3,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf","checkedAt":"2026-10-08T11:57:12.210Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."},{"kind":"favorites","version":"list-behavior-v1","implemented":true,"passed":true,"message":"The favorite state toggles and restores without removing items."},{"kind":"sort","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Sorting changes list order into alphabetical order without losing items."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_980895587501","requirementRevision":1,"criteriaHash":"242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f","criteria":[{"criterionHash":"8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c","checks":["favorites"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_d6b0094d5067","requirementRevision":1,"criteriaHash":"6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df","criteria":[{"criterionHash":"dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875","checks":["sort"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"}
+# Subtest: real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+ok 1 - real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate
+  ---
+  duration_ms: 7184.4236
+  type: 'test'
+  ...
+# Subtest: compiling controls without behavior fail; retained feature regressions are checked on every candidate
+ok 2 - compiling controls without behavior fail; retained feature regressions are checked on every candidate
+  ---
+  duration_ms: 19440.6081
+  type: 'test'
+  ...
+# Subtest: unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+ok 3 - unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks
+  ---
+  duration_ms: 4022.4997
+  type: 'test'
+  ...
+# Subtest: actual verification browser denies a private host file and loopback network and removes its child/profile
+ok 4 - actual verification browser denies a private host file and loopback network and removes its child/profile
+  ---
+  duration_ms: 2951.7701
+  type: 'test'
+  ...
+# Subtest: browser CPU and protocol output remain inside the reused Job Object bounds
+ok 5 - browser CPU and protocol output remain inside the reused Job Object bounds
+  ---
+  duration_ms: 15008.3156
+  type: 'test'
+  ...
+# Subtest: cancellation and wall limits terminate browser execution and leave no child jobs
+ok 6 - cancellation and wall limits terminate browser execution and leave no child jobs
+  ---
+  duration_ms: 3926.3919
+  type: 'test'
+  ...
+# (node:28636) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the pre-launch deployment binds hosted auth and callbacks to the custom domain
+ok 7 - the pre-launch deployment binds hosted auth and callbacks to the custom domain
+  ---
+  duration_ms: 2.0705
+  type: 'test'
+  ...
+# Subtest: legacy links preserve their destination without allowing host escape or protected ingress
+ok 8 - legacy links preserve their destination without allowing host escape or protected ingress
+  ---
+  duration_ms: 4.2201
+  type: 'test'
+  ...
+# Subtest: www redirects exact paths and queries to canonical HTTPS without proxying an alternate application
+ok 9 - www redirects exact paths and queries to canonical HTTPS without proxying an alternate application
+  ---
+  duration_ms: 1.115
+  type: 'test'
+  ...
+# Subtest: the application exposes a container readiness endpoint
+ok 10 - the application exposes a container readiness endpoint
+  ---
+  duration_ms: 54.2989
+  type: 'test'
+  ...
+# Subtest: unknown API paths return JSON errors while the existing auth callback reaches the SPA
+ok 11 - unknown API paths return JSON errors while the existing auth callback reaches the SPA
+  ---
+  duration_ms: 86.8976
+  type: 'test'
+  ...
+# Subtest: the Cloudflare container uses the native WebSocket-aware proxy
+ok 12 - the Cloudflare container uses the native WebSocket-aware proxy
+  ---
+  duration_ms: 1.438
+  type: 'test'
+  ...
+# Subtest: direct application startup refuses unavailable isolation before binding a server
+ok 13 - direct application startup refuses unavailable isolation before binding a server
+  ---
+  duration_ms: 1797.068
+  type: 'test'
+  ...
+# Subtest: Linux bootstrap drops authority and attaches a stopped trusted child before execution
+ok 14 - Linux bootstrap drops authority and attaches a stopped trusted child before execution # SKIP
+  ---
+  duration_ms: 0.8388
+  type: 'test'
+  ...
+# Subtest: Linux PID ceiling denies fork growth and whole-group kill removes descendants
+ok 15 - Linux PID ceiling denies fork growth and whole-group kill removes descendants # SKIP
+  ---
+  duration_ms: 0.1538
+  type: 'test'
+  ...
+# Subtest: real Linux browser physical-memory exhaustion kills its job while the application survives
+ok 16 - real Linux browser physical-memory exhaustion kills its job while the application survives # SKIP
+  ---
+  duration_ms: 0.0959
+  type: 'test'
+  ...
+# Subtest: missing Linux delegation fails closed and removes the candidate profile
+ok 17 - missing Linux delegation fails closed and removes the candidate profile # SKIP
+  ---
+  duration_ms: 0.0965
+  type: 'test'
+  ...
+1..17
+# tests 17
+# suites 0
+# pass 13
+# fail 0
+# cancelled 0
+# skipped 4
+# todo 0
+# duration_ms 57440.819

@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-08T11:35:00Z",
+  "scope": "Live trusted read-only aggregate query; not independent authenticated sessions or policy execution",
+  "owners": 1,
+  "registrations": 0,
+  "active_approvals": 2,
+  "migration_versions": [
+    "202609240001",
+    "202609250001",
+    "202609260001",
+    "202609270001",
+    "202609300001",
+    "202609300002",
+    "20261001104120",
+    "20261003203000",
+    "20261006204612"
+  ],
+  "identities_confirmed": true,
+  "artifact_bucket_public": false,
+  "exact_designated_cohort": true
+}

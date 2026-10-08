@@ -1,5 +1,7 @@
 # Repository graph coverage and source-map checkpoints
 
+Current cgroup/www/fingerprint candidate AST checkpoint 2026-10-08: 2,126 nodes, 5,011 edges, 121 communities; [raw update](../artifacts/prelaunch-release-resume/cgroup-graph-final.log), no LLM calls. SQL parser/semantic labels remain historical. This records candidate source relationships, not Linux/hosted acceptance.
+
 Deployment repair lifecycle AST refresh 2026-10-08: 2,078 nodes, 4,951 edges and 113 communities, without LLM calls; [raw refresh](../artifacts/prelaunch-domain-release/repair-graphify-lifecycle.log). SQL parser remains unavailable; this does not refresh historical semantic layers or prove live behavior.
 
 Linux CI preparation AST checkpoint 2026-10-08: 2,069 nodes, 4,936 edges, 122 communities; zero LLM calls. SQL parser remains absent and curated semantic labels remain dated. Application runtime/hosted acceptance is separate.

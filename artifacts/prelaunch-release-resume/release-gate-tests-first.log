@@ -1,0 +1,88 @@
+TAP version 13
+# (node:17300) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: the pre-launch deployment binds hosted auth and callbacks to the custom domain
+ok 1 - the pre-launch deployment binds hosted auth and callbacks to the custom domain
+  ---
+  duration_ms: 3.1174
+  type: 'test'
+  ...
+# Subtest: legacy links preserve their destination without allowing host escape or protected ingress
+ok 2 - legacy links preserve their destination without allowing host escape or protected ingress
+  ---
+  duration_ms: 7.6257
+  type: 'test'
+  ...
+# Subtest: www redirects exact paths and queries to canonical HTTPS without proxying an alternate application
+ok 3 - www redirects exact paths and queries to canonical HTTPS without proxying an alternate application
+  ---
+  duration_ms: 1.2857
+  type: 'test'
+  ...
+# Subtest: the application exposes a container readiness endpoint
+not ok 4 - the application exposes a container readiness endpoint
+  ---
+  duration_ms: 42.316
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\cloudflare-container.test.ts:61:1'
+  failureType: 'testCodeFailure'
+  error: 'fs is not defined'
+  code: 'ERR_TEST_FAILURE'
+  name: 'ReferenceError'
+  stack: |-
+    createCoCreateServer (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\index.ts:80:32)
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\cloudflare-container.test.ts:62:24)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: unknown API paths return JSON errors while the existing auth callback reaches the SPA
+not ok 5 - unknown API paths return JSON errors while the existing auth callback reaches the SPA
+  ---
+  duration_ms: 14.5575
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\tests\\cloudflare-container.test.ts:73:1'
+  failureType: 'testCodeFailure'
+  error: 'fs is not defined'
+  code: 'ERR_TEST_FAILURE'
+  name: 'ReferenceError'
+  stack: |-
+    createCoCreateServer (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\server\index.ts:80:32)
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\tests\cloudflare-container.test.ts:76:26)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: the Cloudflare container uses the native WebSocket-aware proxy
+ok 6 - the Cloudflare container uses the native WebSocket-aware proxy
+  ---
+  duration_ms: 1.0375
+  type: 'test'
+  ...
+# Subtest: Worker gates HTTP and socket ingress until the running image matches the prepared source
+ok 7 - Worker gates HTTP and socket ingress until the running image matches the prepared source
+  ---
+  duration_ms: 4.6722
+  type: 'test'
+  ...
+# Subtest: direct application startup refuses unavailable isolation before binding a server
+ok 8 - direct application startup refuses unavailable isolation before binding a server
+  ---
+  duration_ms: 1732.6458
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 6
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 4305.7462

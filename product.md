@@ -1,6 +1,6 @@
 # 2guys1canvas product brief
 
-Pre-launch release status, 2026-10-08: the public/private target below is retained. The source release is on codex/prelaunch-beta, with production held for failed Linux browser startup and missing intended-runtime/independent hosted acceptance. Compiler-only or trusted browser version results cannot establish product readiness. No reduced-functionality beta was published. See [release packet](docs/harness/prelaunch-domain-release.md) and [bounded runtime alternative](docs/harness/prelaunch-linux-runtime-alternative.md).
+Pre-launch release status, 2026-10-08: the public/private target below is retained. Main ca7bf55 contains prior source repairs, but production still serves the older ungated image. The current candidate adds canonical www redirects and physical browser-job isolation after a successful read-only guest capability probe. Linux adversity/full regression, intended image rollout and independent hosted acceptance remain gates. No reduced-functionality beta was published. See [current repair packet](docs/harness/prelaunch-release-repair.md).
 
 This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-05 through Step 10 integration review; other accepted human product decisions are preserved.
 

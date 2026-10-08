@@ -37,47 +37,42 @@ jobs:
           if (result.error) throw result.error;
           process.exit(result.status ?? 1);
           NODE
+      - name: Prepare bounded disposable cgroup delegation
+        if: ${{ !cancelled() && steps.image.outcome == 'success' }}
+        run: |
+          root="/sys/fs/cgroup/cocreate-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          sudo sh scripts/prepare-ci-cgroup.sh "$root"
+          echo "COCREATE_CI_CGROUP_ROOT=$root" >> "$GITHUB_ENV"
       - name: Preflight actual compiler boundary
         id: compiler
         run: >-
-          docker run --rm --network none --cap-drop ALL
-          --security-opt no-new-privileges --security-opt seccomp=unconfined
-          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
-          --memory 1g --memory-swap 1g --pids-limit 256
-          cocreate-check node --import tsx scripts/prepare-isolation.ts
+          sh scripts/run-linux-check.sh node --import tsx scripts/prepare-isolation.ts
       - name: Preflight actual browser boundary
         id: browser
         if: ${{ !cancelled() && steps.image.outcome == 'success' }}
         run: >-
-          docker run --rm --network none --cap-drop ALL
-          --security-opt no-new-privileges --security-opt seccomp=unconfined
-          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
-          --memory 1g --memory-swap 1g --pids-limit 256
-          cocreate-check node --import tsx --input-type=module -e
+          sh scripts/run-linux-check.sh node --import tsx --input-type=module -e
           'import {assertVerificationBrowserAvailable} from "./server/isolation/browser.ts"; await assertVerificationBrowserAvailable(); console.log("Actual Linux browser boundary passed; no inference");'
       - name: Diagnose trusted browser version reservation
         if: ${{ !cancelled() && steps.image.outcome == 'success' && steps.browser.outcome == 'failure' }}
         run: >-
-          docker run --rm --network none --cap-drop ALL
-          --security-opt no-new-privileges --security-opt seccomp=unconfined
-          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
-          --memory 1g --memory-swap 1g --pids-limit 256
-          cocreate-check node --import tsx scripts/diagnose-linux-browser.ts
+          sh scripts/run-linux-check.sh node --import tsx scripts/diagnose-linux-browser.ts
       - name: Actual compiler and resource adversity checks
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' }}
         run: >-
-          docker run --rm --network none --cap-drop ALL
-          --security-opt no-new-privileges --security-opt seccomp=unconfined
-          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
-          --memory 1g --memory-swap 1g --pids-limit 256
-          cocreate-check node --import tsx --test --test-concurrency=1
+          sh scripts/run-linux-check.sh node --import tsx --test --test-concurrency=1
           tests/generated-isolation.test.ts
+      - name: Actual browser physical-memory and authority adversity
+        if: ${{ !cancelled() && steps.browser.outcome == 'success' }}
+        run: >-
+          sh scripts/run-linux-check.sh node --import tsx --test --test-concurrency=1
+          tests/linux-cgroup-isolation.test.ts tests/candidate-verification.test.ts
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' }}
         run: >-
-          docker run --rm --network none --cap-drop ALL
-          --security-opt no-new-privileges --security-opt seccomp=unconfined
-          --security-opt apparmor=unconfined --security-opt systempaths=unconfined
-          --memory 1g --memory-swap 1g --pids-limit 256
-          --env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local
-          cocreate-check sh -c 'node --import tsx --test --test-concurrency=1 tests/*.test.ts'
+          sh scripts/run-linux-check.sh sh -c 'node --import tsx --test --test-concurrency=1 tests/*.test.ts'
+      - name: Remove empty disposable cgroups
+        if: ${{ always() && env.COCREATE_CI_CGROUP_ROOT != '' }}
+        run: |
+          case "$COCREATE_CI_CGROUP_ROOT" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac
+          sudo find "$COCREATE_CI_CGROUP_ROOT" -depth -type d -exec rmdir {} \;

@@ -1,0 +1,49 @@
+{
+  "started": "2026-10-08T11:36:56.145Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "94f6e6df8beb589d651b45b4a89899fc7c5bfe21c6597579b639aa88eeb759f1",
+  "authorityExpiresAt": "2026-10-08T12:06:59.389Z",
+  "bindingRepair": "Serialize existing local DO class exactly as Wrangler; omit resolved namespace_id and verify it resolves to the same namespace before activation.",
+  "probeVersion": "ad593c95-0240-4600-b21b-757e19bca6c4",
+  "namespaceIdentityPreserved": true,
+  "activationDeployment": "c3fc8e0d-ef96-4e91-8673-8719548710b4",
+  "readiness": {
+    "status": 404,
+    "type": "application/json",
+    "marker": "71a1d2e6e0a9af93"
+  },
+  "unauthenticatedDenied": true,
+  "probe": {
+    "status": 200,
+    "type": "application/json",
+    "result": {
+      "scope": "Fixed read-only identity/kernel/cgroup metadata; no environment or project content",
+      "output": [
+        {
+          "user": "1000:1000",
+          "stdout": "uid=1000(node) gid=1000(node) groups=1000(node)\n6.18.54-cloudflare-microvm-2026.9.16\nbubblewrap 0.8.0\ncgroup2 rw,nosuid,nodev,noexec,relatime\nCGROUP_NOT_WRITABLE\ncpuset cpu io memory hugetlb pids misc\ncpuset cpu io memory hugetlb pids misc\n0::/\n4840\n",
+          "stderr": "",
+          "exitCode": 0
+        },
+        {
+          "user": "0:0",
+          "stdout": "uid=0(root) gid=0(root) groups=0(root)\n6.18.54-cloudflare-microvm-2026.9.16\nbubblewrap 0.8.0\ncgroup2 rw,nosuid,nodev,noexec,relatime\nCGROUP_WRITABLE\ncpuset cpu io memory hugetlb pids misc\ncpuset cpu io memory hugetlb pids misc\n0::/\n4840\n",
+          "stderr": "",
+          "exitCode": 0
+        }
+      ]
+    },
+    "attempt": 58
+  },
+  "restorationDeployment": "8fb67973-ecc8-448e-9d6c-e4c27e5b4887",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T11:39:50.709Z",
+  "capabilityCommandsSucceeded": true
+}

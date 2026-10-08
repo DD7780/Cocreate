@@ -1,0 +1,1 @@
+{"scope":"Synthetic protocol only; no Cloudflare/native execution","unauthenticatedDenied":true,"readinessDoesNotExecute":true,"fixedCommandsOnly":true,"oneExecutionPerInstance":true,"ordinaryFetchPreserved":true}

@@ -1,0 +1,17 @@
+{
+  "started": "2026-10-08T11:32:47.461Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "apiFailure": {
+    "path": "/workers/scripts/cocreate/deployments",
+    "status": 401,
+    "codes": [
+      10000
+    ]
+  },
+  "failure": "Cloudflare GET HTTP 401",
+  "restorationFailure": "Cloudflare GET HTTP 401",
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T11:32:48.430Z"
+}

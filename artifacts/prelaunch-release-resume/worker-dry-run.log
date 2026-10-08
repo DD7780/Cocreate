@@ -1,0 +1,20 @@
+
+ ⛅️ wrangler 4.131.1 (update available 4.148.0)
+───────────────────────────────────────────────
+Total Upload: 57.47 KiB / gzip: 14.37 KiB
+Your Worker has access to the following bindings:
+Binding                                                                        Resource                  
+env.COCREATE_CONTAINER (CoCreateContainer)                                     Durable Object            
+env.COCREATE_APP_ORIGINS ("https://2guys1canvas.com")                          Environment Variable      
+env.COCREATE_PUBLIC_ORIGIN ("https://2guys1canvas.com")                        Environment Variable      
+env.COCREATE_LEGACY_ORIGIN ("https://cocreate.susan981314271.worke...")        Environment Variable      
+env.COCREATE_WWW_ORIGIN ("https://www.2guys1canvas.com")                       Environment Variable      
+env.SUPABASE_ARTIFACT_BUCKET ("cocreate-artifacts")                            Environment Variable      
+env.SUPABASE_JWKS_URL ("https://dnsapasubeoxxsgkiotw.supabase...")             Environment Variable      
+env.SUPABASE_PUBLISHABLE_KEY ("sb_publishable_3K2iwsq_nMCgBnQIqS2IUg...")      Environment Variable      
+env.SUPABASE_URL ("https://dnsapasubeoxxsgkiotw.supabase...")                  Environment Variable      
+
+The following containers are available:
+- cocreate-cocreatecontainer (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\Dockerfile)
+
+--dry-run: exiting now.

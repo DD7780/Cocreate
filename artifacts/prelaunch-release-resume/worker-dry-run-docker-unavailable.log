@@ -1,0 +1,19 @@
+
+ ⛅️ wrangler 4.131.1 (update available 4.148.0)
+───────────────────────────────────────────────
+
+X [ERROR] The Docker CLI is needed to build the configured image before deploying (even in dry-run mode) but could not be launched.
+
+  To fix this, try the following:
+    - If Docker is not installed, download it from https://docs.docker.com/get-started/get-docker/
+    - If Docker is installed but the daemon is not running,
+      open the Docker Desktop app.
+    - If you use an alternative Docker-compatible CLI (e.g. Podman),
+      set the WRANGLER_DOCKER_BIN environment variable to its path and DOCKER_HOST to its socket.
+  
+  Note: Other container tooling that is compatible with the Docker CLI and engine may work, but is not yet guaranteed to do so.
+  
+  If you cannot run Docker locally, you can still deploy your Worker by passing --containers-rollout=none. This will not deploy or update your Container.
+
+
+🪵  Logs were written to "C:\Users\QUTA4\AppData\Roaming\xdg.config\.wrangler\logs\wrangler-2026-10-08_11-38-53_753.log"

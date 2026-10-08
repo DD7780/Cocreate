@@ -49,7 +49,7 @@ export class CoCreateContainer extends Container {
 
 export default {
   async fetch(request, env) {
-    const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN);
+    const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN, env.COCREATE_WWW_ORIGIN);
     if (redirect) return redirect;
     const url = new URL(request.url);
     if (url.pathname === "/__cocreate/health") {
@@ -57,6 +57,12 @@ export default {
     }
 
     try {
+      // Worker/image activation is not atomic. Never proxy old ungated application code during rollout.
+      if (!/^[a-f0-9]{64}$/.test(env.COCREATE_RELEASE_FINGERPRINT || '')) return Response.json({error:'Release verification unavailable.'}, {status:503});
+      const container = getContainer(env.COCREATE_CONTAINER, 'primary');
+      const readiness = await container.fetch(new Request('http://localhost/__cocreate/app-health'));
+      const health = readiness.ok ? await readiness.json() : undefined;
+      if (health?.release_fingerprint !== env.COCREATE_RELEASE_FINGERPRINT) return Response.json({error:'Application release is updating. Retry shortly.'}, {status:503,headers:{'Cache-Control':'no-store'}});
       if (url.pathname === '/api/beta/waitlist' && env.SESSION_SECRET) {
         const key = await crypto.subtle.importKey('raw', new TextEncoder().encode(env.SESSION_SECRET), {name:'HMAC',hash:'SHA-256'}, false, ['sign']);
         const sign = async (value) => [...new Uint8Array(await crypto.subtle.sign('HMAC', key, new TextEncoder().encode(value)))].map(byte=>byte.toString(16).padStart(2,'0')).join('');
@@ -65,7 +71,7 @@ export default {
         headers.set('x-cocreate-waitlist-proof', await sign('waitlist-proxy-v1'));
         request = new Request(request, {headers});
       }
-      return await getContainer(env.COCREATE_CONTAINER, "primary").fetch(
+      return await container.fetch(
         request,
       );
     } catch (error) {

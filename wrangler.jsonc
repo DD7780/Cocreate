@@ -4,10 +4,22 @@
   "account_id": "fc419457dc350fcfada2b0a3f00bfe3e",
   "workers_dev": true,
   "preview_urls": false,
-  "routes": [{ "pattern": "2guys1canvas.com", "custom_domain": true }],
+  "routes": [
+    {
+      "pattern": "2guys1canvas.com",
+      "custom_domain": true
+    },
+    {
+      "pattern": "www.2guys1canvas.com",
+      "custom_domain": true
+    }
+  ],
   "main": "worker/container.js",
   "compatibility_date": "2026-09-13",
-  "compatibility_flags": ["nodejs_compat", "global_fetch_strictly_public"],
+  "compatibility_flags": [
+    "nodejs_compat",
+    "global_fetch_strictly_public"
+  ],
   "observability": {
     "enabled": true
   },
@@ -15,10 +27,12 @@
     "COCREATE_APP_ORIGINS": "https://2guys1canvas.com",
     "COCREATE_PUBLIC_ORIGIN": "https://2guys1canvas.com",
     "COCREATE_LEGACY_ORIGIN": "https://cocreate.susan981314271.workers.dev",
+    "COCREATE_WWW_ORIGIN": "https://www.2guys1canvas.com",
     "SUPABASE_ARTIFACT_BUCKET": "cocreate-artifacts",
     "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
-    "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co"
+    "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co",
+    "COCREATE_RELEASE_FINGERPRINT": "3725f112f2d0b4e23d0a728506c49f74b7fd853d1a880d3abf34cfca57db46c5"
   },
   "containers": [
     {
@@ -45,7 +59,9 @@
   "migrations": [
     {
       "tag": "v1",
-      "new_sqlite_classes": ["CoCreateContainer"]
+      "new_sqlite_classes": [
+        "CoCreateContainer"
+      ]
     }
   ]
 }

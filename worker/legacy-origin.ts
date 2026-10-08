@@ -3,10 +3,11 @@ export function legacyOriginResponse(
   request: Request,
   canonicalOrigin: string | undefined,
   legacyOrigin: string | undefined,
+  wwwOrigin?: string,
 ): Response | null {
-  if (!canonicalOrigin || !legacyOrigin) return null;
+  if (!canonicalOrigin || (!legacyOrigin && !wwwOrigin)) return null;
   const incoming = new URL(request.url);
-  if (incoming.origin !== legacyOrigin) return null;
+  if (incoming.origin !== legacyOrigin && incoming.origin !== wwwOrigin) return null;
   let target: URL;
   try { target = new URL(canonicalOrigin); }
   catch { return new Response('Application origin is unavailable.', { status: 503 }); }
@@ -14,7 +15,7 @@ export function legacyOriginResponse(
       target.pathname !== '/' || target.search || target.hash) {
     return new Response('Application origin is unavailable.', { status: 503 });
   }
-  if (!['GET', 'HEAD'].includes(request.method) ||
+  if ((incoming.origin === legacyOrigin && !['GET', 'HEAD'].includes(request.method)) ||
       request.headers.get('upgrade')?.toLowerCase() === 'websocket') {
     return new Response('Use the application on its canonical domain.', { status: 421 });
   }

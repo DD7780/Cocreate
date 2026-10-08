@@ -1,0 +1,152 @@
+{
+  "checkedAt": "2026-10-08T11:51:16.025Z",
+  "scope": "Read-only live deployment/public behavior; no registration or inference",
+  "public": [
+    {
+      "origin": "https://2guys1canvas.com",
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "14072e1d5a3773c833ea3a62cdb5282e91bf2ea0279b7fd6bf69339897d9320f",
+      "assets": [
+        "/assets/index-CuegjVmH.js",
+        "/assets/index-cyLHvudv.css"
+      ]
+    },
+    {
+      "origin": "https://2guys1canvas.com",
+      "path": "/api/beta/access",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "9faceed598112b6971071179768d25bc6da1817ec9da78cb8ae96f282940b4a6"
+    },
+    {
+      "origin": "https://2guys1canvas.com",
+      "path": "/api/does-not-exist",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "a13dbf4ca860e228f29c8170d9d85bc0e6e3498838397f23ca00f0c58454fc78"
+    },
+    {
+      "origin": "https://2guys1canvas.com",
+      "path": "/login",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "143b7b1668a6188bda435afc91959cb54c80306e530dd614aa394bb3ba795dc1"
+    },
+    {
+      "origin": "https://www.2guys1canvas.com",
+      "path": "/",
+      "status": 404,
+      "type": "text/html",
+      "location": null,
+      "hash": "ba5ea3580b0ea5bfb02fc406ab9ad1628d46af6f5d9bcdb9b17ef2545d167be9",
+      "assets": []
+    },
+    {
+      "origin": "https://www.2guys1canvas.com",
+      "path": "/api/beta/access",
+      "status": 404,
+      "type": "text/html",
+      "location": null,
+      "hash": "aa61681d38b9a88562fc904b6a2f6c8bceefe291236272adab132653937d689e"
+    },
+    {
+      "origin": "https://www.2guys1canvas.com",
+      "path": "/api/does-not-exist",
+      "status": 404,
+      "type": "text/html",
+      "location": null,
+      "hash": "dc00c9f0c6826583d8a0d5ae2ce2776db0247a227d95edb3c8923b409d9f6a42"
+    },
+    {
+      "origin": "https://www.2guys1canvas.com",
+      "path": "/login",
+      "status": 404,
+      "type": "text/html",
+      "location": null,
+      "hash": "f17771a024dbfac5be8c858857a9f2392d25a51e5682e809d1e052e1556d966d"
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "6627efbf51774c36c94dba72a322ae64f3ecd420ef40452426a9647c93c75788",
+      "assets": [
+        "/assets/index-CuegjVmH.js",
+        "/assets/index-cyLHvudv.css"
+      ]
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "path": "/api/beta/access",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "6627efbf51774c36c94dba72a322ae64f3ecd420ef40452426a9647c93c75788"
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "path": "/api/does-not-exist",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "6627efbf51774c36c94dba72a322ae64f3ecd420ef40452426a9647c93c75788"
+    },
+    {
+      "origin": "https://cocreate.susan981314271.workers.dev",
+      "path": "/login",
+      "status": 200,
+      "type": "text/html; charset=utf-8",
+      "location": null,
+      "hash": "6627efbf51774c36c94dba72a322ae64f3ecd420ef40452426a9647c93c75788"
+    }
+  ],
+  "bundle": {
+    "path": "/assets/index-CuegjVmH.js",
+    "status": 200,
+    "sha256": "ba8c6cfe400e3f31f686b38abe3b779be3cccab1a3c2f9b2f245633e7802f8c2",
+    "hasWaitlist": false,
+    "hasPendingAccess": false
+  },
+  "container": {
+    "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+    "version": 37,
+    "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+    "keys": 0,
+    "resources": {
+      "vcpu": 0.25,
+      "memory": "1GiB",
+      "disk": {
+        "size": "4GB",
+        "size_mb": 4000
+      },
+      "maxInstances": 1
+    }
+  },
+  "worker": {
+    "id": "8fb67973-ecc8-448e-9d6c-e4c27e5b4887",
+    "source": "api",
+    "strategy": "percentage",
+    "author_email": "susan981314271@gmail.com",
+    "annotations": {
+      "workers/triggered_by": "deployment"
+    },
+    "versions": [
+      {
+        "version_id": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+        "percentage": 100
+      }
+    ],
+    "created_on": "2026-10-08T11:39:46.77299Z"
+  },
+  "dns": {
+    "code": "ECONNREFUSED"
+  }
+}

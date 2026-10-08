@@ -1,0 +1,38 @@
+{
+  "started": "2026-10-08T11:33:15.405Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "193e2317d5136d5bc021131c0bfc785282e2082730641f070a0216447e0679b6",
+  "authorityExpiresAt": "2026-10-08T12:03:18.486Z",
+  "bindingRepair": "Serialize existing local DO class exactly as Wrangler; omit resolved namespace_id and verify it resolves to the same namespace before activation.",
+  "probeVersion": "98db3c63-887c-4bc9-84d0-6a0392bc3489",
+  "namespaceIdentityPreserved": true,
+  "activationDeployment": "120a9a46-9356-4d88-bc9a-316e12952ae7",
+  "readiness": {
+    "status": 404,
+    "type": "application/json",
+    "marker": "200dbcffcdaef70b"
+  },
+  "unauthenticatedDenied": true,
+  "probe": {
+    "status": 200,
+    "type": "application/json",
+    "result": {
+      "scope": "Fixed read-only capability probe",
+      "phase": "native-exec-start",
+      "user": "node",
+      "output": [],
+      "diagnostic": "internal error; reference = qka0g92h6atq0anusuusjjud"
+    },
+    "attempt": 15
+  },
+  "restorationDeployment": "9a798e79-ff89-44bc-bc3f-95f3561cbc33",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T11:34:34.707Z"
+}

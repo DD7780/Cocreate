@@ -1,0 +1,19 @@
+{
+  "status": "Completed; fixed node/root metadata succeeded; original Worker restored and nonce deleted. Earlier failed attempts retained.",
+  "purpose": "Determine guest support for physical job-memory enforcement without SSH or container restarts",
+  "target": "Cloudflare Worker cocreate, existing primary Container only",
+  "baselineWorker": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "baselineDeployment": "c7b0185d-68de-4672-974d-43ed2dd1aae6",
+  "image": "sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "configurationVersion": 37,
+  "codeTemplate": "native-capability-probe-http-template.js",
+  "changes": "Copy exact active Worker modules/bindings/settings. Serialize local DO bindings as Wrangler does and verify the identical namespace before activation. Inject only the fixed authenticated HTTP probe branch and a Container fetch override that forwards every unrelated request to super.fetch. Wait for the DO readiness marker before one fixed execution. No container rollout. Restore the original Worker version.",
+  "hypothesisRevision": "The outer Worker marker proved only outer propagation. RPC methods remained unavailable even after binding repair. HTTP fetch is an existing documented interface; the internal GET marker proves the actual DO class before POST. Poll only propagation-pending responses for at most 60 attempts; never retry an execution result.",
+  "protocolVerification": "native-http-protocol-test.log: synthetic authorization, readiness without execution, fixed commands, one invocation and ordinary fetch forwarding pass; not hosted native proof",
+  "authority": "Fresh 256-bit nonce held outside OneDrive with restrictive file permissions; Worker receives only its SHA-256 hash. Exact POST path, 30-minute expiry, authorization in Worker and DO method, one invocation per live DO instance. No arbitrary command, request body, target instance or user selected by caller.",
+  "operation": "Two fixed read-only commands as existing node/root identities using numeric 1000:1000 and 0:0, per current primary API documentation. Environment stripped by env -i; five-second OS timeout plus six-second kill; 4 KiB per output stream. No cgroup writes, candidate execution, generated input, secret or project content reads.",
+  "cost": "Existing account only: two Worker version activations and at most about 12 seconds of bounded diagnostic process runtime. No new service, project, plan upgrade, image build or inference.",
+  "risks": "Production Worker code temporarily changes and its Durable Object isolate may reload. The probe never starts/stops the Container or changes its image/resources. Authentication expires and then the route returns 404; restoration removes the route. Native exec may be unavailable on the current runtime.",
+  "rollback": "Always restore e0caa8b5 at 100 percent after checking no unrelated Worker deployment drift; verify exact active Worker/image/resources, unauthenticated route denial and nonce file deletion. Preserve original settings/private data. Retain incomplete restoration honestly; no repeated rollout automatically.",
+  "approval": "Needed for this temporary production administrator execution endpoint. Existing SSH approvals covered completed attempts, not this Worker authority change."
+}

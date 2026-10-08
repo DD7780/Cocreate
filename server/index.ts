@@ -1,4 +1,6 @@
 import { assertIsolationAvailable } from "./isolation.js";
+import {assertVerificationBrowserAvailable} from './isolation/browser.js';
+import fs from 'node:fs';
 import { artifactResponse } from "./artifacts.js";
 import "dotenv/config";
 import http from "node:http";
@@ -75,10 +77,13 @@ export async function createCoCreateServer(options: Options = {}) {
         limit: '40kb'
     }));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
+    const releaseFile = '/usr/local/share/cocreate-release.json';
+    const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
+    if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
     app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
         status: 'configuration-error', service: 'cocreate-app', error: platformState.error
     }) : res.json({
-        status: 'ok', service: 'cocreate-app'
+        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint
     }));
     app.get('/api/auth/config', (_req, res) => res.status(platformState.error ? 503 : 200).json({
         mode: platformState.mode, configured: !platformState.error, error: platformState.error || undefined
@@ -841,6 +846,7 @@ const main =
     path.resolve(fileURLToPath(import.meta.url));
 if (main) {
   await assertIsolationAvailable();
+  if (process.platform === 'linux' && process.env.COCREATE_HOSTED === 'true') await assertVerificationBrowserAvailable();
   const instance = await createCoCreateServer();
   const info = await instance.start();
   console.log(`2guys1canvas ready at ${info.url}`);

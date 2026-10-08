@@ -1,5 +1,7 @@
 # Reliability verification — 2026-10-01
 
+Latest 2026-10-08 release repair checks are separate in [the current packet](prelaunch-release-repair.md): fresh Windows 227/228 with one retained failure and unchanged focused 1/1 retry, local/mocked UI acceptance, Linux compiler 10/10 with browser/full-suite gate still open, and actual Cloudflare read-only cgroup metadata. New physical-job enforcement must pass its own Linux checks; none of this promotes historical or synthetic evidence to deployed acceptance.
+
 This report remains the historical 2026-10-01 result. Fresh 2026-10-03 evidence is separately recorded in the [Step 01 baseline](multiuser-step01-baseline.md) and [Step 02 handoff](multiuser-step02-handoff.md), with Step 03 recovery evidence in its [handoff](multiuser-step03-handoff.md); fresh 2026-10-04 isolation evidence is in the [Step 04 handoff](multiuser-step04-handoff.md). Fresh Step 07 requirement-linked isolated-browser evidence is in its [handoff](multiuser-step07-handoff.md). Fresh 2026-10-05 cross-system checks, retained failures and the shutdown fix are recorded in the [Step 10 handoff](multiuser-step10-handoff.md). Completion status remains in the [canonical checklist](checklist.md).
 
 ## Scope and verified causes

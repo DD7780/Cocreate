@@ -1,5 +1,7 @@
 # Custom-domain private beta release packet
 
+Latest 2026-10-08 repair supersedes the historical state below: main was pushed to ca7bf55 and skipped by Cloudflare, while the old Worker/image remain active. A successful approved native capability probe observes writable cgroup v2/memory/PID controllers on the existing guest. All temporary Worker versions were restored; image/resources/bindings and zero SSH keys retained, nonce deleted. Physical browser-job isolation and www routing are now candidates awaiting Linux/release gates. See [current packet](prelaunch-release-repair.md); earlier failed probes remain evidence.
+
 Prepared 2026-10-08. Reuse the pre-launch implementation from `7e954b8`; this packet owns the requested hosted rollout. Preparation, database observation, configuration changes and deployed acceptance must be recorded separately.
 
 ## Outcome and bounded scope

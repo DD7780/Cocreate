@@ -1,0 +1,21 @@
+? Verifying lockfile against supply-chain policies (534 entries)...
+Lockfile is up to date, resolution step is skipped
+Already up to date
+✓ Lockfile passes supply-chain policies (534 entries in 13.2s)
+
+[ERR_PNPM_IGNORED_BUILDS] Ignored build scripts: @prisma/engines@7.10.0, esbuild@0.25.12, esbuild@0.28.1, esbuild@0.28.2, prisma@7.10.0, workerd@1.20260911.1
+
+Run "pnpm approve-builds" to pick which dependencies should be allowed to run scripts.
+[ERROR] Command failed with exit code 1: "C:\Users\QUTA4\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe" "C:\Users\QUTA4\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules\pnpm\bin\pnpm.mjs" install
+
+pnpm: Command failed with exit code 1: "C:\Users\QUTA4\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\bin\node.exe" "C:\Users\QUTA4\.cache\codex-runtimes\codex-primary-runtime\dependencies\node\node_modules\pnpm\bin\pnpm.mjs" install
+    at getFinalError (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:89986:14)
+    at makeError (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:92293:21)
+    at getSyncResult (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:94137:10)
+    at spawnSubprocessSync (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:94097:14)
+    at execaCoreSync (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:94027:23)
+    at callBoundExeca (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:96555:23)
+    at boundExeca (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:96532:49)
+    at sync2 (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:96691:10)
+    at runPnpmCli (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:276904:5)
+    at runDepsStatusCheck (file:///C:/Users/QUTA4/.cache/codex-runtimes/codex-primary-runtime/dependencies/node/node_modules/pnpm/dist/pnpm.mjs:278122:7)

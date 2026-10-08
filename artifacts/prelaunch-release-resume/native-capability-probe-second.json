@@ -1,0 +1,32 @@
+{
+  "started": "2026-10-08T10:51:39.245Z",
+  "scope": "Explicitly approved fixed native read-only capability probe",
+  "containerRestartRequested": false,
+  "imageChanged": false,
+  "workerSourceSha256": "f43088435c25fef8f50e5e89d6468b9a9c84c8d9339416acb1ddff54a9f4e8f2",
+  "authorityExpiresAt": "2026-10-08T11:21:42.571Z",
+  "probeVersion": "4d97477c-d104-4493-b483-66e33253b259",
+  "activationDeployment": "16a55354-a261-49be-a857-55a762eecc40",
+  "readiness": {
+    "status": 404,
+    "type": "application/json",
+    "marker": "802b921d7ce8598f"
+  },
+  "unauthenticatedDenied": true,
+  "probe": {
+    "status": 503,
+    "type": "application/json",
+    "result": {
+      "error": "Fixed operator capability probe unavailable.",
+      "reason": "Native probe execution failed."
+    }
+  },
+  "restorationDeployment": "973d55e6-287c-41cf-88da-54e1ba34b028",
+  "authorityRestored": true,
+  "workerVersionAfter": "e0caa8b5-661c-4772-b13f-9b75471dd1c3",
+  "containerVersionAfter": 37,
+  "imageAfter": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:7b7b850990d0bb6d6d8d291497cf16106207af3d44a7f4697379df64d3d2f5bf",
+  "bindingsPreserved": true,
+  "nonceFileRemoved": true,
+  "finished": "2026-10-08T10:52:00.765Z"
+}

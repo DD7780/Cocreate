@@ -1,0 +1,18 @@
+TAP version 13
+# (node:9188) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+ok 1 - required behavior failure retains the verified product, records actionable evidence and needs explicit retry
+  ---
+  duration_ms: 20991.3464
+  type: 'test'
+  ...
+1..1
+# tests 1
+# suites 0
+# pass 1
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 21390.1786
