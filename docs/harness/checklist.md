@@ -1,6 +1,6 @@
 # Harness status and outstanding work
 
-Beta request/approval implementation is prepared, with 25/25 focused checks, strict build and boundaries passing. Release gates, additive migration and deployment are in progress. The user will manually verify signed-in requests, reviewer decisions and real inbox delivery; no live test account or email flow is run by this session. [Current feature evidence](beta-access-requests.md). Previous production source `915bebd` remains active until the recorded release gates pass; its [prior release evidence](prelaunch-release-repair.md) remains historical.
+Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](beta-access-requests.md).
 
 ## Beta request and approval system — 2026-10-09
 
@@ -9,9 +9,9 @@ Beta request/approval implementation is prepared, with 25/25 focused checks, str
 - [x] Protected review screen, explicit first-wins atomic decisions and independent project-membership gate.
 - [x] Existing Resend transport, escaped token-free links, transactional durable outbox, bounded leased/deduplicated retries and due-mail wake scheduler.
 - [x] Local strict build, boundaries and focused beta/request/SQL/project-auth tests 25/25; invitation regressions pass, no live email/account flow.
-- [ ] Native PostgreSQL contention and established production-image Linux/full CI gates.
-- [ ] Additive production migration, exact verified reviewer grants, main publication and active Worker/image attestation.
-- [ ] Hosted anonymous route smoke checks.
+- [x] Native PostgreSQL contention and established production-image Linux/full CI gates.
+- [x] Additive production migration, exact verified reviewer grants, main publication and active Worker/image attestation.
+- [x] Hosted anonymous route smoke checks.
 - [ ] User's manual signed-in request, both reviewer inboxes, explicit decision, requester inbox, app entry, private-project denial and revocation checks. The user explicitly chose manual live testing this time.
 
 ## Current release smoke gate — 2026-10-08

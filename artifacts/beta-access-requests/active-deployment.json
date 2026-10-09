@@ -1,0 +1,121 @@
+{
+  "observedAt": "2026-10-09T15:54:01.832Z",
+  "worker": {
+    "active": {
+      "id": "3581636c-c02b-4197-a6ba-d7a8a1c650c6",
+      "source": "wrangler",
+      "strategy": "percentage",
+      "author_email": "susan981314271@gmail.com",
+      "annotations": {
+        "workers/message": "Automatic deployment on upload.",
+        "workers/triggered_by": "upload"
+      },
+      "versions": [
+        {
+          "version_id": "088c7975-d358-4b55-80d1-2aa1c20311bf",
+          "percentage": 100
+        }
+      ],
+      "created_on": "2026-10-09T15:49:12.440738Z"
+    },
+    "version": "088c7975-d358-4b55-80d1-2aa1c20311bf",
+    "metadata": {
+      "created_on": "2026-10-09T15:49:12.440738Z",
+      "source": "wrangler",
+      "author_id": "a14f12410291a2680e0838ea8e1b04c3",
+      "author_email": "susan981314271@gmail.com",
+      "has_preview": false
+    },
+    "annotations": {
+      "workers/triggered_by": "upload"
+    },
+    "schedules": {
+      "schedules": [
+        {
+          "cron": "*/5 * * * *",
+          "created_on": "2026-10-09T15:49:36.718106Z",
+          "modified_on": "2026-10-09T15:49:36.718106Z"
+        }
+      ]
+    },
+    "bindings": [
+      {
+        "name": "COCREATE_APP_ORIGINS",
+        "type": "plain_text"
+      },
+      {
+        "name": "COCREATE_CONTAINER",
+        "type": "durable_object_namespace"
+      },
+      {
+        "name": "COCREATE_EMAIL_FROM",
+        "type": "plain_text",
+        "text": "2guys1canvas <beta@2guys1canvas.com>"
+      },
+      {
+        "name": "COCREATE_LEGACY_ORIGIN",
+        "type": "plain_text"
+      },
+      {
+        "name": "COCREATE_PUBLIC_ORIGIN",
+        "type": "plain_text",
+        "text": "https://2guys1canvas.com"
+      },
+      {
+        "name": "COCREATE_RELEASE_FINGERPRINT",
+        "type": "plain_text",
+        "text": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb"
+      },
+      {
+        "name": "COCREATE_WWW_ORIGIN",
+        "type": "plain_text"
+      },
+      {
+        "name": "CREDENTIAL_ENCRYPTION_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "RESEND_API_KEY",
+        "type": "secret_text"
+      },
+      {
+        "name": "SESSION_SECRET",
+        "type": "secret_text"
+      },
+      {
+        "name": "SUPABASE_ARTIFACT_BUCKET",
+        "type": "plain_text"
+      },
+      {
+        "name": "SUPABASE_JWKS_URL",
+        "type": "plain_text"
+      },
+      {
+        "name": "SUPABASE_PUBLISHABLE_KEY",
+        "type": "plain_text"
+      },
+      {
+        "name": "SUPABASE_SECRET_KEY",
+        "type": "secret_text"
+      },
+      {
+        "name": "SUPABASE_URL",
+        "type": "plain_text"
+      }
+    ]
+  },
+  "container": {
+    "id": "a034de25-d538-4e4d-bdf0-bfc09824b341",
+    "version": 41,
+    "image": "registry.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/cocreate-cocreatecontainer@sha256:fd66e1b12c9b25816ae2165832e842ed5ad5794e0cae205c501f01240f48a721",
+    "authorizedKeys": 0,
+    "resources": {
+      "vcpu": 0.25,
+      "memory": "1GiB",
+      "disk": {
+        "size_mb": 4000,
+        "size": "4GB"
+      }
+    }
+  }
+}

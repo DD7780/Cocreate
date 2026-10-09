@@ -1,0 +1,38 @@
+{
+  "sha": "ba96cfd30bdc8b7c48362369be09c3502ce935a2",
+  "runId": 37952048052,
+  "attempt": 2,
+  "jobId": 113896385299,
+  "conclusion": "success",
+  "nativePostgres": {
+    "tests": 2,
+    "passed": 2,
+    "failed": 0,
+    "skipped": 0
+  },
+  "compiler": {
+    "tests": 10,
+    "passed": 10,
+    "failed": 0,
+    "skipped": 0
+  },
+  "browser": {
+    "tests": 15,
+    "passed": 15,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fullRegression": {
+    "tests": 244,
+    "passed": 244,
+    "failed": 0,
+    "skipped": 0
+  },
+  "fullPassed": 244,
+  "previousAttempt": {
+    "fullPassed": 243,
+    "fullFailed": 1,
+    "failure": "Existing Linux browser cold-start isolation unavailable; unchanged-source retry passed"
+  },
+  "fingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb"
+}

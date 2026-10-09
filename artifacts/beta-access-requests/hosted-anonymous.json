@@ -1,0 +1,68 @@
+{
+  "checkedAt": "2026-10-09T15:56:18.936Z",
+  "fingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb",
+  "scope": "Anonymous public/API reads only. No live account, request, email or inference.",
+  "checks": [
+    {
+      "path": "/__cocreate/app-health",
+      "status": 200,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/login",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/app",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/beta/review",
+      "status": 200,
+      "type": "text/html; charset=utf-8"
+    },
+    {
+      "path": "/api/beta/request",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/beta/review",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/beta/access",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/projects",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/beta/request",
+      "status": 401,
+      "type": "application/json; charset=utf-8"
+    },
+    {
+      "path": "/api/beta/requests/00000000-0000-4000-8000-000000000001/decision",
+      "status": 404,
+      "type": "application/json; charset=utf-8"
+    }
+  ],
+  "health": {
+    "status": "ok",
+    "service": "cocreate-app",
+    "release_fingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb"
+  },
+  "status": "passed"
+}

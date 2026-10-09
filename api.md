@@ -1,12 +1,12 @@
 # 2guys1canvas implemented API contracts
 
-Beta request/approval implementation is prepared, with 25/25 focused checks, strict build and boundaries passing. Release gates, additive migration and deployment are in progress. The user will manually verify signed-in requests, reviewer decisions and real inbox delivery; no live test account or email flow is run by this session. [Current feature evidence](docs/harness/beta-access-requests.md). Previous production source `915bebd` remains active until the recorded release gates pass; its [prior release evidence](docs/harness/prelaunch-release-repair.md) remains historical.
+Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](docs/harness/beta-access-requests.md).
 
 Image-backed `/__cocreate/app-health` adds an optional `release_fingerprint` containing the non-secret SHA-256 of prepared source/build inputs. It comes from immutable root-owned image metadata, not request data or Worker environment. The candidate Worker requires equality with its trusted configured fingerprint before forwarding any ordinary application HTTP/socket request; missing/mismatched image returns503. This blocks the old ungated image during non-atomic Worker/image rollout. Worker health and canonical/legacy redirects remain independent of app readiness. The fingerprint identifies source/build inputs, not complete runtime or authentication acceptance.
 
 Earlier release audits are retained in the linked release packet; their old-image observations are historical.
 
-Source-inspected 2026-10-08 through the blocked release repair. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
+Source-inspected 2026-10-09 through beta request/approval release. This reference records implemented contracts. [Product](product.md) owns acceptance; [architecture](docs/harness/architecture.md) owns persistence boundaries; [checklist](docs/harness/checklist.md) owns verification status.
 
 ## Transport and authorization
 

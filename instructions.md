@@ -1,8 +1,8 @@
 # 2guys1canvas contributor instructions
 
-Beta request/approval implementation is prepared, with 25/25 focused checks, strict build and boundaries passing. Release gates, additive migration and deployment are in progress. The user will manually verify signed-in requests, reviewer decisions and real inbox delivery; no live test account or email flow is run by this session. [Current feature evidence](docs/harness/beta-access-requests.md). Previous production source `915bebd` remains active until the recorded release gates pass; its [prior release evidence](docs/harness/prelaunch-release-repair.md) remains historical.
+Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](docs/harness/beta-access-requests.md).
 
-Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-05; this document owns contributor rules, not completion claims.
+Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Updated 2026-10-09; this document owns contributor rules, not completion claims.
 
 ## Start and maintain authority
 

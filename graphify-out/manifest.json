@@ -540,9 +540,9 @@
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1791486517.529102,
-    "seen": 1791486560.6765525,
-    "ast_hash": "87b86ce30841b724a18e4c3eefd58f12",
+    "mtime": 1791487170.6023474,
+    "seen": 1791559816.4148383,
+    "ast_hash": "15626d33ff943d37cbb328efbefc532d",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791485158.3804328,
-    "seen": 1791486560.6755497,
-    "ast_hash": "60d71563a716c5cd360d46b204bb118f",
+    "mtime": 1791559547.2332191,
+    "seen": 1791559816.412839,
+    "ast_hash": "f599af6cf13393be2f6787ab758bc944",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -1344,9 +1344,9 @@
     "semantic_hash": ""
   },
   "tests/fixtures/beta-database.ts": {
-    "mtime": 1791485736.3098655,
-    "seen": 1791486560.6680036,
-    "ast_hash": "8bd8408b60e99df6937ee77315e66c64",
+    "mtime": 1791559547.2282176,
+    "seen": 1791559816.3479154,
+    "ast_hash": "e928e8ea433fa862d728823f3a77f597",
     "semantic_hash": ""
   },
   "tests/fixtures/beta-platform.ts": {
@@ -1356,9 +1356,9 @@
     "semantic_hash": ""
   },
   "docs/harness/beta-access-requests.md": {
-    "mtime": 1791486379.9628773,
-    "seen": 1791486560.678547,
-    "ast_hash": "c7108a0bef11b6106d698d858b9f2f0e",
+    "mtime": 1791559715.4111025,
+    "seen": 1791559816.4267046,
+    "ast_hash": "874978d2085a7f3b7eda590991ec8b21",
     "semantic_hash": ""
   }
 }
