@@ -1,0 +1,13 @@
+{
+  "scope": "Local Vite UI with synthetic Auth transport and actual embedded SQL; no hosted account or email",
+  "pendingForm": true,
+  "reviewLinkReadOnly": true,
+  "safeText": true,
+  "widths": [
+    390,
+    1440
+  ],
+  "explicitCofounderApproval": true,
+  "approvedAppEntry": true,
+  "declineCooldown": true
+}

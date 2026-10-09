@@ -73,7 +73,7 @@ export async function betaDatabase(): Promise<BetaDatabase> {
     const require = createRequire(import.meta.url),
       prismaRequire = createRequire(require.resolve("prisma/package.json"));
     const { PGlite } = prismaRequire("@electric-sql/pglite");
-    const engine = new PGlite();
+    let engine = new PGlite();
     db = {
       query: (sql, params) => engine.query(sql, params),
       exec: (sql) => engine.exec(sql),
@@ -83,7 +83,12 @@ export async function betaDatabase(): Promise<BetaDatabase> {
           await tx.exec(`set local role ${role}`);
           return tx.query(sql, params);
         }),
-      close: () => engine.close(),
+      async close() {
+        await engine.close();
+        // Release the WASM database before another fixture runs in the bounded CI image.
+        engine = null;
+        globalThis.gc?.();
+      },
     };
   }
   try {
@@ -107,7 +112,7 @@ export async function betaDatabase(): Promise<BetaDatabase> {
     await db.exec(
       fs.readFileSync(
         new URL(
-          "../../supabase/migrations/20261008182652_beta_access_requests.sql",
+          "../../supabase/migrations/20261008191401_beta_access_requests.sql",
           import.meta.url,
         ),
         "utf8",

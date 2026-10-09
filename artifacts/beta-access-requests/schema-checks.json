@@ -1,0 +1,15 @@
+{
+  "project": "dnsapasubeoxxsgkiotw",
+  "migrationVersion": "20261008191401",
+  "migrationName": "beta_access_requests",
+  "sourceFunctionBodiesCompared": 8,
+  "sourceFunctionBodiesMatch": true,
+  "privateTables": {"count": 3, "rlsEnabled": true, "anonGrants": false, "authenticatedGrants": false},
+  "featureFunctions": {"serviceRoleExecute": true, "anonExecute": false, "authenticatedExecute": false, "emptySearchPath": true},
+  "activeConfirmedReviewers": 2,
+  "globalOwners": 1,
+  "cofounderIsOwner": false,
+  "requestsAtInspection": 0,
+  "outboxRowsAtInspection": 0,
+  "scope": "Additive schema and exact verified reviewer UUID grants, read-only source/grant audit. No live account, request or email test."
+}
