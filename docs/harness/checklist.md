@@ -11,7 +11,7 @@
 - [x] Two independent browser participants: eleven checks, actual render/downloads, honest background preview, explicit handoff/local stop, reload/mobile and unchanged physical accounting; bounded native verification-directory cleanup.
 - [x] Runtime prompts/schema and all eight canonical steering documents updated; supersession and historical evidence retained.
 - [x] Final native 3/3, contracts 4/4, Windows regression 246 pass/zero fail/eight Linux-only skips; production build, 170-file/zero-violation boundary check, AST refresh and prepared source fingerprint — see [packet](blender-session.md).
-- [ ] Committed/pushed revision and Linux production-image CI — recorded in the packet after completion.
+- [x] Committed/pushed implementation `6705406` on `codex/canvas-artifacts`; final source Linux production-image CI 254/254, PostgreSQL 2/2, compiler 10/10 and browser/cgroup 15/15, all zero skips. Exclusive companion lease native 3/3 and affected Windows checks 21/21 pass. Exact source/run/fingerprint and docs-only handoff are recorded in the [packet](blender-session.md).
 - [ ] Real hosted account/Storage/revocation/coordinator/container-replacement acceptance; standalone signed companion distribution. No deployment or paid/live validation authorized.
 
 ## Canvas → Artifacts expansion — 2026-10-10

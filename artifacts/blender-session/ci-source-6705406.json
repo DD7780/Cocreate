@@ -1,0 +1,58 @@
+{
+  "sourceCommit": "67054068d3ce7f609eb96251a4a3a1bda7a3c092",
+  "branch": "codex/canvas-artifacts",
+  "workflow": "Code checks",
+  "runId": 38079187484,
+  "jobId": 114292396277,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38079187484",
+  "conclusion": "success",
+  "scope": "Linux production-image regression and actual boundaries; controlled providers and disposable PostgreSQL, not hosted account acceptance or deployment.",
+  "sourceFingerprint": "c5933b95ebd4facd0d8d7ad54baff4b75c4b1462b5a18c7faa1db0bde42cd877",
+  "checks": {
+    "boundaryAuditedFiles": 170,
+    "boundaryViolations": 0,
+    "build": "passed",
+    "productionImage": "passed",
+    "postgres": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "compiler": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browserCgroup": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullRegression": {
+      "passed": 254,
+      "failed": 0,
+      "skipped": 0
+    }
+  },
+  "logSummary": [
+    "2026-10-10T19:17:38.5477077Z Audited 170 files; 1 static candidates; 0 boundary violations.",
+    "2026-10-10T19:17:46.6706441Z \u001b[32m✓ built in 2.63s\u001b[39m",
+    "2026-10-10T19:17:47.8749533Z # tests 2",
+    "2026-10-10T19:17:47.8749984Z # pass 2",
+    "2026-10-10T19:17:47.8750286Z # fail 0",
+    "2026-10-10T19:17:47.8750719Z # skipped 0",
+    "2026-10-10T19:18:27.8458556Z #14 8.358 ✓ built in 2.80s",
+    "2026-10-10T19:18:50.7836097Z # tests 10",
+    "2026-10-10T19:18:50.7836317Z # pass 10",
+    "2026-10-10T19:18:50.7836427Z # fail 0",
+    "2026-10-10T19:18:50.7836658Z # skipped 0",
+    "2026-10-10T19:19:26.7834090Z # tests 15",
+    "2026-10-10T19:19:26.7834439Z # pass 15",
+    "2026-10-10T19:19:26.7835067Z # fail 0",
+    "2026-10-10T19:19:26.7835413Z # skipped 0",
+    "2026-10-10T19:22:10.5513608Z # tests 254",
+    "2026-10-10T19:22:10.5513867Z # pass 254",
+    "2026-10-10T19:22:10.5513976Z # fail 0",
+    "2026-10-10T19:22:10.5514220Z # skipped 0"
+  ]
+}
