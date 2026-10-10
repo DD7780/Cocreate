@@ -14,4 +14,12 @@ Allowed: trusted native boundary probes/adapter and dedicated trusted Blender UI
 
 Before enabling: real GUI frames/input; unrelated-window/clipboard/path/network/credential denial; bounded processes/memory/CPU/wall/output; stale/unauthorized commands; human-versus-agent exclusion; immediate local STOP; disconnect/restart uncertainty without replay; two participants observing/handoff/stop/saved outputs. Record exact new commit and environment. A background render is not an interactive frame or acceptance proof.
 
-Status: prepared; execution environment and native gate not yet verified. Background Blender remains supported under D-0060.
+## Native gate result — 2026-10-11
+
+The probe-only launcher derives from the verified AppContainer runner, adds a unique private desktop with an explicit DACL and all eight Job UI restrictions, and removes `--background`. It never switches the user desktop, captures its screen or sends global input. Official portable Blender 4.5.14 retains its zero-capability AppContainer, one-process Job, isolated workspace, clean environment and thirty-second wall limit.
+
+Fresh evidence: [environment-probe.json](../../artifacts/interactive-blender/environment-probe.json). The graphical process reported Win32 access/invalid-handle errors and an access violation before the trusted timer script could produce results. The launcher reached its wall limit (exit 124); the child was confirmed absent. Therefore **none** of the proposed graphical window, clipboard, input or frame checks passed. Posted input, even if it had succeeded, would not prove an actual editor change.
+
+Reproduce only on the pinned Windows environment with `COCREATE_BLENDER_EXECUTABLE` set to the verified portable executable: `node --import tsx scripts/probe-interactive-blender.ts`. This is a diagnostic script, not a runtime adapter. Its native/Python hashes are recorded in the evidence; production launcher behavior is unchanged. Preserve this dated failure before any new probe.
+
+Status: **blocked at the interactive environment gate**. No interactive endpoint/view/control is enabled. Existing background execution and private scene/render retrieval remain supported. Docker/VirtualBox/QEMU were absent and WSL was not installed in this checkout's host. A disposable graphics-capable guest or another narrowly isolated application environment must first demonstrate actual frames and effective input, plus all isolation and recovery checks above. Installing a guest, widening privileges or using the host's default desktop is not an accepted workaround. The requested two-participant interactive demonstration cannot be claimed. Independent generated-frontend preparation proceeds.

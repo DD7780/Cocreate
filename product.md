@@ -130,3 +130,7 @@ Decision rationale is in [decisions.md](docs/harness/decisions.md); older narrat
 ## Source boundaries and development tooling
 
 Maintain precise source/contract boundaries and smaller feature context as described in [the cleanup plan](docs/harness/codebase-cleanup-plan.md). Offline Jev assistance is development tooling, not a change to participant inference or product authority.
+
+## Interactive Blender environment gate (2026-10-11)
+
+The dedicated-desktop/AppContainer GUI probe failed before any frame or effective input could be verified; the bounded process was removed. Interactive sessions remain unavailable. D-0060 supports background execution and saved renders only; D-0061 supports a separately isolated shared browser. See [the interactive packet](docs/harness/interactive-blender.md) for dated failure evidence, recovery and the required graphics-capable isolated environment. No whole-desktop fallback, global input or extra capabilities are permitted. Canvas, Workflow and token tracking are unchanged. Generated-app preview preparation is independent.

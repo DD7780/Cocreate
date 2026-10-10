@@ -332,3 +332,7 @@ Managed relaunch, checkout, old wizard/mode UI and retired effects are not activ
 - [x] Corrected the Vercel credential/direct-TypeSafe routing mismatch; added explicit isolated providers, gateway cost accounting and alias-cache expiry. Vercel reviewed 20 historical files: 40,747 input tokens and $0.001711374 reported cost. All 134 tests and strict build pass.
 - [ ] Complete the proposed 20-feature comparative/holdout evaluation before relying on optional context ranking. The file smoke run wrongly flagged one protected migration tool at low confidence; it was retained. Prior failed requests retain unknown usage/reservations.
 - Current local evidence does not prove live hosted accounts, SQL fencing, email delivery, real provider behavior or deployment. October 1 and earlier results below remain dated history.
+
+## Interactive Blender environment gate (2026-10-11)
+
+The dedicated-desktop/AppContainer GUI probe failed before any frame or effective input could be verified; the bounded process was removed. Interactive sessions remain unavailable. D-0060 supports background execution and saved renders only; D-0061 supports a separately isolated shared browser. See [the interactive packet](interactive-blender.md) for dated failure evidence, recovery and the required graphics-capable isolated environment. No whole-desktop fallback, global input or extra capabilities are permitted. Canvas, Workflow and token tracking are unchanged. Generated-app preview preparation is independent.

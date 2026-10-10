@@ -42,6 +42,7 @@
   "server/isolation/blender-scene.py",
   "server/isolation/browser.ts",
   "server/isolation/compiler-worker.cjs",
+  "server/isolation/interactive-blender-probe.py",
   "server/isolation/linux-cgroup.ts",
   "server/isolation/linux-job-launcher.c",
   "server/isolation/list-observer.cjs",

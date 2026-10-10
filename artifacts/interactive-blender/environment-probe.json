@@ -1,0 +1,11 @@
+{
+  "verifiedAt": "2026-10-10T20:22:22.249Z",
+  "scope": "Dedicated desktop/AppContainer/Job UI restriction probe only; no remote viewing/input capability enabled.",
+  "baseSourceHash": "375960095aa7c8cc37a75c06e8e6194167d2230a8bc08fc9584bc0b802fefd1f",
+  "nativeProbeHash": "86fa9a7b14389be94a9dd3e6b1ae23ad288247a61a93f4ebffafb75fa9f2ae3e",
+  "pythonProbeHash": "aae54766491f3438f3333332e1e36ac354505b74d2466ab5adfbe8d3da7b26a9",
+  "exitCode": 124,
+  "probe": null,
+  "childRemoved": true,
+  "diagnostics": "ISOLATION_STARTED 25252 cocreate.isolation.eab1d5fc91b844009105a680c202a85c\r\nWARN (bke.appdir): C:\\Users\\blender\\git\\blender-v450\\blender.git\\source\\blender\\blenkernel\\intern\\appdir.cc:1193 tempdir_session_create: Could not generate a temp file name for '/tmp/blender_a21928'\r\nWARN (bke.appdir): C:\\Users\\blender\\git\\blender-v450\\blender.git\\source\\blender\\blenkernel\\intern\\appdir.cc:1240 BKE_tempdir_init: Could not generate a temp session subdirectory, falling back to '/tmp/'\r\nWin32 Error# (3221684230): <no system message>\r\nWin32 Error# (6): The handle is invalid.\r\r\nWin32 Error# (5): Access is denied.\r\r\nWin32 Error# (6): The handle is invalid.\r\r\nWin32 Error# (5): Access is denied.\r\r\nWin32 Error# (6): The handle is invalid.\r\r\nWin32 Error# (5): Access is denied.\r\r\nWin32 Error# (6): The handle is invalid.\r\r\nError   : EXCEPTION_ACCESS_VIOLATION\r\nAddress : 0x00007FFE0729DBB0\r\nModule  : ucrtbase.dll\r\nThread  : 000055a8\r\nWriting: /tmp\\blender.crash.txt\r\nUnable to save '/tmp\\blender.crash.txt': No such file or directory\r\n"
+}
