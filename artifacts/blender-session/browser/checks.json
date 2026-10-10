@@ -1,0 +1,25 @@
+{
+  "verifiedAt": "2026-10-10T18:55:45.647Z",
+  "scope": "Two independent local browser profiles, controlled provider, actual Windows Blender 4.5.14 AppContainer execution; not hosted accounts or interactive streaming.",
+  "checks": [
+    "Independent browser navigation/view selection makes no inference or execution.",
+    "Controlled local owner explicitly approves executable, workspace, operations and separate Bob session grants.",
+    "Typing from two participants does not execute; Bob draft remains unsubmitted.",
+    "Explicit Alice Canvas submission runs actual isolated Blender, saves a scene and renders a PNG.",
+    "Artifacts displays the actual saved render with an honest background-execution label.",
+    "Bob independently previews/downloads both private results without becoming the active controller.",
+    "Only explicit handoff activates a locally granted controller and advances its epoch.",
+    "Local stop revokes the connection; saved results remain independently accessible.",
+    "Reload preserves participant-local selection and private saved results without replay.",
+    "Workflow layout and physical-call totals remain unchanged.",
+    "Saved render controls fit a 390 px viewport."
+  ],
+  "localStates": [
+    "Connected · background Blender execution · local STOP / Ctrl+C cancels and disconnects",
+    "Executing dedicated task 0d488c24-81d4-4ef3-8592-0fe17753eb51",
+    "Task completed · outputs retained for authenticated upload reconciliation",
+    "Stopped · dedicated job removed · connection closed. Saved project artifacts remain available."
+  ],
+  "physicalCalls": 2,
+  "reportedTokens": 60
+}

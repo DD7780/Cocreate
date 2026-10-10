@@ -1,5 +1,19 @@
 # Harness status and outstanding work
 
+## Connected Blender milestone — 2026-10-11
+
+- [x] Actual Windows build 26200 inspection, graph-first foundation review, bounded packet and current official Blender/Windows/Storage documentation.
+- [x] Verified official portable Blender 4.5.14 checksum/executable; real restricted scene/save/render plus outside-file/network/credentials/child-process denial.
+- [x] Authenticated expiring single-use pairing, local approval/executable/workspace/operations/grants, outbound connection, protected credential file, expiry/revocation and local STOP.
+- [x] Separate observation/control, one controller/epoch, serialized durable commands, cancellation-before-handoff, pause/resume without replay.
+- [x] Trusted bounded scene schema, capability-free AppContainer/Job Object limits, fresh task directory, fixed validated outputs and no host fallback/generated scripts.
+- [x] Private immutable versioned scene/render publication, coordinator fences, prior success retained, completed upload reconciliation without duplicate inference/execution, explicit interrupted recovery.
+- [x] Two independent browser participants: eleven checks, actual render/downloads, honest background preview, explicit handoff/local stop, reload/mobile and unchanged physical accounting; bounded native verification-directory cleanup.
+- [x] Runtime prompts/schema and all eight canonical steering documents updated; supersession and historical evidence retained.
+- [x] Final native 3/3, contracts 4/4, Windows regression 246 pass/zero fail/eight Linux-only skips; production build, 170-file/zero-violation boundary check, AST refresh and prepared source fingerprint — see [packet](blender-session.md).
+- [ ] Committed/pushed revision and Linux production-image CI — recorded in the packet after completion.
+- [ ] Real hosted account/Storage/revocation/coordinator/container-replacement acceptance; standalone signed companion distribution. No deployment or paid/live validation authorized.
+
 ## Canvas → Artifacts expansion — 2026-10-10
 
 - [x] Bounded change packet, graph-first source inspection and D-0059 accepted scope; no new scheduler, hosting or SQL.

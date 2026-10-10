@@ -39,7 +39,7 @@ export type WorkflowEvidenceStatus =
 export type WorkflowTask = {
   id: string;
   workflowId: string;
-  kind: "developer_build" | "document_generation";
+  kind: "developer_build" | "document_generation" | "blender_scene";
   title: string;
   state: WorkflowTaskState;
   requirementRevision: number;
@@ -347,8 +347,9 @@ export type AIRunCall = {
   outcome: "succeeded" | "failed" | "unknown";
 };
 export type AIRunRecord = {
-  artifactKind?: 'application' | 'markdown';
+  artifactKind?: 'application' | 'markdown' | 'blender';
   documentVerification?: DocumentVersion['verification'];
+  blenderVerification?: { status: 'passed'; policy: string; sceneHash: string; cleanupVerified: true };
     runId: string;
     catalogVersion: string;
     pricingVersion: string;
@@ -393,7 +394,7 @@ export type Version = {
     conflicts?: string[];
     aiRun?: AIRunRecord;
 };
-export type ArtifactTarget = { kind: 'markdown'; id: string; title: string };
+export type ArtifactTarget = { kind: 'markdown' | 'blender'; id: string; title: string };
 export type ArtifactInputVersion = { artifactId: string; versionId: number; contentRef: string };
 export type DocumentVersion = {
   id: number;
@@ -414,8 +415,8 @@ export type DocumentVersion = {
   createdAt: string;
   verification: { status: 'passed'; policy: 'markdown-v1'; checkedAt: string; requiredHeadings: string[]; factualAccuracy: 'unverified' };
 };
-export type DocumentArtifact = ArtifactTarget & { projectId: string; versions: DocumentVersion[] };
-export type ProjectArtifact = DocumentArtifact | { kind: 'application'; id: 'application'; title: string; projectId: string; versions: Version[] };
+export type DocumentArtifact = ArtifactTarget & { kind: 'markdown'; projectId: string; versions: DocumentVersion[] };
+export type ProjectArtifact = DocumentArtifact | import('./blender.js').BlenderArtifact | { kind: 'application'; id: 'application'; title: string; projectId: string; versions: Version[] };
 export type AIProvider =
   | "openai"
   | "anthropic"

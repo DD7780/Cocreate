@@ -1,0 +1,738 @@
+
+> cocreate@1.0.0 test C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice
+> cross-env COCREATE_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts
+
+✔ calculates uncached, cached, and cache-write charges without assuming cache hits (1.291ms)
+✔ reasoning usage is informational and never billed twice (0.2303ms)
+✔ aggregates multiple interpreters and one shared builder exactly once (0.501ms)
+✔ repairs and failures remain in totals while missing usage remains unknown (0.2623ms)
+✔ applies long-context tiers and preserves pricing-version changes per call (1.8779ms)
+✔ estimates stay distinct from the user spending limit (1.1009ms)
+✔ effectiveness requires comparable samples and includes failed repairs in cost (0.7494ms)
+✔ Developer / Medium resolves one validated connection and exposes honest rates (5.8403ms)
+✔ Developer effort levels expose distinct bounded executor output allowances (1.161ms)
+✔ complexity is deterministic and does not spend a model call (0.8658ms)
+✔ evaluation requires repeated task evidence and counts repairs in total cost (5.2463ms)
+✔ Developer routing respects the remaining budget (2.1311ms)
+✔ all three modes are explicit and unimplemented workflows remain unavailable (0.6306ms)
+✔ discovery without passed capability checks is unavailable and actionable (0.4194ms)
+✔ applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch (73.0159ms)
+✔ legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history (106.7693ms)
+✔ manual assignments remain Custom after migration and activation (47.7635ms)
+✔ empty cache restores compiled preview, current checkpoint, old version and receipts without inference (4494.2345ms)
+✔ upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies (218.9206ms)
+✔ missing/corrupt stored bodies are explicit failures, distinct from an empty project (291.8477ms)
+✔ private bucket and project-bound artifact identity fail closed; no public URL is created (109.9321ms)
+✔ authenticated lazy historical reads reject revoked users, including revocation during download (883.3357ms)
+✔ an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact (7337.4569ms)
+✔ lease loss after private body upload cannot promote or start another physical attempt (7006.2319ms)
+✔ synchronous publication failure clears the pending gate and preserves the previous product (6364.0735ms)
+✔ legacy inline checkpoint publication is verified and malformed metadata fails explicitly (174.0369ms)
+✔ new promotion after a retained-product rollback never overwrites an archived version identity (7048.5185ms)
+✔ personal and builder roles can use different encrypted provider connections (58.7649ms)
+✔ unverified models cannot be activated for an agent layer (37.005ms)
+✔ known providers normalize a pasted operation URL to their official API base (35.4198ms)
+✔ legacy placeholder previews are not exposed as the current generated product (22.4716ms)
+✔ canvas effort changes Custom allowances without changing manual assignments (54.9034ms)
+✔ session refresh boundary refreshes missing and near-expiry access tokens (0.7351ms)
+✔ submitted builds ignore typing alone, preserve idempotency, and expose token usage (5362.5619ms)
+✔ anonymous registration commits before success, retries dedupe, and restart preserves consent and limits (283.3355ms)
+✔ failed durable writes cannot show registration success; rate window expiry allows safe retry (47.7494ms)
+✔ registration requires valid email and explicit consent, and forwarded rate identities require Worker proof (0.4767ms)
+✔ approval is fresh private authority, owner retains access, and approval grants no foreign membership (5.0016ms)
+✔ pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval (1.125ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"5879c158-e5c1-45a0-ad9b-216906a3ce78"}
+{"event":"collaboration.connected","connectionId":"35bcfbba-fac4-47a2-8b65-b348e166c35c","correlationId":"c8bf8b02-15d7-4474-a791-020b0ad3e1e8"}
+{"event":"collaboration.disconnected","connectionId":"35bcfbba-fac4-47a2-8b65-b348e166c35c","code":4403}
+{"event":"collaboration.connected","connectionId":"c0414069-6ffc-464a-91fd-43bef2ec10bd","correlationId":"7dc5facc-5163-454f-acd2-f02875cba5f7"}
+{"event":"collaboration.disconnected","connectionId":"c0414069-6ffc-464a-91fd-43bef2ec10bd","code":4403}
+✔ unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery (239.9151ms)
+Embedded PostgreSQL: transaction semantics; native contention is a separate CI check
+✔ beta request SQL enforces identity, privacy, pending uniqueness, atomic decisions and revocation (3801.116ms)
+✔ durable email leases freeze payload, fence stale workers, bound retries and stop before idempotency expiry (2299.7212ms)
+✔ authenticated requests and review links preserve server identity, CSRF, reviewer and private project boundaries (3836.3563ms)
+✔ reviewer and requester emails are durable, escaped and retried with an identical provider key and payload (1958.6145ms)
+✔ missing email configuration never dispatches; invalid origins cannot produce review links (1.2408ms)
+✔ the durable scheduler wakes only due email work and exposes no public delivery endpoint (3.8162ms)
+✔ pairing is authenticated capability, expiring/single-use and locally approved; device revocation and session grants are distinct (10.0637ms)
+✔ one mutable controller fences stale epochs/concurrent commands, waits for cleanup before handoff, and recovers without dispatch (2.4139ms)
+✔ structured scenes deny scripts, paths, network, nonfinite values, excessive geometry and unsupported routing (4.3636ms)
+✔ HTTP device/session authority, serialized handoff, replay and restart retain no automatic execution (408.6307ms)
+✔ later captured submissions cannot starve a fixed accepted candidate and drain in capture order (9824.4905ms)
+✔ collection deadline closes admission despite an interpretation backlog (4497.0301ms)
+✔ pending captured steering survives actual local restart without inference or replay spending (445.4351ms)
+✔ explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance (3973.1997ms)
+✔ current membership is rechecked before deferred interpretation dispatch (4067.0378ms)
+✔ continuous captures do not replenish the executor ceiling between collected candidates (4769.402ms)
+✔ sustained captures make revision-labelled progress each cycle without a quiet global queue (16864.0952ms)
+✔ attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue (3294.7352ms)
+✔ Alt+X is exact and ignores repeats, composition, AltGraph and extra modifiers (1.065ms)
+✔ legacy preferences cannot override the fixed platform shortcut (0.2496ms)
+✔ builder schema and planning repair missing or invalid file operations before tool execution (79.4338ms)
+✔ builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry (27.29ms)
+✖ real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate (3280.8814ms)
+✖ compiling controls without behavior fail; retained feature regressions are checked on every candidate (3164.4744ms)
+✖ unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks (3632.6998ms)
+Resource diagnostic: CPU IsolationError: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+    at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+    at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async waitForActual (node:assert:646:5)
+    at async strict.rejects (node:assert:769:25)
+    at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+    at async Test.run (node:internal/test_runner/test:1389:7)
+    at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+  code: 'isolation_unavailable'
+}
+Resource diagnostic: protocol output IsolationError: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+    at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+    at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async waitForActual (node:assert:646:5)
+    at async strict.rejects (node:assert:769:25)
+    at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+    at async Test.run (node:internal/test_runner/test:1389:7)
+    at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+  code: 'isolation_unavailable'
+}
+✖ actual verification browser denies a private host file and loopback network and removes its child/profile (44.5542ms)
+✖ browser CPU remains inside the isolated job bounds (2.8352ms)
+✖ browser protocol output remains inside the isolated job bounds (1.323ms)
+✖ cancellation and wall limits terminate browser execution and leave no child jobs (0.6796ms)
+✔ caller-only document submission executes, versions independently, reloads and downloads without navigation inference (7481.2257ms)
+✔ document failure retains published content and shared ledger keeps unknown usage honest (2700.0006ms)
+✔ ambiguous and unsupported outputs clarify without builder dispatch; hostile Markdown is inert (510.2531ms)
+✔ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (1451.2892ms)
+✔ explicit private input versions are frozen as evidence, not accepted authority or cross-artifact conflicts (1353.0091ms)
+✔ private schema v2 document bodies survive empty-cache restoration and revoke during read (2987.9159ms)
+✔ the pre-launch deployment binds hosted auth and callbacks to the custom domain (26.9882ms)
+✔ legacy links preserve their destination without allowing host escape or protected ingress (9.6556ms)
+✔ www redirects exact paths and queries to canonical HTTPS without proxying an alternate application (1.1813ms)
+✔ the application exposes a container readiness endpoint (165.8479ms)
+✔ unknown API paths return JSON errors while the existing auth callback reaches the SPA (146.303ms)
+✔ the Cloudflare container uses the native WebSocket-aware proxy (42.4615ms)
+✔ Worker gates HTTP and socket ingress until the running image matches the prepared source (28.4223ms)
+✔ direct application startup refuses unavailable isolation before binding a server (3229.2415ms)
+✔ server-signed attribution cannot be changed by the client (4.5363ms)
+✔ independent concurrent Yjs edits merge without lost text (13.269ms)
+✔ only the newest orchestration revision can be promoted (0.1722ms)
+✔ generation errors retain the last success and block unsafe code (0.7281ms)
+✔ custom provider URLs require HTTPS except for local testing (0.4461ms)
+✔ provider model discovery returns exact account model IDs (40.7875ms)
+✔ multi-file project compiles to an isolated React preview (3704.3345ms)
+✔ audit follows the prepared isolated worker without hiding missing source imports (41.8712ms)
+✔ UI scope rejects backend authority, shared contracts and migrations (0.8211ms)
+✔ Vercel and direct TypeSafe reviews use separate endpoints and credentials without retries (43.6866ms)
+✔ audit retains literal dynamic and type imports, ambient declarations and tooling roots (7.0356ms)
+✔ audit reports browser/server coupling and preserves uncertainty about nonliteral loads (1.3935ms)
+✔ untrusted Jev output cannot introduce unknown options, invalid probabilities or a different model (2.6613ms)
+{"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"98437ffc-6b6b-4e45-bc3a-80abec09a587"}
+{"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"d8f47233-0d8d-42fc-8271-c4243619edde"}
+{"event":"collaboration.upgrade_rejected","category":"missing_room","correlationId":"984f38c4-8e5a-4f38-95f3-46a96c4eb1a6"}
+✔ collaboration upgrades expose safe authentication and room failures (247.4539ms)
+✔ conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity (442.3922ms)
+✔ workspace owner discovers account models and activates the shared connection (735.9764ms)
+✔ collaborators receive redacted connection status and cannot manage owner credentials (163.1854ms)
+✔ AI effort endpoint is owner-only and validates the requested level (135.3041ms)
+✔ owner effort mutation updates a connected Custom room without a provider call (173.1742ms)
+✔ remote claims and renewals coalesce; timeout permanently fences a delayed renewal (27.8608ms)
+✔ closing during a claim releases the late epoch without reviving ownership (2.117ms)
+✔ closing during renewal cannot validate an old worker; malformed epochs fail closed (2.4932ms)
+✔ loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations (176.0511ms)
+✔ hosted dispatch and document writes carry fences; stale SQL results invalidate the owner (16.4655ms)
+✔ promotion API rejects missing, changed and cancelled coordinator evidence before workspace writes (3681.8622ms)
+✔ event store orders events, redacts secrets, stores artifacts, and enforces run transitions (84.4647ms)
+✔ tool policy denies personal agents and unknown tools before execution (68.3677ms)
+✔ append-only snapshot artifacts reconstruct a missing derived workspace view (80.7559ms)
+✔ room restart reconstructs the last product and interrupts an in-flight run (167.8289ms)
+✔ legacy workspace migration makes a backup before importing state (73.7463ms)
+✔ durable workflow projection records task transitions and supports cursor recovery (74.0671ms)
+✔ restart preserves a pending multi-option conflict group and resolver membership (133.7645ms)
+✖ ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (7258.0184ms)
+✖ OS boundary without Node permissions denies an existing private host file, writes and live loopback network (832.4513ms)
+✖ restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (789.4468ms)
+✖ candidate imports cannot read absolute files, traverse workspaces or download packages/styles (2328.747ms)
+✖ wall timeout terminates a running child and cleans its private input (938.7459ms)
+✖ cancellation waits for real child termination and cleanup; pre-abort starts nothing (409.6785ms)
+✖ memory exhaustion cannot escape the OS bound and leaves no child work (982.7947ms)
+✖ unavailable isolation fails explicitly and cannot fall back to host compilation (1.8092ms)
+✖ CPU bound stops a busy child before the longer wall deadline (14419.256ms)
+✖ untrusted output is bounded before it reaches application memory or artifacts (822.9719ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"3f76c7c6-6890-4764-95e4-b95127170c59"}
+{"event":"collaboration.connected","connectionId":"9bee6625-5562-48cb-a60f-af1abab95777","correlationId":"a8bc957d-1cd8-4bb4-a1a8-ede66f48320d"}
+{"event":"collaboration.disconnected","connectionId":"9bee6625-5562-48cb-a60f-af1abab95777","code":4403}
+✔ hosted reads, mutations and live delivery check current membership rather than a stale ticket role (563.1113ms)
+{"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"d443bf14-8b8b-4e1e-a5fa-95a5d9c8a4a7"}
+✔ non-owner ingress retries without hydrating a second writer or bypassing membership (421.5245ms)
+{"event":"collaboration.connected","connectionId":"8d474d00-3654-40a2-9d1f-491026d97ac8","correlationId":"1b9f4a0d-2159-45bc-b50f-3d003c95ec15"}
+{"event":"collaboration.connected","connectionId":"16ffa922-0851-4c54-ae89-6f661856a34e","correlationId":"7c353f67-7f30-4604-8934-d278676c5191"}
+{"event":"collaboration.connected","connectionId":"f9e91888-eccb-41d9-927a-c171211fdafa","correlationId":"3d254e06-5d7a-45f8-8649-764b79978553"}
+{"event":"collaboration.disconnected","connectionId":"f9e91888-eccb-41d9-927a-c171211fdafa","code":1006}
+{"event":"collaboration.disconnected","connectionId":"16ffa922-0851-4c54-ae89-6f661856a34e","code":1006}
+{"event":"collaboration.disconnected","connectionId":"8d474d00-3654-40a2-9d1f-491026d97ac8","code":1006}
+✔ three collaborators create and maintain a runnable recipe app (30657.1879ms)
+✔ a clear restaurant website assignment is accepted even when a model labels the batch as proposal (9.5291ms)
+✔ classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation (1.1591ms)
+✔ mixed contribution keeps request, proposal, and question separate (14.3554ms)
+✔ missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates (1.2538ms)
+✔ targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions (185.7806ms)
+✔ coauthor correction preserves teammate wording and exact sources, audit and previous revision (143.1283ms)
+✔ withdrawal removes only caller support and survives restart; same request replays before stale checks (123.3143ms)
+✔ unauthorized, stale and forged targets cannot mutate accepted intent (106.6805ms)
+✔ concurrent stale corrections serialize and only one current revision commits (95.5732ms)
+✔ ambiguous current intent can be corrected explicitly as proposal, question or request without inference (103.4674ms)
+✔ correction of one current intent preserves other entries and their independently withdrawable attribution (115.6747ms)
+✔ accepted change aborts an old candidate but proposal-only change leaves independent work running (124.5597ms)
+✔ canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt (153.2512ms)
+✔ provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted (2.1625ms)
+✔ accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not (0.87ms)
+✔ model cannot forge human authority, decision references, or withdraw teammates via deleted source (0.9704ms)
+✔ affected model IDs do not overwrite a teammate or silently withdraw the caller (1.0194ms)
+✔ unverified/proposed matching descriptions never confer accepted teammate attribution (0.4238ms)
+✔ queued intent commands recheck current membership before any durable mutation (82.3799ms)
+✔ a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution (1.2498ms)
+✔ typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent (1.8072ms)
+✔ serial acceptance and deferred capture order survive SQLite restart without replay spending (852.2793ms)
+✔ a failed authority check does not poison capture order or spend the later caller allowance twice (241.2071ms)
+✔ replaying the same invitation request keeps its link and does not send twice after provider acceptance (154.0392ms)
+✔ additive invitation migration retains prior hashes and membership roles (24.6115ms)
+﹣ Linux browser cold starts execute JavaScript repeatedly and clean every descendant (0.8137ms) # SKIP
+﹣ Linux CPU accounting includes busy descendants in the same finite job budget (0.0952ms) # SKIP
+﹣ Linux browser file-size ceiling rejects growth and cleans the bounded job (0.0877ms) # SKIP
+﹣ Linux browser file-descriptor ceiling rejects growth and cleans the bounded job (0.0862ms) # SKIP
+﹣ Linux bootstrap drops authority and attaches a stopped trusted child before execution (0.0872ms) # SKIP
+﹣ Linux PID ceiling denies fork growth and whole-group kill removes descendants (0.0797ms) # SKIP
+﹣ real Linux browser physical-memory exhaustion kills its job while the application survives (0.073ms) # SKIP
+﹣ missing Linux delegation fails closed and removes the candidate profile (0.0747ms) # SKIP
+✔ drafts recover after a reload and remain scoped to the contributor and room (20.518ms)
+✔ storage failure is visible and never claims a local save (22.5539ms)
+✔ corrupt cached updates do not mutate the live document (1.3035ms)
+✔ two tabs preserve both CRDT updates and teardown stops writes (30.1061ms)
+✔ managed catalog is bounded, exact, and rejects forged builder IDs (1.0682ms)
+✔ qualification keeps a single successful fixture provisional (0.7566ms)
+✔ managed assignments remain historical and cannot dispatch (98.6445ms)
+✔ temporary OpenRouter setup validates without generation and saves no secret (112.3901ms)
+✔ temporary key lease expires and is lost after restart (1.1005ms)
+✔ explicit builder reaches the OpenRouter request; unauthorized editor cannot dispatch (244.9287ms)
+✔ failed accepted work can be retried explicitly without reinterpreting the document (106.9308ms)
+✔ physical provider usage survives room reload for token visibility (113.8962ms)
+✖ Current outcome of Step 01 scenario: simultaneous-slow (25560.3939ms)
+✖ Current outcome of Step 01 scenario: failed-interpreter (25279.8517ms)
+✔ Current outcome of Step 01 scenario: later-steering (3848.6733ms)
+✔ Current outcome of Step 01 scenario: continuous-arrivals (9797.9383ms)
+✔ Current outcome of Step 01 scenario: ambiguous-reference (251.0143ms)
+✔ Current outcome of Step 01 scenario: invented-passage (213.6476ms)
+✖ Current outcome of Step 01 scenario: incorrect-product (292.8208ms)
+✔ Current outcome of Step 01 scenario: snapshot-body-gap (148.3338ms)
+✔ Current outcome of Step 01 scenario: projection-growth (210.5216ms)
+✔ Current outcome of Step 01 scenario: isolation-policy (103.3263ms)
+✔ Current outcome of Step 01 scenario: restart-budget (132.9535ms)
+✔ project tickets are scoped and expire (1.5868ms)
+✔ hosted Supabase mode fails closed when the server secret is absent (0.3469ms)
+✔ server Supabase configuration rejects mismatched credentials and JWKS (0.3259ms)
+✔ public auth configuration is explicit and derives the Worker callback (0.9861ms)
+✔ Wrangler uses matching server and Vite build-time Supabase configuration (0.8206ms)
+✔ Google callback exchanges once, reports errors, and restores only local destinations (0.5863ms)
+✔ Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect (8.6748ms)
+✔ auth source preserves Google and adds password, confirmation, and recovery flows (1.9776ms)
+✔ project names and invitation emails use canonical validation (0.6859ms)
+✔ transactional invitation email is truthful and idempotent at the provider boundary (31.2731ms)
+✔ email invitation migration binds recipients and enforces sharing permissions (11.4827ms)
+✔ invite tokens are hashed before persistence (0.2863ms)
+✔ migration enables RLS and keeps authoritative runtime writes server-only (12.7064ms)
+✔ delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored (11.5534ms)
+✔ retry delay is capped exponential backoff with bounded jitter (0.1944ms)
+✔ a receipt predating a deletion cannot mark the deleted draft saved (1.8812ms)
+✔ invalid sessions become actionable terminal errors without retrying (32.9554ms)
+✔ transient failures use one timer, stop after the cap, and never duplicate sockets (14.7549ms)
+✔ an edit made while disconnected is offered to the server after reconnect state-vector sync (3.218ms)
+✔ a new connection can recover a lower authoritative cursor after uncommitted server events disappear (1.3038ms)
+✔ disconnect rejects an in-flight flush and destroy removes document listeners (6.614ms)
+✔ burst edits share one transport update and explicit flush drains before acknowledgement (2.4584ms)
+✔ owner unavailability honors bounded retry hints, retains edits, and ends without inference (27.9733ms)
+✔ all provider adapters discover and generate through their native shapes (207.3779ms)
+✔ classified failures, validation, truncation, retry and cancellation are explicit (152.9659ms)
+✔ structured truncation uses one budgeted compact retry and preserves both usage records (40.9002ms)
+✔ adapter metadata does not require fake Ollama credentials (0.3553ms)
+✔ nested OpenRouter provider errors expose the actionable upstream message (7.8761ms)
+✔ provider usage normalizes cached and included reasoning tokens without double counting (9.5432ms)
+✔ structured parsing locally repairs raw string newlines and trailing commas (7.9162ms)
+✔ an incomplete JSON envelope is treated as truncation and gets the bounded compact retry (10.3913ms)
+✔ physical request ledger records transport and structured repair calls separately (30.2187ms)
+✖ required behavior failure retains the verified product, records actionable evidence and needs explicit retry (706.0941ms)
+✖ unavailable verification browser fails before builder spending and never reuses legacy covered evidence (38326.5849ms)
+✔ CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text (7.4962ms)
+✔ physical recovery calls and spending reservations cannot exceed their shared frozen bounds (175.4225ms)
+✔ output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON (50.4723ms)
+✔ a second output exhaustion stops a smaller task with actionable checkpoint evidence (67.2029ms)
+✔ coordinator leases serialize owners and fence expired workers after takeover (103.3106ms)
+✔ remote coordinator renewal cannot silently reacquire ownership for an old worker (3.2078ms)
+✔ remote saves commit in revision order and acknowledge the actual snapshot (176.4245ms)
+✔ failed cloud snapshots reject flushes and interrupted captured edits return to their author (120.7236ms)
+✔ context overflow is distinct from output exhaustion and does not trigger paid recovery calls (10.6763ms)
+✔ interpretation submits every captured source without silently clipping old edits or long text (16.4573ms)
+✔ failed cloud acceptance restores the accepted baseline and the captured participant draft (197.4371ms)
+✔ an exhausted recovery leaves the previously promoted and compiled artifact available (5795.4075ms)
+✖ independent participants submit in durable capture order, retain later build inputs and saved drafts on reload (8578.9982ms)
+✔ ownership loss after compilation blocks promotion; command replay adds no physical call (4941.1151ms)
+✔ unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs (4651.6776ms)
+✔ shared requirements keep a stable identity across collaborators and canvas locations (14.2811ms)
+✔ a proposal remains visible but is excluded from builder input (0.8107ms)
+✔ opposed accepted requirements create one focused consequential conflict (27.6202ms)
+✔ same-subject colors form one durable multi-option group (2.0759ms)
+✔ different subjects and conditional scopes remain compatible (1.9581ms)
+✔ proposals never enter accepted conflict groups (0.7486ms)
+✔ explicit selections stay pending, then resolve or disagree without model voting (2.3766ms)
+✔ legacy pairwise contradictions migrate without losing identity or affected contributors (1.4566ms)
+✔ selection submissions are authorized, revision-safe, and idempotent (9.3138ms)
+✔ unresolved alternatives are excluded while independent accepted work remains eligible (2.4076ms)
+✔ explicit withdrawal removes only that collaborator source and preserves supported intent (1.7428ms)
+✔ server shutdown drains authenticated HTTP before closing durable state (3258.2121ms)
+✔ physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible (0.9574ms)
+✔ SQLite accounting restores more than the recent 500 calls without double counting (1897.1822ms)
+✔ optional token fields remain optional and replay cannot replace a newer final usage record (61.1699ms)
+✔ physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade (2.7237ms)
+✔ ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed (0.4198ms)
+✔ concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts (917.2562ms)
+✔ owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference (158.5648ms)
+✔ remote reservation acknowledgement precedes HTTP; uncertain save fences further calls (75.0206ms)
+✔ work starting during owner authorization cannot reset an active allowance (98.6029ms)
+ℹ tests 254
+ℹ suites 0
+ℹ pass 223
+ℹ fail 23
+ℹ cancelled 0
+ℹ skipped 8
+ℹ todo 0
+ℹ duration_ms 392503.6322
+
+✖ failing tests:
+
+test at tests\candidate-verification.test.ts:21:1
+✖ real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate (3280.8814ms)
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+      at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async verifyCandidate (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\verification.ts:38:26)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:25:18)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    code: 'isolation_unavailable'
+  }
+
+test at tests\candidate-verification.test.ts:41:1
+✖ compiling controls without behavior fail; retained feature regressions are checked on every candidate (3164.4744ms)
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+      at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async verifyCandidate (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\verification.ts:38:26)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:44:85)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'isolation_unavailable'
+  }
+
+test at tests\candidate-verification.test.ts:50:1
+✖ unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks (3632.6998ms)
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+      at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async verifyCandidate (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\verification.ts:38:26)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:53:77)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'isolation_unavailable'
+  }
+
+test at tests\candidate-verification.test.ts:61:1
+✖ actual verification browser denies a private host file and loopback network and removes its child/profile (44.5542ms)
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+      at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:68:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    code: 'isolation_unavailable'
+  }
+
+test at tests\candidate-verification.test.ts:88:3
+✖ browser CPU remains inside the isolated job bounds (2.8352ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+  Caught error:
+
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+        at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+        at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\candidate-verification.test.ts:88:3
+✖ browser protocol output remains inside the isolated job bounds (1.323ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+  Caught error:
+
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+        at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+        at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\candidate-verification.test.ts:103:1
+✖ cancellation and wall limits terminate browser execution and leave no child jobs (0.6796ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+  Caught error:
+
+  Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:106:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.
+        at unavailable (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:15:27)
+        at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:24:41)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:106:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:16:1
+✖ ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (7258.0184ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:20:88)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:23:1
+✖ OS boundary without Node permissions denies an existing private host file, writes and live loopback network (832.4513ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:33:107)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:37:1
+✖ restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (789.4468ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:44:95)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:48:1
+✖ candidate imports cannot read absolute files, traverse workspaces or download packages/styles (2328.747ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:50:159)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:55:1
+✖ wall timeout terminates a running child and cleans its private input (938.7459ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:58:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:61:1
+✖ cancellation waits for real child termination and cleanup; pre-abort starts nothing (409.6785ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:64:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:68:1
+✖ memory exhaustion cannot escape the OS bound and leaves no child work (982.7947ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:71:94)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:74:1
+✖ unavailable isolation fails explicitly and cannot fall back to host compilation (1.8092ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:76:165)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:81:1
+✖ CPU bound stops a busy child before the longer wall deadline (14419.256ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:96:84)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:99:1
+✖ untrusted output is bounded before it reaches application memory or artifacts (822.9719ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '9c05df0f-8f3d-4c43-a481-bc38ab024c26'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:102:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '9c05df0f-8f3d-4c43-a481-bc38ab024c26' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\multiuser-baseline.test.ts:6:39
+✖ Current outcome of Step 01 scenario: simultaneous-slow (25560.3939ms)
+  Error: Baseline observation timed out: finite workload drain
+      at until (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\multiuser-baseline.ts:28:9)
+      at async runScenario (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\multiuser-baseline.ts:113:7)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\multiuser-baseline.test.ts:7:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at tests\multiuser-baseline.test.ts:6:39
+✖ Current outcome of Step 01 scenario: failed-interpreter (25279.8517ms)
+  Error: Baseline observation timed out: finite workload drain
+      at until (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\multiuser-baseline.ts:28:9)
+      at async runScenario (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\multiuser-baseline.ts:113:7)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\multiuser-baseline.test.ts:7:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests\multiuser-baseline.test.ts:6:39
+✖ Current outcome of Step 01 scenario: incorrect-product (292.8208ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  false !== true
+
+      at runScenario (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\multiuser-baseline.ts:161:16)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\multiuser-baseline.test.ts:7:3)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: false,
+    expected: true,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\reliability.test.ts:20:1
+✖ required behavior failure retains the verified product, records actionable evidence and needs explicit retry (706.0941ms)
+  AssertionError [ERR_ASSERTION]: Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained. Build r1; 1/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.undefined
+
+  'Error' !== 'Updated'
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\reliability.test.ts:34:86)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 'Error',
+    expected: 'Updated',
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at tests\reliability.test.ts:60:1
+✖ unavailable verification browser fails before builder spending and never reuses legacy covered evidence (38326.5849ms)
+  Error: Timed out
+      at waitFor (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\reliability.test.ts:99:176)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\reliability.test.ts:73:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests\reliability.test.ts:203:1
+✖ independent participants submit in durable capture order, retain later build inputs and saved drafts on reload (8578.9982ms)
+  Error: Timed out
+      at waitFor (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\reliability.test.ts:99:176)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\reliability.test.ts:210:357)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+ ELIFECYCLE  Test failed. See above for more details.

@@ -110,7 +110,7 @@ test('ambiguous and unsupported outputs clarify without builder dispatch; hostil
     assert.match(submittedOutput('Create a document titled "Brief" as PDF.').reason!, /Markdown only/);
     assert.match(submittedOutput('Write document "Brief" and document "Notes".').reason!, /multiple output targets/);
     assert.match(submittedOutput('Write document "Brief" and build an application.').reason!, /multiple output targets/);
-    for (const request of ['Open Chrome and research launch.', 'Control the desktop.', 'Deploy app.', 'Create a Blender scene.', 'Create a spreadsheet.']) assert.ok(submittedOutput(request).reason);
+    for (const request of ['Open Chrome and research launch.', 'Control the desktop.', 'Deploy app.', 'Create a Blender scene using a Python script.', 'Create a spreadsheet.']) assert.ok(submittedOutput(request).reason);
     assert.ok(submittedOutput('Write a document titled "Blender research" about Blender.').output);
     assert.throws(() => checkMarkdown('```markdown\n## Risks\n```', ['Risks']));
     assert.throws(() => checkMarkdown('bad\0content')); assert.throws(() => checkMarkdown('x'.repeat(256 * 1024 + 1))); assert.throws(() => checkMarkdown('# Title', ['Risks']));
@@ -150,7 +150,7 @@ test('promotion hides pending documents, failure rolls back, and interrupted tas
     await f.submit('alice', 'Update document "Brief" with a section "Next steps".'); await f.build();
     assert.equal(f.room.status, 'Updated'); const completedCalls = f.calls.length; await f.reopen();
     assert.equal(f.room.status, 'Updated'); assert.equal(f.calls.length, completedCalls);
-    assert.throws(() => snapshotDocuments({ artifactContractVersion: 3 }, f.room.id), ArtifactUnavailableError);
+    assert.throws(() => snapshotDocuments({ artifactContractVersion: 4 }, f.room.id), ArtifactUnavailableError);
     assert.throws(() => snapshotDocuments({ documentArtifacts: prior }, f.room.id), ArtifactUnavailableError);
     assert.deepEqual(snapshotDocuments({}, f.room.id), []);
   } finally { release?.(); await f.close(); }
@@ -191,7 +191,7 @@ test('private schema v2 document bodies survive empty-cache restoration and revo
     await f.submit('alice', 'Update document "Private brief" with a section "Risks".'); await f.build();
     const document = f.room.documentArtifacts![0], v1 = document.versions[0];
     const snapshot = storage.snapshots.get(projectId)!.harness_state;
-    assert.equal(snapshot.artifactSchemaVersion, 2); assert.equal(snapshot.documentArtifacts.length, 1); assert.equal(snapshot.artifactBodies, undefined);
+    assert.equal(snapshot.artifactSchemaVersion, 3); assert.equal(snapshot.documentArtifacts.length, 1); assert.equal(snapshot.artifactBodies, undefined);
     validateDocuments(snapshot.documentArtifacts, projectId);
     assert.throws(() => validateDocuments(snapshot.documentArtifacts, randomUUID()), ArtifactUnavailableError);
     assert.throws(() => restoreDocument(documentBytes(randomUUID(), document.id, 1, '# Wrong room'), v1), ArtifactUnavailableError);

@@ -1,4 +1,5 @@
 import { snapshotDocuments, restoreDocument } from './documents.js';
+import { snapshotBlender, restoreBlender } from './blender-artifacts.js';
 import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -368,15 +369,18 @@ export class SupabasePlatform {
     const documents = snapshotDocuments(payload, projectId);
     for (const document of documents) for (const version of document.versions) requireRef(version.contentRef);
     harness.documentArtifacts = documents;
-    harness.artifactContractVersion = 2;
-    harness.artifactSchemaVersion = 2;
+    const scenes = snapshotBlender(payload, projectId);
+    for (const scene of scenes) for (const version of scene.versions) requireRef(version.contentRef);
+    harness.blenderArtifacts = scenes;
+    harness.artifactContractVersion = 3;
+    harness.artifactSchemaVersion = 3;
     harness.artifactManifest = [...manifest.values()].sort((a, b) => a.ref.localeCompare(b.ref));
     return harness;
 }
   private async restoreSnapshotArtifacts(projectId: string, harness: Record<string, unknown>) {
     if (harness.artifactSchemaVersion === undefined)
         return harness; // Legacy inline versions remain readable; no fabricated older history.
-    if ((harness.artifactSchemaVersion !== 1 && harness.artifactSchemaVersion !== 2) || !Array.isArray(harness.artifactManifest) || !Array.isArray(harness.versions))
+    if (![1,2,3].includes(Number(harness.artifactSchemaVersion)) || typeof harness.artifactSchemaVersion !== 'number' || !Array.isArray(harness.artifactManifest) || !Array.isArray(harness.versions))
         throw new ArtifactUnavailableError('corrupt');
     const manifest = new Map<string, ArtifactReference>(harness.artifactManifest.map(item => { const ref = checkReference(item); return [ref.ref, ref]; }));
     if (!Array.isArray(harness.artifactHistory) || harness.artifactHistory.some(version => !version || !Number.isSafeInteger(version.id) || version.id < 1 || typeof version.summary !== 'string' || typeof version.createdAt !== 'string' || !manifest.has(version.artifactRef)))
@@ -415,7 +419,14 @@ export class SupabasePlatform {
         const version = document.versions.at(-1);
         if (version) restoreDocument(await load(version.contentRef), version);
     }
-    return { ...harness, versions, documentArtifacts: documents, recoveryCheckpoint: checkpoint, artifactBodies: [...bodies.values()] };
+    const scenes = snapshotBlender(harness, projectId);
+    if (scenes.length && harness.artifactSchemaVersion !== 3) throw new ArtifactUnavailableError('corrupt');
+    for (const scene of scenes) {
+        for (const version of scene.versions) if (!manifest.has(version.contentRef)) throw new ArtifactUnavailableError('missing');
+        const version = scene.versions.at(-1);
+        if (version) restoreBlender(await load(version.contentRef), version);
+    }
+    return { ...harness, versions, documentArtifacts: documents, blenderArtifacts: scenes, recoveryCheckpoint: checkpoint, artifactBodies: [...bodies.values()] };
 }
   async storeArtifact(projectId:string,revision:number,contents:Uint8Array,metadata:Record<string,unknown>={}) {
     const hash=createHash('sha256').update(contents).digest('hex'),path=`${projectId}/${revision}/${hash}.zip`;

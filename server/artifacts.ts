@@ -159,9 +159,13 @@ export function captureArtifacts(room: {
     recoveryCheckpoint?: RecoveryCheckpoint;
     artifactHistory?: ArchivedVersion[];
     documentArtifacts?: import('../shared/types.js').DocumentArtifact[];
+    blenderArtifacts?: import('../shared/blender.js').BlenderArtifact[];
 }, store: EventStore) {
     const history = new Map((room.artifactHistory || []).map(version => [version.id, version]));
     const refs: string[] = [];
+    for (const artifact of room.blenderArtifacts || [])
+        for (const version of artifact.versions)
+            if (version === artifact.versions.at(-1) || store.readArtifact(version.contentRef)) refs.push(version.contentRef);
     for (const artifact of room.documentArtifacts || [])
         for (const version of artifact.versions)
             if (version === artifact.versions.at(-1) || store.readArtifact(version.contentRef)) refs.push(version.contentRef);

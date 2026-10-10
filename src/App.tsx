@@ -627,7 +627,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setSplit(!split);
         setTab('document');
     }}><PanelLeftClose />Split view</button><span className="build-shortcut-hint">{shortcut === 'disabled' ? 'No macOS shortcut' : shortcutLabel(shortcut)}</span><button className="primary" disabled={submitting} aria-keyshortcuts={ariaShortcut(shortcut)} title={`Build my changes${shortcut === 'disabled' ? '' : ` (${shortcutLabel(shortcut)})`}`} onMouseDown={event => event.preventDefault()} onClick={() => void submitChanges()}>{submitting ? <LoaderCircle className="spin"/> : <WandSparkles />}Build my changes</button></div></div>
-    <BuildProgress progress={state.buildProgress} documentsAvailable={state.artifacts?.some(item => item.kind === 'markdown')}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
+    <BuildProgress progress={state.buildProgress} documentsAvailable={state.artifacts?.some(item => item.kind === 'markdown')} scenesAvailable={state.artifacts?.some(item => item.kind === 'blender')}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
     {notice && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
         if (tokenOverride)
             location.href = `/login?returnTo=${encodeURIComponent(`/projects/${id}`)}`;

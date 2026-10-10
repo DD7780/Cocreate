@@ -1,0 +1,7 @@
+{"event":"collaboration.connected","connectionId":"f5b43d42-f13f-4c1d-91ab-84e846a2adac","correlationId":"187fb456-d478-4be0-9900-499c99ad68fc"}
+{"event":"collaboration.connected","connectionId":"e484ada8-48e7-424b-9a89-1c9652944512","correlationId":"373a572a-921e-4cc2-b140-23a3bb04121a"}
+{"event":"collaboration.disconnected","connectionId":"e484ada8-48e7-424b-9a89-1c9652944512","code":1001}
+{"event":"collaboration.connected","connectionId":"be4bda9a-8417-4783-8248-5cffd417825a","correlationId":"b2e1c25c-4106-4c89-8d18-60acc0e670f8"}
+{"checks":11,"calls":2,"output":"C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\artifacts\\blender-session\\browser"}
+{"event":"collaboration.disconnected","connectionId":"f5b43d42-f13f-4c1d-91ab-84e846a2adac","code":1001}
+{"event":"collaboration.disconnected","connectionId":"be4bda9a-8417-4783-8248-5cffd417825a","code":1001}

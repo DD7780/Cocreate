@@ -3,6 +3,7 @@ import './build-progress.css';
 
 export function VerificationSummary({ run, revisions }: {run?: AIRunRecord; revisions: RoomView['requirementRevisions']}) {
   if (!run) return null;
+  if (run.artifactKind === 'blender') return <div className="verification-summary">{run.blenderVerification ? 'Dedicated Blender execution, saved scene/render integrity and process cleanup checked. Scene appearance needs human review.' : 'Blender execution/publication did not complete; previous saved results are retained.'}</div>;
   if (run.artifactKind === 'markdown') return <div className="verification-summary">{run.documentVerification ? 'Document encoding, size, integrity and requested structure checked. Factual accuracy unverified.' : 'Document checks did not complete; the last successful version is retained.'}</div>;
   const report = run.verification.evidence;
   if (!report) return <div className="verification-summary">Acceptance checks were not recorded for this build.</div>;

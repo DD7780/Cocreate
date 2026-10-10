@@ -1,0 +1,62 @@
+{"event":"collaboration.connected","connectionId":"020eba1b-a997-4879-9bbd-2b5ee19a6dc9","correlationId":"d2c8a02b-a948-4250-ad16-da25ff8ca1cb"}
+{"event":"collaboration.connected","connectionId":"f138a3bf-e622-4de0-9abb-8b94e233fc2a","correlationId":"a301bb29-bc12-4436-85a4-143c22341355"}
+C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\blender-executor.ts:69
+      if (cancelled || timedOut || overflow || code !== 0 || diagnostic.includes('ISOLATION_CLEANUP_FAILED') || !diagnostic.includes('ISOLATION_ACCOUNTING')) return reject(new Error(`Blender ${cancelled ? 'cancelled' : timedOut || code === 124 ? 'timed out' : overflow ? 'output limit exceeded' : 'isolated execution unavailable or failed'}. Dedicated process removed; no host fallback. ${diagnostic.slice(-1600)}`));
+                                                                                                                                                                            ^
+
+Error: Blender isolated execution unavailable or failed. Dedicated process removed; no host fallback. .5.14-windows-x64\\4.5\\python'
+
+  sys.platlibdir = 'DLLs'
+
+  sys.executable = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\blender.exe'
+
+  sys.prefix = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python'
+
+  sys.exec_prefix = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python'
+
+  sys.path = [
+
+    'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\python311.zip',
+
+    'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python\\DLLs',
+
+Blender 4.5.14 LTS (hash 62c1db4208e8 built 2026-09-15 01:33:49)
+
+Color management: Using fallback mode for management
+
+Color management: scene view "AgX" not found, setting default "Standard".
+
+    'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python\\Lib',
+
+    'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64',
+
+  ]
+
+Internal error initializing Python!
+
+Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+
+Python runtime state: core initialized
+
+LookupError: no codec search functions registered: can't find encoding
+
+
+
+Current thread 0x0000546c (most recent call first):
+
+  <no Python frame>
+
+ISOLATION_PEAK_BYTES 112177152 113381376
+
+ISOLATION_ACCOUNTING 1093750 2031250 2 0 1231
+
+ISOLATION_EXIT 3221226505
+
+
+    at ChildProcess.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\blender-executor.ts:69:173)
+    at Object.onceWrapper (node:events:631:26)
+    at ChildProcess.emit (node:events:509:28)
+    at maybeClose (node:internal/child_process:1141:16)
+    at ChildProcess._handle.onexit (node:internal/child_process:306:5)
+
+Node.js v24.19.0

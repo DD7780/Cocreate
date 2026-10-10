@@ -38,6 +38,7 @@ import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
+import { registerBlenderRoutes } from './blender-routes.js';
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -74,9 +75,9 @@ export async function createCoCreateServer(options: Options = {}) {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner']);
         } : undefined, mvpByokOnly: !!platformState.platform
     });
-    app.use(express.json({
+    app.use((req, res, next) => req.path.startsWith('/api/blender/devices/') ? next() : express.json({
         limit: '40kb'
-    }));
+    })(req, res, next));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
     const closeBetaRequests = platformState.platform ? registerBetaRequestRoutes(app,platformState.platform) : null;
     const releaseFile = '/usr/local/share/cocreate-release.json';
@@ -145,6 +146,7 @@ export async function createCoCreateServer(options: Options = {}) {
             session, room
         };
     };
+    registerBlenderRoutes(app, manager, authorize, platformState.platform || undefined);
     const owner = (req: express.Request, res: express.Response) => {
         const auth = authorize(req, res);
         if (!auth)

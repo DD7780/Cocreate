@@ -21,7 +21,7 @@ for (const file of files.sort()) {
   const name = file.replaceAll('\\', '/');
   if (!fs.lstatSync(file).isFile()) throw new Error('Release input must be a regular file.');
   let content = fs.readFileSync(file);
-  if (/\.(?:[cm]?[jt]sx?|c|cs|ps1|sh|css|html|json|jsonc|yaml|yml|svg)$/.test(file) || file === 'Dockerfile') content = Buffer.from(content.toString('utf8').replaceAll('\r\n', '\n'));
+  if (/\.(?:[cm]?[jt]sx?|c|cs|py|ps1|sh|css|html|json|jsonc|yaml|yml|svg)$/.test(file) || file === 'Dockerfile') content = Buffer.from(content.toString('utf8').replaceAll('\r\n', '\n'));
   hash.update(name + '\0' + content.length + '\0'); hash.update(content);
 }
 hash.update(JSON.stringify({vars, image_vars: config.containers[0].image_vars}));

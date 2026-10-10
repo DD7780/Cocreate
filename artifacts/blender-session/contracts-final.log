@@ -1,0 +1,12 @@
+✔ pairing is authenticated capability, expiring/single-use and locally approved; device revocation and session grants are distinct (4.115ms)
+✔ one mutable controller fences stale epochs/concurrent commands, waits for cleanup before handoff, and recovers without dispatch (2.7237ms)
+✔ structured scenes deny scripts, paths, network, nonfinite values, excessive geometry and unsupported routing (4.5165ms)
+✔ HTTP device/session authority, serialized handoff, replay and restart retain no automatic execution (785.726ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 3949.0703

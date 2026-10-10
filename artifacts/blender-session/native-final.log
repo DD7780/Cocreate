@@ -1,0 +1,55 @@
+✖ real Windows Blender creates bounded outputs; receipts, cancellation, timeout and fixed paths retain integrity (10765.5254ms)
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (22.3054ms)
+✔ real outbound companion executes only submitted caller task, publishes private versions and reconciles failed upload without repeated inference/execution (88181.2902ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 103708.6357
+
+✖ failing tests:
+
+test at scripts\blender-native-tests.ts:1:1476
+✖ real Windows Blender creates bounded outputs; receipts, cancellation, timeout and fixed paths retain integrity (10765.5254ms)
+  Error: Blender output limit exceeded. Dedicated process removed; no host fallback. ayer | Updating Mesh | Copying Attributes to device
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene BVH | Building
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.02 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene BVH | Building BVH
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene BVH | Building BVH 0%
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Scene BVH | Copying BVH to device
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Computing normals
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Mesh | Copying Mesh to device
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Objects Flags
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Primitive Offsets
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Images
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Camera Volume
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.00M, Peak:0.00M | Scene, ViewLayer | Updating Lookup Tables
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.08M, Peak:0.08M | Scene, ViewLayer | Updating Lights
+  Fra:1 Mem:8.38M (Peak 8.48M) | Time:00:00.03 | Mem:0.09M, Peak:0.09M | Scene, ViewLayer | Updating Lights | Computing tree
+
+      at ChildProcess.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\blender-executor.ts:69:173)
+      at Object.onceWrapper (node:events:631:26)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5)
+
+test at scripts\blender-native-tests.ts:1:3364
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (22.3054ms)
+  AssertionError [ERR_ASSERTION]: real native output acceptance must precede Storage acceptance
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\scripts\blender-native-tests.ts:45:10)
+      at Test.runInAsyncScope (node:async_hooks:227:14)
+      at Test.run (node:internal/test_runner/test:1382:25)
+      at Test.processPendingSubtests (node:internal/test_runner/test:960:18)
+      at Test.postRun (node:internal/test_runner/test:1522:19)
+      at Test.run (node:internal/test_runner/test:1447:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    expected: true,
+    operator: '==',
+    diff: 'simple'
+  }

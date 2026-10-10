@@ -1,5 +1,13 @@
 # Harness decision log
 
+## D-0060 — Locally approved, bounded connected Blender (2026-10-11)
+
+The explicit connected-Blender request supersedes D-0059's Blender-unavailable direction for one verified Windows x64/official portable Blender 4.5.14 milestone. Use trusted structured primitives/materials/camera/lights, never arbitrary generated scripts or imported scenes. Verify capability-free AppContainer/Job Object limits and real output before enabling connection; fail closed with no host fallback. The local owner selects executable, separate dedicated workspace, allowed operations and named observation/control grants. Project membership alone grants only saved results.
+
+Reuse existing caller-only Canvas capture, one coordinator, physical provider accounting/allowance and immutable private publication. Single-use five-minute pairing, 30-minute connection/10-minute idle expiry, outbound authenticated polling, local STOP, one controller/epochs, serialized durable commands and cleanup-before-handoff prevent ambient desktop authority. Artifacts honestly labels background execution/rendered previews; no interactive desktop stream, in-browser scene editor or new chat.
+
+Keep immutable scene/render versions with frozen task/actor/spec/input references; v3 snapshots read legacy v1/v2 explicitly. Pending candidates remain hidden; failed/uncertain publication retains last success and fences uncertain hosted ownership. Local receipt-before-launch plus interrupted server commands prohibit reconnect/restart execution replay. Explicit retry may reconcile completed outputs without another inference/process while original authority remains valid; expiry/revocation never authorizes automatic orphan upload. [Implementation/evidence](blender-session.md) distinguishes real Windows controlled-provider checks from hosted/account/distribution acceptance. No paid inference, production deployment, migration, external message or general desktop automation is authorized.
+
 Updated 2026-10-05. Each stable identifier names one decision. Accepted behavior, local implementation and hosted verification are separate; the [checklist](checklist.md) owns evidence-backed status. Superseded/rejected records below preserve rationale, not current instructions. Current setup/limits live in [product.md](../../product.md#hosted-ai-and-limits).
 
 Identifier repair: D-0035 retains BYOK; device recovery is D-0043. D-0021 retains hosted Supabase authority; JSON serialization recovery is D-0044. The one erroneous D-0036 gate-removal reference was corrected by meaning to D-0035, refined by D-0042. D-0036 remains historical comic motion. No decision was inferred from an assistant-generated prompt.

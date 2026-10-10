@@ -183,6 +183,10 @@ export type Room = {
   pendingPromotion?: number;
   pendingDocument?: { artifactId: string; versionId: number };
   documentArtifacts?: import("../shared/types.js").DocumentArtifact[];
+  blenderArtifacts?: import('../shared/blender.js').BlenderArtifact[];
+  blender?: import('./blender-sessions.js').BlenderState;
+  blenderMutation?: Promise<unknown>;
+  pendingBlender?: { artifactId: string; versionId: number };
   artifactHistory?: ArchivedVersion[];
   artifactManifest?: ArtifactReference[];
   id: string;

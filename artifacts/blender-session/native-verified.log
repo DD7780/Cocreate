@@ -1,0 +1,31 @@
+✔ real Windows Blender creates bounded outputs; receipts, cancellation, timeout and fixed paths retain integrity (18187.6259ms)
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (1487.2641ms)
+✔ real outbound companion executes only submitted caller task, publishes private versions and reconciles failed upload without repeated inference/execution (64976.3044ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 87722.9893
+
+✖ failing tests:
+
+test at scripts\blender-native-tests.ts:1:3364
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (1487.2641ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  401 !== 403
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\scripts\blender-native-tests.ts:65:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 403,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

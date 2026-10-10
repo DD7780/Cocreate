@@ -1,0 +1,66 @@
+✔ real Windows Blender creates bounded outputs; receipts, cancellation, timeout and fixed paths retain integrity (22935.8921ms)
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (2108.9018ms)
+✖ real outbound companion executes only submitted caller task, publishes private versions and reconciles failed upload without repeated inference/execution (8322.9169ms)
+(node:10172) PromiseRejectionHandledWarning: Promise rejection was handled asynchronously (rejection id: 3)
+(Use `node --trace-warnings ...` to show where the warning was created)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 1
+ℹ fail 2
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 262990.3889
+
+✖ failing tests:
+
+test at scripts\blender-native-tests.ts:1:3364
+✖ real Blender outputs use immutable private SDK Storage, cold restoration, fresh membership and corrupt-body denial (2108.9018ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
+
+  401 !== 404
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\scripts\blender-native-tests.ts:65:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: 401,
+    expected: 404,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }
+
+test at scripts\blender-native-tests.ts:1:7324
+✖ real outbound companion executes only submitted caller task, publishes private versions and reconciles failed upload without repeated inference/execution (8322.9169ms)
+  Error: Blender isolated execution unavailable or failed. Dedicated process removed; no host fallback. 4.5.14-windows-x64\\4.5\\python'
+    sys.platlibdir = 'DLLs'
+    sys.executable = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\blender.exe'
+    sys.prefix = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python'
+    sys.exec_prefix = 'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python'
+    sys.path = [
+      'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\python311.zip',
+      'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python\\DLLs',
+      'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64\\4.5\\python\\Lib',
+      'C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\blender\\blender-4.5.14-windows-x64',
+    ]
+  Internal error initializing Python!
+  Fatal Python error: init_fs_encoding: failed to get the Python codec of the filesystem encoding
+  Python runtime state: core initialized
+  Blender 4.5.14 LTS (hash 62c1db4208e8 built 2026-09-15 01:33:49)
+  Color management: Using fallback mode for management
+  Color management: scene view "AgX" not found, setting default "Standard".
+  LookupError: no codec search functions registered: can't find encoding
+
+  Current thread 0x00004178 (most recent call first):
+    <no Python frame>
+  ISOLATION_PEAK_BYTES 112103424 113307648
+  ISOLATION_ACCOUNTING 781250 2343750 2 0 1763
+  ISOLATION_EXIT 3221226505
+
+      at ChildProcess.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\blender-executor.ts:69:173)
+      at Object.onceWrapper (node:events:631:26)
+      at ChildProcess.emit (node:events:509:28)
+      at maybeClose (node:internal/child_process:1141:16)
+      at ChildProcess._handle.onexit (node:internal/child_process:306:5)

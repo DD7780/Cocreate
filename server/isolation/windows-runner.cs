@@ -8,6 +8,7 @@ using System.ComponentModel;
 using System.Runtime.InteropServices;
 using System.Security.AccessControl;
 using System.Security.Principal;
+using System.Threading;
 
 public static class IsolationRunner {
  [StructLayout(LayoutKind.Sequential)] struct SECURITY_CAPABILITIES { public IntPtr Sid,Capabilities; public uint Count,Reserved; }
@@ -45,27 +46,54 @@ public static class IsolationRunner {
   access.AddAccessRule(new FileSystemAccessRule(sid,rights,InheritanceFlags.ContainerInherit|InheritanceFlags.ObjectInherit,PropagationFlags.None,AccessControlType.Allow));
   Directory.SetAccessControl(directory,access);
  }
+ static void BlenderRuntimeAccess(string directory,SecurityIdentifier sid,bool add) {
+  // Multiple companions may share the same portable runtime. Preserve every other job's SID.
+  using(var mutex=new Mutex(false,"Local\\CoCreateBlenderRuntimeAcl.v1."+WindowsIdentity.GetCurrent().User.Value)) {
+   bool acquired=false;
+   try {
+    try {acquired=mutex.WaitOne(5000);}catch(AbandonedMutexException){acquired=true;}
+    if(!acquired)throw new IOException("Blender runtime ACL lock unavailable.");
+    var access=Directory.GetAccessControl(directory);
+    var rule=new FileSystemAccessRule(sid,FileSystemRights.ReadAndExecute,InheritanceFlags.ContainerInherit|InheritanceFlags.ObjectInherit,PropagationFlags.None,AccessControlType.Allow);
+    if(add)access.AddAccessRule(rule);else access.RemoveAccessRuleSpecific(rule);
+    Directory.SetAccessControl(directory,access);
+   }finally{if(acquired)mutex.ReleaseMutex();}
+  }
+ }
  public static int Main(string[] args) {
+  if(args.Length==2&&args[0]=="protect-companion") {
+   string file=Path.GetFullPath(args[1]);
+   if(!Path.GetFileName(file).StartsWith(".cocreate-blender-connection.",StringComparison.Ordinal)||!file.EndsWith(".tmp",StringComparison.Ordinal))return 126;
+   try {
+    var access=new FileSecurity();access.SetAccessRuleProtection(true,false);
+    access.AddAccessRule(new FileSystemAccessRule(WindowsIdentity.GetCurrent().User,FileSystemRights.FullControl,AccessControlType.Allow));
+    access.AddAccessRule(new FileSystemAccessRule(new SecurityIdentifier("S-1-5-18"),FileSystemRights.FullControl,AccessControlType.Allow));
+    File.SetAccessControl(file,access);return 0;
+   }catch{return 126;}
+  }
   if(args.Length==2&&args[0]=="cleanup"&&args[1].StartsWith("cocreate.isolation.",StringComparison.Ordinal)) { DeleteAppContainerProfile(args[1]);return 0; }
   IntPtr sid=IntPtr.Zero,job=IntPtr.Zero,attributes=IntPtr.Zero,capsPtr=IntPtr.Zero,handlesPtr=IntPtr.Zero,env=IntPtr.Zero;
   PROCESS_INFORMATION process=new PROCESS_INFORMATION(); string profile=null;bool created=false;
   try {
    bool browser=args.Length==7&&args[5]=="browser";
-   if(args.Length!=6&&!browser)throw new ArgumentException("Invalid launcher request.");
+   bool blender=args.Length==7&&args[5]=="blender";
+   if(args.Length!=6&&!browser&&!blender)throw new ArgumentException("Invalid launcher request.");
    string runtime=Path.GetFullPath(args[0]),workspace=Path.GetFullPath(args[1]);
    profile=args[2];int parentId=int.Parse(args[3]),timeout=int.Parse(args[4]);bool permission=args[5]=="restricted";
-   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
+   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>(blender?120000:20000)||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
    var parent=Process.GetProcessById(parentId);DateTime parentStarted=parent.StartTime;
    int hr=CreateAppContainerProfile(profile,profile,"Disposable CoCreate compiler",IntPtr.Zero,0,out sid);
    if(hr!=0)Marshal.ThrowExceptionForHR(hr);created=true;
    Grant(runtime,new SecurityIdentifier("S-1-15-2-1"),FileSystemRights.ReadAndExecute);
    Grant(workspace,new SecurityIdentifier(sid),FileSystemRights.ReadAndExecute);
+   if(blender)Grant(workspace,new SecurityIdentifier(sid),FileSystemRights.Modify);
    string browserProfile=Path.Combine(workspace,"browser-profile");
    if(browser){Directory.CreateDirectory(browserProfile);Grant(browserProfile,new SecurityIdentifier(sid),FileSystemRights.Modify);}
    job=CreateJobObject(IntPtr.Zero,null);Check(job!=IntPtr.Zero,"job create");
    EXTENDED_LIMIT limit=new EXTENDED_LIMIT();
    limit.basic.flags=0x2000|0x8|0x100|0x200|0x4|0x400; // Kill on close, one process, memory, CPU, no exception dialogs.
    limit.basic.active=1;limit.basic.jobTime=10L*10000000;limit.processMemory=new UIntPtr(512UL*1024*1024);limit.jobMemory=limit.processMemory;
+   if(blender){limit.basic.jobTime=60L*10000000;limit.processMemory=new UIntPtr(2048UL*1024*1024);limit.jobMemory=limit.processMemory;}
    Check(SetInformationJobObject(job,9,ref limit,(uint)Marshal.SizeOf(typeof(EXTENDED_LIMIT))),"job limits");
    IntPtr size=IntPtr.Zero;InitializeProcThreadAttributeList(IntPtr.Zero,2,0,ref size);
    attributes=Marshal.AllocHGlobal(size);Check(InitializeProcThreadAttributeList(attributes,2,0,ref size),"attribute list");
@@ -88,6 +116,13 @@ public static class IsolationRunner {
     if(node.StartsWith(browserCache,StringComparison.OrdinalIgnoreCase))Grant(Path.GetDirectoryName(node),new SecurityIdentifier("S-1-15-2-1"),FileSystemRights.ReadAndExecute);
     command=new StringBuilder(Quote(node)+" --headless=new --single-process --no-sandbox --no-zygote --disable-gpu --in-process-gpu --disable-breakpad --disable-crash-reporter --disable-crashpad-for-testing --disable-background-networking --disable-component-update --disable-sync --no-first-run --no-default-browser-check --disk-cache-size=1 --media-cache-size=1 --remote-debugging-pipe --remote-debugging-io-pipes="+startup.info.input.ToInt64()+","+startup.info.output.ToInt64()+" "+Quote("--user-data-dir="+browserProfile)+" about:blank");
     Marshal.FreeHGlobal(env);env=Marshal.StringToHGlobalUni("APPDATA="+browserProfile+"\0LOCALAPPDATA="+browserProfile+"\0SystemRoot="+Environment.GetFolderPath(Environment.SpecialFolder.Windows)+"\0TEMP="+browserProfile+"\0TMP="+browserProfile+"\0USERPROFILE="+browserProfile+"\0\0");
+   }
+   if(blender){
+    node=Path.GetFullPath(args[6]);
+    if(!File.Exists(node)||Path.GetFileName(node)!="blender.exe"||node.Contains("\""))throw new ArgumentException("Blender runtime unavailable.");
+    BlenderRuntimeAccess(Path.GetDirectoryName(node),new SecurityIdentifier(sid),true);
+    command=new StringBuilder(Quote(node)+" --background --factory-startup --disable-autoexec --threads 2 --python-exit-code 1 --python "+Quote(Path.Combine(workspace,"scene.py"))+" -- "+Quote(input));
+    Marshal.FreeHGlobal(env);env=Marshal.StringToHGlobalUni("SystemRoot="+Environment.GetFolderPath(Environment.SpecialFolder.Windows)+"\0TEMP="+workspace+"\0TMP="+workspace+"\0USERPROFILE="+workspace+"\0APPDATA="+workspace+"\0LOCALAPPDATA="+workspace+"\0BLENDER_USER_CONFIG="+workspace+"\0BLENDER_USER_SCRIPTS="+workspace+"\0PYTHONNOUSERSITE=1\0\0");
    }
    Check(CreateProcess(node,command,IntPtr.Zero,IntPtr.Zero,true,0x4|0x80000|0x400|0x8000000,env,workspace,ref startup,out process),"AppContainer process");
    Check(AssignProcessToJobObject(job,process.process),"job assignment");
@@ -112,7 +147,12 @@ public static class IsolationRunner {
    if(process.thread!=IntPtr.Zero)CloseHandle(process.thread);
    if(attributes!=IntPtr.Zero){DeleteProcThreadAttributeList(attributes);Marshal.FreeHGlobal(attributes);}
    if(capsPtr!=IntPtr.Zero)Marshal.FreeHGlobal(capsPtr);if(handlesPtr!=IntPtr.Zero)Marshal.FreeHGlobal(handlesPtr);if(env!=IntPtr.Zero)Marshal.FreeHGlobal(env);
-   if(created)DeleteAppContainerProfile(profile);if(sid!=IntPtr.Zero)FreeSid(sid);
+   if(created){
+    if(args.Length==7&&args[5]=="blender"){
+     try{BlenderRuntimeAccess(Path.GetDirectoryName(Path.GetFullPath(args[6])),new SecurityIdentifier(sid),false);}catch{Console.Error.WriteLine("ISOLATION_CLEANUP_FAILED runtime ACL");}
+    }
+    DeleteAppContainerProfile(profile);
+   }if(sid!=IntPtr.Zero)FreeSid(sid);
   }
  }
 }
