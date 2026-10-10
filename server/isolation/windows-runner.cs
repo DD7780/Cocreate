@@ -93,12 +93,13 @@ public static class IsolationRunner {
   IntPtr sid=IntPtr.Zero,job=IntPtr.Zero,attributes=IntPtr.Zero,capsPtr=IntPtr.Zero,handlesPtr=IntPtr.Zero,env=IntPtr.Zero;
   PROCESS_INFORMATION process=new PROCESS_INFORMATION(); string profile=null;bool created=false;
   try {
-   bool browser=args.Length==7&&args[5]=="browser";
+   bool sharedBrowser=args.Length==7&&args[5]=="shared-browser";
+   bool browser=args.Length==7&&(args[5]=="browser"||sharedBrowser);
    bool blender=args.Length==7&&args[5]=="blender";
    if(args.Length!=6&&!browser&&!blender)throw new ArgumentException("Invalid launcher request.");
    string runtime=Path.GetFullPath(args[0]),workspace=Path.GetFullPath(args[1]);
    profile=args[2];int parentId=int.Parse(args[3]),timeout=int.Parse(args[4]);bool permission=args[5]=="restricted";
-   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>(blender?120000:20000)||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
+   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>(sharedBrowser?600000:blender?120000:20000)||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
    var parent=Process.GetProcessById(parentId);DateTime parentStarted=parent.StartTime;
    int hr=CreateAppContainerProfile(profile,profile,"Disposable CoCreate compiler",IntPtr.Zero,0,out sid);
    if(hr!=0)Marshal.ThrowExceptionForHR(hr);created=true;
@@ -111,6 +112,7 @@ public static class IsolationRunner {
    EXTENDED_LIMIT limit=new EXTENDED_LIMIT();
    limit.basic.flags=0x2000|0x8|0x100|0x200|0x4|0x400; // Kill on close, one process, memory, CPU, no exception dialogs.
    limit.basic.active=1;limit.basic.jobTime=10L*10000000;limit.processMemory=new UIntPtr(512UL*1024*1024);limit.jobMemory=limit.processMemory;
+   if(sharedBrowser)limit.basic.jobTime=60L*10000000;
    if(blender){limit.basic.jobTime=60L*10000000;limit.processMemory=new UIntPtr(2048UL*1024*1024);limit.jobMemory=limit.processMemory;}
    Check(SetInformationJobObject(job,9,ref limit,(uint)Marshal.SizeOf(typeof(EXTENDED_LIMIT))),"job limits");
    IntPtr size=IntPtr.Zero;InitializeProcThreadAttributeList(IntPtr.Zero,2,0,ref size);

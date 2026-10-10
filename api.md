@@ -1,5 +1,22 @@
 # 2guys1canvas implemented API contracts
 
+## Shared browser (2026-10-11)
+
+Project session/beta/current membership and coordinator gates apply. Connection-owner current editor/owner membership is independently required for session operations. Responses use no-store/nosniff/no-referrer. Session grants remain separate from saved file permissions.
+
+| Route | Contract |
+| --- | --- |
+| `GET /api/rooms/:id/browser` | Granted session metadata/hashed-receipt summaries plus independently readable project download descriptors; no cookies/frames/input payloads. |
+| `POST /api/rooms/:id/browser` | `{origin,observe,control}` exact operator-approved origin/current participant IDs; connection owner explicitly grants; new browser starts owner-private. |
+| `GET /api/rooms/:id/browser/:sessionId/frame` | Authenticated PNG viewport, explicit observation and private-login gate; membership/epoch rechecked after capture. |
+| `POST /api/rooms/:id/browser/:sessionId/input` | `{commandId,epoch,input}` validated navigate/click/text/key/scroll; active controller only; durable intent before dispatch; immutable same-ID replay returns state without execution. Completed means input acknowledgement; unknown is never retried. |
+| `POST /api/rooms/:id/browser/:sessionId/control` | `{action,epoch,actorId?}` handoff/private_login/share_authenticated/pause/resume/cancel/disconnect. Owner-only login/share/disconnect/resume; handoff waits for pending receipt settlement. Pause closes profile, owner resume starts fresh private login without replay. |
+| `GET /api/rooms/:id/browser/:sessionId/downloads` | Active controller sees bounded pending validated text file metadata, never arbitrary filesystem access. |
+| `POST /api/rooms/:id/browser/:sessionId/downloads/:downloadId/publish` | Owner/current epoch explicitly publishes a bounded UTF-8 .txt/.md as immutable private artifact, including downloads obtained during private login. |
+| `GET /api/rooms/:id/browser-downloads/:downloadId` | Fresh project reader independently downloads verified private text attachment; session grant unnecessary. |
+
+First executor is pinned Windows x64 Chromium 154.0.8037.92, 960×640 viewport, ten-minute expiry and 30-second frame/input idle close. No cookies/profile restoration, arbitrary protocol/script endpoint, whole-desktop viewing, agent automation or universal website compatibility. v4 snapshot/manifest writes retain v1/v2/v3 readers. This does not implement interactive Blender or generated-app deployment. [Exact scope/evidence](docs/harness/shared-browser-sessions.md).
+
 ## Connected Blender (2026-10-11)
 
 All project routes retain authenticated session/beta/current-membership/coordinator checks. Device routes accept only short-lived hashed opaque device credentials, never project reads. HTTPS outbound companion transport is required except loopback development. Responses use no-store; private images/downloads additionally use nosniff/no-referrer and recheck membership after awaited storage reads.

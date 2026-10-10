@@ -1,5 +1,18 @@
 # Harness status and outstanding work
 
+## Shared browser sessions — 2026-10-11
+
+- [x] Verify clean `e7d0741` checkout and prior Blender evidence; preserve dated/local/hosted distinction.
+- [x] Separate [browser](shared-browser-sessions.md), [interactive Blender](interactive-blender.md) and [preview deployment](frontend-preview-deployment.md) change packets.
+- [x] Actual isolated browser viewport/input, owner-private login/explicit sharing, grants/controller/epochs, durable hash-only receipts, no replay and private validated text files.
+- [x] Fresh focused browser/security and affected artifact/session recovery checks: 24/24, no skips; strict build passes.
+- [x] Two independent app viewer demonstration 9/9, zero inference; relevant native launcher regressions 17/17, boundary audit 178 files/zero violations. Final targeted v4 private SDK/recovery/read checks recorded separately.
+- [x] AST graph refresh; prepared fingerprint `8f92814…` with 110 release inputs. Complete focused run 24/24 and additional/final targeted checks recorded separately; actual Blender/v4 private publication regression 3/3.
+- [ ] Exact committed-source handoff/CI.
+- [ ] Real hosted accounts/Storage/revocation/coordinator/container replacement. No cloud mutation or paid inference authorized.
+- [ ] Interactive Blender native viewing/input boundary and two-participant acceptance; background evidence is insufficient.
+- [ ] Frontend preview release preparation, explicit target/release authority, durable provider reconciliation/live verification. No backend release.
+
 ## Connected Blender milestone — 2026-10-11
 
 - [x] Actual Windows build 26200 inspection, graph-first foundation review, bounded packet and current official Blender/Windows/Storage documentation.

@@ -1,5 +1,13 @@
 # Current harness architecture
 
+## Shared browser boundary (2026-10-11)
+
+`shared/browser-session.ts` validates bounded input. `server/shared-browser-routes.ts` enforces current project/connection-owner membership, explicit observation/control, private login, one controller and epoch fencing. `RoomManager.mutateBrowser` serializes and saves receipt intent before `SharedBrowserExecutor` dispatch. Receipts contain hashes/acknowledgement state, never input text/cookies. Owner-private screens are inaccessible to others until explicit owner sharing; frame reads recheck current membership/epoch after capture. The executor is ephemeral and never recovered automatically.
+
+`server/isolation/browser.ts` uses the existing capability-free Windows AppContainer/Job Object with a separate shared-browser mode: ten-minute wall bound, 60 CPU seconds, one process/512 MiB, monitored 16 MiB profile, 64 MiB cumulative protocol output. Compiler/acceptance-browser limits remain unchanged. The trusted parent handles CDP Fetch interception; `server/browser-network.ts` validates exact operator/owner-approved origin and method, pins public IPv4 DNS per request, rejects private addresses/other schemes/origins, bounds response/requests/concurrency/time/bytes, and never follows redirects itself. Browser native network, service-worker bypass, download denial and a fresh profile constrain the page. Login POST permission is single-use after explicit owner-private click/Enter. No CDP endpoint or browser cookie API is exposed.
+
+`server/browser-state.ts` strictly validates snapshots and private text-download envelopes. v4 snapshots/manifests retain session metadata/hashed receipts/private downloads with explicit v1/v2/v3 readers; restore marks live sessions disconnected and pending actions unknown. Latest browser files hydrate from verified immutable private Storage; readers independently authenticate downloads. `src/SharedBrowser.tsx` is a participant-local authenticated screenshot/input viewer inside Artifacts, not an iframe. No model calls or Workflow accounting changes. [Packet and evidence](shared-browser-sessions.md). General desktop/interactive Blender and generated-app deployment remain separate boundaries.
+
 ## Connected Blender boundary (2026-10-11)
 
 `shared/blender.ts` defines data-only scene validation/schema and version/session contracts. Exact authenticated Blender scene passages enter their own accepted artifact scope. `RoomManager.executeBlenderTask` freezes instructions/inputs/configuration and uses the existing physical ledger/allowance for one structured provider response. Interpretation and integration remain serial; workers return candidates and the coordinator alone verifies/promotes.

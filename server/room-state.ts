@@ -186,6 +186,8 @@ export type Room = {
   blenderArtifacts?: import('../shared/blender.js').BlenderArtifact[];
   blender?: import('./blender-sessions.js').BlenderState;
   blenderMutation?: Promise<unknown>;
+  browser?: import('../shared/browser-session.js').BrowserState;
+  browserMutation?: Promise<unknown>;
   pendingBlender?: { artifactId: string; versionId: number };
   artifactHistory?: ArchivedVersion[];
   artifactManifest?: ArtifactReference[];

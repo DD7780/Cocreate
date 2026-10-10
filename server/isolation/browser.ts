@@ -8,6 +8,7 @@ import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
 
 export type BrowserProtocol = {
   call(method: string, params?: object, sessionId?: string): Promise<any>;
+  onEvent?(listener: (method: string, params: any, sessionId?: string) => void): () => void;
 };
 export const linuxBrowserFileDescriptors = 256;
 // Native Mojo transfers include framing; the parent still rejects protocol output above 4 MiB.
@@ -17,14 +18,16 @@ export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFIC
   (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium-headless-shell'));
 
 /** Trusted CDP lives in the parent. Generated code has no access to its checks, pipes or Node process. */
-export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) => Promise<T>, options: IsolationOptions = {}): Promise<T> {
+export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) => Promise<T>, options: IsolationOptions & { sharedSession?: boolean } = {}): Promise<T> {
+  if (options.sharedSession && process.platform !== 'win32') throw unavailable();
   if (options.signal?.aborted) throw new IsolationError('isolation_cancelled', 'Verification cancelled.');
   if (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os') throw unavailable();
   const runtime = await prepareIsolation(), executable = browserExecutable();
   if (!fs.existsSync(executable)) throw unavailable();
   const jobs = path.resolve('.runtime/isolation/jobs'), workspace = path.join(jobs, randomUUID());
   const profile = 'cocreate.isolation.' + path.basename(workspace).replaceAll('-', '');
-  const wallMs = Math.min(isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
+  const outputLimit = options.sharedSession ? 64 * 1024 * 1024 : isolationPolicy.outputBytes;
+  const wallMs = Math.min(options.sharedSession ? 600_000 : isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
   fs.mkdirSync(path.join(workspace, 'browser-profile'), {recursive: true});
   const flags = ['--headless=new', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
     // Native PulseAudio allocates a 64 MiB memfd before any page; these checks do not verify audio.
@@ -44,7 +47,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     '--proc', '/proc', '--dev', '/dev', '--tmpfs', '/tmp'];
   for (const directory of ['/lib', '/lib64', '/usr/lib', '/etc/fonts', '/usr/share/fonts', '/usr/share/fontconfig']) if (process.platform === 'linux' && fs.existsSync(directory)) linux.push('--ro-bind', directory, directory);
   linux.push('--chdir', '/profile', '/browser/' + path.basename(executable), ...flags, '--user-data-dir=/profile', 'about:blank');
-  const command = process.platform === 'win32' ? {executable: path.join(runtime, 'runner.exe'), args: [runtime, workspace, profile, String(process.pid), String(wallMs), 'browser', executable]} :
+  const command = process.platform === 'win32' ? {executable: path.join(runtime, 'runner.exe'), args: [runtime, workspace, profile, String(process.pid), String(wallMs), options.sharedSession ? 'shared-browser' : 'browser', executable]} :
     process.platform === 'linux' ? {executable: '/usr/bin/prlimit', args: linux} : undefined;
   if (!command) throw unavailable();
   let group: LinuxJobGroup | undefined;
@@ -59,8 +62,10 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   let linuxPid = 0, sandboxExit: number | undefined;
   let hardStop: NodeJS.Timeout | undefined;
   let cpuTimer: NodeJS.Timeout | undefined;
+  let storageTimer: NodeJS.Timeout | undefined;
   const decoder = new StringDecoder('utf8');
   const pending = new Map<number, {resolve(value: any): void; reject(error: Error): void}>();
+  const listeners = new Set<(method: string, params: any, sessionId?: string) => void>();
   const stop = (error: Error) => {
     failure ??= error;
     if (process.platform === 'win32' && !exited) {
@@ -72,6 +77,11 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     pending.clear();
   };
   const abort = () => stop(new IsolationError('isolation_cancelled', 'Verification cancelled and its isolated browser removed.'));
+  if(options.sharedSession)storageTimer=setInterval(()=>{
+    let total=0;
+    const inspect=(directory:string)=>{for(const entry of fs.readdirSync(directory,{withFileTypes:true})){const filename=path.join(directory,entry.name);let stat:fs.Stats;try{stat=fs.lstatSync(filename);}catch(e){if((e as NodeJS.ErrnoException).code==='ENOENT')continue;throw e;}if(stat.isSymbolicLink())throw unavailable();if(stat.isDirectory())inspect(filename);else{total+=stat.size;if(total>16*1024*1024)throw new IsolationError('isolation_resource_limit','Browser profile exceeded its 16 MiB storage budget.');}}};
+    try{inspect(workspace);}catch(e){stop(e instanceof Error?e:unavailable());}
+  },250);
   const timer = setTimeout(() => stop(new IsolationError('isolation_timeout', 'Verification exceeded its wall-time bound.')), wallMs);
   options.signal?.addEventListener('abort', abort, {once: true});
   if (options.signal?.aborted) abort();
@@ -103,7 +113,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   }
   output.on('data', chunk => {
     received += Buffer.byteLength(chunk);
-    if (received > isolationPolicy.outputBytes) {stop(new IsolationError('isolation_resource_limit', 'Browser output exceeded its bound.')); return;}
+    if (received > outputLimit) {stop(new IsolationError('isolation_resource_limit', 'Browser output exceeded its bound.')); return;}
     buffer += decoder.write(chunk);
     let end: number;
     while ((end = buffer.indexOf('\0')) >= 0) {
@@ -118,6 +128,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
           stop(error);
         }
         if (task) {pending.delete(reply.id); reply.error ? task.reject(new Error('Browser protocol command failed.')) : task.resolve(reply.result);}
+        if (typeof reply.method === 'string') for (const listener of listeners) listener(reply.method, reply.params, reply.sessionId);
       } catch {stop(unavailable());}
     }
   });
@@ -135,10 +146,10 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     for (const task of pending.values()) task.reject(failure || unavailable());
     pending.clear(); resolve();
   }));
-  const browser: BrowserProtocol = {call(method, params = {}, sessionId) {
+  const browser: BrowserProtocol = {onEvent(listener) { listeners.add(listener); return () => listeners.delete(listener); }, call(method, params = {}, sessionId) {
     if (failure) return Promise.reject(failure);
     const id = ++sequence, message = JSON.stringify({id, method, params, sessionId}) + '\0';
-    if (Buffer.byteLength(message) > isolationPolicy.outputBytes) return Promise.reject(new IsolationError('isolation_resource_limit', 'Browser input exceeded its bound.'));
+    if (pending.size >= 32 || Buffer.byteLength(message) > isolationPolicy.outputBytes) return Promise.reject(new IsolationError('isolation_resource_limit', 'Browser input exceeded its bound.'));
     return new Promise((resolve, reject) => {pending.set(id, {resolve, reject}); input.write(message);});
   }};
   try {
@@ -162,6 +173,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     // The parent terminates the completed untrusted job; browser shutdown code is not a cleanup authority.
     finishing = true;
     clearInterval(cpuTimer);
+    clearInterval(storageTimer);
     if (!exited && process.platform === 'win32') {
       try {fs.writeFileSync(path.join(workspace, 'cancel'), 'cancel');} catch {child.kill();}
       hardStop ??= setTimeout(() => {forcedTermination = true; child.kill();}, 1_000);

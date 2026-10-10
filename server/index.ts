@@ -39,6 +39,7 @@ import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
 import { registerBlenderRoutes } from './blender-routes.js';
+import { registerSharedBrowserRoutes } from './shared-browser-routes.js';
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -147,6 +148,7 @@ export async function createCoCreateServer(options: Options = {}) {
         };
     };
     registerBlenderRoutes(app, manager, authorize, platformState.platform || undefined);
+    const closeSharedBrowsers=registerSharedBrowserRoutes(app,manager,authorize,platformState.platform||undefined);
     const owner = (req: express.Request, res: express.Response) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -859,6 +861,7 @@ export async function createCoCreateServer(options: Options = {}) {
         const drained = server.listening ? new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) : Promise.resolve();
         for (const client of wss.clients)
             client.terminate();
+        await closeSharedBrowsers();
         await new Promise<void>(resolve => wss.close(() => resolve()));
         await drained;
         manager.shutdown();

@@ -1,4 +1,5 @@
 import { generateDocument, checkMarkdown, documentBytes, restoreDocument, snapshotDocuments, requiredHeadings, DOCUMENT_MIME } from './documents.js';
+import { browserState } from './browser-state.js';
 import { callOpenAI } from './generator.js';
 import { artifactHash } from './artifacts.js';
 import { initialBlenderState, recoverBlenderState, createPair, pairingOwner, approveDevice, deviceAccess, sessionCommand, sessionView, queueScene, inFlight, HEARTBEAT_MS, type BlenderState } from './blender-sessions.js';
@@ -501,6 +502,7 @@ export class RoomManager {
     room.documentArtifacts = snapshotDocuments(meta, room.id);
     room.blenderArtifacts = snapshotBlender(meta, room.id);
     room.blender = recoverBlenderState(meta.blender);
+    room.browser = browserState(meta.browser, true);
     room.artifactHistory = meta.artifactHistory;
     room.artifactManifest = meta.artifactManifest;
     room.aiRuns = meta.aiRuns || room.versions.flatMap((version: StoredVersion) => version.aiRun ? [version.aiRun] : []);
@@ -571,6 +573,7 @@ export class RoomManager {
     room.documentArtifacts = snapshotDocuments(meta || {}, room.id);
     room.blenderArtifacts = snapshotBlender(meta || {}, room.id);
     room.blender = recoverBlenderState(meta?.blender);
+    room.browser = browserState(meta?.browser, true);
     room.artifactHistory = meta?.artifactHistory;
     room.artifactManifest = meta?.artifactManifest;
     room.aiRuns = meta?.aiRuns || [];
@@ -643,7 +646,7 @@ export class RoomManager {
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, documentArtifacts: room.documentArtifacts || [], blenderArtifacts: room.blenderArtifacts || [], blender: room.blender, artifactContractVersion: 3, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, documentArtifacts: room.documentArtifacts || [], blenderArtifacts: room.blenderArtifacts || [], blender: room.blender, browser: room.browser, artifactContractVersion: 4, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
@@ -2374,6 +2377,16 @@ export class RoomManager {
       this.broadcastState(room);
       return false;
     } finally { if (room.buildController === controller) room.buildController = undefined; }
+  }
+  async mutateBrowser<T>(room: Room, actorId: string, operation: (state: import('../shared/browser-session.js').BrowserState) => T, authorize: () => Promise<void>): Promise<T> {
+    const mutation = (room.browserMutation || Promise.resolve()).catch(() => undefined).then(async () => {
+      await room.intentCommit?.done; await authorize(); this.assertOwned(room);
+      const prior=structuredClone(room.browser), state=browserState(room.browser),result=operation(state);room.browser=state;
+      try { if(await this.save(room,'browser.command_recorded',actorId,'user')===false)throw new Error('Browser command persistence is uncertain. Reopen and reconcile; do not replay.');await authorize();this.assertOwned(room); }
+      catch(error){room.browser=prior;if(this.config.durableStore)this.loseOwnership(room.id);throw error;}
+      return result;
+    });
+    room.browserMutation=mutation;return mutation;
   }
   private async mutateBlender<T>(room: Room, actorId: string, operation: (state: BlenderState) => T, authorize?: () => Promise<void>): Promise<T> {
     const previous = room.blenderMutation || Promise.resolve();

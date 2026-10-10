@@ -150,7 +150,7 @@ test('promotion hides pending documents, failure rolls back, and interrupted tas
     await f.submit('alice', 'Update document "Brief" with a section "Next steps".'); await f.build();
     assert.equal(f.room.status, 'Updated'); const completedCalls = f.calls.length; await f.reopen();
     assert.equal(f.room.status, 'Updated'); assert.equal(f.calls.length, completedCalls);
-    assert.throws(() => snapshotDocuments({ artifactContractVersion: 4 }, f.room.id), ArtifactUnavailableError);
+    assert.throws(() => snapshotDocuments({ artifactContractVersion: 5 }, f.room.id), ArtifactUnavailableError);
     assert.throws(() => snapshotDocuments({ documentArtifacts: prior }, f.room.id), ArtifactUnavailableError);
     assert.deepEqual(snapshotDocuments({}, f.room.id), []);
   } finally { release?.(); await f.close(); }
@@ -191,7 +191,7 @@ test('private schema v2 document bodies survive empty-cache restoration and revo
     await f.submit('alice', 'Update document "Private brief" with a section "Risks".'); await f.build();
     const document = f.room.documentArtifacts![0], v1 = document.versions[0];
     const snapshot = storage.snapshots.get(projectId)!.harness_state;
-    assert.equal(snapshot.artifactSchemaVersion, 3); assert.equal(snapshot.documentArtifacts.length, 1); assert.equal(snapshot.artifactBodies, undefined);
+    assert.equal(snapshot.artifactSchemaVersion, 4); assert.equal(snapshot.documentArtifacts.length, 1); assert.equal(snapshot.artifactBodies, undefined);
     validateDocuments(snapshot.documentArtifacts, projectId);
     assert.throws(() => validateDocuments(snapshot.documentArtifacts, randomUUID()), ArtifactUnavailableError);
     assert.throws(() => restoreDocument(documentBytes(randomUUID(), document.id, 1, '# Wrong room'), v1), ArtifactUnavailableError);

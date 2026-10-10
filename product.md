@@ -4,6 +4,14 @@
 
 This file owns accepted behavior and requested targets. It is not implementation proof; statuses and evidence belong in the [checklist](docs/harness/checklist.md). Updated 2026-10-10 through Canvas → Artifacts source expansion; other accepted human product decisions are preserved.
 
+## Shared browser sessions — first boundary (2026-10-11)
+
+Artifacts provides a real 960×640 isolated browser viewport with click, bounded typing, selected keys, scrolling and same-origin navigation. First supported runtime is pinned Windows x64 headless Chromium 154.0.8037.92. An operator approves exact website origins; the connection owner names observers/controllers. Membership alone grants no screen, cookies or input. New/private-login sessions are owner-only; explicit owner sharing authorizes the granted participants to see the resulting authenticated screen. Cookies stay only in the disposable profile. One controller/epochs and durable hashed input receipts prevent stale/replayed actions. No general model browser automation is enabled; website instructions cannot grant tools.
+
+Maximum ten-minute session, 30-second viewport-transport idle bound, 60 CPU seconds, one process/512 MiB, 16 MiB monitored profile and bounded protocol/network output. Native network is denied; trusted same-origin request interception permits bounded GET/HEAD, plus one owner-private login POST following an explicit click/Enter. Private/other-origin destinations, native sockets, arbitrary CDP and whole-desktop capture are unavailable. This is a constrained website adapter, not universal browser compatibility.
+
+Pause/cancel/disconnect closes the profile; explicit owner resume of an unexpired paused session creates a fresh private browser without cookies or action replay. Recorded uncertain inputs are never resubmitted automatically. Owners explicitly publish validated UTF-8 .txt/.md downloads as immutable private project artifacts; project readers retrieve saved files independently of screen grants. Other download formats are unavailable. [Packet](docs/harness/shared-browser-sessions.md) distinguishes local evidence from hosted acceptance. This supersedes browser-view/input-unavailable guidance only for these authenticated manual controls. Interactive Blender and generated-app preview deployment are separate gated milestones.
+
 ## Mission, users and scope
 
 Help people direct one durable workflow together: contribute briefs and evidence, submit steering, inspect tasks/activity, resolve decisions and share versioned artifacts. Documents, code and previews are workflow artifacts; model conversations are replaceable. Small product teams and agencies prototyping with clients remain an unvalidated market hypothesis.

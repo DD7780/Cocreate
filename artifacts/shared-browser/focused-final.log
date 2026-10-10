@@ -1,0 +1,32 @@
+✔ empty cache restores compiled preview, current checkpoint, old version and receipts without inference (5746.3222ms)
+✔ upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies (265.9656ms)
+✔ missing/corrupt stored bodies are explicit failures, distinct from an empty project (286.9242ms)
+✔ private bucket and project-bound artifact identity fail closed; no public URL is created (70.807ms)
+✔ authenticated lazy historical reads reject revoked users, including revocation during download (864.8307ms)
+✔ an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact (6861.9506ms)
+✔ lease loss after private body upload cannot promote or start another physical attempt (9273.459ms)
+✔ synchronous publication failure clears the pending gate and preserves the previous product (9760.0777ms)
+✔ legacy inline checkpoint publication is verified and malformed metadata fails explicitly (147.3408ms)
+✔ new promotion after a retained-product rollback never overwrites an archived version identity (6868.4601ms)
+✔ pairing is authenticated capability, expiring/single-use and locally approved; device revocation and session grants are distinct (5.1778ms)
+✔ one mutable controller fences stale epochs/concurrent commands, waits for cleanup before handoff, and recovers without dispatch (1.9519ms)
+✔ structured scenes deny scripts, paths, network, nonfinite values, excessive geometry and unsupported routing (3.8195ms)
+✔ HTTP device/session authority, serialized handoff, replay and restart retain no automatic execution (537.6385ms)
+✔ caller-only document submission executes, versions independently, reloads and downloads without navigation inference (5892.2742ms)
+✔ document failure retains published content and shared ledger keeps unknown usage honest (2558.0896ms)
+✔ ambiguous and unsupported outputs clarify without builder dispatch; hostile Markdown is inert (491.6302ms)
+✔ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (796.2321ms)
+✔ explicit private input versions are frozen as evidence, not accepted authority or cross-artifact conflicts (528.8414ms)
+✔ private schema v2 document bodies survive empty-cache restoration and revoke during read (1997.4708ms)
+✔ bounded browser inputs and broker reject scripts, paths, private address space and unchecked destinations (7.5594ms)
+✔ shared browser restart turns pending outcomes unknown and never restores cookies or input payloads (2.2192ms)
+✔ new shared-session native boundary denies direct network and unrelated files, survives beyond acceptance-tool wall bound and removes its process (24488.8804ms)
+✔ two project participants use real authenticated view/input, private login, handoff, no replay and saved private downloads (3733.4611ms)
+ℹ tests 24
+ℹ suites 0
+ℹ pass 24
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 88376.3728

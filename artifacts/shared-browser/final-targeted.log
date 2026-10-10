@@ -1,0 +1,12 @@
+✔ bounded browser inputs and broker reject scripts, paths, private address space and unchecked destinations (17.1528ms)
+✔ shared browser restart turns pending outcomes unknown and never restores cookies or input payloads (23.8791ms)
+✔ schema v4 browser files survive private SDK cold restore and reject corrupt or cross-project descriptors (448.2778ms)
+✔ two project participants use real authenticated view/input, private login, handoff, no replay and saved private downloads (8951.4801ms)
+ℹ tests 4
+ℹ suites 0
+ℹ pass 4
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 12203.1569

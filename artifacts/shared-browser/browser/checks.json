@@ -1,0 +1,16 @@
+{
+  "verifiedAt": "2026-10-10T20:08:52.004Z",
+  "scope": "Two independent local app browser profiles; controlled website in actual Windows AppContainer shared browser; not hosted acceptance.",
+  "checks": [
+    "Independent participant sees no owner login screen before explicit sharing.",
+    "Actual dedicated browser frame appears inside Artifacts; no iframe or desktop capture.",
+    "Owner explicitly enables the granted teammate’s authenticated viewport.",
+    "Explicit handoff advances authority; real pointer input comes only from the active controller.",
+    "Viewer selection remains participant-local and does not cancel the session.",
+    "Pause closes the isolated cookie profile and does not repeat inference or input.",
+    "Explicit owner resume creates a fresh private browser and never replays prior commands.",
+    "Canvas/Workflow layout and physical usage remain unchanged; no model calls.",
+    "Browser viewer controls fit a 390-pixel viewport."
+  ],
+  "physicalCalls": 0
+}

@@ -1,5 +1,9 @@
 # Harness decision log
 
+## D-0061 — Explicitly shared isolated browser, private login and no replay (2026-10-11)
+
+Implement manual shared browser view/input inside existing Artifacts, first Windows x64/pinned Chromium with capability-free native network and a trusted bounded same-origin broker. Connection owners explicitly grant observers/controllers and authenticated-screen sharing; membership is never screen/cookie authority. Private login returns control to the owner and hides screens. Hash-only durable command receipts precede dispatch; one controller/epochs, pause/destroy/fresh resume, expiry and transport loss forbid automatic replay. Publish only owner-approved validated text downloads as separate private project artifacts. No model browser automation or raw CDP is enabled. This supersedes earlier browser viewing/input exclusions only at this narrow boundary. Current snapshots are v4, superseding D-0060's v3 writer while retaining v1/v2/v3 reads. D-0060 background Blender execution and its dated verification remain unchanged. Interactive Blender and preview deployments require their own packets/gates.
+
 ## D-0060 — Locally approved, bounded connected Blender (2026-10-11)
 
 The explicit connected-Blender request supersedes D-0059's Blender-unavailable direction for one verified Windows x64/official portable Blender 4.5.14 milestone. Use trusted structured primitives/materials/camera/lights, never arbitrary generated scripts or imported scenes. Verify capability-free AppContainer/Job Object limits and real output before enabling connection; fail closed with no host fallback. The local owner selects executable, separate dedicated workspace, allowed operations and named observation/control grants. Project membership alone grants only saved results.

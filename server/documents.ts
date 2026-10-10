@@ -76,9 +76,9 @@ export function validateDocuments(value: unknown, projectId: string): DocumentAr
   return value;
 }
 export function snapshotDocuments(snapshot: Record<string, unknown>, projectId: string) {
-  if (snapshot.artifactContractVersion !== undefined && snapshot.artifactContractVersion !== 2 && snapshot.artifactContractVersion !== 3)
+  if (snapshot.artifactContractVersion !== undefined && (typeof snapshot.artifactContractVersion !== 'number' || ![2,3,4].includes(snapshot.artifactContractVersion)))
     throw new ArtifactUnavailableError('corrupt');
-  if (snapshot.documentArtifacts !== undefined && (!Array.isArray(snapshot.documentArtifacts) || snapshot.documentArtifacts.length > 0) && snapshot.artifactContractVersion !== 2 && snapshot.artifactContractVersion !== 3)
+  if (snapshot.documentArtifacts !== undefined && (!Array.isArray(snapshot.documentArtifacts) || snapshot.documentArtifacts.length > 0) && ![2,3,4].includes(snapshot.artifactContractVersion as number))
     throw new ArtifactUnavailableError('corrupt');
   return validateDocuments(snapshot.documentArtifacts || [], projectId);
 }
