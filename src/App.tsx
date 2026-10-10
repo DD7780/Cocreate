@@ -1,3 +1,4 @@
+import { Artifacts } from './Artifacts';
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
 import { api } from "./api";
@@ -272,11 +273,11 @@ const statusCopy: { [K in WorkflowStatus]: string } = {
   Updated: "Product updated",
   Error: "Needs attention",
 };
-function Product({ state, token }: { state: RoomView; token: string }) {
+function Product({ state, token, versionId }: { state: RoomView; token: string; versionId?: number }) {
   const [frameKey, setFrameKey] = useState(0),
     [runtimeError, setRuntimeError] = useState("");
   const frame = useRef<HTMLIFrameElement>(null),
-    v = state.latestVersion,
+    v = versionId ?? state.latestVersion,
     storageKey = `cocreate-product-storage-${state.roomId}`,
     previewUrl = v
       ? `/preview/${state.roomId}/${v}?token=${encodeURIComponent(token)}`
@@ -333,7 +334,7 @@ function Product({ state, token }: { state: RoomView; token: string }) {
             <div>
               <span className="live-dot" />
               <strong>Shared product v{v}</strong>
-              <span>{state.versions.at(-1)?.summary}</span>
+              <span>{state.versions.find(item => item.id === v)?.summary}</span>
             </div>
             <div>
               <button
@@ -626,7 +627,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setSplit(!split);
         setTab('document');
     }}><PanelLeftClose />Split view</button><span className="build-shortcut-hint">{shortcut === 'disabled' ? 'No macOS shortcut' : shortcutLabel(shortcut)}</span><button className="primary" disabled={submitting} aria-keyshortcuts={ariaShortcut(shortcut)} title={`Build my changes${shortcut === 'disabled' ? '' : ` (${shortcutLabel(shortcut)})`}`} onMouseDown={event => event.preventDefault()} onClick={() => void submitChanges()}>{submitting ? <LoaderCircle className="spin"/> : <WandSparkles />}Build my changes</button></div></div>
-    <BuildProgress progress={state.buildProgress}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
+    <BuildProgress progress={state.buildProgress} documentsAvailable={state.artifacts?.some(item => item.kind === 'markdown')}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
     {notice && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
         if (tokenOverride)
             location.href = `/login?returnTo=${encodeURIComponent(`/projects/${id}`)}`;
@@ -644,7 +645,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     })}` : 'Not saved yet'}</span></div><EditorContent editor={editor}/></div></div>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
         setTab('workflow');
         requestAnimationFrame(() => document.getElementById('workflow-usage')?.scrollIntoView());
-    }}/>}</div>}{(tab === 'product' || split) && <div className="artifacts-layout"><Product state={state} token={token}/>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
+    }}/>}</div>}{(tab === 'product' || split) && <div className="artifacts-layout"><Artifacts state={state} token={token} participantId={me?.id || ""} application={versionId => <Product state={state} token={token} versionId={versionId}/>}/>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
         setTab('workflow');
         requestAnimationFrame(() => document.getElementById('workflow-usage')?.scrollIntoView());
     }}/>}</div>}</section>

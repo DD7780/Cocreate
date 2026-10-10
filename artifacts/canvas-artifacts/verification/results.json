@@ -1,0 +1,55 @@
+{
+  "scope": "Windows local controlled providers; not hosted or Linux acceptance",
+  "focused": {
+    "passed": 53,
+    "failed": 0,
+    "skipped": 0
+  },
+  "targetedRerun": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "overlapsFocused": true
+  },
+  "browser": {
+    "checks": 9,
+    "physicalCalls": 6,
+    "reportedTokens": 180,
+    "profiles": 2
+  },
+  "wholeSuiteEarlier": {
+    "tests": 250,
+    "passed": 224,
+    "failed": 18,
+    "skipped": 8,
+    "failures": [
+      "\u2716 submitted builds ignore typing alone, preserve idempotency, and expose token usage (6227.9417ms)",
+      "\u2716 continuous captures do not replenish the executor ceiling between collected candidates (15904.7714ms)",
+      "\u2716 attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue (15439.0043ms)",
+      "\u2716 compiling controls without behavior fail; retained feature regressions are checked on every candidate (23041.3637ms)",
+      "\u2716 actual verification browser denies a private host file and loopback network and removes its child/profile (2516.1937ms)",
+      "\u2716 browser CPU remains inside the isolated job bounds (15394.6663ms)",
+      "\u2716 browser protocol output remains inside the isolated job bounds (3330.4997ms)",
+      "\u2716 cancellation and wall limits terminate browser execution and leave no child jobs (2040.9371ms)",
+      "\u2716 ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (4939.0678ms)",
+      "\u2716 OS boundary without Node permissions denies an existing private host file, writes and live loopback network (633.7649ms)",
+      "\u2716 restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (655.9279ms)",
+      "\u2716 candidate imports cannot read absolute files, traverse workspaces or download packages/styles (2020.9124ms)",
+      "\u2716 wall timeout terminates a running child and cleans its private input (707.2382ms)",
+      "\u2716 cancellation waits for real child termination and cleanup; pre-abort starts nothing (214.7988ms)",
+      "\u2716 memory exhaustion cannot escape the OS bound and leaves no child work (577.7018ms)",
+      "\u2716 unavailable isolation fails explicitly and cannot fall back to host compilation (0.9983ms)",
+      "\u2716 CPU bound stops a busy child before the longer wall deadline (10673.6133ms)",
+      "\u2716 untrusted output is bounded before it reaches application memory or artifacts (388.8761ms)"
+    ],
+    "supersededTimingOnly": "Affected submission/collection tests pass in final focused run after fixture deadlines were aligned with existing 20-second compiler allowance. Native Windows EPERM cleanup remains unresolved; final focused pass does not supersede whole suite."
+  },
+  "build": "Local-auth and Supabase-auth builds passed; existing large chunk warning",
+  "boundaries": {
+    "files": 158,
+    "violations": 0,
+    "jevCalls": 0
+  },
+  "graph": "AST update, 2233 nodes, 5422 edges, 126 communities; SQL parser absent, no semantic inference",
+  "sourceFingerprint": "58f1a8aa51608cc2896e95c00e1a60bc7376ab8a140d36430ceea30aea9b707d"
+}

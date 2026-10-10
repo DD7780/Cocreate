@@ -97,7 +97,7 @@ export function checkpointArtifactBytes(projectId: string, checkpoint: RecoveryC
 export function versionMetadata(version: ArtifactVersion): ArchivedVersion {
     if (!version.artifactRef)
         throw new ArtifactUnavailableError('corrupt');
-    return { id: version.id, specificationRevision: version.specificationRevision, createdAt: version.createdAt, summary: version.summary, fileCount: version.fileCount,
+    return { provenance: version.provenance, contentRef: version.contentRef, contentHash: version.contentHash, byteLength: version.byteLength, verificationStatus: version.verificationStatus, id: version.id, specificationRevision: version.specificationRevision, createdAt: version.createdAt, summary: version.summary, fileCount: version.fileCount,
         conflicts: version.conflicts, aiRun: version.aiRun, artifactRef: version.artifactRef, downloadable: !!version.files?.length };
 }
 export function versionStub(version: Record<string, unknown>) {
@@ -158,9 +158,13 @@ export function captureArtifacts(room: {
     versions: ArtifactVersion[];
     recoveryCheckpoint?: RecoveryCheckpoint;
     artifactHistory?: ArchivedVersion[];
+    documentArtifacts?: import('../shared/types.js').DocumentArtifact[];
 }, store: EventStore) {
     const history = new Map((room.artifactHistory || []).map(version => [version.id, version]));
     const refs: string[] = [];
+    for (const artifact of room.documentArtifacts || [])
+        for (const version of artifact.versions)
+            if (version === artifact.versions.at(-1) || store.readArtifact(version.contentRef)) refs.push(version.contentRef);
     for (const version of room.versions) {
         const bytes = versionArtifactBytes(room.id, version);
         version.artifactRef = store.writeArtifact(bytes, 'application/vnd.cocreate.product+json').ref;

@@ -1,6 +1,19 @@
 # Harness status and outstanding work
 
-Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](beta-access-requests.md).
+## Canvas → Artifacts expansion — 2026-10-10
+
+- [x] Bounded change packet, graph-first source inspection and D-0059 accepted scope; no new scheduler, hosting or SQL.
+- [x] Named Markdown execution, independently versioned descriptors and private immutable schema-v2 snapshots with legacy app compatibility.
+- [x] Caller-only capture/replay, separate artifact requirement/conflict scopes, frozen accepted/model/input/budget references and coordinator-only promotion.
+- [x] Last success retained on generation/commit failure; interrupted restart without paid replay; explicit accepted correction stays in its selected document scope.
+- [x] Safe renderer, source/download/history, private project/revocation checks and participant-local device selections.
+- [x] Independent browser acceptance: nine checks, six synthetic calls, 180 reported tokens, including unchanged Workflow physical totals and mobile controls. [Evidence](../../artifacts/canvas-artifacts/browser/checks.json).
+- [x] Runtime prompts and canonical product/architecture/API/instructions/README/context updated; factual accuracy and future capability limits explicit.
+- [x] Final focused regression/build/boundary results and final AST refresh recorded in [change packet](canvas-artifacts.md).
+- [ ] Full platform regression acceptance: retain local Windows timing/EPERM cleanup failures separately; focused passes do not erase them. Linux native/Postgres CI and hosted account/Storage/container replacement remain separately scoped.
+- [x] Standing commit/push authorization confirmed for `codex/canvas-artifacts`; exact published revision reported in the final handoff. No production deployment or hosted migration.
+
+**Prior hosted release (2026-10-09):** Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](beta-access-requests.md).
 
 ## Beta request and approval system — 2026-10-09
 

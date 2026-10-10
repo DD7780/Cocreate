@@ -1,5 +1,6 @@
 import type { InterpretationIntent, Requirement, SharedRequirement } from '../shared/types.js';
 import type { AgentChange } from './generator.js';
+import { submittedOutput } from './document-intent.js';
 
 export type AcceptedIntentContext = Pick<SharedRequirement, 'id' | 'revision' | 'category' | 'description' | 'authority' | 'sources' | 'status'>;
 const normalize = (value: string) => value.replace(/\s+/g, ' ').trim();
@@ -52,6 +53,11 @@ export function validateSubmittedInterpretation(
     intent.contextReferences = requested.map(item => ({requirementId:item.id, revision:item.revision,
       participantIds:[...new Set(item.sources.map(source => source.participantId))], authority:'accepted_context'}));
     if (carry && !supported && !reason) return {...carry, contextReferences:intent.contextReferences};
+    if (!reason && (intent.classification === 'explicit_request' || intent.classification === 'decision')) {
+      const routed = submittedOutput(passage);
+      intent.output = routed.output;
+      reason = routed.reason;
+    }
     intent.validation = reason ? {status:'needs_clarification', reason} : {status:'verified'};
     if (reason) { intent.classification = 'ambiguity'; intent.affectedRequirementIds = []; intent.rationale = reason; }
     return intent;

@@ -1,0 +1,673 @@
+
+> cocreate@1.0.0 test C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice
+> cross-env COCREATE_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts
+
+✔ calculates uncached, cached, and cache-write charges without assuming cache hits (1.3697ms)
+✔ reasoning usage is informational and never billed twice (0.1668ms)
+✔ aggregates multiple interpreters and one shared builder exactly once (0.3915ms)
+✔ repairs and failures remain in totals while missing usage remains unknown (0.246ms)
+✔ applies long-context tiers and preserves pricing-version changes per call (10.1245ms)
+✔ estimates stay distinct from the user spending limit (1.1813ms)
+✔ effectiveness requires comparable samples and includes failed repairs in cost (0.8882ms)
+✔ Developer / Medium resolves one validated connection and exposes honest rates (2.2388ms)
+✔ Developer effort levels expose distinct bounded executor output allowances (6.0806ms)
+✔ complexity is deterministic and does not spend a model call (1.0449ms)
+✔ evaluation requires repeated task evidence and counts repairs in total cost (0.5819ms)
+✔ Developer routing respects the remaining budget (0.9541ms)
+✔ all three modes are explicit and unimplemented workflows remain unavailable (1.8531ms)
+✔ discovery without passed capability checks is unavailable and actionable (1.745ms)
+✔ applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch (81.2135ms)
+✔ legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history (163.8779ms)
+✔ manual assignments remain Custom after migration and activation (31.3892ms)
+✔ empty cache restores compiled preview, current checkpoint, old version and receipts without inference (6467.9475ms)
+✔ upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies (284.7115ms)
+✔ missing/corrupt stored bodies are explicit failures, distinct from an empty project (296.9057ms)
+✔ private bucket and project-bound artifact identity fail closed; no public URL is created (133.0816ms)
+✔ authenticated lazy historical reads reject revoked users, including revocation during download (997.4367ms)
+✔ an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact (10004.9282ms)
+✔ lease loss after private body upload cannot promote or start another physical attempt (7739.0927ms)
+✔ synchronous publication failure clears the pending gate and preserves the previous product (7898.5487ms)
+✔ legacy inline checkpoint publication is verified and malformed metadata fails explicitly (165.6007ms)
+✔ new promotion after a retained-product rollback never overwrites an archived version identity (8868.4098ms)
+✔ personal and builder roles can use different encrypted provider connections (101.8539ms)
+✔ unverified models cannot be activated for an agent layer (59.0763ms)
+✔ known providers normalize a pasted operation URL to their official API base (56.2613ms)
+✔ legacy placeholder previews are not exposed as the current generated product (49.2093ms)
+✔ canvas effort changes Custom allowances without changing manual assignments (87.354ms)
+✔ session refresh boundary refreshes missing and near-expiry access tokens (1.2992ms)
+{"phase":"controlled-first-build","personalCalls":1,"builderCalls":1,"status":"Building","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+✖ submitted builds ignore typing alone, preserve idempotency, and expose token usage (6227.9417ms)
+✔ anonymous registration commits before success, retries dedupe, and restart preserves consent and limits (478.3709ms)
+✔ failed durable writes cannot show registration success; rate window expiry allows safe retry (87.7218ms)
+✔ registration requires valid email and explicit consent, and forwarded rate identities require Worker proof (0.9208ms)
+✔ approval is fresh private authority, owner retains access, and approval grants no foreign membership (25.4487ms)
+✔ pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval (1.9632ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"19268dea-769c-4258-b5b4-bfaace27e688"}
+{"event":"collaboration.connected","connectionId":"e1800c18-ecff-4d1a-99a7-78254fa1d748","correlationId":"092bdb4d-1afb-43ee-a2ba-ccc22a23c27f"}
+{"event":"collaboration.disconnected","connectionId":"e1800c18-ecff-4d1a-99a7-78254fa1d748","code":4403}
+{"event":"collaboration.connected","connectionId":"71cba669-738b-475d-b43f-b22442e99cf3","correlationId":"08772a9b-8d5c-43bf-a014-b16a9f33beba"}
+{"event":"collaboration.disconnected","connectionId":"71cba669-738b-475d-b43f-b22442e99cf3","code":4403}
+✔ unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery (446.4048ms)
+Embedded PostgreSQL: transaction semantics; native contention is a separate CI check
+✔ beta request SQL enforces identity, privacy, pending uniqueness, atomic decisions and revocation (7021.453ms)
+✔ durable email leases freeze payload, fence stale workers, bound retries and stop before idempotency expiry (3982.5759ms)
+✔ authenticated requests and review links preserve server identity, CSRF, reviewer and private project boundaries (7104.2815ms)
+✔ reviewer and requester emails are durable, escaped and retried with an identical provider key and payload (4212.0569ms)
+✔ missing email configuration never dispatches; invalid origins cannot produce review links (6.863ms)
+✔ the durable scheduler wakes only due email work and exposes no public delivery endpoint (5.7763ms)
+✔ later captured submissions cannot starve a fixed accepted candidate and drain in capture order (15175.0884ms)
+✔ collection deadline closes admission despite an interpretation backlog (6235.6595ms)
+✔ pending captured steering survives actual local restart without inference or replay spending (683.7137ms)
+✔ explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance (7000.1549ms)
+✔ current membership is rechecked before deferred interpretation dispatch (6015.7645ms)
+✖ continuous captures do not replenish the executor ceiling between collected candidates (15904.7714ms)
+✔ sustained captures make revision-labelled progress each cycle without a quiet global queue (24039.5695ms)
+✖ attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue (15439.0043ms)
+✔ Alt+X is exact and ignores repeats, composition, AltGraph and extra modifiers (1.0407ms)
+✔ legacy preferences cannot override the fixed platform shortcut (0.2999ms)
+✔ builder schema and planning repair missing or invalid file operations before tool execution (111.9887ms)
+✔ builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry (19.9339ms)
+{"policyVersion":"list-behavior-v1","specificationRevision":3,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf","checkedAt":"2026-10-10T11:42:06.022Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."},{"kind":"favorites","version":"list-behavior-v1","implemented":true,"passed":true,"message":"The favorite state toggles and restores without removing items."},{"kind":"sort","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Sorting changes list order into alphabetical order without losing items."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_980895587501","requirementRevision":1,"criteriaHash":"242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f","criteria":[{"criterionHash":"8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c","checks":["favorites"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_d6b0094d5067","requirementRevision":1,"criteriaHash":"6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df","criteria":[{"criterionHash":"dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875","checks":["sort"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"}
+✔ real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate (9665.8881ms)
+✖ compiling controls without behavior fail; retained feature regressions are checked on every candidate (23041.3637ms)
+✔ unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks (13788.3962ms)
+✖ actual verification browser denies a private host file and loopback network and removes its child/profile (2516.1937ms)
+✖ browser CPU remains inside the isolated job bounds (15394.6663ms)
+Resource diagnostic: protocol output Error: EPERM, Permission denied: \\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077 '\\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077'
+    at Object.rmSync (node:fs:1283:18)
+    at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:186:8)
+    at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at async waitForActual (node:assert:646:5)
+    at async strict.rejects (node:assert:769:25)
+    at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+    at async Test.run (node:internal/test_runner/test:1389:7)
+    at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+  errno: 1,
+  code: 'EPERM',
+  path: '\\\\?\\C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\isolation\\jobs\\1a15648d-d43f-45a5-aa85-35cb2681d077',
+  syscall: 'rm'
+}
+✖ browser protocol output remains inside the isolated job bounds (3330.4997ms)
+✖ cancellation and wall limits terminate browser execution and leave no child jobs (2040.9371ms)
+✔ caller-only document submission executes, versions independently, reloads and downloads without navigation inference (12396.158ms)
+✔ document failure retains published content and shared ledger keeps unknown usage honest (2402.6083ms)
+✔ ambiguous and unsupported outputs clarify without builder dispatch; hostile Markdown is inert (645.4266ms)
+✔ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (1302.2996ms)
+✔ explicit private input versions are frozen as evidence, not accepted authority or cross-artifact conflicts (1347.783ms)
+✔ private schema v2 document bodies survive empty-cache restoration and revoke during read (3219.9314ms)
+✔ the pre-launch deployment binds hosted auth and callbacks to the custom domain (21.2805ms)
+✔ legacy links preserve their destination without allowing host escape or protected ingress (8.2647ms)
+✔ www redirects exact paths and queries to canonical HTTPS without proxying an alternate application (1.0892ms)
+✔ the application exposes a container readiness endpoint (114.2327ms)
+✔ unknown API paths return JSON errors while the existing auth callback reaches the SPA (118.8178ms)
+✔ the Cloudflare container uses the native WebSocket-aware proxy (3.2584ms)
+✔ Worker gates HTTP and socket ingress until the running image matches the prepared source (12.9516ms)
+✔ direct application startup refuses unavailable isolation before binding a server (2754.142ms)
+✔ server-signed attribution cannot be changed by the client (12.7767ms)
+✔ independent concurrent Yjs edits merge without lost text (9.6252ms)
+✔ only the newest orchestration revision can be promoted (0.1745ms)
+✔ generation errors retain the last success and block unsafe code (0.6637ms)
+✔ custom provider URLs require HTTPS except for local testing (0.4711ms)
+✔ provider model discovery returns exact account model IDs (34.6128ms)
+✔ multi-file project compiles to an isolated React preview (5157.969ms)
+✔ audit follows the prepared isolated worker without hiding missing source imports (47.4608ms)
+✔ UI scope rejects backend authority, shared contracts and migrations (0.5579ms)
+✔ Vercel and direct TypeSafe reviews use separate endpoints and credentials without retries (26.109ms)
+✔ audit retains literal dynamic and type imports, ambient declarations and tooling roots (5.0584ms)
+✔ audit reports browser/server coupling and preserves uncertainty about nonliteral loads (0.965ms)
+✔ untrusted Jev output cannot introduce unknown options, invalid probabilities or a different model (2.3197ms)
+{"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"619c76c5-8140-497a-b6c4-2c37d7cbd7e3"}
+{"event":"collaboration.upgrade_rejected","category":"invalid_session","correlationId":"da5292ec-1bd5-441d-9811-120e2a79bc41"}
+{"event":"collaboration.upgrade_rejected","category":"missing_room","correlationId":"291ab0b5-170e-4298-af85-2299d5c2c498"}
+✔ collaboration upgrades expose safe authentication and room failures (347.3802ms)
+✔ conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity (463.4396ms)
+✔ workspace owner discovers account models and activates the shared connection (774.8387ms)
+✔ collaborators receive redacted connection status and cannot manage owner credentials (161.2264ms)
+✔ AI effort endpoint is owner-only and validates the requested level (143.3976ms)
+✔ owner effort mutation updates a connected Custom room without a provider call (116.678ms)
+✔ remote claims and renewals coalesce; timeout permanently fences a delayed renewal (37.0505ms)
+✔ closing during a claim releases the late epoch without reviving ownership (1.2201ms)
+✔ closing during renewal cannot validate an old worker; malformed epochs fail closed (1.0213ms)
+✔ loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations (192.2504ms)
+✔ hosted dispatch and document writes carry fences; stale SQL results invalidate the owner (6.1209ms)
+✔ promotion API rejects missing, changed and cancelled coordinator evidence before workspace writes (3014.4074ms)
+✔ event store orders events, redacts secrets, stores artifacts, and enforces run transitions (135.9245ms)
+✔ tool policy denies personal agents and unknown tools before execution (44.1545ms)
+✔ append-only snapshot artifacts reconstruct a missing derived workspace view (57.3977ms)
+✔ room restart reconstructs the last product and interrupts an in-flight run (163.8953ms)
+✔ legacy workspace migration makes a backup before importing state (51.0498ms)
+✔ durable workflow projection records task transitions and supports cursor recovery (63.435ms)
+✔ restart preserves a pending multi-option conflict group and resolver membership (132.9841ms)
+✖ ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (4939.0678ms)
+✖ OS boundary without Node permissions denies an existing private host file, writes and live loopback network (633.7649ms)
+✖ restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (655.9279ms)
+✖ candidate imports cannot read absolute files, traverse workspaces or download packages/styles (2020.9124ms)
+✖ wall timeout terminates a running child and cleans its private input (707.2382ms)
+✖ cancellation waits for real child termination and cleanup; pre-abort starts nothing (214.7988ms)
+✖ memory exhaustion cannot escape the OS bound and leaves no child work (577.7018ms)
+✖ unavailable isolation fails explicitly and cannot fall back to host compilation (0.9983ms)
+✖ CPU bound stops a busy child before the longer wall deadline (10673.6133ms)
+✖ untrusted output is bounded before it reaches application memory or artifacts (388.8761ms)
+{"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"89f82391-340c-4a1f-ae5c-46ff9ce4d455"}
+{"event":"collaboration.connected","connectionId":"c1c16719-5eb0-40cc-b6e5-73c3ad9e42f0","correlationId":"bd602afb-b525-4af9-a4ad-fe6cf001e610"}
+{"event":"collaboration.disconnected","connectionId":"c1c16719-5eb0-40cc-b6e5-73c3ad9e42f0","code":4403}
+✔ hosted reads, mutations and live delivery check current membership rather than a stale ticket role (237.7931ms)
+{"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"095767d0-a4d3-4391-9e2b-b379e756afb0"}
+✔ non-owner ingress retries without hydrating a second writer or bypassing membership (171.3893ms)
+{"event":"collaboration.connected","connectionId":"6bc822ba-8216-41d2-bb77-524fb78be0df","correlationId":"2c81a533-aa74-4d57-95d6-494e23ba1cb2"}
+{"event":"collaboration.connected","connectionId":"a820077f-2717-4779-a267-f234f5a1566b","correlationId":"82bd04f6-0753-4a41-875a-a534a48e463b"}
+{"event":"collaboration.connected","connectionId":"17b5888d-27dc-4eef-969f-67ed8b1a56c2","correlationId":"d359e28d-fa0a-4179-87ea-201c5abd4ada"}
+{"event":"collaboration.disconnected","connectionId":"17b5888d-27dc-4eef-969f-67ed8b1a56c2","code":1006}
+{"event":"collaboration.disconnected","connectionId":"a820077f-2717-4779-a267-f234f5a1566b","code":1006}
+{"event":"collaboration.disconnected","connectionId":"6bc822ba-8216-41d2-bb77-524fb78be0df","code":1006}
+✔ three collaborators create and maintain a runnable recipe app (22872.3996ms)
+✔ a clear restaurant website assignment is accepted even when a model labels the batch as proposal (24.3789ms)
+✔ classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation (3.2251ms)
+✔ mixed contribution keeps request, proposal, and question separate (53.2638ms)
+✔ missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates (3.4769ms)
+✔ targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions (420.7572ms)
+✔ coauthor correction preserves teammate wording and exact sources, audit and previous revision (225.1403ms)
+✔ withdrawal removes only caller support and survives restart; same request replays before stale checks (269.7058ms)
+✔ unauthorized, stale and forged targets cannot mutate accepted intent (264.4829ms)
+✔ concurrent stale corrections serialize and only one current revision commits (267.1322ms)
+✔ ambiguous current intent can be corrected explicitly as proposal, question or request without inference (233.7202ms)
+✔ correction of one current intent preserves other entries and their independently withdrawable attribution (246.7855ms)
+✔ accepted change aborts an old candidate but proposal-only change leaves independent work running (219.5767ms)
+✔ canonical intent remains invisible until remote acknowledgement; lost reply recovers one receipt (316.5054ms)
+✔ provider provenance guard rejects invented passages and consequential pronouns; exact ordinary requests remain accepted (1.7531ms)
+✔ accepted context is attributed; named pronoun resolves with unique evidence, model IDs alone do not (0.7674ms)
+✔ model cannot forge human authority, decision references, or withdraw teammates via deleted source (0.5829ms)
+✔ affected model IDs do not overwrite a teammate or silently withdraw the caller (0.5598ms)
+✔ unverified/proposed matching descriptions never confer accepted teammate attribution (0.3364ms)
+✔ queued intent commands recheck current membership before any durable mutation (171.1396ms)
+✔ a provider cannot quote only the color to conceal an unresolved source target or invent contextual attribution (2.3856ms)
+✔ typed insertion fragments and shorter replacements retain authenticated request text; deletion-only text grants no new intent (1.9272ms)
+✔ serial acceptance and deferred capture order survive SQLite restart without replay spending (1395.6069ms)
+✔ a failed authority check does not poison capture order or spend the later caller allowance twice (529.2413ms)
+✔ replaying the same invitation request keeps its link and does not send twice after provider acceptance (284.6088ms)
+✔ additive invitation migration retains prior hashes and membership roles (47.6715ms)
+﹣ Linux browser cold starts execute JavaScript repeatedly and clean every descendant (15.0286ms) # SKIP
+﹣ Linux CPU accounting includes busy descendants in the same finite job budget (0.6585ms) # SKIP
+﹣ Linux browser file-size ceiling rejects growth and cleans the bounded job (0.2959ms) # SKIP
+﹣ Linux browser file-descriptor ceiling rejects growth and cleans the bounded job (0.325ms) # SKIP
+﹣ Linux bootstrap drops authority and attaches a stopped trusted child before execution (0.2128ms) # SKIP
+﹣ Linux PID ceiling denies fork growth and whole-group kill removes descendants (0.528ms) # SKIP
+﹣ real Linux browser physical-memory exhaustion kills its job while the application survives (0.2287ms) # SKIP
+﹣ missing Linux delegation fails closed and removes the candidate profile (0.1791ms) # SKIP
+✔ drafts recover after a reload and remain scoped to the contributor and room (81.074ms)
+✔ storage failure is visible and never claims a local save (79.5167ms)
+✔ corrupt cached updates do not mutate the live document (38.5173ms)
+✔ two tabs preserve both CRDT updates and teardown stops writes (251.9804ms)
+✔ managed catalog is bounded, exact, and rejects forged builder IDs (9.6156ms)
+✔ qualification keeps a single successful fixture provisional (1.8168ms)
+✔ managed assignments remain historical and cannot dispatch (229.3179ms)
+✔ temporary OpenRouter setup validates without generation and saves no secret (289.2687ms)
+✔ temporary key lease expires and is lost after restart (1.1702ms)
+✔ explicit builder reaches the OpenRouter request; unauthorized editor cannot dispatch (576.6783ms)
+✔ failed accepted work can be retried explicitly without reinterpreting the document (205.7032ms)
+✔ physical provider usage survives room reload for token visibility (212.7272ms)
+✔ Current outcome of Step 01 scenario: simultaneous-slow (9626.4379ms)
+✔ Current outcome of Step 01 scenario: failed-interpreter (6269.3816ms)
+✔ Current outcome of Step 01 scenario: later-steering (7013.9251ms)
+✔ Current outcome of Step 01 scenario: continuous-arrivals (10960.2171ms)
+✔ Current outcome of Step 01 scenario: ambiguous-reference (261.4034ms)
+✔ Current outcome of Step 01 scenario: invented-passage (263.7683ms)
+✔ Current outcome of Step 01 scenario: incorrect-product (5805.2502ms)
+✔ Current outcome of Step 01 scenario: snapshot-body-gap (198.1218ms)
+✔ Current outcome of Step 01 scenario: projection-growth (283.353ms)
+✔ Current outcome of Step 01 scenario: isolation-policy (152.6641ms)
+✔ Current outcome of Step 01 scenario: restart-budget (175.5126ms)
+✔ project tickets are scoped and expire (7.0277ms)
+✔ hosted Supabase mode fails closed when the server secret is absent (0.5815ms)
+✔ server Supabase configuration rejects mismatched credentials and JWKS (0.5335ms)
+✔ public auth configuration is explicit and derives the Worker callback (2.0023ms)
+✔ Wrangler uses matching server and Vite build-time Supabase configuration (0.7294ms)
+✔ Google callback exchanges once, reports errors, and restores only local destinations (0.637ms)
+✔ Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect (12.7085ms)
+✔ auth source preserves Google and adds password, confirmation, and recovery flows (1.5855ms)
+✔ project names and invitation emails use canonical validation (0.4529ms)
+✔ transactional invitation email is truthful and idempotent at the provider boundary (42.4754ms)
+✔ email invitation migration binds recipients and enforces sharing permissions (26.0242ms)
+✔ invite tokens are hashed before persistence (0.3686ms)
+✔ migration enables RLS and keeps authoritative runtime writes server-only (26.1037ms)
+✔ delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored (20.5032ms)
+✔ retry delay is capped exponential backoff with bounded jitter (1.3253ms)
+✔ a receipt predating a deletion cannot mark the deleted draft saved (6.9475ms)
+✔ invalid sessions become actionable terminal errors without retrying (40.7661ms)
+✔ transient failures use one timer, stop after the cap, and never duplicate sockets (16.9329ms)
+✔ an edit made while disconnected is offered to the server after reconnect state-vector sync (22.8226ms)
+✔ a new connection can recover a lower authoritative cursor after uncommitted server events disappear (2.9174ms)
+✔ disconnect rejects an in-flight flush and destroy removes document listeners (2.8248ms)
+✔ burst edits share one transport update and explicit flush drains before acknowledgement (2.5563ms)
+✔ owner unavailability honors bounded retry hints, retains edits, and ends without inference (14.6293ms)
+✔ all provider adapters discover and generate through their native shapes (216.0533ms)
+✔ classified failures, validation, truncation, retry and cancellation are explicit (114.9037ms)
+✔ structured truncation uses one budgeted compact retry and preserves both usage records (29.933ms)
+✔ adapter metadata does not require fake Ollama credentials (0.4712ms)
+✔ nested OpenRouter provider errors expose the actionable upstream message (16.2282ms)
+✔ provider usage normalizes cached and included reasoning tokens without double counting (7.3556ms)
+✔ structured parsing locally repairs raw string newlines and trailing commas (11.4747ms)
+✔ an incomplete JSON envelope is treated as truncation and gets the bounded compact retry (18.9439ms)
+✔ physical request ledger records transport and structured repair calls separately (45.8024ms)
+✔ required behavior failure retains the verified product, records actionable evidence and needs explicit retry (24343.426ms)
+✔ unavailable verification browser fails before builder spending and never reuses legacy covered evidence (7178.9688ms)
+✔ CRDT attribution retains exact repeated-prefix insertions and excludes untouched teammates text (5.1768ms)
+✔ physical recovery calls and spending reservations cannot exceed their shared frozen bounds (152.8085ms)
+✔ output exhaustion becomes coherent smaller tasks, checkpoints before continuing, and never applies truncated JSON (32.8964ms)
+✔ a second output exhaustion stops a smaller task with actionable checkpoint evidence (63.0409ms)
+✔ coordinator leases serialize owners and fence expired workers after takeover (81.1248ms)
+✔ remote coordinator renewal cannot silently reacquire ownership for an old worker (2.0196ms)
+✔ remote saves commit in revision order and acknowledge the actual snapshot (153.0979ms)
+✔ failed cloud snapshots reject flushes and interrupted captured edits return to their author (124.6526ms)
+✔ context overflow is distinct from output exhaustion and does not trigger paid recovery calls (7.0119ms)
+✔ interpretation submits every captured source without silently clipping old edits or long text (11.6204ms)
+✔ failed cloud acceptance restores the accepted baseline and the captured participant draft (233.0872ms)
+✔ an exhausted recovery leaves the previously promoted and compiled artifact available (5350.9489ms)
+✔ independent participants submit in durable capture order, retain later build inputs and saved drafts on reload (13305.4162ms)
+✔ ownership loss after compilation blocks promotion; command replay adds no physical call (6389.1968ms)
+✔ unavailable isolation retains the promoted artifact and stops before builder dispatch or repairs (8034.6569ms)
+✔ shared requirements keep a stable identity across collaborators and canvas locations (7.626ms)
+✔ a proposal remains visible but is excluded from builder input (1.9736ms)
+✔ opposed accepted requirements create one focused consequential conflict (22.511ms)
+✔ same-subject colors form one durable multi-option group (1.7009ms)
+✔ different subjects and conditional scopes remain compatible (1.6073ms)
+✔ proposals never enter accepted conflict groups (0.3372ms)
+✔ explicit selections stay pending, then resolve or disagree without model voting (1.2633ms)
+✔ legacy pairwise contradictions migrate without losing identity or affected contributors (0.5974ms)
+✔ selection submissions are authorized, revision-safe, and idempotent (0.8412ms)
+✔ unresolved alternatives are excluded while independent accepted work remains eligible (4.752ms)
+✔ explicit withdrawal removes only that collaborator source and preserves supported intent (1.3453ms)
+✔ server shutdown drains authenticated HTTP before closing durable state (3453.2303ms)
+✔ physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible (2.4268ms)
+✔ SQLite accounting restores more than the recent 500 calls without double counting (3063.2368ms)
+✔ optional token fields remain optional and replay cannot replace a newer final usage record (83.6607ms)
+✔ physical reservations retain uncertainty, settle once, and reject delayed intent or usage downgrade (17.3385ms)
+✔ ledger repairs a stale snapshot without replenishment and legacy interrupted scope fails closed (1.0986ms)
+✔ concurrent interpretation and builder admission stops at 24, setup is separate, SQLite restart retains attempts (1977.4057ms)
+✔ owner reset is idle, fenced and durable; replay/collision cannot reset again or dispatch inference (569.2749ms)
+✔ remote reservation acknowledgement precedes HTTP; uncertain save fences further calls (229.9161ms)
+✔ work starting during owner authorization cannot reset an active allowance (350.1392ms)
+ℹ tests 250
+ℹ suites 0
+ℹ pass 224
+ℹ fail 18
+ℹ cancelled 0
+ℹ skipped 8
+ℹ todo 0
+ℹ duration_ms 508588.9295
+
+✖ failing tests:
+
+test at tests\auto-build-budget.test.ts:28:1
+✖ submitted builds ignore typing alone, preserve idempotency, and expose token usage (6227.9417ms)
+  Error: Timed out waiting for submitted build state
+      at waitFor (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\auto-build-budget.test.ts:16:9)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\auto-build-budget.test.ts:221:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3)
+
+test at tests\build-progress.test.ts:87:1
+✖ continuous captures do not replenish the executor ceiling between collected candidates (15904.7714ms)
+  Error: Progress fixture timed out: next dispatch bound
+      at waitFor (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\build-progress.ts:14:9)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\build-progress.test.ts:93:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests\build-progress.test.ts:117:1
+✖ attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue (15439.0043ms)
+  Error: Progress fixture timed out: already-current drain
+      at waitFor (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\fixtures\build-progress.ts:14:9)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\build-progress.test.ts:122:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7)
+
+test at tests\candidate-verification.test.ts:41:1
+✖ compiling controls without behavior fail; retained feature regressions are checked on every candidate (23041.3637ms)
+  Error: EPERM, Permission denied: \\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\c7210962-e43d-404c-b6dd-5c13953c9a00 '\\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\c7210962-e43d-404c-b6dd-5c13953c9a00'
+      at Object.rmSync (node:fs:1283:18)
+      at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:186:8)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async verifyCandidate (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\verification.ts:38:26)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:44:85)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    errno: 1,
+    code: 'EPERM',
+    path: '\\\\?\\C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\.runtime\\isolation\\jobs\\c7210962-e43d-404c-b6dd-5c13953c9a00',
+    syscall: 'rm'
+  }
+
+test at tests\candidate-verification.test.ts:61:1
+✖ actual verification browser denies a private host file and loopback network and removes its child/profile (2516.1937ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:79:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\candidate-verification.test.ts:88:3
+✖ browser CPU remains inside the isolated job bounds (15394.6663ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:99:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\candidate-verification.test.ts:88:3
+✖ browser protocol output remains inside the isolated job bounds (3330.4997ms)
+  AssertionError [ERR_ASSERTION]: The validation function is expected to return "true". Received false
+
+  Caught error:
+
+  Error: EPERM, Permission denied: \\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077 '\\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077'
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: Error: EPERM, Permission denied: \\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077 '\\?\C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\.runtime\isolation\jobs\1a15648d-d43f-45a5-aa85-35cb2681d077'
+        at Object.rmSync (node:fs:1283:18)
+        at withIsolatedBrowser (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\server\isolation\browser.ts:186:8)
+        at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+        at async waitForActual (node:assert:646:5)
+        at async strict.rejects (node:assert:769:25)
+        at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:90:5)
+        at async Test.run (node:internal/test_runner/test:1389:7)
+        at async Test.processPendingSubtests (node:internal/test_runner/test:960:7),
+    operator: 'rejects',
+    diff: 'simple'
+  }
+
+test at tests\candidate-verification.test.ts:103:1
+✖ cancellation and wall limits terminate browser execution and leave no child jobs (2040.9371ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\candidate-verification.test.ts:113:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:16:1
+✖ ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (4939.0678ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:20:88)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:23:1
+✖ OS boundary without Node permissions denies an existing private host file, writes and live loopback network (633.7649ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:33:107)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:37:1
+✖ restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (655.9279ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:44:95)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:48:1
+✖ candidate imports cannot read absolute files, traverse workspaces or download packages/styles (2020.9124ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:50:159)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:55:1
+✖ wall timeout terminates a running child and cleans its private input (707.2382ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:58:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:61:1
+✖ cancellation waits for real child termination and cleanup; pre-abort starts nothing (214.7988ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:64:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:68:1
+✖ memory exhaustion cannot escape the OS bound and leaves no child work (577.7018ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:71:94)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:74:1
+✖ unavailable isolation fails explicitly and cannot fall back to host compilation (0.9983ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:76:165)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:81:1
+✖ CPU bound stops a busy child before the longer wall deadline (10673.6133ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:96:84)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+
+test at tests\generated-isolation.test.ts:99:1
+✖ untrusted output is bounded before it reaches application memory or artifacts (388.8761ms)
+  AssertionError [ERR_ASSERTION]: Expected values to be strictly deep-equal:
+  + actual - expected
+
+  + [
+  +   '1a15648d-d43f-45a5-aa85-35cb2681d077',
+  +   'c7210962-e43d-404c-b6dd-5c13953c9a00'
+  + ]
+  - []
+
+      at noJobs (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:14:26)
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\generated-isolation.test.ts:102:31)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: true,
+    code: 'ERR_ASSERTION',
+    actual: [ '1a15648d-d43f-45a5-aa85-35cb2681d077', 'c7210962-e43d-404c-b6dd-5c13953c9a00' ],
+    expected: [],
+    operator: 'deepStrictEqual',
+    diff: 'simple'
+  }
+ ELIFECYCLE  Test failed. See above for more details.

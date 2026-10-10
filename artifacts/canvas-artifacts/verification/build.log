@@ -1,0 +1,26 @@
+
+> cocreate@1.0.0 build C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice
+> tsc --noEmit && vite build --configLoader runner
+
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1754 modules transformed.
+rendering chunks...
+computing gzip size...
+dist/index.html                             0.44 kB │ gzip:   0.30 kB
+dist/assets/App-CDkrXq0B.css                4.45 kB │ gzip:   1.32 kB
+dist/assets/LandingPage-CNj4pefA.css       13.13 kB │ gzip:   2.95 kB
+dist/assets/index-BPQwMAvx.css             76.76 kB │ gzip:  14.76 kB
+dist/assets/users-BQDX08GE.js               0.69 kB │ gzip:   0.39 kB
+dist/assets/createLucideIcon-By8TO0kY.js    0.89 kB │ gzip:   0.55 kB
+dist/assets/x-BXOLgPEM.js                   1.70 kB │ gzip:   0.78 kB
+dist/assets/LandingPage-D2GQ-Nl7.js        15.33 kB │ gzip:   4.92 kB
+dist/assets/ProjectApp-C17HKzIC.js         34.54 kB │ gzip:  10.24 kB
+dist/assets/index-h30hQUzh.js             421.73 kB │ gzip: 121.23 kB
+dist/assets/App-BlwA-Kuu.js               590.91 kB │ gzip: 187.94 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 7.87s

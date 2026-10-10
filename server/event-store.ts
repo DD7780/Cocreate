@@ -244,9 +244,9 @@ export class EventStore{
       this.db.exec('COMMIT');return this.workflowForWorkspace(input.workspaceId)!;
     }catch(error){this.db.exec('ROLLBACK');throw error}
   }
-  createTask(input:{workspaceId:string;taskId:string;title:string;kind?:'developer_build';requirementRevision:number;runId?:string;dependsOn?:string[];assignedWorker?:string;acceptanceCriteria:string[]}){
+  createTask(input:{workspaceId:string;taskId:string;title:string;kind?:WorkflowTask['kind'];requirementRevision:number;runId?:string;dependsOn?:string[];assignedWorker?:string;acceptanceCriteria:string[];frozenInput?:unknown}){
     const existing=this.task(input.taskId);if(existing)return existing;const workflow=this.ensureWorkflow(input.workspaceId),createdAt=new Date().toISOString();this.db.exec('BEGIN IMMEDIATE');try{
-      const event=this.insert({eventType:'task.planned',workspaceId:input.workspaceId,actorId:'coordinator',actorType:'system',runId:input.runId,stepId:input.taskId,inputRevision:input.requirementRevision,payload:{taskId:input.taskId,title:input.title,kind:input.kind||'developer_build',dependsOn:input.dependsOn||[],acceptanceCriteria:input.acceptanceCriteria}});
+      const event=this.insert({eventType:'task.planned',workspaceId:input.workspaceId,actorId:'coordinator',actorType:'system',runId:input.runId,stepId:input.taskId,inputRevision:input.requirementRevision,payload:{taskId:input.taskId,title:input.title,kind:input.kind||'developer_build',dependsOn:input.dependsOn||[],acceptanceCriteria:input.acceptanceCriteria,frozenInput:input.frozenInput}});
       this.db.prepare(`INSERT INTO task_state(task_id,workflow_id,workspace_id,kind,title,state,requirement_revision,run_id,depends_on_json,assigned_worker,acceptance_json,evidence_status,artifact_version,blocker,last_event_id,created_at,updated_at) VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)`).run(input.taskId,workflow.workflowId,input.workspaceId,input.kind||'developer_build',input.title,'planned',input.requirementRevision,input.runId??null,JSON.stringify(input.dependsOn||[]),input.assignedWorker??null,JSON.stringify(input.acceptanceCriteria),'pending',null,null,event.eventId,createdAt,createdAt);
       this.db.exec('COMMIT');return this.task(input.taskId)!;
     }catch(error){this.db.exec('ROLLBACK');throw error}

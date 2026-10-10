@@ -39,7 +39,7 @@ export type WorkflowEvidenceStatus =
 export type WorkflowTask = {
   id: string;
   workflowId: string;
-  kind: "developer_build";
+  kind: "developer_build" | "document_generation";
   title: string;
   state: WorkflowTaskState;
   requirementRevision: number;
@@ -137,6 +137,7 @@ export type IntentCorrection = {
   sources: SharedRequirementSource[];
 };
 export type InterpretationIntent = {
+  output?: ArtifactTarget;
   authority?: "authenticated_submission" | "human_correction";
   validation?: IntentValidation;
   contextReferences?: IntentReference[];
@@ -191,6 +192,7 @@ export type SharedRequirementSource = {
   passages: string[];
 };
 export type SharedRequirement = {
+  output?: ArtifactTarget;
   id: string;
   revision: number;
   category: SharedRequirementCategory;
@@ -345,6 +347,8 @@ export type AIRunCall = {
   outcome: "succeeded" | "failed" | "unknown";
 };
 export type AIRunRecord = {
+  artifactKind?: 'application' | 'markdown';
+  documentVerification?: DocumentVersion['verification'];
     runId: string;
     catalogVersion: string;
     pricingVersion: string;
@@ -376,6 +380,11 @@ export type AIRunRecord = {
     };
 };
 export type Version = {
+    provenance?: { projectId: string; artifactId: 'application'; title: string; taskId: string; participantId: string; submissionIds: string[]; requirementRevisions: Array<{ id: string; revision: number }>; inputVersions: ArtifactInputVersion[] };
+    contentRef?: string;
+    contentHash?: string;
+    byteLength?: number;
+    verificationStatus?: 'passed' | 'unverified';
     specificationRevision?: number;
     id: number;
     createdAt: string;
@@ -384,6 +393,29 @@ export type Version = {
     conflicts?: string[];
     aiRun?: AIRunRecord;
 };
+export type ArtifactTarget = { kind: 'markdown'; id: string; title: string };
+export type ArtifactInputVersion = { artifactId: string; versionId: number; contentRef: string };
+export type DocumentVersion = {
+  id: number;
+  projectId: string;
+  artifactId: string;
+  title: string;
+  taskId: string;
+  participantId: string;
+  submissionIds: string[];
+  specificationRevision: number;
+  requirementRevisions: Array<{ id: string; revision: number }>;
+  inputVersions: ArtifactInputVersion[];
+  fingerprint: string;
+  contentRef: string;
+  contentHash: string;
+  byteLength: number;
+  encoding: 'utf-8';
+  createdAt: string;
+  verification: { status: 'passed'; policy: 'markdown-v1'; checkedAt: string; requiredHeadings: string[]; factualAccuracy: 'unverified' };
+};
+export type DocumentArtifact = ArtifactTarget & { projectId: string; versions: DocumentVersion[] };
+export type ProjectArtifact = DocumentArtifact | { kind: 'application'; id: 'application'; title: string; projectId: string; versions: Version[] };
 export type AIProvider =
   | "openai"
   | "anthropic"
@@ -569,6 +601,7 @@ export type RequirementRevision = {
   accepted: SharedRequirement[];
 };
 export type RoomView = {
+    artifacts?: ProjectArtifact[];
     workflowBudget?: {
         id: string;
         calls: number;

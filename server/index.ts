@@ -663,6 +663,31 @@ export async function createCoCreateServer(options: Options = {}) {
             ok: true
         });
     });
+    app.get('/api/rooms/:id/artifacts/:artifactId/versions/:version', async (req, res) => {
+        const auth = authorize(req, res);
+        if (!auth) return;
+        try {
+            const artifactId = String(req.params.artifactId), versionId = Number(req.params.version);
+            if (!/^doc_[a-f0-9]{24}$/.test(artifactId) || !Number.isSafeInteger(versionId) || versionId < 1)
+                return res.status(400).json({ error: 'Provide a document ID and positive version.' });
+            const document = await manager.documentContent(auth.room, artifactId, versionId);
+            if (!document) return res.status(404).json({ error: 'Document version not found in this project.' });
+            if (platformState.platform) {
+                await platformState.platform.requireMembership(auth.room.id, auth.session.participantId);
+                await platformState.platform.assertCoordinator(auth.room.id);
+            }
+            res.setHeader('Cache-Control', 'no-store');
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+            res.setHeader('Referrer-Policy', 'no-referrer');
+            if (req.query.download === '1') {
+                res.setHeader('Content-Disposition', `attachment; filename="${artifactId}-v${versionId}.md"`);
+                res.type('text/markdown; charset=utf-8').send(document.markdown);
+            } else res.json(document);
+        } catch (error) {
+            if (!artifactResponse(res, error) && !coordinatorResponse(res, error))
+                res.status(Number((error as { status?: number })?.status) || 403).json({ error: error instanceof Error ? error.message : 'Document access failed.' });
+        }
+    });
     app.get('/api/rooms/:id/download/:version', async (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -805,7 +830,7 @@ export async function createCoCreateServer(options: Options = {}) {
     if (options.serveClient !== false) {
         if (process.env.NODE_ENV === 'production') {
             app.use(express.static(path.join(process.cwd(), 'dist')));
-            app.get('*path', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')));
+            app.get('*path', (req, res) => res.sendFile('index.html', { root: path.join(process.cwd(), 'dist') }));
         }
         else {
             const vite = await createViteServer({

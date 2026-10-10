@@ -7,7 +7,8 @@ import http from "node:http";
 import * as Y from "yjs";
 import { RoomManager } from "../server/rooms.js";
 
-const waitFor = async (check: () => boolean, timeout = 5_000) => {
+// Allow the retained 20-second compiler bound plus collection and durable promotion.
+const waitFor = async (check: () => boolean, timeout = 30_000) => {
   const started = Date.now();
   while (Date.now() - started < timeout) {
     if (check()) return;

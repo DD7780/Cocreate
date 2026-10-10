@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-10T12:04:28.788Z",
+  "scope": "Two independent local Chrome profiles, synthetic provider only; not hosted accounts.",
+  "checks": [
+    "Typing in two participant sessions makes no inference.",
+    "Alice submission captures Alice only; Bob draft remains unsubmitted.",
+    "Opening Artifacts is inference-free.",
+    "Two participants retain independent artifact selections.",
+    "Source inspection and authenticated Markdown download.",
+    "Hostile HTML/scripts/images and unsafe links remain inert.",
+    "Selections/version survive reload and reconnect without inference.",
+    "Existing Workflow layout records the same physical-call totals.",
+    "390 px document controls remain within viewport."
+  ],
+  "physicalCalls": 6,
+  "reportedTokens": 180
+}

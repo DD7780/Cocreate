@@ -181,6 +181,8 @@ export type Room = {
     { hash: string; result: IntentCommandResult }
   >;
   pendingPromotion?: number;
+  pendingDocument?: { artifactId: string; versionId: number };
+  documentArtifacts?: import("../shared/types.js").DocumentArtifact[];
   artifactHistory?: ArchivedVersion[];
   artifactManifest?: ArtifactReference[];
   id: string;

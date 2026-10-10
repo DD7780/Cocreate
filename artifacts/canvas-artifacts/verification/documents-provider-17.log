@@ -1,0 +1,25 @@
+✔ builder schema and planning repair missing or invalid file operations before tool execution (91.3303ms)
+✔ builder accepts locally recoverable JSON serialization around multiline TSX without a paid retry (17.8529ms)
+✔ caller-only document submission executes, versions independently, reloads and downloads without navigation inference (4705.7701ms)
+✔ document failure retains published content and shared ledger keeps unknown usage honest (2262.6487ms)
+✔ ambiguous and unsupported outputs clarify without builder dispatch; hostile Markdown is inert (492.1281ms)
+✔ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (1340.6722ms)
+✔ explicit private input versions are frozen as evidence, not accepted authority or cross-artifact conflicts (1117.81ms)
+✔ private schema v2 document bodies survive empty-cache restoration and revoke during read (2576.6513ms)
+✔ all provider adapters discover and generate through their native shapes (180.948ms)
+✔ classified failures, validation, truncation, retry and cancellation are explicit (185.7924ms)
+✔ structured truncation uses one budgeted compact retry and preserves both usage records (51.6752ms)
+✔ adapter metadata does not require fake Ollama credentials (0.4208ms)
+✔ nested OpenRouter provider errors expose the actionable upstream message (17.3788ms)
+✔ provider usage normalizes cached and included reasoning tokens without double counting (12.5577ms)
+✔ structured parsing locally repairs raw string newlines and trailing commas (8.493ms)
+✔ an incomplete JSON envelope is treated as truncation and gets the bounded compact retry (17.055ms)
+✔ physical request ledger records transport and structured repair calls separately (37.3956ms)
+ℹ tests 17
+ℹ suites 0
+ℹ pass 17
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 15599.3555

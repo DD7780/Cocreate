@@ -1,3 +1,5 @@
+import { generateDocument, checkMarkdown, documentBytes, restoreDocument, snapshotDocuments, requiredHeadings, DOCUMENT_MIME } from './documents.js';
+import type { ArtifactTarget, DocumentArtifact, DocumentVersion, ArtifactInputVersion, SharedRequirement } from '../shared/types.js';
 import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
 import {buildProgressFor} from "./build-progress.js";
 import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
@@ -455,6 +457,7 @@ export class RoomManager {
   private restoreFailure(room: Room, meta: any) {
     if (
       meta?.status === "Error" ||
+      ((meta?.status === 'Building' || meta?.status === 'Collecting submissions') && this.eventStore.tasksForWorkspace(room.id).some(task => task.state === "interrupted")) ||
       (room.aiRuns.at(-1)?.outcome === "failed" &&
         room.submissions.some((submission) => submission.status === "queued"))
     ) {
@@ -490,6 +493,7 @@ export class RoomManager {
         }
     room.specificationRevision = meta.specificationRevision || room.sharedRequirements.reduce((total, item) => total + item.revision, 0);
     room.versions = meta.versions || [];
+    room.documentArtifacts = snapshotDocuments(meta, room.id);
     room.artifactHistory = meta.artifactHistory;
     room.artifactManifest = meta.artifactManifest;
     room.aiRuns = meta.aiRuns || room.versions.flatMap((version: StoredVersion) => version.aiRun ? [version.aiRun] : []);
@@ -524,7 +528,7 @@ export class RoomManager {
     room.lastBuiltRequirements = meta.lastBuiltRequirements;
     room.persistRevision = meta.persistRevision || 0;
     room.savedAt = meta.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
+    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : (room.versions.some((version: StoredVersion) => version.files?.length) || room.documentArtifacts?.some(item => item.versions.length)) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
     const migrateMode = room.ai.setup?.mode === 'recommended' && !room.ai.setup.workflowMode;
     this.normalize(room);
@@ -533,6 +537,7 @@ export class RoomManager {
         this.eventStore.assignInitialController(room.id, room.ownerId);
     this.eventStore.interruptActiveRuns(room.id);
     this.eventStore.recoverWorkflow(room.id);
+    this.restoreFailure(room, meta);
     if (migrateMode)
         this.save(room, 'ai.workflow_mode_migrated', 'system', 'system');
 }
@@ -556,6 +561,7 @@ export class RoomManager {
     room.conflictGroups = meta?.conflictGroups || migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
     room.specificationRevision = meta?.specificationRevision || 0;
     room.versions = meta?.versions || [];
+    room.documentArtifacts = snapshotDocuments(meta || {}, room.id);
     room.artifactHistory = meta?.artifactHistory;
     room.artifactManifest = meta?.artifactManifest;
     room.aiRuns = meta?.aiRuns || [];
@@ -589,7 +595,7 @@ export class RoomManager {
     room.lastBuiltRequirements = meta?.lastBuiltRequirements;
     room.persistRevision = meta?.persistRevision || 0;
     room.savedAt = meta?.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
+    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : (room.versions.some((version: StoredVersion) => version.files?.length) || room.documentArtifacts?.some(item => item.versions.length)) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
     this.normalize(room);
     this.rooms.set(id, room);
@@ -598,6 +604,7 @@ export class RoomManager {
         this.eventStore.assignInitialController(id, room.ownerId);
     this.eventStore.interruptActiveRuns(id);
     this.eventStore.recoverWorkflow(id);
+    this.restoreFailure(room, meta);
     return room;
 }
   save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system'): boolean | Promise<boolean> {
@@ -611,7 +618,7 @@ export class RoomManager {
                 return false;
             }
         });
-    if (room.pendingPromotion && eventType !== 'product.promoted')
+    if ((room.pendingPromotion && eventType !== 'product.promoted') || (room.pendingDocument && eventType !== 'document.promoted'))
         return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType));
     room.commandReceipts ||= {};
     for (const item of room.submissions)
@@ -627,7 +634,7 @@ export class RoomManager {
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, documentArtifacts: room.documentArtifacts || [], artifactContractVersion: 2, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
@@ -1878,9 +1885,11 @@ export class RoomManager {
     operationsApplied: boolean;
     compilationPassed: boolean;
     evidence?: CandidateVerification;
+    artifactKind?: 'markdown';
+    documentVerification?: DocumentVersion['verification'];
 }) {
     const calls = structuredClone(room.runWindow?.calls || []), usage = aggregateCalls(calls), record: AIRunRecord = {
-        runId: input.runId, catalogVersion: input.setup?.presetVersion || 'custom', pricingVersion: input.setup?.pricingVersion || 'unknown', routingRuleVersion: input.setup?.routingRuleVersion || 'manual', verificationPolicyVersion: VERIFICATION_POLICY_VERSION, workflowMode: input.setup?.workflowMode, effort: input.setup?.effort, complexity: input.routing?.complexity || 'uncertain', evidenceStatus: input.routing?.evidenceStatus || 'hypothesis', routingReason: input.routing?.reason || 'Advanced manual assignment.', personalModels: [...new Set(calls.filter(call => call.phase === 'interpretation').map(call => call.model))], builderModel: input.builderModel, calls, usage, latencyMs: Date.now() - (room.runWindow?.startedAt || Date.now()), outcome: input.outcome, verification: {
+        ...(input.artifactKind ? { artifactKind: input.artifactKind } : {}), ...(input.documentVerification ? { documentVerification: input.documentVerification } : {}), runId: input.runId, catalogVersion: input.setup?.presetVersion || 'custom', pricingVersion: input.setup?.pricingVersion || 'unknown', routingRuleVersion: input.setup?.routingRuleVersion || 'manual', verificationPolicyVersion: VERIFICATION_POLICY_VERSION, workflowMode: input.setup?.workflowMode, effort: input.setup?.effort, complexity: input.routing?.complexity || 'uncertain', evidenceStatus: input.routing?.evidenceStatus || 'hypothesis', routingReason: input.routing?.reason || 'Advanced manual assignment.', personalModels: [...new Set(calls.filter(call => call.phase === 'interpretation').map(call => call.model))], builderModel: input.builderModel, calls, usage, latencyMs: Date.now() - (room.runWindow?.startedAt || Date.now()), outcome: input.outcome, verification: {
             operationsApplied: input.operationsApplied, compilationPassed: input.compilationPassed, evidence: input.evidence, requirementSatisfaction: input.evidence?.status === 'passed' ? 'passed' : input.evidence?.status === 'failed' ? 'failed' : 'not_measured', regressionCheck: input.evidence?.checks.length ? (input.evidence.checks.every(check => check.passed) ? 'passed' : 'failed') : 'not_run', verified: input.outcome === 'promoted' && input.evidence?.status === 'passed'
         }
     };
@@ -2107,7 +2116,7 @@ export class RoomManager {
 }
   private requestBuild(room: Room, force = false) {
     this.assertOwned(room);
-    const current = room.versions.at(-1), requiredChecks = planVerification(eligibleRequirements(room.sharedRequirements, room.conflictGroups), room.specificationRevision);
+    const current = room.versions.at(-1), requiredChecks = planVerification(eligibleRequirements(room.sharedRequirements, room.conflictGroups).filter(item => !item.output), room.specificationRevision);
     const evidence = current?.aiRun?.verification.evidence;
     const coveredEvidenceCurrent = !requiredChecks.kinds.length || !!(current?.files && evidence && evidence.policyVersion === CHECK_VERSION &&
         evidence.sourceHash === sourceHash(current.files) && evidence.candidateHash === candidateHash(current.files, {
@@ -2135,7 +2144,13 @@ export class RoomManager {
     room.collectionEndsAt = undefined;
     room.requestedRevision++;
     if (!room.buildTask)
-        room.buildTask = this.buildLoop(room).finally(() => {
+        room.buildTask = this.buildLoop(room).catch(async error => {
+            try { this.assertOwned(room); } catch { return; }
+            room.status = 'Error';
+            room.lastError = error instanceof Error ? error.message : String(error);
+            await this.save(room, 'build.failed', 'coordinator', 'system');
+            this.broadcastState(room);
+        }).finally(() => {
             room.buildTask = undefined;
             room.buildingRevision = undefined;
             room.buildAdmissionClosed = false;
@@ -2225,11 +2240,144 @@ export class RoomManager {
       message: "Retrying the accepted requirements with the selected builder.",
     };
   }
+  private async artifactInputs(room: Room, requirements: SharedRequirement[], prior: ArtifactInputVersion[] = []) {
+    const selections = new Map<string, { artifactId: string; versionId: number }>();
+    const select = (artifactId: string, versionId: number) => selections.set(`${artifactId}@v${versionId}`, { artifactId, versionId });
+    for (const version of prior) select(version.artifactId, version.versionId);
+    for (const requirement of requirements) for (const source of requirement.sources) for (const passage of source.passages)
+      for (const match of passage.matchAll(/\bartifact:(application|doc_[a-f0-9]{24})@v([1-9]\d*)\b/g)) select(match[1], Number(match[2]));
+    if (selections.size > 8) throw new Error('Choose at most eight input artifact versions.');
+    const inputVersions: ArtifactInputVersion[] = [], inputs: Array<{ title: string; versionId: number; content: string }> = [];
+    for (const selection of selections.values()) {
+      if (selection.artifactId === 'application') {
+        const version = await this.restoredVersion(room, selection.versionId);
+        if (!version?.artifactRef || !version.files) throw new Error('Selected application input version is unavailable.');
+        inputVersions.push({ ...selection, contentRef: version.artifactRef });
+        inputs.push({ title: 'Application source', versionId: version.id, content: JSON.stringify(version.files) });
+      } else {
+        const document = room.documentArtifacts?.find(item => item.id === selection.artifactId), version = document?.versions.find(item => item.id === selection.versionId);
+        if (!version) throw new Error('Selected document input version is unavailable in this project.');
+        inputVersions.push({ ...selection, contentRef: version.contentRef });
+        inputs.push({ title: document!.title, versionId: version.id, content: restoreDocument(await this.readArchivedArtifact(room, version.contentRef), version) });
+      }
+    }
+    if (Buffer.byteLength(JSON.stringify(inputs)) > 100_000) throw new Error('Selected evidence exceeds the input bound; choose fewer or smaller versions.');
+    this.assertOwned(room);
+    return { inputVersions, inputs };
+  }
+  private async executeDocumentTask(room: Room, target: ArtifactTarget, requirements: SharedRequirement[], submissions: StoredSubmission[], revision: number, fingerprint: string) {
+    const runId = randomUUID(), controller = new AbortController(), specificationRevision = room.specificationRevision;
+    const author = [...requirements].reverse().flatMap(item => [...item.sources].reverse()).find(source =>
+      submissions.some(submission => submission.participantId === source.participantId && submission.editSeqs.some(seq => source.editSeqs.includes(seq))));
+    const participantId = author?.participantId || submissions.at(-1)?.participantId || room.ownerId!;
+    const ownSubmission = submissions.find(item => item.participantId === participantId);
+    const setup = structuredClone(ownSubmission?.setup || room.ai.setup), assignment = structuredClone(
+      setup?.mode === 'managed' || setup?.mode === 'byok_lease' ? { connectionId: setup.mode === 'managed' ? 'managed' : 'byok', model: setup.resolved!.builder.model } : room.ai.builder);
+    if (!assignment) throw new Error('No builder model is assigned.');
+    const config = this.aiConfigFrom(room, 'builder', assignment, setup);
+    const configuration = { model: assignment.model, connectionId: assignment.connectionId, maxInputTokens: config.maxInputTokens, maxOutputTokens: config.maxOutputTokens, maximumSpendUsd: setup?.maximumSpendUsd };
+    const previousArtifacts = structuredClone(room.documentArtifacts || []), previousRuns = [...room.aiRuns], previousRunWindow = room.runWindow;
+    const current = previousArtifacts.find(item => item.id === target.id);
+    if (current) target = { ...target, title: current.title };
+    room.buildController = controller;
+    room.buildingRevision = specificationRevision;
+    room.status = 'Building';
+    room.lastError = undefined;
+    this.eventStore.createTask({ workspaceId: room.id, taskId: runId, runId, kind: 'document_generation', title: `Write ${target.title}`, requirementRevision: specificationRevision, assignedWorker: 'shared-executor', acceptanceCriteria: ['Valid bounded UTF-8 Markdown; integrity; explicitly required headings. Factual accuracy unverified.'] });
+    this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: 'queued' });
+    this.eventStore.transitionRun({ workspaceId: room.id, runId, kind: 'builder', state: 'queued', inputRevision: specificationRevision });
+    this.workflowPhase(room, 'queued', { taskId: runId });
+    this.broadcastState(room);
+    try {
+      const previous = current?.versions.at(-1);
+      const { inputVersions, inputs } = await this.artifactInputs(room, requirements, previous ? [{ artifactId: target.id, versionId: previous.id, contentRef: previous.contentRef }] : []);
+      this.eventStore.append({ workspaceId: room.id, runId, stepId: runId, actorId: 'coordinator', actorType: 'system', eventType: 'document.input_frozen', inputRevision: specificationRevision,
+        payload: { artifactId: target.id, participantId, submissionIds: submissions.map(item => item.id), instructions: requirements, inputVersions, configuration, budget: { scopeId: room.executionBudget?.id, maximumCalls: 24, maximumSpendUsd: setup?.maximumSpendUsd, priorCalls: room.executionBudget?.calls || 0 } } });
+      this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: 'running' });
+      this.eventStore.transitionRun({ workspaceId: room.id, runId, kind: 'builder', state: 'executing', inputRevision: specificationRevision, attempt: 1 });
+      this.workflowPhase(room, 'running', { taskId: runId });
+      if (await this.save(room, 'document.dispatched', participantId, 'user') === false) throw new Error('Document task could not be saved before dispatch.');
+      this.broadcastState(room);
+      const reservation = this.reserveBudget(room, 'builder', setup, 1);
+      let result: Awaited<ReturnType<typeof generateDocument>>;
+      try {
+        result = await this.tracked(room, { purpose: 'builder', provider: config.provider || 'custom', model: assignment.model, workflowRunId: runId, actorId: participantId, submissionId: ownSubmission?.id, setup, estimatedOutputTokens: config.maxOutputTokens },
+          () => generateDocument(config, target.title, requirements, inputs, controller.signal));
+        this.recordUsage(room, 'builder', result.usage, reservation, { phase: 'builder', provider: config.provider || 'custom', model: assignment.model });
+      } catch (error) {
+        this.markUncertain(room, reservation, { phase: 'builder', provider: config.provider || 'custom', model: assignment.model });
+        throw error;
+      }
+      this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: 'verifying', evidenceStatus: 'pending' });
+      this.eventStore.transitionRun({ workspaceId: room.id, runId, kind: 'builder', state: 'verifying', inputRevision: specificationRevision, attempt: 1 });
+      this.broadcastState(room);
+      const headings = requiredHeadings(requirements), markdown = checkMarkdown(result.value?.markdown, headings), versionId = (current?.versions.at(-1)?.id || 0) + 1;
+      const body = bodyFromBytes(documentBytes(room.id, target.id, versionId, markdown), DOCUMENT_MIME), checkedAt = now();
+      const version: DocumentVersion = { id: versionId, projectId: room.id, artifactId: target.id, title: target.title, taskId: runId, participantId,
+        submissionIds: submissions.map(item => item.id), specificationRevision, requirementRevisions: requirements.map(item => ({ id: item.id, revision: item.revision })), inputVersions,
+        fingerprint: acceptedRequirementFingerprint(requirements), contentRef: body.ref, contentHash: body.ref.slice(7), byteLength: body.byteLength, encoding: 'utf-8', createdAt: checkedAt,
+        verification: { status: 'passed', policy: 'markdown-v1', checkedAt, requiredHeadings: headings, factualAccuracy: 'unverified' } };
+      restoreDocument(Buffer.from(body.base64, 'base64'), version);
+      this.eventStore.restoreArtifactBodies([body]);
+      this.eventStore.append({ workspaceId: room.id, runId, actorId: 'verification', actorType: 'system', eventType: 'document.checked', inputRevision: specificationRevision, artifactRef: body.ref,
+        payload: { artifactId: target.id, versionId, verification: version.verification } });
+      if (await this.save(room, 'document.checked', 'verification', 'system') === false) throw new Error('Document checks could not be durably saved.');
+      await this.config.durableStore?.publishArtifactBodies?.(room.id, [body]);
+      await room.intentCommit?.done;
+      await this.config.durableStore?.assertCoordinator?.(room.id);
+      this.assertOwned(room);
+      if (controller.signal.aborted || revision !== room.requestedRevision || fingerprint !== buildFingerprint(room)) throw new ProviderError('cancelled', 'Accepted instructions changed; candidate was not promoted.');
+      const artifact: DocumentArtifact = { ...target, projectId: room.id, versions: [...(current?.versions || []), version] };
+      room.pendingDocument = { artifactId: target.id, versionId };
+      room.documentArtifacts = current ? previousArtifacts.map(item => item.id === target.id ? artifact : item) : [...previousArtifacts, artifact];
+      this.finalizeRun(room, { runId, setup, builderModel: assignment.model, outcome: 'promoted', operationsApplied: false, compilationPassed: false, artifactKind: 'markdown', documentVerification: version.verification });
+      const committed = await this.save(room, 'document.promoted', 'coordinator', 'system');
+      if (committed === false) {
+        room.documentArtifacts = previousArtifacts;
+        room.aiRuns = previousRuns;
+        room.runWindow = previousRunWindow;
+        if (this.config.durableStore) this.loseOwnership(room.id);
+        throw new Error('Document promotion could not be confirmed. Reopen to recover the canonical result; no inference repeats automatically.');
+      }
+      room.pendingDocument = undefined;
+      this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: 'completed', evidenceStatus: 'passed', artifactVersion: versionId, payload: { artifactId: target.id, factualAccuracy: 'unverified' } });
+      this.eventStore.transitionRun({ workspaceId: room.id, runId, kind: 'builder', state: 'ready', inputRevision: specificationRevision, attempt: 1, payload: { artifactId: target.id, versionId, configuration } });
+      await this.save(room, 'document.completed', 'coordinator', 'system');
+      this.broadcastState(room);
+      return true;
+    } catch (error) {
+      if (room.pendingDocument) {
+        room.documentArtifacts = previousArtifacts;
+        room.aiRuns = previousRuns;
+        room.runWindow = previousRunWindow;
+      }
+      room.pendingDocument = undefined;
+      try { this.assertOwned(room); } catch { return false; }
+      const message = error instanceof Error ? error.message : String(error), cancelled = this.cancelled(error);
+      this.finalizeRun(room, { runId, setup, builderModel: assignment.model, outcome: 'failed', operationsApplied: false, compilationPassed: false, artifactKind: 'markdown' });
+      this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: cancelled ? 'cancelled' : 'failed', evidenceStatus: 'failed', blocker: message });
+      this.eventStore.transitionRun({ workspaceId: room.id, runId, kind: 'builder', state: cancelled ? 'cancelled' : 'failed', inputRevision: specificationRevision, error: message });
+      this.workflowPhase(room, cancelled ? 'cancelled' : 'failed', { taskId: runId, reason: message });
+      room.status = 'Error';
+      room.lastError = `${message} Last successful artifacts retained. ${room.executionBudget?.calls || 0}/24 physical calls used; explicit Retry build keeps this allowance.`;
+      await this.save(room, 'document.failed', 'coordinator', 'system');
+      this.broadcastState(room);
+      return false;
+    } finally { if (room.buildController === controller) room.buildController = undefined; }
+  }
+  async documentContent(room: Room, artifactId: string, versionId: number) {
+    const artifact = room.documentArtifacts?.find(item => item.id === artifactId), version = artifact?.versions.find(item => item.id === versionId);
+    if (!version || (room.pendingDocument?.artifactId === artifactId && room.pendingDocument.versionId === versionId)) return null;
+    const markdown = restoreDocument(await this.readArchivedArtifact(room, version.contentRef), version);
+    this.assertOwned(room);
+    return { markdown, version };
+  }
   private async buildLoop(room: Room) {
     while (this.hasAI(room)) {
         await room.intentCommit?.done;
         this.assertOwned(room);
-        const revision = room.requestedRevision, specificationRevision = room.specificationRevision, fingerprint = buildFingerprint(room), requirements = eligibleRequirements(room.sharedRequirements, room.conflictGroups).map(requirement => structuredClone(requirement));
+        const revision = room.requestedRevision, specificationRevision = room.specificationRevision, fingerprint = buildFingerprint(room);
+        let requirements = eligibleRequirements(room.sharedRequirements, room.conflictGroups).map(requirement => structuredClone(requirement));
         if (!requirements.length) {
             room.pendingBuildSince = undefined;
             const blocked = hasOpenContradictions(room.conflictGroups);
@@ -2241,6 +2389,31 @@ export class RoomManager {
             return;
         }
         const queuedSubmissions = room.submissions.filter(item => item.status === 'queued');
+        const allRequirements = requirements;
+        const groups = new Map<string, SharedRequirement[]>();
+        for (const requirement of allRequirements.filter(item => item.output)) {
+            const key = requirement.output!.id;
+            groups.set(key, [...(groups.get(key) || []), requirement]);
+        }
+        for (const scoped of groups.values()) {
+            const target = scoped[0].output!;
+            const current = room.documentArtifacts?.find(item => item.id === target.id)?.versions.at(-1);
+            const taskFingerprint = acceptedRequirementFingerprint(scoped);
+            if (current?.fingerprint !== taskFingerprint && !await this.executeDocumentTask(room, target, scoped, queuedSubmissions, revision, fingerprint)) return;
+        }
+        requirements = allRequirements.filter(item => !item.output);
+        if (!requirements.length || (groups.size && room.versions.length && acceptedRequirementFingerprint(requirements) === acceptedRequirementFingerprint(room.lastBuiltRequirements || []))) {
+            if (!shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room)) continue;
+            room.lastBuiltFingerprint = fingerprint;
+            room.lastBuildAt = Date.now();
+            room.pendingBuildSince = undefined;
+            room.status = 'Updated';
+            for (const submission of queuedSubmissions) submission.status = 'built';
+            this.workflowPhase(room, 'completed', { specificationRevision, reason: 'Artifact tasks completed; unchanged application retained.' });
+            await this.save(room, 'build.completed', 'coordinator', 'system');
+            this.broadcastState(room);
+            return;
+        }
         const frozenSetup = structuredClone(queuedSubmissions[0]?.setup || room.ai.setup), remainingBudget = remainingAllowanceUsd(room.executionBudget, frozenSetup?.maximumSpendUsd), routing = frozenSetup?.mode === 'recommended' ? routeBuilderForRun(frozenSetup, requirements, remainingBudget) : undefined, frozenBuilder = structuredClone(routing?.assignment || (frozenSetup?.mode === 'managed' || frozenSetup?.mode === 'byok_lease' ? {
             connectionId: frozenSetup.mode === 'managed' ? 'managed' : 'byok', model: frozenSetup.resolved!.builder.model
         } : room.ai.builder));
@@ -2249,8 +2422,12 @@ export class RoomManager {
         const builderConfig = this.aiConfigFrom(room, 'builder', frozenBuilder, frozenSetup), maxAttempts = frozenSetup?.mode === 'byok_lease' ? 2 : Math.min(3, Math.max(1, frozenSetup?.resolved?.repairAttempts || effortAllowance(frozenSetup?.effort || 'medium', 'builder').repairAttempts)), runId = randomUUID(), controller = new AbortController(), configuration = {
             presetVersion: frozenSetup?.presetVersion, pricingVersion: frozenSetup?.pricingVersion, routingRuleVersion: frozenSetup?.routingRuleVersion, workflowMode: frozenSetup?.workflowMode, effort: frozenSetup?.effort, complexity: routing?.complexity || 'uncertain', evidenceStatus: routing?.evidenceStatus || 'hypothesis', routingReason: routing?.reason || 'Advanced manual assignment.', model: frozenBuilder.model, connectionId: frozenBuilder.connectionId, maxInputTokens: builderConfig.maxInputTokens, maxOutputTokens: builderConfig.maxOutputTokens, maximumSpendUsd: frozenSetup?.maximumSpendUsd
         };
+        const selectedInputs = await this.artifactInputs(room, requirements);
+        if (revision !== room.requestedRevision || fingerprint !== buildFingerprint(room)) return;
+        if (selectedInputs.inputs.length) builderConfig.inputEvidence = selectedInputs.inputs;
         this.eventStore.createTask({
-            workspaceId: room.id, taskId: runId, runId, title: `Build Developer artifact for specification r${specificationRevision}`, requirementRevision: specificationRevision, assignedWorker: 'shared-executor', acceptanceCriteria: requirements.flatMap(item => item.acceptanceCriteria).slice(0, 20)
+            workspaceId: room.id, taskId: runId, runId, title: `Build Developer artifact for specification r${specificationRevision}`, requirementRevision: specificationRevision, assignedWorker: 'shared-executor', acceptanceCriteria: requirements.flatMap(item => item.acceptanceCriteria).slice(0, 20),
+            frozenInput: { instructions: requirements, specificationRevision, configuration, selectedInputVersions: selectedInputs.inputVersions, inputVersion: room.versions.at(-1)?.id, checkpointRef: room.recoveryCheckpoint?.fingerprint === fingerprint ? room.recoveryCheckpoint.artifactRef : undefined, budget: { scopeId: room.executionBudget?.id, maximumCalls: 24, priorCalls: room.executionBudget?.calls || 0, maximumSpendUsd: frozenSetup?.maximumSpendUsd } }
         });
         this.eventStore.transitionTask({
             workspaceId: room.id, taskId: runId, state: 'queued'
@@ -2444,6 +2621,8 @@ export class RoomManager {
             const aiRun = this.finalizeRun(room, {
                 runId, setup: frozenSetup, routing, builderModel: frozenBuilder.model, outcome: 'promoted', operationsApplied: true, compilationPassed: true, evidence
             }), version: StoredVersion = {
+                provenance: { projectId: room.id, artifactId: 'application', title: 'Application', taskId: runId, participantId: queuedSubmissions.find(submission => requirements.some(item => item.sources.some(source => source.participantId === submission.participantId && source.editSeqs.some(seq => submission.editSeqs.includes(seq)))))?.participantId || queuedSubmissions[0]?.participantId || room.ownerId || 'coordinator', submissionIds: queuedSubmissions.map(item => item.id), requirementRevisions: requirements.map(item => ({ id: item.id, revision: item.revision })), inputVersions: selectedInputs.inputVersions.concat(priorPromotion.versions.at(-1)?.artifactRef ? [{ artifactId: 'application', versionId: priorPromotion.versions.at(-1)!.id, contentRef: priorPromotion.versions.at(-1)!.artifactRef! }] : []) },
+                contentRef: preparedArtifact.ref, contentHash: preparedArtifact.ref.slice(7), byteLength: preparedArtifact.byteLength, verificationStatus: evidence.status === 'passed' ? 'passed' : 'unverified',
                 id: Math.max(0, ...room.versions.map(version => version.id), ...(room.artifactHistory || []).map(version => version.id)) + 1, specificationRevision, createdAt: now(), summary: plan.summary, fileCount: working.length, conflicts: plan.conflicts, files: working, bundle: compiled.javascript, css: compiled.css, decisions: plan.decisions, specification: plan.specification, aiRun
             }, budget = room.budgetWindow && {
                 reservedUsd: room.budgetWindow.reservedUsd, actualUsd: room.budgetWindow.actualUsd, uncertainUsd: room.budgetWindow.uncertainUsd, maximumUsd: room.budgetWindow.maximumUsd
@@ -3095,7 +3274,7 @@ export class RoomManager {
     return {
         buildProgress: buildProgressFor(room, currentProduct), interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, requirementRevisions: room.requirementRevisions, workflowBudget: room.executionBudget && {
             id: room.executionBudget.id, calls: room.executionBudget.calls, maximumCalls: room.executionBudget.maximumCalls, reservedUsd: room.executionBudget.reservedUsd, maximumUsd: room.executionBudget.maximumUsd, uncertainCalls: room.executionBudget.uncertainCalls, closed: room.executionBudget.closed, legacyAllowanceUnknown: room.executionBudget.legacyAllowanceUnknown
-        }, roomId: room.id, ownerId: room.ownerId, ai, status: room.status, workflow, participants, requirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, latestVersion: currentProduct?.id ?? null, versions: room.artifactHistory?.length ? room.artifactHistory.filter(version => version.id !== room.pendingPromotion && version.downloadable) : room.versions.filter(version => !!version.files?.length).map(({ source, bundle, ...v }) => v), aiRuns: room.aiRuns, providerCalls: room.providerCalls.slice(-100), setupUsage, physicalUsage, lastError: room.lastError, debounceMs: this.config.debounceMs, buildDebounceMs: this.buildDebounceMs, buildCooldownMs: this.buildCooldownMs, usage: {
+        }, artifacts: [ ...(currentProduct ? [{ kind: 'application' as const, id: 'application' as const, title: 'Application', projectId: room.id, versions: room.artifactHistory?.filter(item => item.id !== room.pendingPromotion && item.downloadable) || room.versions.filter(item => item.id !== room.pendingPromotion).map(({ id, summary, createdAt, specificationRevision }) => ({ id, summary, createdAt, specificationRevision })) }] : []), ...(room.documentArtifacts || []).map(item => ({ ...item, versions: item.versions.filter(version => !(room.pendingDocument?.artifactId === item.id && room.pendingDocument.versionId === version.id)) })).filter(item => item.versions.length) ], roomId: room.id, ownerId: room.ownerId, ai, status: room.status, workflow, participants, requirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, latestVersion: currentProduct?.id ?? null, versions: room.artifactHistory?.length ? room.artifactHistory.filter(version => version.id !== room.pendingPromotion && version.downloadable) : room.versions.filter(version => !!version.files?.length).map(({ source, bundle, ...v }) => v), aiRuns: room.aiRuns, providerCalls: room.providerCalls.slice(-100), setupUsage, physicalUsage, lastError: room.lastError, debounceMs: this.config.debounceMs, buildDebounceMs: this.buildDebounceMs, buildCooldownMs: this.buildCooldownMs, usage: {
             ...room.usage
         }, savedAt: room.savedAt, persistRevision: room.persistRevision, requirementsRevision: room.specificationRevision
     };

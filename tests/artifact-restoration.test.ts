@@ -233,7 +233,8 @@ async function buildFixture() {
     return { fixture, platform, item, room, calls: () => calls, async close() { await room.buildTask; await room.persistQueue; clean(item); await fixture.close(); await new Promise<void>(resolve => provider.close(() => resolve())); } };
 }
 async function gateEntered(promise: Promise<void>) { let timer: NodeJS.Timeout | undefined; try {
-    await Promise.race([promise, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('Controlled publication gate was not reached')), 8000); })]);
+    // Allow the existing 20-second OS compilation bound plus collection/private persistence.
+    await Promise.race([promise, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('Controlled publication gate was not reached')), 30000); })]);
 }
 finally {
     clearTimeout(timer);

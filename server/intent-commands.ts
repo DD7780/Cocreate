@@ -1,6 +1,7 @@
 import { createHash } from 'node:crypto';
 import type { IntentCommand, IntentCorrection, InterpretationIntent, Requirement, SharedRequirement, SharedRequirementSource } from '../shared/types.js';
 import { normalizeInterpretation, reconcileRequirements } from './requirements.js';
+import { submittedOutput } from './document-intent.js';
 
 function fail(message:string,status=409):never {throw Object.assign(new Error(message),{status});}
 const categories = new Set(['goal','feature','design','constraint','question']);
@@ -56,6 +57,12 @@ export function applyIntentCommand(requirements:SharedRequirement[],latest:Requi
     sourceRevision:originalIntent?.sourceRevision||sources[0]?.documentRevision||latest?.sourceRevision||1,
     sourceEditSeqs:originalIntent?.sourceEditSeqs||sources.flatMap(source=>source.editSeqs),authority:'human_correction',validation:{status:'verified'},withdrawn:command.action==='withdraw'};
   // Retain other latest intents as inspection records; reconciliation adds only the corrected entry.
+  if (!intent.withdrawn && intent.classification === 'explicit_request') {
+    const correctedTarget = target.kind === 'requirement' ? requirements.find(item => item.id === target.id)?.output : originalIntent?.output;
+    const routed = submittedOutput(intent.sourcePassage, correctedTarget);
+    if (routed.reason) fail(routed.reason, 400);
+    intent.output = routed.output;
+  }
   const preserved=(latest?.intents||[]).filter(item=>target.kind==='interpretation'?item.id!==target.intentId:!sources.some(source=>source.intentId===item.id||(!source.intentId&&source.interpretationId===latest?.id&&item.text===text&&source.passages.includes(item.sourcePassage))));
   const interpretation=normalizeInterpretation({id:latest?.id||id,participantId:participant.id,participantName:participant.name,revision:(latest?.revision||0)+1,
     sourceRevision:intent.sourceRevision,sourceEditSeqs:intent.sourceEditSeqs,sourcePassages:[intent.sourcePassage],createdAt:at,intents:preserved.concat(intent),classifierVersion:'intent-v2'});

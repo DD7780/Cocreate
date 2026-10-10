@@ -8,7 +8,8 @@ import * as Y from 'yjs';
 import { RoomManager } from '../../server/rooms.js';
 
 export const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
-export async function waitFor(check: () => boolean, label: string, timeout = 15_000) {
+// The production compiler may consume its existing 20-second wall allowance.
+export async function waitFor(check: () => boolean, label: string, timeout = 30_000) {
   const deadline = Date.now() + timeout;
   while (Date.now() < deadline) { if (check()) return; await pause(10); }
   throw new Error(`Progress fixture timed out: ${label}`);
