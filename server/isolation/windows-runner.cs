@@ -61,6 +61,24 @@ public static class IsolationRunner {
   }
  }
  public static int Main(string[] args) {
+  if(args.Length==3&&args[0]=="companion-lock") {
+   try {
+    string directory=Path.GetFullPath(args[1]);if(!Directory.Exists(directory))return 126;
+    var parent=Process.GetProcessById(int.Parse(args[2]));DateTime started=parent.StartTime;
+    string key;
+    using(var sha=System.Security.Cryptography.SHA256.Create())key=BitConverter.ToString(sha.ComputeHash(Encoding.UTF8.GetBytes(WindowsIdentity.GetCurrent().User.Value+directory.ToUpperInvariant()))).Replace("-","");
+    using(var mutex=new Mutex(false,"Local\\CoCreateBlenderCompanion."+key)) {
+     bool acquired=false;
+     try {
+      try{acquired=mutex.WaitOne(0);}catch(AbandonedMutexException){acquired=true;}
+      if(!acquired){Console.Error.WriteLine("COMPANION_LOCK_BUSY");return 126;}
+      Console.Out.WriteLine("COMPANION_LOCKED");Console.Out.Flush();
+      while(!parent.HasExited&&parent.StartTime==started)Thread.Sleep(100);
+     }finally{if(acquired)mutex.ReleaseMutex();}
+    }
+    return 0;
+   }catch{return 126;}
+  }
   if(args.Length==2&&args[0]=="protect-companion") {
    string file=Path.GetFullPath(args[1]);
    if(!Path.GetFileName(file).StartsWith(".cocreate-blender-connection.",StringComparison.Ordinal)||!file.EndsWith(".tmp",StringComparison.Ordinal))return 126;

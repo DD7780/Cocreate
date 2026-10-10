@@ -3,7 +3,7 @@ import path from 'node:path';
 import os from 'node:os';
 import net from 'node:net';
 import { randomBytes, randomUUID } from 'node:crypto';
-import { execFileSync } from 'node:child_process';
+import { execFileSync, spawn } from 'node:child_process';
 import { prepareIsolation } from './isolation.js';
 import { approvedDirectory, executeBlender } from './blender-executor.js';
 import { BLENDER_OPERATIONS, BLENDER_VERSION, validateBlenderScene, type BlenderCommand, type BlenderResult } from '../shared/blender.js';
@@ -27,6 +27,22 @@ async function writePrivateConnection(filename: string, value: unknown) {
     try { fs.writeFileSync(file,JSON.stringify(value));fs.fsyncSync(file); } finally { fs.closeSync(file); }
     fs.renameSync(temporary,filename);
   } catch(error) {fs.unlinkSync(temporary);throw error;}
+}
+async function companionLease(workspace: string) {
+  if (process.platform !== 'win32') throw new Error('Verified Windows companion isolation is required.');
+  const runtime=await prepareIsolation(),controller=new AbortController();
+  const child=spawn(path.join(runtime,'runner.exe'),['companion-lock',workspace,String(process.pid)],{windowsHide:true,env:{SystemRoot:process.env.SystemRoot||'C:\\Windows'},stdio:['ignore','pipe','pipe']});
+  const closed=new Promise<void>(resolve=>child.once('close',()=>{controller.abort();resolve();}));
+  try {
+    await new Promise<void>((resolve,reject)=>{
+      const timer=setTimeout(()=>reject(new Error('Local companion lease unavailable.')),5000);
+      const failed=()=>{clearTimeout(timer);reject(new Error('A companion is already running for this workspace, or its exclusive lease is unavailable. Stop it before resuming.'));};
+      child.once('error',failed);child.once('close',failed);
+      child.stdout.on('data',chunk=>{if(String(chunk).includes('COMPANION_LOCKED')){clearTimeout(timer);child.removeListener('error',failed);child.removeListener('close',failed);resolve();}});
+      child.stderr.resume();
+    });
+  } catch(error){child.kill();await closed;throw error;}
+  return {signal:controller.signal,release:async()=>{child.kill();await closed;}};
 }
 export async function runBlenderCompanion(options: {
   server: string; projectId: string; pairingToken?: string; resume?: boolean; executable: string; workspace: string;
@@ -54,6 +70,9 @@ export async function runBlenderCompanion(options: {
   if (!BLENDER_OPERATIONS.every(op => options.operations.includes(op)) || options.operations.length !== 3) throw new Error('Explicitly allow only create_scene,save,render for this milestone.');
   const approval: LocalBlenderApproval = { ...info, executable: path.resolve(options.executable), workspace, observe: saved?.observe || options.observe, control: saved?.control || options.control, operations: BLENDER_OPERATIONS };
   if (!await options.approveLocal(approval) || options.signal.aborted) throw new Error('Local device owner declined connection.');
+  const lease=await companionLease(workspace);
+  options={...options,signal:AbortSignal.any([options.signal,lease.signal])};
+  try {
   // Probe the actual selected runtime, not merely its filename or reported metadata.
   const outside = path.join(os.tmpdir(), 'cocreate-blender-private-' + randomUUID());
   fs.writeFileSync(outside,'test-only-private-sentinel',{flag:'wx'});
@@ -131,4 +150,5 @@ export async function runBlenderCompanion(options: {
     if (fs.existsSync(connectionFile)) fs.unlinkSync(connectionFile);
     options.onState?.('Stopped · dedicated job removed · connection closed. Saved project artifacts remain available.');
   }
+  } finally {await lease.release();}
 }

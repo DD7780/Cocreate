@@ -93,6 +93,9 @@ test('real outbound companion executes only submitted caller task, publishes pri
   void companion.catch(()=>undefined); // Observe early preflight rejection while the test waits for pairing.
   try {
     await until(()=>!!f.room.blender?.devices.length,'device did not pair');assert.equal(localApprovals,1);
+    await until(()=>states.some(state=>state.startsWith('Connected')),'protected connection was not saved');
+    await assert.rejects(runBlenderCompanion({server:f.url,projectId:f.room.id,resume:true,executable:process.env.COCREATE_BLENDER_EXECUTABLE!,workspace,observe:['bob'],control:['bob'],operations:[...BLENDER_OPERATIONS],name:'Duplicate test companion',signal:new AbortController().signal,approveLocal:async()=>true}),/already running/);
+    assert.equal(f.room.blender!.devices[0].state,'connected','rejecting a second companion must preserve the active connection');
     const sessionId=f.room.blender!.devices[0].id,base=`/api/rooms/${f.room.id}/blender/sessions/${sessionId}/control`;
     f.edit('bob','Write a Markdown document titled "Bob notes".');
     f.edit('alice','Create a Blender scene titled "Demo" with a blue cube, camera and lighting. Save the scene and render an image.');

@@ -1,0 +1,30 @@
+✔ pairing is authenticated capability, expiring/single-use and locally approved; device revocation and session grants are distinct (7.9455ms)
+✔ one mutable controller fences stale epochs/concurrent commands, waits for cleanup before handoff, and recovers without dispatch (1.5972ms)
+✔ structured scenes deny scripts, paths, network, nonfinite values, excessive geometry and unsupported routing (3.0846ms)
+✔ HTTP device/session authority, serialized handoff, replay and restart retain no automatic execution (380.1652ms)
+{"policyVersion":"list-behavior-v1","specificationRevision":3,"sourceHash":"ac010289482cd18a50214a16e1f8c80cb7f8a9d2642c23f1e6eeddde02f67dd4","candidateHash":"00031d4c0fb762cfd984dba658f8e4e382a8f627f033d5b2f09501323b47c48a","planHash":"f18d214ad9e23477b539adcf433dd61b693d7094f13fb1be96989e8e77a09ebf","checkedAt":"2026-10-10T19:13:52.629Z","browserVersion":"HeadlessChrome/154.0.8037.92","checks":[{"kind":"filter","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Filtering narrows the list; clearing restores it."},{"kind":"favorites","version":"list-behavior-v1","implemented":true,"passed":true,"message":"The favorite state toggles and restores without removing items."},{"kind":"sort","version":"list-behavior-v1","implemented":true,"passed":true,"message":"Sorting changes list order into alphabetical order without losing items."}],"requirements":[{"requirementId":"req_3fb819102acc","requirementRevision":1,"criteriaHash":"0ea272fea12c0b04d0c0a5e5506d19274e8ecfdc4b324b4847dc8ceb6692dec9","criteria":[{"criterionHash":"622c509f2ad6a3b7038ae41b3bf520dad5c41175974b32ae8ad612e8ee82bf89","checks":["filter"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_980895587501","requirementRevision":1,"criteriaHash":"242963850dda8c42c0bf98350081abb874beb718b6ba7b4aafcbd2868fe93e6f","criteria":[{"criterionHash":"8b05e3cd6861df5b3753b867abfa3f4d16b8ff708e6852a9e1b064b52a459e3c","checks":["favorites"],"status":"passed"}],"implementation":"observed","status":"verified"},{"requirementId":"req_d6b0094d5067","requirementRevision":1,"criteriaHash":"6f32c53a669776de27c4dbea71596b9852592e0598637c859f94231f5e4028df","criteria":[{"criterionHash":"dc99f1133bd52aff16fb0b97f8eb15d0e1d1e0eb5adcbcf87ad6905443a91875","checks":["sort"],"status":"passed"}],"implementation":"observed","status":"verified"}],"status":"passed"}
+✔ real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate (10047.2923ms)
+✔ compiling controls without behavior fail; retained feature regressions are checked on every candidate (24344.5374ms)
+✔ unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks (10965.0108ms)
+✔ actual verification browser denies a private host file and loopback network and removes its child/profile (3719.8097ms)
+✔ browser CPU remains inside the isolated job bounds (16038.1508ms)
+✔ browser protocol output remains inside the isolated job bounds (2008.5296ms)
+✔ cancellation and wall limits terminate browser execution and leave no child jobs (4471.1121ms)
+✔ ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code (7720.0046ms)
+✔ OS boundary without Node permissions denies an existing private host file, writes and live loopback network (786.7695ms)
+✔ restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads (702.836ms)
+✔ candidate imports cannot read absolute files, traverse workspaces or download packages/styles (9105.2627ms)
+✔ wall timeout terminates a running child and cleans its private input (770.9621ms)
+✔ cancellation waits for real child termination and cleanup; pre-abort starts nothing (330.7553ms)
+✔ memory exhaustion cannot escape the OS bound and leaves no child work (1069.9568ms)
+✔ unavailable isolation fails explicitly and cannot fall back to host compilation (1.1244ms)
+✔ CPU bound stops a busy child before the longer wall deadline (12602.1712ms)
+✔ untrusted output is bounded before it reaches application memory or artifacts (580.6591ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 21
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 109127.8213
