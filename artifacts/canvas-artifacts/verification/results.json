@@ -51,5 +51,31 @@
     "jevCalls": 0
   },
   "graph": "AST update, 2233 nodes, 5422 edges, 126 communities; SQL parser absent, no semantic inference",
-  "sourceFingerprint": "58f1a8aa51608cc2896e95c00e1a60bc7376ab8a140d36430ceea30aea9b707d"
+  "sourceFingerprint": "58f1a8aa51608cc2896e95c00e1a60bc7376ab8a140d36430ceea30aea9b707d",
+  "linuxCI": {
+    "implementationCommit": "65af1ecf188083e0779827271dd169e5a8ab3e89",
+    "runUrl": "https://github.com/DD7780/Cocreate/actions/runs/38051238685",
+    "conclusion": "success",
+    "nativePostgres": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "compilerIsolation": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browserAndCgroupIsolation": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullRegression": {
+      "passed": 250,
+      "failed": 0,
+      "skipped": 0
+    },
+    "scope": "Disposable production Dockerfile image with real Linux cgroup/process/permission bounds and native PostgreSQL. Not hosted account/Storage/replacement acceptance."
+  }
 }
