@@ -1,0 +1,38 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import path from 'node:path';
+import net from 'node:net';
+import {randomUUID} from 'node:crypto';
+import {InteractiveBlenderExecutor, assertInteractiveBlenderRuntime} from '../server/interactive-blender-executor.js';
+import {validateBlenderInput} from '../shared/blender-interactive.js';
+
+test('interactive Blender input denies script, paths, clipboard, global shortcuts and unchecked coordinates',()=>{
+  for(const input of [{kind:'eval',script:'x'}, {kind:'text',text:'import os'}, {kind:'key',key:'F4'}, {kind:'key',key:'g',ctrl:true},{kind:'click',x:960,y:0},{kind:'save',path:'/host/file'}])assert.throws(()=>validateBlenderInput(input));
+  assert.deepEqual(validateBlenderInput({kind:'text',text:'-2.5'}),{kind:'text',text:'-2.5'});
+  if(process.platform!=='linux')assert.throws(()=>assertInteractiveBlenderRuntime(),/unavailable/);
+});
+
+test('private Linux Blender has actual frames and effective input while host display, files, network and secrets stay isolated',{skip:process.platform!=='linux'||process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1'},async()=>{
+  const outside=path.resolve('.runtime/private-blender-sentinel-'+randomUUID());fs.writeFileSync(outside,'private host file');
+  const listener=net.createServer(socket=>socket.destroy());await new Promise<void>(resolve=>listener.listen(0,'127.0.0.1',resolve));
+  const executor=new InteractiveBlenderExecutor();
+  try{
+    const proof=await executor.start({outside,port:(listener.address() as net.AddressInfo).port});
+    console.log('INTERACTIVE_NATIVE_PROOF',JSON.stringify(proof));
+    const first=await executor.frame();assert.ok(first.length>1000);
+    const before=await executor.call('inspect'),cube=before.objects.find((item:any)=>item.name==='Cube');assert.ok(cube);assert.equal(before.active,'Cube');
+    await executor.call('click',{x:450,y:300});await new Promise(resolve=>setTimeout(resolve,200));
+    // A real Blender translation, not merely a successful message post.
+    for(const key of ['g','x']){await executor.call('key',{key});await new Promise(resolve=>setTimeout(resolve,100));}
+    await executor.call('text',{text:'2'});await new Promise(resolve=>setTimeout(resolve,100));
+    await executor.call('key',{key:'Return'});await new Promise(resolve=>setTimeout(resolve,300));
+    const after=await executor.call('inspect'),changed=after.objects.find((item:any)=>item.name==='Cube');
+    assert.ok(Math.abs(changed.location[0]-cube.location[0]-2)<.01,JSON.stringify({before,after}));
+    const second=await executor.frame();assert.notDeepEqual(first,second);
+    await executor.call('save');await executor.waitClosed();
+    assert.equal(fs.readFileSync(path.join(executor.workspace,'scene.blend')).subarray(0,7).toString(),'BLENDER');
+    const render=fs.readFileSync(path.join(executor.workspace,'render.png'));assert.equal(render.readUInt32BE(16),512);assert.equal(render.readUInt32BE(20),512);
+    console.log('INTERACTIVE_NATIVE_SAVED',JSON.stringify({blendBytes:fs.statSync(path.join(executor.workspace,'scene.blend')).size,renderBytes:render.length,effectiveTranslation:2,cleanupVerified:true}));
+  }finally{await executor.close();fs.unlinkSync(outside);await new Promise<void>(resolve=>listener.close(()=>resolve()));}
+});

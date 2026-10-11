@@ -13,16 +13,18 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 export class LinuxJobGroup {
   private constructor(readonly directory: string, private readonly cpuSeconds: number) {}
 
-  static create(cpuSeconds: number = isolationPolicy.cpuSeconds): LinuxJobGroup {
+  static create(cpuSeconds: number = isolationPolicy.cpuSeconds, desktop = false): LinuxJobGroup {
     if (!Number.isInteger(cpuSeconds) || cpuSeconds < 1 || cpuSeconds > 60) throw unavailable();
     const configured = process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate';
     if (!path.isAbsolute(configured) || fs.realpathSync(configured) !== configured || fs.statfsSync(configured).type !== 0x63677270) throw unavailable();
-    const jobs = path.join(configured, 'jobs');
-    if (fs.realpathSync(jobs) !== jobs || fs.readFileSync(path.join(jobs, 'memory.max'), 'utf8').trim() !== String(linuxBrowserMemoryBytes) || fs.readFileSync(path.join(jobs, 'pids.max'), 'utf8').trim() !== '64') throw unavailable();
+    const memoryBytes = desktop ? 2 * 1024 ** 3 : linuxBrowserMemoryBytes;
+    const jobs = path.join(configured, desktop ? 'desktops' : 'jobs');
+    if (desktop && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') throw unavailable();
+    if (fs.realpathSync(jobs) !== jobs || fs.readFileSync(path.join(jobs, 'memory.max'), 'utf8').trim() !== String(memoryBytes) || fs.readFileSync(path.join(jobs, 'pids.max'), 'utf8').trim() !== '64') throw unavailable();
     const directory = path.join(jobs, randomUUID());
     fs.mkdirSync(directory);
     try {
-      for (const [file, value] of Object.entries({'memory.max': String(linuxBrowserMemoryBytes), 'memory.swap.max': '0', 'memory.oom.group': '1', 'pids.max': '64'})) {
+      for (const [file, value] of Object.entries({'memory.max': String(memoryBytes), 'memory.swap.max': '0', 'memory.oom.group': '1', 'pids.max': '64'})) {
         fs.writeFileSync(path.join(directory, file), value);
         if (fs.readFileSync(path.join(directory, file), 'utf8').trim() !== value) throw unavailable();
       }

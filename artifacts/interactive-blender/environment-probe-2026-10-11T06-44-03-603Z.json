@@ -1,0 +1,13 @@
+{
+  "verifiedAt": "2026-10-11T06:44:03.066Z",
+  "scope": "Private window station/desktop, AppContainer and all Job UI restrictions; probe only, no remote viewing/input capability enabled.",
+  "executableHash": "57fa1d294ea76448c3bec84ca758caf4629611330abba7dcf55bb0c56a0a15ab",
+  "softwareOpenGLHash": "1f37f5028dc5d55ceff03524c7a3b6ae85828a52b73ce59b60d7f2742bc97948",
+  "baseSourceHash": "375960095aa7c8cc37a75c06e8e6194167d2230a8bc08fc9584bc0b802fefd1f",
+  "nativeProbeHash": "d0097dad7a6ef4a61d997717f77273d504d8fe6331776a4a6661cfd02e7c2bd7",
+  "pythonProbeHash": "aae54766491f3438f3333332e1e36ac354505b74d2466ab5adfbe8d3da7b26a9",
+  "exitCode": 126,
+  "probe": null,
+  "childRemoved": false,
+  "diagnostics": "ISOLATION_UNAVAILABLE private station code=5\r\n"
+}

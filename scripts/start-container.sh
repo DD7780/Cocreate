@@ -9,13 +9,21 @@ root="$mount_root/cocreate"
 if test -d "$root"; then
   grep -q '^populated 0$' "$root/cgroup.events"
   for leaf in "$root/jobs"/*; do if test -d "$leaf"; then rmdir "$leaf"; fi; done
+  if test -d "$root/desktops"; then
+    for leaf in "$root/desktops"/*; do if test -d "$leaf"; then rmdir "$leaf"; fi; done
+    rmdir "$root/desktops"
+  fi
   rmdir "$root/jobs" "$root/app" "$root"
 fi
 mkdir "$root"
 mkdir "$root/app"
 echo $$ > "$root/app/cgroup.procs"
 echo '+memory +pids' > "$root/cgroup.subtree_control"
-echo 1073741824 > "$root/memory.max"
+if test "${COCREATE_INTERACTIVE_BLENDER:-}" = linux-xvfb-v1; then
+  echo 3221225472 > "$root/memory.max"
+else
+  echo 1073741824 > "$root/memory.max"
+fi
 echo 0 > "$root/memory.swap.max"
 echo 256 > "$root/pids.max"
 mkdir "$root/jobs"
@@ -26,5 +34,13 @@ echo '+memory +pids' > "$root/jobs/cgroup.subtree_control"
 # Leave aggregate controller limits root-owned. Delegate migration at the common ancestor.
 chown 1000:1000 "$root/cgroup.procs" "$root/app/cgroup.procs"
 chown 1000:1000 "$root/jobs" "$root/jobs/cgroup.procs"
+if test "${COCREATE_INTERACTIVE_BLENDER:-}" = linux-xvfb-v1; then
+  mkdir "$root/desktops"
+  echo 2147483648 > "$root/desktops/memory.max"
+  echo 0 > "$root/desktops/memory.swap.max"
+  echo 64 > "$root/desktops/pids.max"
+  echo '+memory +pids' > "$root/desktops/cgroup.subtree_control"
+  chown 1000:1000 "$root/desktops" "$root/desktops/cgroup.procs"
+fi
 export COCREATE_LINUX_CGROUP_ROOT="$root"
 exec /usr/bin/setpriv --reuid=1000 --regid=1000 --init-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all --no-new-privs /usr/bin/tini -s -- "$@"

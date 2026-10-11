@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Interactive Blender continuation: a pinned Linux Blender/private Xvfb executor now implements bounded frames, numeric/viewport input and saved outputs inside a separate capability-free namespace and dedicated cgroup. This different GUI boundary is pending native CI; public companion/view/input remains disabled until native isolation and effective-input acceptance pass. Two-participant integration is still required. See docs/harness/interactive-blender.md. Windows background evidence is preserved. Shared-browser Linux exact-source 48c89b8 passed native affected checks but full CI had one workload-drain failure; this is not a fully passing run.
+
 Linux shared browsers reuse the stopped-parent cgroup admission and capability-free Bubblewrap browser namespace. The trusted image owns the fixed binary attestation; the parent retains authenticated CDP/input and the same restricted origin broker. Only shared-session resource budgets change. No network interface, host writable filesystem, credential environment or guest authority is added. Linux desktop Blender is a separate boundary, not this adapter.
 
 ## Generated-app preview release boundary

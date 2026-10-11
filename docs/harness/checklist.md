@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Interactive Blender continuation: a pinned Linux Blender/private Xvfb executor now implements bounded frames, numeric/viewport input and saved outputs inside a separate capability-free namespace and dedicated cgroup. This different GUI boundary is pending native CI; public companion/view/input remains disabled until native isolation and effective-input acceptance pass. Two-participant integration is still required. See docs/harness/interactive-blender.md. Windows background evidence is preserved. Shared-browser Linux exact-source 48c89b8 passed native affected checks but full CI had one workload-drain failure; this is not a fully passing run.
+
 Shared-browser Linux continuation (2026-10-11): implementation and Windows affected regression 5/5 complete; native Linux lifetime/network/file/controller/download/aggregate-CPU acceptance pending exact-source CI. See shared-browser-linux.md. Do not mark interactive Blender complete.
 
 ## Generated frontend preview milestone (2026-10-11)

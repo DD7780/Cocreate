@@ -2,13 +2,15 @@ FROM node:22-bookworm-slim AS app
 
 WORKDIR /app
 RUN corepack enable
-RUN apt-get update && apt-get install -y --no-install-recommends bubblewrap util-linux chromium-headless-shell tini && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends bubblewrap util-linux chromium-headless-shell tini xvfb libxtst6 libxrender1 libxfixes3 libxi6 libgl1-mesa-dri libegl1 libxkbcommon0 libsm6 libice6 curl xz-utils && rm -rf /var/lib/apt/lists/*
+RUN curl --fail --location --max-time 300 --output /tmp/blender.tar.xz https://download.blender.org/release/Blender4.5/blender-4.5.14-linux-x64.tar.xz && echo '9ba871ff2ecd36526b77432745980b7e6664ecd0c7ca11c48849073dcfe06da3  /tmp/blender.tar.xz' | sha256sum -c - && mkdir /opt/cocreate-blender && tar -xJf /tmp/blender.tar.xz --strip-components=1 -C /opt/cocreate-blender && rm /tmp/blender.tar.xz
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
 RUN node scripts/attest-shared-browser.mjs
+RUN node scripts/attest-linux-blender.mjs
 RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && gcc -O2 -Wall -Wextra -Werror server/isolation/linux-job-launcher.c -o /usr/local/bin/cocreate-job-launcher && apt-get purge -y gcc libc6-dev && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 ARG VITE_COCREATE_AUTH_MODE
 ARG VITE_COCREATE_APP_ORIGIN

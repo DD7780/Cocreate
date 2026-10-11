@@ -1,0 +1,11 @@
+{
+  "verifiedAt": "2026-10-11T06:36:44.200Z",
+  "scope": "Dedicated desktop/AppContainer/Job UI restriction probe only; no remote viewing/input capability enabled.",
+  "baseSourceHash": "375960095aa7c8cc37a75c06e8e6194167d2230a8bc08fc9584bc0b802fefd1f",
+  "nativeProbeHash": "a345bed6f34aeef37cb0da4cfb8c5f66f4f38438fb765b9aa5a76ed48dc187aa",
+  "pythonProbeHash": "aae54766491f3438f3333332e1e36ac354505b74d2466ab5adfbe8d3da7b26a9",
+  "exitCode": 126,
+  "probe": null,
+  "childRemoved": false,
+  "diagnostics": "ISOLATION_UNAVAILABLE grant private desktop handle only code=87\r\n"
+}

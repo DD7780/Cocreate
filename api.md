@@ -1,5 +1,7 @@
 # 2guys1canvas implemented API contracts
 
+Interactive Blender continuation: a pinned Linux Blender/private Xvfb executor now implements bounded frames, numeric/viewport input and saved outputs inside a separate capability-free namespace and dedicated cgroup. This different GUI boundary is pending native CI; public companion/view/input remains disabled until native isolation and effective-input acceptance pass. Two-participant integration is still required. See docs/harness/interactive-blender.md. Windows background evidence is preserved. Shared-browser Linux exact-source 48c89b8 passed native affected checks but full CI had one workload-drain failure; this is not a fully passing run.
+
 Shared-browser Linux execution contract: no HTTP payload can choose an executable or alter bounds. server/shared-browser-runtime.ts verifies the fixed image-owned binary hash record; withIsolatedBrowser applies the shared-session 600-second wall/60-second aggregate CPU/64 MiB protocol bounds and existing no-network namespace/512 MiB/64-task/8 MiB file limits. Routes, grants, epochs and private download contracts are unchanged. Missing records or delegation fail closed; image attestation is not acceptance proof.
 
 ## Generated frontend previews (2026-10-11)

@@ -1,5 +1,7 @@
 # Harness decision log
 
+Interactive Blender continuation: a pinned Linux Blender/private Xvfb executor now implements bounded frames, numeric/viewport input and saved outputs inside a separate capability-free namespace and dedicated cgroup. This different GUI boundary is pending native CI; public companion/view/input remains disabled until native isolation and effective-input acceptance pass. Two-participant integration is still required. See docs/harness/interactive-blender.md. Windows background evidence is preserved. Shared-browser Linux exact-source 48c89b8 passed native affected checks but full CI had one workload-drain failure; this is not a fully passing run.
+
 D-0064 (2026-10-11): Extend manual shared browsers to a checksum-attested Linux x64 image using the existing no-network Bubblewrap/cgroup boundary. Preserve grants and accounting; keep acceptance/compiler budgets unchanged, sixty-second aggregate CPU only for sessions. Native Linux acceptance precedes capability claims. This supersedes Windows-only runtime guidance for this bounded adapter, not dated Windows evidence or hosted gates.
 
 ## D-0063 — Frozen generated-frontend preview releases, independently gated
