@@ -1,0 +1,47 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "sourceCommit": "56daee10a5b77be586e1c50adcbd2d226e8da1d4",
+  "branch": "codex/canvas-artifacts",
+  "workflowRun": 38123318108,
+  "job": 114422366937,
+  "overall": "failure",
+  "postgres": {
+    "passed": 3
+  },
+  "compiler": {
+    "passed": 10
+  },
+  "browser": {
+    "passed": 17
+  },
+  "regression": {
+    "passed": 273,
+    "total": 275,
+    "skipped": 2,
+    "failed": 0
+  },
+  "nativeDesktop": {
+    "passed": 2,
+    "total": 3,
+    "failed": 1,
+    "failedCase": "Two-participant companion reopening after agent execution: stale open display state",
+    "actualGui": {
+      "version": "4.5.14",
+      "renderer": "llvmpipe (LLVM 15.0.6, 256 bits)",
+      "windows": 1,
+      "effectiveTranslation": 2,
+      "hostDisplayDenied": true,
+      "outsideDenied": true,
+      "networkDenied": true,
+      "credentialsAbsent": true,
+      "capabilitiesAbsent": true,
+      "cgroupAuthorityAbsent": true,
+      "repeatProbeAfterInput": true,
+      "blendBytes": 505463,
+      "renderBytes": 208435,
+      "cleanupVerified": true
+    }
+  },
+  "hosted": "unverified"
+}

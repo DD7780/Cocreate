@@ -7,6 +7,8 @@ import { BLENDER_VERSION, BLENDER_OPERATIONS } from '../shared/blender.js';
 import { recoverBlenderState, queueScene } from '../server/blender-sessions.js';
 import {queueInteractive,validateInteractiveState,interactiveHash} from '../server/blender-interactive-state.js';
 test('interactive HTTP receipts fence participants, agent conflicts and uncertain recovery; frames are private and ephemeral', async () => {
+    const priorFlag=process.env.COCREATE_INTERACTIVE_BLENDER;
+    process.env.COCREATE_INTERACTIVE_BLENDER='linux-xvfb-v1';
     const f = await createCanvasArtifactsFixture();
     const request = async (path: string, actor: string, body?: unknown) => {
         const response = await fetch(f.url + path, { method: body === undefined ? 'GET' : 'POST', headers: { Authorization: 'Bearer ' + f.token(actor), 'Content-Type': 'application/json' }, ...(body === undefined ? {} : { body: JSON.stringify(body) }) });
@@ -29,7 +31,7 @@ test('interactive HTTP receipts fence participants, agent conflicts and uncertai
         assert.equal((await request(sessionPath + '/input', 'alice', open)).body.id, first.body.id);
         assert.equal((await request(sessionPath + '/input', 'alice', { ...open, action: 'close' })).status, 409);
         assert.equal((await request(sessionPath + '/control', 'alice', { action: 'handoff', epoch: 1, actorId: 'bob' })).status, 409);
-        const current = f.room.blender!.devices[0];
+        let current = f.room.blender!.devices[0];
         assert.throws(() => queueScene(current, 'alice', randomUUID(), f.control.scene, { participantId: 'alice', fingerprint: 'fixture', specificationRevision: 1, submissionIds: [], requirementRevisions: [], inputVersions: [] }));
         await device('poll', {});
         assert.equal((await device('interactive-result', { commandId: open.requestId, epoch: 1, state: 'completed' })).status, 200);
@@ -44,8 +46,27 @@ test('interactive HTTP receipts fence participants, agent conflicts and uncertai
         f.manager.join(f.room, 'eve', 'Eve');
         assert.equal((await request(sessionPath + '/frame', 'eve')).status, 403);
         assert.equal(JSON.stringify(f.room.blender).includes(frame.toString('base64')), false);
+        delete process.env.COCREATE_INTERACTIVE_BLENDER;
+        assert.equal((await request(sessionPath+'/frame','alice')).status,409);
+        assert.equal((await request(sessionPath+'/input','alice',{requestId:randomUUID(),epoch:1,action:'input',input:{kind:'key',key:'g'}})).status,409);
+        const disabledPair=(await request(base+'/pair','alice',{})).body;
+        assert.equal((await fetch(f.url+devices+'/pair',{method:'POST',headers:{Authorization:'Bearer '+disabledPair.pairingToken,'Content-Type':'application/json'},body:JSON.stringify({credential,name:'Disabled claim',observe:[],control:[],operations:[...BLENDER_OPERATIONS],blenderVersion:BLENDER_VERSION,localApproval:true,interactivePolicy:INTERACTIVE_BLENDER_POLICY})})).status,409);
+        process.env.COCREATE_INTERACTIVE_BLENDER='linux-xvfb-v1';
         assert.equal((await request(sessionPath + '/control', 'alice', { action: 'handoff', epoch: 1, actorId: 'bob' })).status, 200);
         assert.equal((await request(sessionPath + '/frame', 'bob')).status, 409, 'old-epoch frames are fenced');
+        current = f.room.blender!.devices[0];
+        queueScene(current, 'bob', randomUUID(), f.control.scene, { participantId: 'bob', fingerprint: 'fixture', specificationRevision: 1, submissionIds: [], requirementRevisions: [], inputVersions: [] });
+        await device('poll', {});
+        assert.equal((await device('result', { commandId: current.command!.id, epoch: 2, state: 'failed' })).status, 200);
+        assert.equal(f.room.blender!.devices[0].interactive!.state, 'unknown', 'Failed agent work cannot revive the former human display');
+        const closeId = randomUUID();
+        assert.equal((await request(sessionPath + '/input', 'bob', { requestId: closeId, epoch: 2, action: 'close' })).status, 200);
+        await device('poll', {});
+        assert.equal((await device('interactive-result', { commandId: closeId, epoch: 2, state: 'completed' })).status, 200);
+        const reopenId = randomUUID();
+        assert.equal((await request(sessionPath + '/input', 'bob', { requestId: reopenId, epoch: 2, action: 'open' })).status, 200);
+        await device('poll', {});
+        assert.equal((await device('interactive-result', { commandId: reopenId, epoch: 2, state: 'completed' })).status, 200);
         assert.equal((await request(sessionPath + '/input', 'alice', { requestId: randomUUID(), epoch: 1, action: 'input', input: { kind: 'key', key: 'g' } })).status, 409);
         const input = { requestId: randomUUID(), epoch: 2, action: 'input', input: { kind: 'key', key: 'g' } };
         assert.equal((await request(sessionPath + '/input', 'bob', input)).status, 200);
@@ -62,6 +83,7 @@ test('interactive HTTP receipts fence participants, agent conflicts and uncertai
     }
     finally {
         await f.close();
+        if(priorFlag===undefined)delete process.env.COCREATE_INTERACTIVE_BLENDER;else process.env.COCREATE_INTERACTIVE_BLENDER=priorFlag;
     }
 });
 

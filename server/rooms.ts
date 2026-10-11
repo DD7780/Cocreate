@@ -2455,6 +2455,13 @@ export class RoomManager {
     return this.mutateBlender(room, 'device', state => {
       const device = deviceAccess(state, id, credential);
       device.lastSeenAt = Date.now(); device.state = 'connected';
+      if (device.interactive && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') {
+        device.paused = true;
+        device.interactive.state = 'unknown';
+        const pending = activeInteractive(device);
+        if (pending) pending.state = 'cancel_requested';
+        if (device.command && ['queued', 'running'].includes(device.command.state)) device.command.state = 'cancel_requested';
+      }
       if (device.command?.state === 'queued') device.command.state = 'running';
       const interactive=activeInteractive(device);if(interactive?.state==='queued')interactive.state='running';
       const command = device.command;
@@ -2478,6 +2485,12 @@ export class RoomManager {
       }
       command.state = request.state as 'completed' | 'cancelled' | 'failed';
       command.error = typeof request.error === 'string' ? request.error.slice(0,1000) : undefined;
+      if (device.interactive) {
+        // The companion closes the human display before agent work and removes
+        // the agent job before reporting. Never revive its old cached screen.
+        device.interactive.state = request.state === 'completed' ? 'closed' : 'unknown';
+        this.blenderFrames.get(room)?.delete(id);
+      }
       device.mode = 'human'; device.lastSeenAt = Date.now(); device.lastActivityAt = Date.now();
       return { acknowledged: true, state: command.state };
     }, authorize);
@@ -2492,12 +2505,14 @@ export class RoomManager {
     }, authorize);
   }
   async blenderInteractiveCommand(room:Room,id:string,actorId:string,input:unknown,authorize:()=>Promise<void>){
+    if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1'&&(input as {action?:unknown})?.action!=='close')throw Object.assign(new Error('Interactive Blender is disabled by the operator.'),{status:409});
     return this.mutateBlender(room,actorId,state=>{
       const device=sessionAccess(state,id,actorId,true),command=queueInteractive(device,actorId,input);
       return {id:command.id,state:command.state,hash:command.hash,session:sessionView(device)};
     },authorize);
   }
   blenderReceiveFrame(room:Room,id:string,credential:string,input:unknown){
+    if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw new Error('Interactive Blender is disabled by the operator.');
     this.assertOwned(room);const device=deviceAccess(initialBlenderState(room.blender),id,credential),request=input as {epoch:number;png:string};
     if(!request||Object.keys(request).sort().join()!=='epoch,png'||request.epoch!==device.epoch||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||typeof request.png!=='string'||request.png.length>1400000)throw new Error('Dedicated Blender frame is stale or unavailable.');
     const bytes=Buffer.from(request.png,'base64');
@@ -2505,6 +2520,7 @@ export class RoomManager {
     let frames=this.blenderFrames.get(room);if(!frames){frames=new Map();this.blenderFrames.set(room,frames);}frames.set(id,{epoch:device.epoch,at:Date.now(),bytes});return {acknowledged:true};
   }
   blenderReadFrame(room:Room,id:string,actorId:string){
+    if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw Object.assign(new Error('Interactive Blender is disabled by the operator.'),{status:409});
     this.assertOwned(room);const device=sessionAccess(initialBlenderState(room.blender),id,actorId),frame=this.blenderFrames.get(room)?.get(id);
     if(sessionView(device).state!=='connected'||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||!frame||frame.epoch!==device.epoch||Date.now()-frame.at>2500)throw Object.assign(new Error('Dedicated app frame unavailable. Explicitly reopen after disconnect; no input is replayed.'),{status:409});
     return frame.bytes;
@@ -2518,6 +2534,7 @@ export class RoomManager {
       const checked=request.result!==undefined?checkBlenderResult(request.result,command.id,command.hash):undefined;
       if(checked&&(command.action!=='save'||checked.result.evidence.policy!==INTERACTIVE_BLENDER_POLICY)||command.action==='save'&&request.state==='completed'&&!checked)throw new Error('Manual save requires verified isolated outputs and cleanup.');
       if(command.state==='completed'){if(request.state!=='completed'||command.outputHash!==(checked?interactiveHash(checked.result):undefined))throw new Error('Conflicting immutable app receipt.');return {acknowledged:true};}
+      if(request.state==='completed'&&process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw new Error('Interactive completion is disabled; acknowledge cleanup only.');
       if(!['running','cancel_requested'].includes(command.state)||command.state==='cancel_requested'&&request.state==='completed')throw Object.assign(new Error('App command already cancelled or uncertain.'),{status:409});
       if(checked&&request.state==='completed'){
         const artifactId='blend_'+interactiveHash({sessionId:id,origin:'human'}).slice(0,24),current=room.blenderArtifacts?.find(item=>item.id===artifactId),versionId=(current?.versions.at(-1)?.id||0)+1;
@@ -2546,7 +2563,7 @@ export class RoomManager {
     const ownSubmission = [...submissions].reverse().find(submission => requirements.some(item => item.sources.some(source => source.participantId === submission.participantId && source.editSeqs.some(seq => submission.editSeqs.includes(seq))))) || submissions.at(-1);
     const participantId = ownSubmission?.participantId || room.ownerId!;
     const setup = structuredClone(ownSubmission?.setup || room.ai.setup), assignment = structuredClone(setup?.mode === 'managed' || setup?.mode === 'byok_lease' ? { connectionId: setup.mode === 'managed' ? 'managed' : 'byok', model: setup.resolved!.builder.model } : room.ai.builder);
-    const candidates = room.blender?.devices.filter(item => item.controllerId === participantId && sessionView(item).state === 'connected' && !item.paused) || [], device = candidates[0];
+    const candidates = room.blender?.devices.filter(item => item.controllerId === participantId && sessionView(item).state === 'connected' && !item.paused && (!item.interactive || process.env.COCREATE_INTERACTIVE_BLENDER==='linux-xvfb-v1')) || [], device = candidates[0];
     if (candidates.length !== 1 || !device || !assignment || inFlight(device)) throw new Error('Use exactly one connected, locally approved idle Blender device under your explicit control before submitting. Reconcile interrupted execution before retrying.');
     const config = this.aiConfigFrom(room, 'builder', assignment, setup), priorArtifacts = structuredClone(room.blenderArtifacts || []), current = priorArtifacts.find(item => item.id === target.id), priorRuns = [...room.aiRuns], priorRunWindow = room.runWindow;
     room.buildController = controller; room.buildingRevision = specificationRevision; room.status = 'Building'; room.lastError = undefined;

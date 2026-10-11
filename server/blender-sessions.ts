@@ -46,6 +46,9 @@ export function pairingOwner(state: BlenderState, token: string, clock = Date.no
 }
 export function approveDevice(state: BlenderState, token: string, input: unknown, participants: string[], clock = Date.now()) {
   const pair = pairingOwner(state, token, clock), request = input as Record<string, unknown>;
+  if (request?.interactivePolicy !== undefined && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') {
+    deny('Interactive Blender is disabled until the operator enables the verified dedicated Linux environment.', 409);
+  }
   if (!request || Object.keys(request).sort().join() !== ['credential', 'name', 'observe', 'control', 'operations', 'blenderVersion', 'localApproval',...(request.interactivePolicy!==undefined?['interactivePolicy']:[])].sort().join() || request.interactivePolicy!==undefined&&request.interactivePolicy!==INTERACTIVE_BLENDER_POLICY || request.localApproval !== true || request.blenderVersion !== BLENDER_VERSION || typeof request.name !== 'string' || !request.name.trim() || request.name.length > 80 || typeof request.credential !== 'string' || !/^[A-Za-z0-9_-]{43}$/.test(request.credential)) deny('A verified locally approved Blender device is required.', 400);
   const grants = (value: unknown) => { if (!Array.isArray(value) || value.length > 100 || value.some(id => typeof id !== 'string' || !participants.includes(id)) || new Set(value).size !== value.length) deny('Local session grants must name current participants.', 400); return value as string[]; };
   const observe = [...new Set([pair.actorId, ...grants(request.observe)])], control = [...new Set([pair.actorId, ...grants(request.control)])];
