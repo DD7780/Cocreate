@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "server/rooms.ts": {
-    "mtime": 1791706401.2833254,
-    "seen": 1791706534.888272,
-    "ast_hash": "c3891c28372d102b29418cb0a4703807",
+    "mtime": 1791706566.0854268,
+    "seen": 1791706856.7775762,
+    "ast_hash": "05a0ea7465f859fc8e1861c91cc4a465",
     "semantic_hash": ""
   },
   "server/supabase-platform.ts": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791705250.9177153,
-    "seen": 1791705614.6404223,
-    "ast_hash": "be50a3d4028afef0733418e878773611",
+    "mtime": 1791706814.8941162,
+    "seen": 1791706856.8575604,
+    "ast_hash": "ea9f6946a2a9f5f4842428ce982eceae",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -1296,8 +1296,8 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1791706514.1917617,
-    "seen": 1791706534.8531642,
+    "mtime": 1791706576.0682092,
+    "seen": 1791706856.6906385,
     "ast_hash": "862abe192a8ad5275455ccc860e1bd95",
     "semantic_hash": ""
   },
@@ -1428,9 +1428,9 @@
     "semantic_hash": ""
   },
   "scripts/verify-blender-session.ts": {
-    "mtime": 1791656529.1156976,
-    "seen": 1791658112.5221057,
-    "ast_hash": "47ce17c596834d3d5e24d95a56a08646",
+    "mtime": 1791706812.089597,
+    "seen": 1791706856.7185903,
+    "ast_hash": "6549141e9e6060ac58fbafd7fb986d52",
     "semantic_hash": ""
   },
   "server/blender-artifacts.ts": {
@@ -1458,9 +1458,9 @@
     "semantic_hash": ""
   },
   "server/blender-sessions.ts": {
-    "mtime": 1791705745.844093,
-    "seen": 1791706534.8760996,
-    "ast_hash": "d17b456ece7368359ab39015f6e60a04",
+    "mtime": 1791706562.4717338,
+    "seen": 1791706856.7386508,
+    "ast_hash": "0f0a3813663eb74a8ab68d9842d1c758",
     "semantic_hash": ""
   },
   "server/isolation/blender-scene.py": {
@@ -1548,9 +1548,9 @@
     "semantic_hash": ""
   },
   "docs/harness/interactive-blender.md": {
-    "mtime": 1791706507.1602292,
-    "seen": 1791706534.9335134,
-    "ast_hash": "6b2dc5c9409a74ad6b876b0270c70826",
+    "mtime": 1791706755.9995048,
+    "seen": 1791706856.8685946,
+    "ast_hash": "8c2878c46be7415d7b7df6ec7782ef0b",
     "semantic_hash": ""
   },
   "docs/harness/shared-browser-sessions.md": {

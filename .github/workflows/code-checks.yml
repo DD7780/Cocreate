@@ -104,6 +104,7 @@ jobs:
           echo '+memory +pids' | sudo tee "$root/cgroup.subtree_control" >/dev/null
           echo "COCREATE_DESKTOP_CI_ROOT=$root" >> "$GITHUB_ENV"
       - name: Actual dedicated Blender graphics boundary
+        id: desktop_native
         if: ${{ !cancelled() && steps.image.outcome == 'success' }}
         run: |
           set +e
@@ -113,6 +114,12 @@ jobs:
             node --input-type=module -e 'import fs from "node:fs"; const log=fs.readFileSync("/tmp/cocreate-native-desktop.log","utf8"); for(const match of log.matchAll(/\n\s+error: (?:\|[-+]?\n)?([^\n]*)/g)){const detail=match[1].trim().slice(0,1000).replaceAll("%","%25").replaceAll("\r","%0D");console.error("::error::Native Blender gate: "+detail)}'
           fi
           exit "$native_status"
+      - name: Two participant Artifacts UI with actual dedicated Blender
+        if: ${{ !cancelled() && steps.desktop_native.outcome == 'success' }}
+        run: >-
+          sh scripts/run-linux-desktop-check.sh sh -c
+          'VITE_COCREATE_AUTH_MODE=local node node_modules/vite/bin/vite.js build --configLoader runner &&
+          node --import tsx scripts/verify-blender-session.ts --interactive'
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' && steps.browser_adversity.outcome == 'success' }}
         run: >-

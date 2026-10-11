@@ -7,25 +7,29 @@ import WebSocket from 'ws';
 import { createCanvasArtifactsFixture } from '../tests/fixtures/canvas-artifacts.js';
 import { runBlenderCompanion } from '../server/blender-companion.js';
 import { BLENDER_OPERATIONS } from '../shared/blender.js';
+import { browserExecutable } from '../server/isolation/browser.js';
 
 process.env.NODE_ENV = 'production';
 process.env.COCREATE_AUTH_MODE = 'local';
-const output = path.resolve('artifacts/blender-session/browser');
+const interactive = process.argv.includes('--interactive');
+const output = path.resolve(interactive ? 'artifacts/interactive-blender/browser' : 'artifacts/blender-session/browser');
 fs.mkdirSync(output, { recursive: true });
 const fixture = await createCanvasArtifactsFixture({ client: true });
-const browserPath = process.env.COCREATE_UI_BROWSER || 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
+const browserPath = process.env.COCREATE_UI_BROWSER || (interactive ? browserExecutable() : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe');
 const checks: string[] = [];
+let companionFailure: unknown;
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 async function until(check: () => Promise<boolean>, label: string, timeout = 30000) {
   const start = Date.now();
-  while (Date.now() - start < timeout) { if (await check()) return; await wait(100); }
+  while (Date.now() - start < timeout) { if (companionFailure) throw companionFailure; if (await check()) return; await wait(100); }
   throw new Error(`Browser check timed out: ${label}`);
 }
 type Browser = { call: (method: string, params?: object) => Promise<any>; evaluate: (expression: string) => Promise<any>; socket: WebSocket; processHandle: ReturnType<typeof spawn>; actor: string };
 const browsers: Browser[] = [];
 async function open(actor: string): Promise<Browser> {
   const profile = path.join(fixture.dataDir, `browser-${actor}`);
-  const processHandle = spawn(browserPath, ['--headless=new', '--disable-gpu', '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
+  // These profiles load only our controlled application fixture, never generated or third-party code.
+  const processHandle = spawn(browserPath, ['--headless=new', '--disable-gpu', ...(process.platform === 'linux' ? ['--no-sandbox'] : []), '--no-first-run', '--no-default-browser-check', '--remote-debugging-port=0', `--user-data-dir=${profile}`, 'about:blank'], { stdio: 'ignore', windowsHide: true });
   let port = 0;
   await until(async () => { try { port = Number(fs.readFileSync(path.join(profile, 'DevToolsActivePort'), 'utf8').split('\n')[0]); return port > 0; } catch { return false; } }, 'debug port');
   let target: { webSocketDebuggerUrl: string } | undefined;
@@ -58,7 +62,7 @@ const clickText = (browser: Browser, selector: string, text: string) => browser.
 const write = async (browser: Browser, text: string) => { await browser.evaluate("document.querySelector('.document-editor').focus()"); await browser.call('Input.insertText', { text }); };
 const selectArtifact = (browser: Browser, title: string) => browser.evaluate(`(()=>{const select=document.querySelector('.artifact-controls select');select.value=Array.from(select.options).find(option=>option.textContent.startsWith(${JSON.stringify(title)})).value;select.dispatchEvent(new Event('change',{bubbles:true}));})()`);
 const screenshot = async (browser: Browser, name: string) => { const result = await browser.call('Page.captureScreenshot', { format: 'png', captureBeyondViewport: false }); fs.writeFileSync(path.join(output, `${name}.png`), Buffer.from(result.data, 'base64')); };
-const executable = process.env.COCREATE_BLENDER_EXECUTABLE;
+const executable = interactive ? '/opt/cocreate-blender/blender' : process.env.COCREATE_BLENDER_EXECUTABLE;
 if (!executable) throw new Error('Real Blender acceptance requires COCREATE_BLENDER_EXECUTABLE.');
 const companionStop = new AbortController(), localStates: string[] = [];
 let companion: Promise<void> | undefined;
@@ -71,15 +75,61 @@ try {
   await clickText(alice, 'button', 'Connect my computer');
   await until(() => alice.evaluate("!!document.querySelector('.blender-pair input[autocomplete=off]')"), 'pairing token');
   const pairingToken = await alice.evaluate("document.querySelector('.blender-pair input[autocomplete=off]').value");
-  const workspace = path.resolve('.runtime/blender-browser-tasks');
-  fs.mkdirSync(workspace, { recursive: true });
-  companion = runBlenderCompanion({server:fixture.url,projectId:fixture.room.id,pairingToken,executable,workspace,observe:['bob'],control:['bob'],operations:[...BLENDER_OPERATIONS],name:'Verified Windows Blender',signal:companionStop.signal,onState:value=>localStates.push(value),approveLocal:async approval=>{
+  const workspace = interactive ? fs.mkdtempSync(path.resolve('.runtime/gui-browser-')) : path.resolve('.runtime/blender-browser-tasks');
+  fs.mkdirSync(workspace, { recursive: true, mode: 0o700 });
+  companion = runBlenderCompanion({server:fixture.url,projectId:fixture.room.id,pairingToken,executable,workspace,interactive,observe:['bob'],control:['bob'],operations:[...BLENDER_OPERATIONS],name:interactive?'Verified dedicated Linux Blender':'Verified Windows Blender',signal:companionStop.signal,onState:value=>localStates.push(value),approveLocal:async approval=>{
     assert.equal(approval.ownerId,'alice'); assert.equal(approval.executable,path.resolve(executable)); assert.deepEqual(approval.observe,['bob']); assert.deepEqual(approval.control,['bob']);
     checks.push('Controlled local owner explicitly approves executable, workspace, operations and separate Bob session grants.'); return true;
   }});
+  void companion.catch(error => { companionFailure = error; });
   await until(async () => !!fixture.room.blender?.devices.length, 'locally approved device');
   await until(() => alice.evaluate("document.querySelector('.blender-session')?.textContent.includes('Human control')"), 'connected actual executor');
   await clickText(alice, 'button', 'Hide pairing token');
+  if (interactive) {
+    const readyButton = (browser: Browser, text: string) => until(() => browser.evaluate(`Array.from(document.querySelectorAll('.blender-session button')).some(item=>item.textContent===${JSON.stringify(text)}&&!item.disabled)`), 'ready interactive control: ' + text);
+    await readyButton(alice, 'Open dedicated app');
+    await clickText(alice, 'button', 'Open dedicated app');
+    await until(() => alice.evaluate("document.querySelector('[alt=\"Live dedicated Blender application\"]')?.naturalWidth===960"), 'actual owner app frame');
+    await selectArtifact(bob, 'Connected Blender');
+    await until(() => bob.evaluate("document.querySelector('[alt=\"Live dedicated Blender application\"]')?.naturalWidth===960"), 'actual granted observer app frame');
+    assert.equal(await bob.evaluate("Array.from(document.querySelectorAll('.blender-session button')).find(item=>item.textContent==='g').disabled"), true);
+    await screenshot(alice, 'owner-live-dedicated-app');
+    await screenshot(bob, 'observer-live-dedicated-app');
+    checks.push('Two independent authenticated profiles observe real isolated Blender frames; the observer cannot input.');
+    await alice.evaluate("(()=>{const select=document.querySelector('.blender-controls select');select.value='bob';select.dispatchEvent(new Event('change',{bubbles:true}));})()");
+    await clickText(alice, 'button', 'Hand off control');
+    await readyButton(bob, 'Escape');
+    assert.equal(fixture.room.blender!.devices[0].epoch, 2);
+    await until(() => alice.evaluate("Array.from(document.querySelectorAll('.blender-session button')).find(item=>item.textContent==='g').disabled"), 'prior controller fenced in UI');
+    await clickText(bob, 'button', 'Escape');
+    await readyButton(bob, 'g');
+    await bob.evaluate("(()=>{const image=document.querySelector('[alt=\"Live dedicated Blender application\"]'),r=image.getBoundingClientRect();image.dispatchEvent(new MouseEvent('click',{bubbles:true,clientX:r.left+r.width*450/960,clientY:r.top+r.height*300/640}));})()");
+    for (const key of ['g', 'x']) {
+      await readyButton(bob, key); await clickText(bob, 'button', key);
+    }
+    await bob.evaluate("(()=>{const input=Array.from(document.querySelectorAll('label')).find(item=>item.textContent.startsWith('Numeric input')).querySelector('input');Object.getOwnPropertyDescriptor(HTMLInputElement.prototype,'value').set.call(input,'2');input.dispatchEvent(new Event('input',{bubbles:true}));})()");
+    await readyButton(bob, 'Send numeric input'); await clickText(bob, 'button', 'Send numeric input');
+    await readyButton(bob, 'Return'); await clickText(bob, 'button', 'Return');
+    await readyButton(bob, 'Save scene and render'); await clickText(bob, 'button', 'Save scene and render');
+    await until(async () => !!fixture.room.blenderArtifacts?.length, 'manual private publication');
+    const saved = fixture.room.blenderArtifacts![0];
+    await selectArtifact(bob, saved.title);
+    await until(() => bob.evaluate("document.querySelector('.blender-render')?.naturalWidth===512"), 'manual saved render');
+    const links = await bob.evaluate("Array.from(document.querySelectorAll('.document-artifact a[download]')).map(item=>item.href)");
+    assert.equal(links.length, 2);
+    for (const link of links) { const response = await fetch(link); assert.equal(response.status, 200); assert.ok((await response.arrayBuffer()).byteLength > 1000); }
+    assert.equal(await alice.evaluate("document.querySelector('.artifact-controls select').value"), 'blender-session');
+    await screenshot(bob, 'participant-private-saved-results');
+    checks.push('Explicit handoff enables real UI input and private manual save/retrieval, with independent Artifacts selection.');
+    companionStop.abort(); await companion;
+    assert.equal(fixture.room.blender!.devices[0].state, 'revoked');
+    assert.equal(fixture.calls.length, 0);
+    await clickText(alice, 'nav button', 'Workflow');
+    assert.match(await alice.evaluate("document.querySelector('#workflow-usage').textContent"), /0 recorded attempts/);
+    checks.push('Local STOP removes the entire display job; manual viewing/input/saving makes zero inference calls and preserves Workflow accounting.');
+    fs.writeFileSync(path.join(output, 'checks.json'), JSON.stringify({ verifiedAt: new Date().toISOString(), scope: 'Two independent local browser profiles, actual isolated Linux Blender 4.5.14 GUI and companion; not hosted identities.', checks, physicalCalls: 0 }, null, 2));
+    console.log('INTERACTIVE_ARTIFACTS_UI', JSON.stringify({ checks: checks.length, profiles: 2, actualGui: true, physicalCalls: fixture.calls.length }));
+  } else {
   await clickText(bob, 'nav button', 'Canvas'); await write(bob, 'Write a Markdown document titled "Bob notes".');
   await clickText(alice, 'nav button', 'Canvas'); await write(alice, 'Create a Blender scene titled "Demo" with a blue cube, camera and lighting. Save the scene and render an image.');
   await wait(300); assert.equal(fixture.calls.length,0); checks.push('Typing from two participants does not execute; Bob draft remains unsubmitted.');
@@ -121,11 +171,12 @@ try {
   await bob.call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true}); await wait(250);assert.equal(await bob.evaluate('document.documentElement.scrollWidth<=window.innerWidth'),true);await screenshot(bob,'mobile-saved-render');checks.push('Saved render controls fit a 390 px viewport.');
   fs.writeFileSync(path.join(output,'checks.json'),JSON.stringify({verifiedAt:new Date().toISOString(),scope:'Two independent local browser profiles, controlled provider, actual Windows Blender 4.5.14 AppContainer execution; not hosted accounts or interactive streaming.',checks,localStates,physicalCalls:fixture.calls.length,reportedTokens:fixture.manager.view(fixture.room).physicalUsage.recorded.inputTokens+fixture.manager.view(fixture.room).physicalUsage.recorded.outputTokens},null,2));
   console.log(JSON.stringify({checks:checks.length,calls:fixture.calls.length,output}));
+  }
 } catch (error) {
   console.error('Blender browser acceptance failed:', error);
   throw error;
 } finally {
-  companionStop.abort();await companion;
+  companionStop.abort();await companion?.catch(() => undefined);
   for(const browser of browsers){
     await browser.call('Browser.close').catch(()=>undefined);
     browser.socket.close();
