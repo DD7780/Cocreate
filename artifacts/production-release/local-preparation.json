@@ -1,0 +1,36 @@
+{
+  "date": "2026-10-11",
+  "baseCommit": "9857ec00f60e31c69c27d56642792a46bd71c9f2",
+  "scope": "Local prerequisite implementation and controlled security/recovery tests; not real hosted verification",
+  "fingerprint": "06658e22178760463acd49c8114af3387c3956b00e3bbc4798359d352ec653bb",
+  "releaseInputs": 127,
+  "focused": {
+    "passed": 25,
+    "total": 25,
+    "files": ["tests/production-release.test.ts", "tests/hosted-readiness.test.ts", "tests/hosted-reliability.test.ts", "tests/project-auth.test.ts"],
+    "newReleaseCases": 4,
+    "nativeLiveMembershipSocketDenial": true,
+    "controlledPermissionTransport": true
+  },
+  "typecheck": "passed",
+  "build": "passed; existing large-chunk warning",
+  "boundaries": {"files": 205, "violations": 0, "inferenceCalls": 0},
+  "graph": {"nodes": 2658, "edges": 6863, "communities": 139, "modelCalls": 0, "limitation": "Existing SQL parser dependency unavailable"},
+  "readOnlyInventory": {
+    "supabaseOrganization": "lflzfrqblfyjopsjuqxk",
+    "productionProject": "dnsapasubeoxxsgkiotw",
+    "separateStagingProjects": 0,
+    "separateStagingBranches": 0,
+    "cloudflareAccount": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "workers": ["cocreate"],
+    "pagesProjects": 0,
+    "privateTestFixtureConfigured": false
+  },
+  "platformReadyForProduction": false,
+  "generatedPreviewEnabled": false,
+  "hostedMigrationApplied": false,
+  "mainPushPerformed": false,
+  "cloudReleasePerformed": false,
+  "paidInferenceCalls": 0,
+  "pending": ["Exact candidate CI", "Authorized isolated staging and designated accounts", "Real hosted permissions and disruptive recovery", "Tested v6-compatible recovery image", "Exact production release approval", "Separately configured/approved generated preview"]
+}

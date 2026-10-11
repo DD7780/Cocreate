@@ -12,7 +12,7 @@ export function stagingConfiguration(target: StagingTarget, production: any) {
   const exactOrigin = (url: URL, value: string) => url.origin === value && url.protocol === 'https:' && !url.username && !url.password;
   if (!exactOrigin(origin, target.origin) || !exactOrigin(backend, target.supabaseUrl) || !/^[a-z]{20}\.supabase\.co$/.test(backend.hostname)) throw new Error('Select exact HTTPS staging and Supabase origins.');
   const productionHosts = [production.vars.COCREATE_PUBLIC_ORIGIN, production.vars.COCREATE_LEGACY_ORIGIN, production.vars.COCREATE_WWW_ORIGIN].filter(Boolean).map(value => new URL(String(value)).hostname);
-  if (productionHosts.includes(origin.hostname) || backend.origin === production.vars.SUPABASE_URL) throw new Error('Staging must not use the production origin or database.');
+  if (productionHosts.includes(origin.hostname.replace(/\.$/, '')) || backend.origin === production.vars.SUPABASE_URL) throw new Error('Staging must not use the production origin or database.');
   if (!/^sb_publishable_[A-Za-z0-9_-]{10,}$/.test(target.publishableKey)) throw new Error('Use a publishable key, never a server secret.');
   const config = structuredClone(production);
   config.name = target.workerName; config.account_id = target.accountId;

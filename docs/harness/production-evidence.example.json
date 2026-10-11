@@ -1,0 +1,13 @@
+{
+  "staging": null,
+  "permissions": null,
+  "recovery": null,
+  "ci": null,
+  "compatibleRecoveryImage": null,
+  "optional": {
+    "sharedBrowser": null,
+    "connectedBlender": null,
+    "interactiveBlender": null,
+    "generatedPreview": null
+  }
+}

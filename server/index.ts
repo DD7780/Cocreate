@@ -43,6 +43,7 @@ import { registerSharedBrowserRoutes } from './shared-browser-routes.js';
 import { registerPreviewRoutes } from './preview-routes.js';
 import type { PreviewProvider } from './preview-provider.js';
 import { capabilityConfiguration, requireCapability } from './capabilities.js';
+import { serverSecrets } from './credentials.js';
 type Options = {
   platform?: SupabasePlatform;
   previewProvider?: PreviewProvider;
@@ -69,9 +70,10 @@ const duration = (
   return Math.max(min, Math.min(max, safe));
 };
 export async function createCoCreateServer(options: Options = {}) {
+    const { sessionSecret: secret, encryptionSecret } = serverSecrets(options);
     const app = express(), server = http.createServer(app), wss = new WebSocketServer({
         noServer: true
-    }), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {
+    }), platformState = options.platform ? {
         mode: 'supabase' as const, platform: options.platform, error: null
     } : supabasePlatformFromEnv(), manager = new RoomManager({
         debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {

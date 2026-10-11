@@ -36,6 +36,7 @@ test('staging preparation separates origin, database, namespace, public build an
   assert.equal(config.durable_objects.bindings[0].script_name, undefined);
   for (const flag of ['COCREATE_SHARED_BROWSER','COCREATE_CONNECTED_BLENDER','COCREATE_INTERACTIVE_BLENDER','COCREATE_GENERATED_PREVIEW']) assert.equal(config.vars[flag], 'disabled');
   assert.throws(() => stagingConfiguration({ ...target, origin:production.vars.COCREATE_PUBLIC_ORIGIN }, production), /production/);
+  assert.throws(() => stagingConfiguration({ ...target, origin:production.vars.COCREATE_PUBLIC_ORIGIN + '.' }, production), /production/);
   assert.throws(() => stagingConfiguration({ ...target, supabaseUrl:production.vars.SUPABASE_URL }, production), /production/);
   assert.throws(() => stagingConfiguration({ ...target, publishableKey:'sb_secret_private' }, production), /publishable/);
   assert.throws(() => stagingConfiguration({ ...target, origin:target.origin + '/path' }, production), /exact HTTPS/);
@@ -100,7 +101,7 @@ test('disabled routes reject forged dispatch before runtime/provider work while 
 
 test('hosted fixture rejects production, reused identities and unsafe paths; identity mismatch sends no credentials', async () => {
   const projectId = randomUUID();
-  const fixture = { target, releaseFingerprint:'a'.repeat(64), projectId, otherProjectId:randomUUID(),
+  const fixture = { target, sourceCommit:'a'.repeat(40), releaseFingerprint:'a'.repeat(64), projectId, otherProjectId:randomUUID(),
     accounts:Object.fromEntries(['owner','editor','viewer','unapproved','outsider','revoked'].map(role => [role, { userId:randomUUID(), accessToken:`synthetic_private_token_${role}` }])),
     artifactPath:`/api/rooms/${projectId}/download/1`, artifactSha256:'b'.repeat(64), storagePath:`${projectId}/bodies/${'b'.repeat(64)}`, storageSha256:'b'.repeat(64), browserSessionId:randomUUID(), blenderSessionId:randomUUID() } as any;
   validateHostedFixture(fixture, production);
