@@ -45,6 +45,7 @@ next-env.d.ts
 /outputs/
 /work/
 .runtime/
+/wrangler.staging.local.jsonc
 .connections-smoke-profile*/
 
 # Graphify local cache and machine-specific build state

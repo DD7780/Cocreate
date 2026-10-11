@@ -1,0 +1,78 @@
+{
+  "observedAt": "2026-10-11",
+  "scope": "Read-only public HTTPS and database metadata; no designated-account or hosted recovery acceptance",
+  "branch": "codex/canvas-artifacts",
+  "base": "7aef200666dbf0e84d0431524c405af71d796aaa",
+  "fetchedMain": "6c4402958bdec460b23c959bc99c8e824e53dd1c",
+  "userChoice": "Prepare locally; user will configure staging and designated test accounts",
+  "publicProbes": [
+    {
+      "path": "/",
+      "status": 200
+    },
+    {
+      "path": "/__cocreate/health",
+      "status": 200
+    },
+    {
+      "path": "/__cocreate/app-health",
+      "status": 200
+    },
+    {
+      "path": "/api/auth/config",
+      "status": 200,
+      "mode": "supabase",
+      "configured": true
+    },
+    {
+      "path": "/api/projects",
+      "status": 401
+    }
+  ],
+  "deployedFingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb",
+  "matchesDatedRelease": "ba96cfd30bdc8b7c48362369be09c3502ce935a2",
+  "newCandidateDeployed": false,
+  "supabase": {
+    "project": "dnsapasubeoxxsgkiotw",
+    "environment": "production",
+    "appliedMigrationCount": 11,
+    "lastMigration": "20261008191401_beta_access_requests",
+    "missingMigration": "20261011013000_preview_target_reservations",
+    "previewReservationRPCsPresent": false,
+    "privateBucket": true,
+    "rlsTables": [
+      "projects",
+      "project_members",
+      "project_snapshots",
+      "beta_access"
+    ],
+    "storagePolicies": [
+      "artifact_objects_member_select",
+      "beta_artifact_access_required"
+    ]
+  },
+  "pending": [
+    "Isolated staging target/configuration",
+    "Real designated accounts and direct permission acceptance",
+    "Hosted coordinator replacement/recovery",
+    "Generated-app target/token/exact approval and live preview",
+    "Exact platform release authorization and production smoke"
+  ],
+  "authorization": {
+    "accountMutation": false,
+    "migration": false,
+    "paidInference": false,
+    "platformRelease": false,
+    "generatedAppRelease": false
+  },
+  "limitations": [
+    "Database metadata is not real account/RLS/Storage proof",
+    "Source/build attestation is not runtime isolation proof",
+    "Historical main-triggered Cloudflare release blocks deployment-neutral main integration until verified or authorized",
+    "Restrictive/permissive policy mode was not freshly queried after review failure; observed policy expressions and migration source retain their separate scopes"
+  ],
+  "additionalPolicyRead": {
+    "executed": false,
+    "reason": "Automatic approval review could not complete because account usage limit was reached; not an unsafe-action determination; no bypass attempted"
+  }
+}

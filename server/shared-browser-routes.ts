@@ -10,6 +10,7 @@ import { approvedBrowserOrigin } from './browser-network.js';
 import { browserState, browserHash, browserDownloadBytes, restoreBrowserDownload } from './browser-state.js';
 import { artifactResponse } from './artifacts.js';
 import { coordinatorResponse } from './coordinator-response.js';
+import { requireCapability } from './capabilities.js';
 
 export function registerSharedBrowserRoutes(app:express.Express,manager:RoomManager,authorize:(req:express.Request,res:express.Response)=>{room:Room;session:Session}|null,platform?:SupabasePlatform){
   const runtimes=new Map<string,SharedBrowserExecutor>();
@@ -30,7 +31,7 @@ export function registerSharedBrowserRoutes(app:express.Express,manager:RoomMana
     return value;
   };
   const views=(room:Room,actor:string)=>browserState(room.browser).sessions.filter(s=>s.observe.includes(actor)).map(s=>({ ...s,state:s.expiresAt<=Date.now()?'expired':runtimes.get(s.id)?.alive?s.state:'disconnected', receipts:s.receipts.map(({hash,...r})=>r) }));
-  const networkAuthority=(room:Room,id:string)=>async()=>{const s=room.browser?.sessions.find(x=>x.id===id);if(!s||s.state!=='connected'||s.paused||s.expiresAt<=Date.now())fail('Browser network authority expired.',409);try{await fresh(room,s.ownerId,true);await fresh(room,s.controllerId,true);}catch(e){runtimes.get(id)?.stop();throw e;}};
+  const networkAuthority=(room:Room,id:string)=>async()=>{const s=room.browser?.sessions.find(x=>x.id===id);if(!s||s.state!=='connected'||s.paused||s.expiresAt<=Date.now())fail('Browser network authority expired.',409);try{requireCapability('shared_browser');await fresh(room,s.ownerId,true);await fresh(room,s.controllerId,true);}catch(e){runtimes.get(id)?.stop();throw e;}};
   const authRoute=(operation:(req:express.Request,res:express.Response,auth:{room:Room;session:Session})=>Promise<void>)=>async(req:express.Request,res:express.Response)=>{const auth=authorize(req,res);if(!auth)return;headers(res);try{if(req.method==='GET')await auth.room.browserMutation?.catch(()=>undefined);await fresh(auth.room,auth.session.participantId,req.method!=='GET');const connection=auth.room.browser?.sessions.find(s=>s.id===req.params.sessionId);if(connection){try{await fresh(auth.room,connection.ownerId,true);}catch(e){runtimes.get(connection.id)?.stop();throw e;}}await operation(req,res,auth);}catch(e){error(res,e);}};
   app.get('/api/rooms/:id/browser',authRoute(async(_req,res,{room,session})=>{res.json({sessions:views(room,session.participantId),downloads:browserState(room.browser).downloads});}));
   app.post('/api/rooms/:id/browser',authRoute(async(req,res,{room,session})=>{

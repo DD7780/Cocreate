@@ -1,0 +1,26 @@
+{
+  "target": {
+    "accountId": "REPLACE_WITH_EXISTING_AUTHORIZED_ACCOUNT_ID",
+    "workerName": "cocreate-beta-staging",
+    "origin": "https://REPLACE_WITH_STAGING_WORKER_ORIGIN",
+    "supabaseUrl": "https://REPLACE_WITH_SEPARATE_STAGING_PROJECT.supabase.co",
+    "publishableKey": "REPLACE_WITH_STAGING_PUBLISHABLE_KEY"
+  },
+  "releaseFingerprint": "REPLACE_WITH_EXACT_STAGING_FINGERPRINT",
+  "projectId": "REPLACE_WITH_ISOLATED_TEST_PROJECT_UUID",
+  "otherProjectId": "REPLACE_WITH_PROJECT_UUID_NONE_OF_THE_TEST_ACTORS_CAN_ACCESS",
+  "accounts": {
+    "owner": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" },
+    "editor": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" },
+    "viewer": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" },
+    "unapproved": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" },
+    "outsider": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" },
+    "revoked": { "userId": "REPLACE", "accessToken": "CONFIGURE_PRIVATELY" }
+  },
+  "artifactPath": "/api/rooms/REPLACE/download/1",
+  "artifactSha256": "REPLACE_WITH_DOWNLOAD_BYTE_HASH",
+  "storagePath": "REPLACE_PROJECT_UUID/bodies/REPLACE_BODY_HASH",
+  "storageSha256": "REPLACE_WITH_STORED_BODY_HASH",
+  "browserSessionId": "REPLACE_WITH_OWNER_PRIVATE_TEST_SESSION_UUID",
+  "blenderSessionId": "REPLACE_WITH_OWNER_ONLY_OBSERVATION_TEST_DEVICE_UUID"
+}

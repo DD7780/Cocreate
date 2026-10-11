@@ -82,7 +82,7 @@ export function sessionCommand(state: BlenderState, id: string, actorId: string,
     if (actorId !== device.ownerId) deny('Only the device owner may revoke its connection.');
     device.state = 'revoked'; device.epoch++; device.credentialHash = deviceHash(randomBytes(32).toString('base64url'));
     if(device.interactive){const pending=activeInteractive(device);if(pending)pending.state='unknown';device.interactive.state='unknown';}
-    if (inFlight(device)) device.command!.state = 'cancel_requested';
+    if (device.command && ['queued','running','interrupted','cancel_requested'].includes(device.command.state)) device.command.state = 'cancel_requested';
     return;
   }
   if (device.state !== 'connected' || clock >= device.expiresAt || clock - device.lastActivityAt >= IDLE_MS || clock - device.lastSeenAt > HEARTBEAT_MS) deny('Device connection is unavailable. Reconnect with local approval.', 409);

@@ -29,6 +29,10 @@
     ]
   },
   "vars": {
+    "COCREATE_SHARED_BROWSER": "disabled",
+    "COCREATE_CONNECTED_BLENDER": "disabled",
+    "COCREATE_INTERACTIVE_BLENDER": "disabled",
+    "COCREATE_GENERATED_PREVIEW": "disabled",
     "COCREATE_APP_ORIGINS": "https://2guys1canvas.com",
     "COCREATE_PUBLIC_ORIGIN": "https://2guys1canvas.com",
     "COCREATE_EMAIL_FROM": "2guys1canvas <beta@2guys1canvas.com>",
@@ -38,7 +42,7 @@
     "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
     "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co",
-    "COCREATE_RELEASE_FINGERPRINT": "b75caedb9091d0bdcc7fd7b2a45c7cd39706c55b4bdf1fd4768be07bbcbc0c62"
+    "COCREATE_RELEASE_FINGERPRINT": "dc87daee569c4b2e189b83a7a39d4245e0a7f0176128a6d81175729f39113391"
   },
   "containers": [
     {

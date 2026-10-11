@@ -65,7 +65,7 @@ test('the application exposes a container readiness endpoint',async()=>{
     const response=await fetch(`${info.url}/__cocreate/app-health`);
     assert.equal(response.status,200);
     const {release_fingerprint, ...health} = await response.json();
-    assert.deepEqual(health,{status:'ok',service:'cocreate-app'});
+    assert.deepEqual(health,{status:'ok',service:'cocreate-app',capabilities:{shared_browser:true,connected_blender:true,interactive_blender:false,generated_preview:true}});
     if (release_fingerprint !== undefined) assert.match(release_fingerprint,/^[a-f0-9]{64}$/);
   }finally{await instance.stop()}
 });
@@ -108,6 +108,7 @@ test('the Cloudflare container uses the native WebSocket-aware proxy',()=>{
   assert.match(worker,/pingEndpoint\s*=\s*"localhost\/__cocreate\/app-health"/);
   assert.match(worker,/SESSION_SECRET:\s*env\.SESSION_SECRET/);
   assert.match(worker,/CREDENTIAL_ENCRYPTION_SECRET:\s*env\.CREDENTIAL_ENCRYPTION_SECRET/);
+  for (const flag of ['COCREATE_SHARED_BROWSER','COCREATE_CONNECTED_BLENDER','COCREATE_INTERACTIVE_BLENDER','COCREATE_GENERATED_PREVIEW']) assert.ok(worker.includes(`${flag}: env.${flag} || 'disabled'`));
   assert.match(dockerfile,/CMD \["node", "--import", "tsx", "server\/index\.ts"\]/);
 });
 

@@ -29,6 +29,7 @@
   "server/build-progress.ts",
   "server/build-recovery.ts",
   "server/byok-lease.ts",
+  "server/capabilities.ts",
   "server/coordinator-response.ts",
   "server/coordinator.ts",
   "server/credentials.ts",

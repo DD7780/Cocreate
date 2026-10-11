@@ -1,3 +1,4 @@
+import { requireCapability, capabilityEnabled } from './capabilities.js';
 import { generateDocument, checkMarkdown, documentBytes, restoreDocument, snapshotDocuments, requiredHeadings, DOCUMENT_MIME } from './documents.js';
 import { browserState } from './browser-state.js';
 import { previewState } from './preview-state.js';
@@ -2431,6 +2432,7 @@ export class RoomManager {
     return mutation;
   }
   async blenderPair(room: Room, actorId: string, authorize: () => Promise<void>) {
+    requireCapability('connected_blender');
     return this.mutateBlender(room, actorId, state => createPair(state, actorId), authorize);
   }
   blenderPairInfo(room: Room, token: string) {
@@ -2438,6 +2440,7 @@ export class RoomManager {
     return { projectId: room.id, ownerId: pair.actorId, ownerName: room.participants.get(pair.actorId)?.name || pair.actorId, expiresAt: pair.expiresAt, participants: [...room.participants.values()].map(({ id, name }) => ({ id, name })) };
   }
   async blenderApprove(room: Room, token: string, input: unknown, authorize: () => Promise<void>) {
+    requireCapability('connected_blender');
     return this.mutateBlender(room, 'device', state => sessionView(approveDevice(state, token, input, [...room.participants.keys()])), authorize);
   }
   blenderSessions(room: Room, actorId: string) {
@@ -2449,15 +2452,16 @@ export class RoomManager {
     return { ownerId: device.ownerId, controllerId: device.controllerId };
   }
   async blenderControl(room: Room, id: string, actorId: string, input: unknown, authorize: () => Promise<void>) {
+    if (['resume','handoff'].includes(String((input as {action?:unknown})?.action))) requireCapability('connected_blender');
     return this.mutateBlender(room, actorId, state => { sessionCommand(state, id, actorId, input); return this.blenderSessions({ ...room, blender: state }, actorId); }, authorize);
   }
   async blenderPoll(room: Room, id: string, credential: string, authorize: () => Promise<void>) {
     return this.mutateBlender(room, 'device', state => {
       const device = deviceAccess(state, id, credential);
       device.lastSeenAt = Date.now(); device.state = 'connected';
-      if (device.interactive && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') {
+      if (!capabilityEnabled('connected_blender') || device.interactive && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') {
         device.paused = true;
-        device.interactive.state = 'unknown';
+        if (device.interactive) device.interactive.state = 'unknown';
         const pending = activeInteractive(device);
         if (pending) pending.state = 'cancel_requested';
         if (device.command && ['queued', 'running'].includes(device.command.state)) device.command.state = 'cancel_requested';
@@ -2482,6 +2486,7 @@ export class RoomManager {
         throw Object.assign(new Error('Interactive completion is disabled; acknowledge cleanup only.'), { status: 409 });
       }
       if (request.state === 'completed') {
+        requireCapability('connected_blender');
         const checked=checkBlenderResult(request.result, command.id, artifactHash(Buffer.from(JSON.stringify(command.scene)))).result;
         if(checked.evidence.policy!==(device.interactive?.policy||'windows-appcontainer-blender-v1'))throw new Error('Execution environment does not match local approval.');
         command.result=checked;
@@ -2508,6 +2513,7 @@ export class RoomManager {
     }, authorize);
   }
   async blenderInteractiveCommand(room:Room,id:string,actorId:string,input:unknown,authorize:()=>Promise<void>){
+    if ((input as {action?:unknown})?.action !== 'close') requireCapability('connected_blender');
     if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1'&&(input as {action?:unknown})?.action!=='close')throw Object.assign(new Error('Interactive Blender is disabled by the operator.'),{status:409});
     return this.mutateBlender(room,actorId,state=>{
       const device=sessionAccess(state,id,actorId,true),command=queueInteractive(device,actorId,input);
@@ -2515,6 +2521,7 @@ export class RoomManager {
     },authorize);
   }
   blenderReceiveFrame(room:Room,id:string,credential:string,input:unknown){
+    requireCapability('connected_blender');
     if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw new Error('Interactive Blender is disabled by the operator.');
     this.assertOwned(room);const device=deviceAccess(initialBlenderState(room.blender),id,credential),request=input as {epoch:number;png:string};
     if(!request||Object.keys(request).sort().join()!=='epoch,png'||request.epoch!==device.epoch||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||typeof request.png!=='string'||request.png.length>1400000)throw new Error('Dedicated Blender frame is stale or unavailable.');
@@ -2523,6 +2530,7 @@ export class RoomManager {
     let frames=this.blenderFrames.get(room);if(!frames){frames=new Map();this.blenderFrames.set(room,frames);}frames.set(id,{epoch:device.epoch,at:Date.now(),bytes});return {acknowledged:true};
   }
   blenderReadFrame(room:Room,id:string,actorId:string){
+    requireCapability('connected_blender');
     if(process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw Object.assign(new Error('Interactive Blender is disabled by the operator.'),{status:409});
     this.assertOwned(room);const device=sessionAccess(initialBlenderState(room.blender),id,actorId),frame=this.blenderFrames.get(room)?.get(id);
     if(sessionView(device).state!=='connected'||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||!frame||frame.epoch!==device.epoch||Date.now()-frame.at>2500)throw Object.assign(new Error('Dedicated app frame unavailable. Explicitly reopen after disconnect; no input is replayed.'),{status:409});
@@ -2537,6 +2545,7 @@ export class RoomManager {
       const checked=request.result!==undefined?checkBlenderResult(request.result,command.id,command.hash):undefined;
       if(checked&&(command.action!=='save'||checked.result.evidence.policy!==INTERACTIVE_BLENDER_POLICY)||command.action==='save'&&request.state==='completed'&&!checked)throw new Error('Manual save requires verified isolated outputs and cleanup.');
       if(command.state==='completed'){if(request.state!=='completed'||command.outputHash!==(checked?interactiveHash(checked.result):undefined))throw new Error('Conflicting immutable app receipt.');return {acknowledged:true};}
+      if (request.state === 'completed') requireCapability('connected_blender');
       if(request.state==='completed'&&process.env.COCREATE_INTERACTIVE_BLENDER!=='linux-xvfb-v1')throw new Error('Interactive completion is disabled; acknowledge cleanup only.');
       if(!['running','cancel_requested'].includes(command.state)||command.state==='cancel_requested'&&request.state==='completed')throw Object.assign(new Error('App command already cancelled or uncertain.'),{status:409});
       if(checked&&request.state==='completed'){
@@ -2562,6 +2571,7 @@ export class RoomManager {
     return { ...checked, version };
   }
   private async executeBlenderTask(room: Room, target: ArtifactTarget, requirements: SharedRequirement[], submissions: StoredSubmission[], revision: number, fingerprint: string) {
+    requireCapability('connected_blender');
     const runId = randomUUID(), controller = new AbortController(), specificationRevision = room.specificationRevision;
     const ownSubmission = [...submissions].reverse().find(submission => requirements.some(item => item.sources.some(source => source.participantId === submission.participantId && source.editSeqs.some(seq => submission.editSeqs.includes(seq))))) || submissions.at(-1);
     const participantId = ownSubmission?.participantId || room.ownerId!;
@@ -2580,6 +2590,7 @@ export class RoomManager {
       if (await this.save(room, 'blender.planned', participantId, 'user') === false) throw new Error('Blender task could not be saved before inference.');
       let command = device.command?.state === 'completed' && device.command.result && device.command.epoch === device.epoch && device.command.frozen?.participantId === participantId && device.command.frozen.fingerprint === acceptedRequirementFingerprint(requirements) ? device.command : undefined;
       if (!command) {
+      requireCapability('connected_blender');
       const reservation = this.reserveBudget(room, 'builder', setup, 1);
       let result: Awaited<ReturnType<typeof callOpenAI<unknown>>>;
       try {
@@ -2593,6 +2604,7 @@ export class RoomManager {
       this.assertOwned(room);
       if (controller.signal.aborted || revision !== room.requestedRevision || fingerprint !== buildFingerprint(room)) throw new Error('Accepted Blender instructions changed.');
       command = await this.mutateBlender(room, participantId, state => {
+        requireCapability('connected_blender');
         const selected = state.devices.find(item => item.id === device.id);
         if (!selected || selected.epoch !== device.epoch) throw new Error('Blender control epoch changed while preparing the scene.');
         return queueScene(selected, participantId, runId, scene, { participantId, fingerprint: acceptedRequirementFingerprint(requirements), specificationRevision, submissionIds: submissions.map(item => item.id), requirementRevisions: requirements.map(item => ({ id: item.id, revision: item.revision })), inputVersions });
@@ -2608,12 +2620,14 @@ export class RoomManager {
       let completed;
       while (Date.now() < deadline) {
         await new Promise(resolve => setTimeout(resolve, 100)); this.assertOwned(room);
+        requireCapability('connected_blender');
         const active = room.blender?.devices.find(item => item.id === device.id), receipt = active?.command;
         if (receipt?.id !== commandId || active?.epoch !== command.epoch || controller.signal.aborted || active.state === 'revoked' || active.state === 'expired' || Date.now() - active.lastSeenAt > HEARTBEAT_MS) throw new Error('Blender session disconnected, revoked, expired or cancelled; explicit retry required.');
         if (receipt.state === 'completed' && receipt.result) { completed = checkBlenderResult(receipt.result, receipt.id, artifactHash(Buffer.from(JSON.stringify(scene)))); break; }
         if (['cancelled','failed','cancel_requested'].includes(receipt.state)) throw new Error(receipt.error || 'Blender execution cancelled or failed.');
       }
       if (!completed) throw new Error('Blender execution timed out.');
+      requireCapability('connected_blender');
       this.eventStore.transitionTask({ workspaceId: room.id, taskId: runId, state: 'verifying' });
       const versionId = (current?.versions.at(-1)?.id || 0) + 1, createdAt = now();
       const body = bodyFromBytes(blenderBytes(room.id, target.id, versionId, completed.result), BLENDER_MIME);

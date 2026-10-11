@@ -14,7 +14,10 @@ if (process.argv.includes('--write-config')) {
 }
 const files = JSON.parse(fs.readFileSync(manifest, 'utf8'));
 if (!Array.isArray(files) || files.some(file => typeof file !== 'string' || path.isAbsolute(file) || file.includes('..') || file.includes('\\') || (!/^(server|src|shared|worker|public)\//.test(file) && !buildFiles.includes(file)))) throw new Error('Invalid release input manifest.');
-const config = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8'));
+const configIndex = process.argv.indexOf('--config');
+const configPath = configIndex < 0 ? 'wrangler.jsonc' : process.argv[configIndex + 1];
+if (!configPath || configPath.startsWith('--')) throw new Error('Select a release configuration file.');
+const config = JSON.parse(fs.readFileSync(configPath, 'utf8'));
 const {COCREATE_RELEASE_FINGERPRINT: _ignored, ...vars} = config.vars;
 const hash = createHash('sha256');
 for (const file of files.sort()) {
@@ -26,9 +29,9 @@ for (const file of files.sort()) {
 }
 hash.update(JSON.stringify({vars, image_vars: config.containers[0].image_vars}));
 const fingerprint = hash.digest('hex');
-if (process.argv.includes('--write-config')) {
+if (process.argv.includes('--write-config') || process.argv.includes('--write-target')) {
   config.vars.COCREATE_RELEASE_FINGERPRINT = fingerprint;
-  fs.writeFileSync('wrangler.jsonc', JSON.stringify(config, null, 2) + '\n');
+  fs.writeFileSync(configPath, JSON.stringify(config, null, 2) + '\n');
 } else if (config.vars.COCREATE_RELEASE_FINGERPRINT !== fingerprint) {
   throw new Error('Release source fingerprint is stale; prepare it before publishing.');
 }

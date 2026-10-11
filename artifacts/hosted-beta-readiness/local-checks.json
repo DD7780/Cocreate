@@ -1,0 +1,72 @@
+{
+  "date": "2026-10-11",
+  "baseCommit": "7aef200666dbf0e84d0431524c405af71d796aaa",
+  "scope": "Local Windows controlled providers and preparation; exact implementation commit will be recorded with CI",
+  "fingerprint": "dc87daee569c4b2e189b83a7a39d4245e0a7f0176128a6d81175729f39113391",
+  "releaseInputs": 127,
+  "focusedFinal": {
+    "passed": 10,
+    "total": 10,
+    "files": [
+      "tests/hosted-readiness.test.ts",
+      "tests/blender-interactive-session.test.ts",
+      "tests/hosted-reliability.test.ts"
+    ]
+  },
+  "affectedRegressions": {
+    "passed": 18,
+    "total": 18,
+    "files": [
+      "tests/preview-release.test.ts",
+      "tests/preview-asset-helper.test.ts",
+      "tests/hosted-readiness.test.ts",
+      "tests/blender-session.test.ts"
+    ],
+    "scope": "Native Windows isolation permissions; real pinned asset helper uses controlled endpoints; no cloud mutation"
+  },
+  "cloudflareAndAuthority": {
+    "passed": 18,
+    "total": 18,
+    "files": [
+      "tests/cloudflare-container.test.ts",
+      "tests/hosted-readiness.test.ts",
+      "tests/blender-interactive-session.test.ts",
+      "tests/hosted-reliability.test.ts"
+    ],
+    "scope": "Earlier authority run; later changes separately covered by focused final run"
+  },
+  "newReadinessTests": {
+    "passed": 6,
+    "total": 6
+  },
+  "typecheck": "passed",
+  "boundaries": {
+    "violations": 0,
+    "inferenceCalls": 0
+  },
+  "build": "passed; existing chunk-size warning",
+  "dependencyRestore": "pnpm 10.18.3 frozen lockfile; no package or lockfile changes",
+  "knownFailedPreparationAttempts": [
+    "Existing health assertion omitted new capability configuration; assertion updated and rerun passed",
+    "New synthetic interactive test used incorrect fixed policy string; replaced with canonical constant and rerun passed",
+    "Bundled pnpm 11 attempted relinking; exact cached pnpm 10.18.3 restored locked dependencies"
+  ],
+  "unchanged": [
+    "Canvas UI",
+    "Workflow UI",
+    "Physical token accounting",
+    "Manual beta gate",
+    "Prior readiness evidence"
+  ],
+  "hostedAcceptance": false,
+  "platformDeployed": false,
+  "generatedApplicationDeployed": false,
+  "paidInferenceCalls": 0,
+  "remaining": [
+    "Exact candidate CI",
+    "Isolated staging configuration and account tests",
+    "Coordinator replacement/expiry/live revocation",
+    "Generated Pages account/project/token/exact authorization",
+    "Reviewed platform release/production smoke"
+  ]
+}

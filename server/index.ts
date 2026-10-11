@@ -42,6 +42,7 @@ import { registerBlenderRoutes } from './blender-routes.js';
 import { registerSharedBrowserRoutes } from './shared-browser-routes.js';
 import { registerPreviewRoutes } from './preview-routes.js';
 import type { PreviewProvider } from './preview-provider.js';
+import { capabilityConfiguration, requireCapability } from './capabilities.js';
 type Options = {
   platform?: SupabasePlatform;
   previewProvider?: PreviewProvider;
@@ -90,7 +91,7 @@ export async function createCoCreateServer(options: Options = {}) {
     app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
         status: 'configuration-error', service: 'cocreate-app', error: platformState.error
     }) : res.json({
-        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint
+        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint, capabilities: capabilityConfiguration()
     }));
     app.get('/api/auth/config', (_req, res) => res.status(platformState.error ? 503 : 200).json({
         mode: platformState.mode, configured: !platformState.error, error: platformState.error || undefined
@@ -150,6 +151,18 @@ export async function createCoCreateServer(options: Options = {}) {
             session, room
         };
     };
+    app.use('/api/rooms/:id/browser', (req, res, next) => {
+        const savedList = req.method === 'GET' && req.path === '/';
+        const cleanup = req.method === 'POST' && req.path.endsWith('/control') && ['pause','cancel','disconnect'].includes(req.body?.action);
+        try { if (!savedList && !cleanup) requireCapability('shared_browser'); next(); }
+        catch { res.status(503).json({code:'capability_disabled', error:'Shared browsers are disabled by the operator.'}); }
+    });
+    app.use('/api/rooms/:id/previews', (req, res, next) => {
+        const route = req.path.toLowerCase().replace(/\/+$/, '');
+        const dispatch = req.method !== 'GET' && (route.includes('/connections') && !route.endsWith('/revoke') || route.endsWith('/release') || route === '/plans' && req.body?.connectionId);
+        try { if (dispatch) requireCapability('generated_preview'); next(); }
+        catch { res.status(503).json({code:'capability_disabled', error:'Generated preview dispatch is disabled by the operator.'}); }
+    });
     registerBlenderRoutes(app, manager, authorize, platformState.platform || undefined);
     const closeSharedBrowsers=registerSharedBrowserRoutes(app,manager,authorize,platformState.platform||undefined);
     const closePreviews=registerPreviewRoutes(app,manager,authorize,encryptionSecret,platformState.platform||undefined,options.previewProvider);
@@ -709,6 +722,10 @@ export async function createCoCreateServer(options: Options = {}) {
                 await platformState.platform.assertCoordinator(auth.room.id);
             }
             res.setHeader('Content-Type', 'application/zip');
+            res.setHeader('Cache-Control', 'no-store');
+            res.setHeader('Referrer-Policy', 'no-referrer');
+            res.setHeader('X-Content-Type-Options', 'nosniff');
+            if (auth.session.exp && auth.session.exp <= Date.now() / 1000) return res.status(401).end();
             res.setHeader('Content-Disposition', `attachment; filename="cocreate-${auth.room.id}-v${v.id}.zip"`);
             res.send(createZip(downloadableFiles(v.files)));
         }

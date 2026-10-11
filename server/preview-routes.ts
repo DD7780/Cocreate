@@ -12,6 +12,7 @@ import { previewHash, previewState, previewView, hashPlan, restorePreviewBytes, 
 import { CloudflarePreviewProvider, type PreviewProvider } from './preview-provider.js';
 import { withIsolatedBrowser } from './isolation/browser.js';
 import { previewDocument } from './preview.js';
+import { requireCapability } from './capabilities.js';
 export function registerPreviewRoutes(app: express.Express, manager: RoomManager, authorize: (req: express.Request, res: express.Response) => {
     room: Room;
     session: Session;
@@ -281,13 +282,14 @@ export function registerPreviewRoutes(app: express.Express, manager: RoomManager
         active.set(plan.id, { connectionId: connection.id, abort });
         let checking = false;
         const timer = setInterval(() => { if (checking)
-            return; checking = true; void authority(room, actor, plan).catch(() => abort.abort(new Error('Current release authority unavailable.'))).finally(() => { checking = false; }); }, 1000);
+            return; checking = true; void Promise.resolve().then(() => { requireCapability('generated_preview'); return authority(room, actor, plan); }).catch(() => abort.abort(new Error('Current release authority unavailable.'))).finally(() => { checking = false; }); }, 1000);
         timer.unref();
         try {
             await lock(room, plan);
             await authority(room, actor, plan);
             const bytes = restorePreviewBytes(await manager.readArchivedArtifact(room, plan.contentRef), plan);
             const dispatchAuthority = async () => {
+                requireCapability('generated_preview');
                 abort.signal.throwIfAborted();
                 await authority(room, actor, plan);
                 abort.signal.throwIfAborted();

@@ -1,0 +1,7 @@
+{
+  "accountId": "REPLACE_WITH_EXISTING_AUTHORIZED_ACCOUNT_ID",
+  "workerName": "cocreate-beta-staging",
+  "origin": "https://REPLACE_WITH_STAGING_WORKER_ORIGIN",
+  "supabaseUrl": "https://REPLACE_WITH_SEPARATE_STAGING_PROJECT.supabase.co",
+  "publishableKey": "REPLACE_WITH_STAGING_PUBLISHABLE_KEY"
+}
