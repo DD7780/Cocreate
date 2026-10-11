@@ -57,8 +57,14 @@ test('interactive HTTP receipts fence participants, agent conflicts and uncertai
         current = f.room.blender!.devices[0];
         queueScene(current, 'bob', randomUUID(), f.control.scene, { participantId: 'bob', fingerprint: 'fixture', specificationRevision: 1, submissionIds: [], requirementRevisions: [], inputVersions: [] });
         await device('poll', {});
+        delete process.env.COCREATE_INTERACTIVE_BLENDER;
+        assert.equal((await device('result', { commandId: current.command!.id, epoch: 2, state: 'completed' })).status, 409);
+        await device('poll', {});
+        assert.equal(f.room.blender!.devices[0].command!.state, 'cancel_requested');
         assert.equal((await device('result', { commandId: current.command!.id, epoch: 2, state: 'failed' })).status, 200);
         assert.equal(f.room.blender!.devices[0].interactive!.state, 'unknown', 'Failed agent work cannot revive the former human display');
+        process.env.COCREATE_INTERACTIVE_BLENDER = 'linux-xvfb-v1';
+        assert.equal((await request(sessionPath + '/control', 'bob', { action: 'resume', epoch: 2 })).status, 200);
         const closeId = randomUUID();
         assert.equal((await request(sessionPath + '/input', 'bob', { requestId: closeId, epoch: 2, action: 'close' })).status, 200);
         await device('poll', {});

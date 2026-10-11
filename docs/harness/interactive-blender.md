@@ -1,8 +1,14 @@
 # Interactive Blender — bounded change packet
 
+Fresh native acceptance source `389eb29a0d62e3cdd1b5d2648b007e738985b25b`, [CI 38124222015](https://github.com/DD7780/Cocreate/actions/runs/38124222015), succeeded: native interactive Blender 3/3 (zero skips), PostgreSQL 3/3, compiler 10/10, browser 17/17 and ordinary regression 273/275 (two desktop-only skips, independently run in the dedicated environment). Two independent participants observed actual frames, handed off to epoch 2, saved/retrieved private outputs, excluded human input during agent execution, reopened afterward and locally stopped the device. Only the explicitly submitted agent task made two controlled provider calls. Actual effective input/repeated isolation/save/whole-job cleanup checks passed. This supersedes the earlier Linux native acceptance blocker only; Windows GUI probes remain failed history, Artifacts UI acceptance is a separate subsequent check, and hosted acceptance is unverified.
+
 ### Agent-to-human recovery and operator gate packet — 2026-10-11
 
+The disablement guard also covers new agent-result completion before publication, while completed immutable receipts remain acknowledgeable. A focused protocol case disables the operator flag during an admitted agent command, rejects completion, observes cancellation on poll, accepts cleanup/failure acknowledgement and requires explicit resume/reopen. This closes the result-before-next-poll race without changing enabled native execution.
+
 ### Artifacts interaction demonstration packet
+
+The production image deliberately owns its build output/source evidence as root, then runs tests as UID 1000 with zero capabilities. Prepare the local-auth client only while building a separate disposable fixture image, rather than asking the running participant process to overwrite `/app/dist`. UI screenshots/checks write only beneath its existing owner-writable `.runtime`; no production permissions or native resource bounds are broadened.
 
 Extend the existing `scripts/verify-blender-session.ts` acceptance runner with an explicit Linux interactive mode, reusing its two independent authenticated browser profiles and actual companion. Scope: that script, focused CI invocation and harness evidence. Verify live 960×640 app frames in Artifacts, disabled observer input, explicit handoff, real input, manual scene/render retrieval, independent selection, local STOP and unchanged zero inference for manual work. Run after native graphics acceptance, with a disposable local-auth client build; do not alter the production build or hosted identities. Screenshots and checks identify actual Linux graphics separately from historical Windows background results.
 

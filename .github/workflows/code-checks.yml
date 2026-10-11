@@ -116,10 +116,14 @@ jobs:
           exit "$native_status"
       - name: Two participant Artifacts UI with actual dedicated Blender
         if: ${{ !cancelled() && steps.desktop_native.outcome == 'success' }}
-        run: >-
-          sh scripts/run-linux-desktop-check.sh sh -c
-          'VITE_COCREATE_AUTH_MODE=local node node_modules/vite/bin/vite.js build --configLoader runner &&
-          node --import tsx scripts/verify-blender-session.ts --interactive'
+        run: |
+          # Prepare only this disposable fixture image; runtime keeps UID 1000 and zero capabilities.
+          docker build --tag cocreate-ui-check - <<'DOCKER'
+          FROM cocreate-check
+          RUN VITE_COCREATE_AUTH_MODE=local node node_modules/vite/bin/vite.js build --configLoader runner
+          DOCKER
+          sed 's/cocreate-check/cocreate-ui-check/g' scripts/run-linux-desktop-check.sh > /tmp/cocreate-ui-check.sh
+          sh /tmp/cocreate-ui-check.sh node --import tsx scripts/verify-blender-session.ts --interactive
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' && steps.browser_adversity.outcome == 'success' }}
         run: >-

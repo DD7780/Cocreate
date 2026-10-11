@@ -2478,6 +2478,9 @@ export class RoomManager {
         return { acknowledged: true, state: command.state };
       }
       if (!['running','interrupted','cancel_requested'].includes(command.state) || (command.state === 'cancel_requested' && request.state === 'completed')) throw Object.assign(new Error('Execution cancelled or already settled.'), { status: 409 });
+      if (device.interactive && request.state === 'completed' && process.env.COCREATE_INTERACTIVE_BLENDER !== 'linux-xvfb-v1') {
+        throw Object.assign(new Error('Interactive completion is disabled; acknowledge cleanup only.'), { status: 409 });
+      }
       if (request.state === 'completed') {
         const checked=checkBlenderResult(request.result, command.id, artifactHash(Buffer.from(JSON.stringify(command.scene)))).result;
         if(checked.evidence.policy!==(device.interactive?.policy||'windows-appcontainer-blender-v1'))throw new Error('Execution environment does not match local approval.');

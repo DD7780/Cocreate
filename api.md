@@ -261,7 +261,9 @@ The role-gated project.verify tool audits request/start/success/failure with has
 
 The dedicated-desktop/AppContainer GUI probe failed before any frame or effective input could be verified; the bounded process was removed. Interactive sessions remain unavailable. D-0060 supports background execution and saved renders only; D-0061 supports a separately isolated shared browser. See [the interactive packet](docs/harness/interactive-blender.md) for dated failure evidence, recovery and the required graphics-capable isolated environment. No whole-desktop fallback, global input or extra capabilities are permitted. Canvas, Workflow and token tracking are unchanged. Generated-app preview preparation is independent.
 
-## Dedicated interactive Blender transport (v6; native acceptance pending)
+## Dedicated interactive Blender transport (v6; Linux native accepted, hosted pending)
+
+Native Linux source acceptance passes 3/3 at `389eb29` (CI 38124222015). Server-side operator admission is required for pairing, frames, input, agent dispatch and new human/agent completion. Removing the flag requests cleanup on device poll and rejects result-before-next-poll promotion, while immutable completed receipt acknowledgement and close/STOP remain available. Enabled human/agent work retains its proven boundary; hosted and subsequent Artifacts UI acceptance remain separate.
 
 The optional `interactivePolicy: linux-private-xvfb-blender-v1` pairing field requires explicit local approval in the dedicated Linux companion. Default Windows pairing remains background only. The operator selects `COCREATE_INTERACTIVE_BLENDER=linux-xvfb-v1` and the dedicated delegated cgroup; neither HTTP nor model input can select binaries, flags, displays or capabilities.
 

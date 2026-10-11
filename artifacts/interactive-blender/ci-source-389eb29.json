@@ -1,0 +1,54 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "sourceCommit": "389eb29a0d62e3cdd1b5d2648b007e738985b25b",
+  "branch": "codex/canvas-artifacts",
+  "workflowRun": 38124222015,
+  "job": 114425091716,
+  "overall": "success",
+  "postgres": {
+    "passed": 3,
+    "skipped": 0
+  },
+  "compiler": {
+    "passed": 10,
+    "skipped": 0
+  },
+  "browser": {
+    "passed": 17,
+    "skipped": 0
+  },
+  "regression": {
+    "total": 275,
+    "passed": 273,
+    "skipped": 2,
+    "failed": 0,
+    "skipScope": "Two dedicated desktop tests are run independently with the explicit native operator flag"
+  },
+  "nativeInteractiveBlender": {
+    "passed": 3,
+    "total": 3,
+    "skipped": 0,
+    "effectiveTranslation": 2,
+    "renderer": "llvmpipe (LLVM 15.0.6, 256 bits)",
+    "version": "4.5.14",
+    "capabilitiesAbsent": true,
+    "cgroupAuthorityAbsent": true,
+    "hostDisplayDenied": true,
+    "outsideDenied": true,
+    "networkDenied": true,
+    "credentialsAbsent": true,
+    "repeatProbeAfterInput": true,
+    "wholeJobCleanup": true,
+    "twoIndependentParticipants": true,
+    "observation": true,
+    "handoffEpoch": 2,
+    "privateSaveRetrieval": true,
+    "humanAgentExclusion": true,
+    "reopenAfterAgent": true,
+    "localStop": true,
+    "controlledInferenceCalls": 2
+  },
+  "artifactsUi": "Prepared in subsequent source; not included in this run",
+  "hosted": "unverified"
+}

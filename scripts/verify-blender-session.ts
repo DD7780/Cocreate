@@ -12,7 +12,7 @@ import { browserExecutable } from '../server/isolation/browser.js';
 process.env.NODE_ENV = 'production';
 process.env.COCREATE_AUTH_MODE = 'local';
 const interactive = process.argv.includes('--interactive');
-const output = path.resolve(interactive ? 'artifacts/interactive-blender/browser' : 'artifacts/blender-session/browser');
+const output = path.resolve(interactive ? '.runtime/interactive-blender/browser' : 'artifacts/blender-session/browser');
 fs.mkdirSync(output, { recursive: true });
 const fixture = await createCanvasArtifactsFixture({ client: true });
 const browserPath = process.env.COCREATE_UI_BROWSER || (interactive ? browserExecutable() : 'C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe');
