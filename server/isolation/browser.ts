@@ -19,7 +19,6 @@ export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFIC
 
 /** Trusted CDP lives in the parent. Generated code has no access to its checks, pipes or Node process. */
 export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) => Promise<T>, options: IsolationOptions & { sharedSession?: boolean } = {}): Promise<T> {
-  if (options.sharedSession && process.platform !== 'win32') throw unavailable();
   if (options.signal?.aborted) throw new IsolationError('isolation_cancelled', 'Verification cancelled.');
   if (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os') throw unavailable();
   const runtime = await prepareIsolation(), executable = browserExecutable();
@@ -37,7 +36,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   // Checks open pages serially; reuse a renderer instead of growing a pool past the kernel task ceiling.
   if (process.platform === 'linux') flags.push('--renderer-process-limit=1');
   // Chromium reserves more virtual space than RLIMIT_AS permits. Physical memory is enforced by the job cgroup.
-  const linux = ['--cpu=' + isolationPolicy.cpuSeconds,
+  const linux = ['--cpu=' + (options.sharedSession ? 60 : isolationPolicy.cpuSeconds),
     // The attached cgroup limits browser tasks; RLIMIT_NPROC also counts unrelated Node server threads.
     '--fsize=' + linuxBrowserFileBytes, '--nofile=' + linuxBrowserFileDescriptors, '--', '/usr/bin/bwrap',
     // Node inherits only the explicitly listed CDP pipes; Bubblewrap passes them to its exec child.
@@ -51,7 +50,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
     process.platform === 'linux' ? {executable: '/usr/bin/prlimit', args: linux} : undefined;
   if (!command) throw unavailable();
   let group: LinuxJobGroup | undefined;
-  try { if (process.platform === 'linux') group = LinuxJobGroup.create(); }
+  try { if (process.platform === 'linux') group = LinuxJobGroup.create(options.sharedSession ? 60 : isolationPolicy.cpuSeconds); }
   catch (error) { fs.rmSync(workspace, {recursive: true, force: true}); const failure = unavailable(); failure.cause = error; throw failure; }
   const child = spawn(group ? linuxJobLauncher : command.executable, group ? [command.executable, ...command.args] : command.args, {cwd: workspace, windowsHide: true, detached: process.platform !== 'win32',
     env: process.platform === 'win32' ? {SystemRoot: process.env.SystemRoot || 'C:\\Windows', APPDATA: process.env.APPDATA, LOCALAPPDATA: process.env.LOCALAPPDATA, USERPROFILE: process.env.USERPROFILE} : {PATH: '/usr/bin:/bin', LANG: 'C.UTF-8'},

@@ -1,6 +1,6 @@
 import { randomUUID } from 'node:crypto';
-import fs from 'node:fs';
-import { withIsolatedBrowser, browserExecutable, type BrowserProtocol } from './isolation/browser.js';
+import { withIsolatedBrowser, type BrowserProtocol } from './isolation/browser.js';
+import { assertSharedBrowserRuntime } from './shared-browser-runtime.js';
 import { browserHash } from './browser-state.js';
 import { browserRequest, approvedBrowserOrigin } from './browser-network.js';
 import { validateBrowserInput, type BrowserInput } from '../shared/browser-session.js';
@@ -24,7 +24,7 @@ export class SharedBrowserExecutor {
   async start(origin: string,authorizeNetwork:()=>Promise<void>) {
     approvedBrowserOrigin(origin);
     this.authorizeNetwork=authorizeNetwork;
-    if(process.platform!=='win32'||process.arch!=='x64'||!fs.existsSync(browserExecutable())||browserHash(fs.readFileSync(browserExecutable()))!=='798971a4fb66ed219f2cae1e6a0e97ad68a2e935d5e140d7150745b063dea65b')throw new Error('Shared browsers require the pinned official Windows x64 headless Chromium 154.0.8037.92 runtime.');
+    assertSharedBrowserRuntime();
     let ready!:()=>void,reject!:(error:unknown)=>void;
     const opened=new Promise<void>((resolve,fail)=>{ready=resolve;reject=fail;});
     this.closed=withIsolatedBrowser(async browser=>{

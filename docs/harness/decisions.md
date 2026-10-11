@@ -1,5 +1,7 @@
 # Harness decision log
 
+D-0064 (2026-10-11): Extend manual shared browsers to a checksum-attested Linux x64 image using the existing no-network Bubblewrap/cgroup boundary. Preserve grants and accounting; keep acceptance/compiler budgets unchanged, sixty-second aggregate CPU only for sessions. Native Linux acceptance precedes capability claims. This supersedes Windows-only runtime guidance for this bounded adapter, not dated Windows evidence or hosted gates.
+
 ## D-0063 — Frozen generated-frontend preview releases, independently gated
 
 Use one provider: existing dedicated Cloudflare Pages Direct Upload project, unique preview branch and four static files. Local preparation needs no account. Connection ownership and explicit release grants remain separate from project membership. Exact target/source/output/plan hashes and explicit public-preview approval bind each permanent receipt. Keep credentials in private encrypted server state; neither model content nor the control-plane operator credential can authorize release. Use Wrangler asset upload only; deployment creation is one REST attempt after durable creation intent. Non-expiring global reservations fence uncertain outcomes; reconcile exact metadata/live bytes before clearing them. Recovery is a newly reviewed preview of retained bytes, never production rollback. v5 extends private durable artifacts with explicit older readers. Keep earlier dated readiness evidence unchanged. Full live user acceptance and hosted rollout remain distinct gates.

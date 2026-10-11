@@ -39,19 +39,19 @@ test('current schema browser files survive private SDK cold restore and reject c
   }finally{await f.close();await store.close();}
 });
 
-test('new shared-session native boundary denies direct network and unrelated files, survives beyond acceptance-tool wall bound and removes its process',{skip:process.platform!=='win32'},async()=>{
+test('new shared-session native boundary denies direct network and unrelated files, survives beyond acceptance-tool wall bound and removes its process',{skip:!['win32','linux'].includes(process.platform)},async()=>{
   const sentinel=path.resolve('.runtime/shared-browser-private-'+randomUUID());fs.writeFileSync(sentinel,'private-host-sentinel');
   let hits=0,pid=0;const server=http.createServer((_req,res)=>{hits++;res.end('private');});await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
   try{await withIsolatedBrowser(async browser=>{
     const t=await browser.call('Target.createTarget',{url:'about:blank'}),attached=await browser.call('Target.attachToTarget',{targetId:t.targetId,flatten:true});
     const navigation=await browser.call('Page.navigate',{url:'file:///'+sentinel.replaceAll('\\','/')},attached.sessionId);assert.ok(navigation.errorText);
     const evaluation=await browser.call('Runtime.evaluate',{expression:`Promise.race([fetch('http://127.0.0.1:${(server.address() as any).port}/private').then(()=>false,()=>true),new Promise(resolve=>setTimeout(()=>resolve(true),3000))])`,awaitPromise:true,returnByValue:true},attached.sessionId);assert.equal(evaluation.result.value,true);assert.equal(hits,0);
-    await new Promise(resolve=>setTimeout(resolve,21_000));assert.ok((await browser.call('Browser.getVersion')).product.includes('154.0.8037.92'));
+    await new Promise(resolve=>setTimeout(resolve,21_000));const version=(await browser.call('Browser.getVersion')).product;assert.match(version,/Chrome\//);if(process.platform==='win32')assert.ok(version.includes('154.0.8037.92'));
   },{sharedSession:true,wallMs:35_000,onStarted:value=>{pid=value;}});assert.ok(pid>0);assert.throws(()=>process.kill(pid,0));}
   finally{fs.unlinkSync(sentinel);await new Promise<void>(resolve=>server.close(()=>resolve()));}
 });
 
-test('two project participants use real authenticated view/input, private login, handoff, no replay and saved private downloads',{skip:process.platform!=='win32'},async()=>{
+test('two project participants use real authenticated view/input, private login, handoff, no replay and saved private downloads',{skip:!['win32','linux'].includes(process.platform)},async()=>{
   let hits=0,logins=0;const site=http.createServer(async(req,res)=>{
     if(req.url==='/login'){if(req.method==='POST'){logins++;res.setHeader('Set-Cookie','private=owner-cookie; HttpOnly; SameSite=Strict');res.writeHead(303,{Location:'/'}).end();return;}}
     if(req.url==='/file'){res.writeHead(200,{'Content-Type':'text/plain','Content-Disposition':'attachment; filename="report.txt"'}).end('private saved report');return;}

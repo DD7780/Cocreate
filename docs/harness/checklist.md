@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Shared-browser Linux continuation (2026-10-11): implementation and Windows affected regression 5/5 complete; native Linux lifetime/network/file/controller/download/aggregate-CPU acceptance pending exact-source CI. See shared-browser-linux.md. Do not mark interactive Blender complete.
+
 ## Generated frontend preview milestone (2026-10-11)
 
 - [x] Separate provider packet/current official docs; Cloudflare Pages existing-project preview scope.

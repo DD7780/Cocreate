@@ -11,9 +11,10 @@ const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 /** Server-owned cgroup authority is never mounted into a candidate's namespace. */
 export class LinuxJobGroup {
-  private constructor(readonly directory: string) {}
+  private constructor(readonly directory: string, private readonly cpuSeconds: number) {}
 
-  static create(): LinuxJobGroup {
+  static create(cpuSeconds: number = isolationPolicy.cpuSeconds): LinuxJobGroup {
+    if (!Number.isInteger(cpuSeconds) || cpuSeconds < 1 || cpuSeconds > 60) throw unavailable();
     const configured = process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate';
     if (!path.isAbsolute(configured) || fs.realpathSync(configured) !== configured || fs.statfsSync(configured).type !== 0x63677270) throw unavailable();
     const jobs = path.join(configured, 'jobs');
@@ -26,7 +27,7 @@ export class LinuxJobGroup {
         if (fs.readFileSync(path.join(directory, file), 'utf8').trim() !== value) throw unavailable();
       }
       fs.accessSync(path.join(directory, 'cgroup.kill'), fs.constants.W_OK);
-      return new LinuxJobGroup(directory);
+      return new LinuxJobGroup(directory, cpuSeconds);
     } catch (error) { fs.rmdirSync(directory); throw error; }
   }
 
@@ -65,7 +66,7 @@ export class LinuxJobGroup {
 
   cpuExceeded(): boolean {
     // Stop conservatively before per-process rounded CPU limits can kill only a renderer.
-    return this.cpuMicroseconds() >= isolationPolicy.cpuSeconds * 1_000_000 - 100_000;
+    return this.cpuMicroseconds() >= this.cpuSeconds * 1_000_000 - 100_000;
   }
 
   kill(): void { fs.writeFileSync(path.join(this.directory, 'cgroup.kill'), '1'); }

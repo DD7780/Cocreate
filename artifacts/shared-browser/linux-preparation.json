@@ -1,0 +1,14 @@
+{
+  "cloudMutations": 0,
+  "paidInference": 0,
+  "windowsAffected": {
+    "passed": 5,
+    "skipped": 0,
+    "failed": 0
+  },
+  "scope": "Linux source preparation and affected Windows checks; exact-source native Linux CI pending",
+  "base": "ac20bc13429feb122b4371e45f41d5ec5fb94a3d",
+  "branch": "codex/canvas-artifacts",
+  "nativeLinuxVerified": false,
+  "verifiedAt": "2026-10-11T06:51:27.4950325Z"
+}

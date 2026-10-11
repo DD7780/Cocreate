@@ -1,5 +1,7 @@
 # 2guys1canvas implemented API contracts
 
+Shared-browser Linux execution contract: no HTTP payload can choose an executable or alter bounds. server/shared-browser-runtime.ts verifies the fixed image-owned binary hash record; withIsolatedBrowser applies the shared-session 600-second wall/60-second aggregate CPU/64 MiB protocol bounds and existing no-network namespace/512 MiB/64-task/8 MiB file limits. Routes, grants, epochs and private download contracts are unchanged. Missing records or delegation fail closed; image attestation is not acceptance proof.
+
 ## Generated frontend previews (2026-10-11)
 
 All routes require current project/beta/coordinator access. `GET /api/rooms/:id/previews` returns public connection metadata, frozen plans and receipts, never credentials. `POST /previews/connections` accepts `{accountId,projectName,credential,actors}` and verifies an existing dedicated Direct Upload target read-only. Owner-only `POST /connections/:connectionId/grants` uses `{actors,expectedRevision}`; revoke increments revision; `POST /credential` replaces a scoped token only after verifying the same target. Grants invalidate old approvals.

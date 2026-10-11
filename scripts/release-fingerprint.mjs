@@ -5,7 +5,7 @@ import {spawnSync} from 'node:child_process';
 
 // Attest source/build inputs without a self-referential Git revision or mutable runtime environment.
 const manifest = 'release-source-files.json';
-const buildFiles = ['Dockerfile', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'vite.config.ts', 'tsconfig.json', 'index.html', 'scripts/start-container.sh', 'scripts/release-fingerprint.mjs', manifest];
+const buildFiles = ['Dockerfile', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'vite.config.ts', 'tsconfig.json', 'index.html', 'scripts/start-container.sh', 'scripts/attest-shared-browser.mjs', 'scripts/release-fingerprint.mjs', manifest];
 if (process.argv.includes('--write-config')) {
   const tracked = spawnSync('git', ['ls-files', '-z', '--', 'server', 'src', 'shared', 'worker', 'public'], {encoding: 'utf8', windowsHide: true});
   if (tracked.status !== 0) throw new Error('Tracked release inputs unavailable.');

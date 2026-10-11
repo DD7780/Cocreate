@@ -12,6 +12,21 @@ const linux = {skip: process.platform !== 'linux'};
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 const jobs = () => path.join(process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate', 'jobs');
 const noGroups = () => assert.deepEqual(fs.readdirSync(jobs(), {withFileTypes: true}).filter(entry => entry.isDirectory()), []);
+
+test('Linux shared-session CPU admission preserves a finite 60-second aggregate budget beyond the acceptance budget', linux, async () => {
+  assert.throws(() => LinuxJobGroup.create(0)); assert.throws(() => LinuxJobGroup.create(61));
+  const group = LinuxJobGroup.create(60);
+  const child = probe("import {spawn} from 'node:child_process';spawn(process.execPath,['-e','while(true){}'],{stdio:'ignore'});while(true){}");
+  const closed = once(child, 'close');
+  try {
+    await group.attach(child);
+    for (let i = 0; i < 1600 && group.cpuMicroseconds() < 11_000_000; i++) await wait(25);
+    assert.ok(group.cpuMicroseconds() >= 11_000_000);
+    assert.equal(group.cpuExceeded(), false);
+    group.kill(); await closed;
+  } finally { child.kill('SIGKILL'); await group.cleanup(); }
+  await removed(child.pid!); noGroups();
+});
 async function removed(pid: number) {
   for (let i = 0; i < 400; i++) {
     try {process.kill(pid, 0);} catch (error) {assert.equal((error as NodeJS.ErrnoException).code, 'ESRCH'); return;}
