@@ -55,6 +55,7 @@
   "server/managed-catalog.ts",
   "server/managed-qualification.ts",
   "server/orchestration.ts",
+  "server/preview-asset-helper.ts",
   "server/preview-provider.ts",
   "server/preview-routes.ts",
   "server/preview-state.ts",

@@ -88,7 +88,7 @@ test('actual provider adapter and independent participants enforce owner grants,
         assert.equal(recovery.sourceHash, p.sourceHash);
         assert.notEqual(recovery.branch, p.branch);
         const recovered = await release(f, 'alice', recovery);
-        assert.equal(recovered.body.receipts.at(-1).state, 'verified');
+        assert.equal(recovered.body.receipts.at(-1).state, 'verified', recovered.body.receipts.at(-1).detail);
         assert.equal(provider.control.posts, 3);
         const bob = await fetch(`${f.url}/api/rooms/${f.room.id}/previews/plans/${recovery.id}/files/app.js`, { headers: { authorization: `Bearer ${f.token('bob')}` } });
         assert.equal(bob.status, 200);

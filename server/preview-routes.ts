@@ -306,12 +306,14 @@ export function registerPreviewRoutes(app: express.Express, manager: RoomManager
             await mutate(room, actor, state => { const r = state.receipts.find(r => r.planId === plan.id)!; r.state = 'unknown'; r.detail = 'Upload returned. Reconciliation must identify the unique provider record and exact live bytes.'; });
             await reconcile(room, actor, plan);
         }
-        catch {
+        catch (error) {
             await mutate(room, actor, state => {
                 const r = state.receipts.find(r => r.planId === plan.id)!;
                 if (r.state !== 'verified' && r.state !== 'failed') {
                     r.state = 'unknown';
-                    r.detail = 'Outcome uncertain or verification incomplete. Global target reservation remains held. Reconcile; never repeat upload.';
+                    const code = (error as {code?: unknown})?.code;
+                    const isolation = ['isolation_unavailable','isolation_resource_limit','isolation_timeout','isolation_cancelled'].includes(String(code)) ? `Isolated live-render verification incomplete (${code}). ` : '';
+                    r.detail = isolation + 'Outcome uncertain or verification incomplete. Global target reservation remains held. Reconcile; never repeat upload.';
                 }
             });
         }

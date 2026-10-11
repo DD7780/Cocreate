@@ -1,7 +1,7 @@
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
-import { spawn } from 'node:child_process';
+import { runPreviewAssetHelper } from './preview-asset-helper.js';
 import type { PreviewPlan, PreviewTarget } from '../shared/preview-release.js';
 import type { PreviewBytes } from './preview-state.js';
 import { previewHash } from './preview-state.js';
@@ -82,30 +82,10 @@ export class CloudflarePreviewProvider implements PreviewProvider {
                 throw new Error('Invalid bounded asset token.');
             // Use only the trusted upload helper. Wrangler's deployment command retries uncertain POSTs,
             // so it is deliberately excluded; creation below is one explicit HTTP attempt.
-            const cli = path.resolve('node_modules/wrangler/wrangler-dist/cli.js');
-            if (JSON.parse(fs.readFileSync(path.resolve('node_modules/wrangler/package.json'), 'utf8')).version !== '4.131.1')
-                throw new Error('Review the trusted upload-helper contract before changing Wrangler versions.');
             if (this.assetHelper)
                 fs.writeFileSync(manifestPath, JSON.stringify(await this.assetHelper(jwt, bytes.assets, signal)));
             else
-                await new Promise<void>((resolve, reject) => {
-                    signal.throwIfAborted();
-                    const child = spawn(process.execPath, ['--max-old-space-size=512', cli, 'pages', 'project', 'upload', assets, '--output-manifest-path', manifestPath], { cwd: root, windowsHide: true, stdio: ['ignore', 'pipe', 'pipe'], env: { SystemRoot: process.env.SystemRoot || '', PATH: path.dirname(process.execPath), HOME: root, USERPROFILE: root, APPDATA: root, LOCALAPPDATA: root, TEMP: root, TMP: root, CF_PAGES_UPLOAD_JWT: jwt, WRANGLER_SEND_METRICS: 'false', CI: 'true' } });
-                    let size = 0, timedOut = false;
-                    // Wait for close before removing files still owned by the helper.
-                    const timer = setTimeout(() => { timedOut = true; child.kill('SIGKILL'); }, 60000);
-                    const discard = (chunk: Buffer) => {
-                        size += chunk.length;
-                        if (size > 128 * 1024)
-                            child.kill('SIGKILL');
-                    };
-                    const stop = () => child.kill('SIGKILL');
-                    signal.addEventListener('abort', stop, { once: true });
-                    child.stdout.on('data', discard);
-                    child.stderr.on('data', discard);
-                    child.once('error', e => { clearTimeout(timer); signal.removeEventListener('abort', stop); reject(e); });
-                    child.once('close', code => { clearTimeout(timer); signal.removeEventListener('abort', stop); code === 0 && size <= 128 * 1024 && !timedOut && !signal.aborted ? resolve() : reject(new Error('Asset upload was not confirmed; reconcile before a new release.')); });
-                });
+                await runPreviewAssetHelper(root, assets, manifestPath, jwt, signal);
             signal.throwIfAborted();
             const stat = fs.lstatSync(manifestPath);
             if (!stat.isFile() || stat.size > 4096)
