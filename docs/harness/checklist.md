@@ -6,7 +6,8 @@
 - [x] Private frozen frontend plans, exact version/source/output hashes, owner/grant revisions and explicit public release approval.
 - [x] Server-only encrypted tokens, fixed isolated build output, one creation attempt, durable dispatch phases/global reservations and no automatic replay.
 - [x] Controlled provider/two-participant preparation, permissions, receipt viewing, file retrieval, live hash/render smoke and immutable recovery demonstration.
-- [x] Local embedded PostgreSQL permissions/fencing/transaction checks; prepared native PostgreSQL CI coverage.
+- [x] Committed/pushed `3f9f343`; exact-source CI run 38117890862 succeeded: production-image regression 264/266, zero failures/two Windows-only browser skips; compiler 10/10, browser isolation 15/15. Local security/recovery 7/7, UI 9/9 and background Blender v5 3/3 remain separately dated.
+- [x] Local embedded PostgreSQL permissions/fencing/transaction checks; exact source `3f9f343` native PostgreSQL CI 3/3, including independent reservation concurrency.
 - [ ] Real account/project/token/billing verification and concrete upload approval.
 - [ ] Authorized hosted reservation migration, signed-in/RLS/coordinator replacement, real helper upload/live behavior/uncertain outcome/recovery acceptance.
 - [ ] Interactive Blender graphics isolation, real frame/effective input and two-participant acceptance: blocked by dated failed environment probe, not proved by background tests.
@@ -21,10 +22,10 @@
 - [x] Fresh focused browser/security and affected artifact/session recovery checks: 24/24, no skips; strict build passes.
 - [x] Two independent app viewer demonstration 9/9, zero inference; relevant native launcher regressions 17/17, boundary audit 178 files/zero violations. Final targeted v4 private SDK/recovery/read checks recorded separately.
 - [x] AST graph refresh; prepared fingerprint `8f92814…` with 110 release inputs. Complete focused run 24/24 and additional/final targeted checks recorded separately; actual Blender/v4 private publication regression 3/3.
-- [ ] Exact committed-source handoff/CI.
+- [x] Exact shared-browser source `2ade990` CI passed: 257/259 production-image tests; two Windows-only native cases skipped in Linux, separately verified locally.
 - [ ] Real hosted accounts/Storage/revocation/coordinator/container replacement. No cloud mutation or paid inference authorized.
 - [ ] Interactive Blender native viewing/input boundary and two-participant acceptance; background evidence is insufficient.
-- [ ] Frontend preview release preparation, explicit target/release authority, durable provider reconciliation/live verification. No backend release.
+- [x] Local frontend preview release preparation, explicit target/release authority, durable controlled-provider reconciliation/live byte/render smoke verification: source `3f9f343`. Real provider/hosted acceptance remains open above. No backend release.
 
 ## Connected Blender milestone — 2026-10-11
 
