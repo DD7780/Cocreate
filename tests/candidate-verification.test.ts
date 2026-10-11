@@ -18,6 +18,18 @@ export function requirementsFor(texts: string[]) {
 }
 const filesFor = (source: string) => applyOperations(undefined, [{type:'write',path:'src/App.tsx',content:source}]);
 
+test('completed native browser target work remains successful through repeated whole-job cleanup',async()=>{
+  for(let index=0;index<5;index++){
+    const value=await withIsolatedBrowser(async browser=>{
+      const {targetId}=await browser.call('Target.createTarget',{url:'about:blank'});
+      const {sessionId}=await browser.call('Target.attachToTarget',{targetId,flatten:true});
+      const reply=await browser.call('Runtime.evaluate',{expression:'6 * 7',returnByValue:true},sessionId);
+      return reply.result.value;
+    });
+    assert.equal(value,42);
+  }
+});
+
 test('real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate', async () => {
   const requirements = requirementsFor(['Build a catalog with a working filter','Add favorites','Add sorting']);
   assert.deepEqual(planVerification(requirements, 3).kinds, ['filter','favorites','sort']);

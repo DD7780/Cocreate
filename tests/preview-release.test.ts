@@ -18,7 +18,7 @@ const call = async (f: Awaited<ReturnType<typeof createCanvasArtifactsFixture>>,
 const connect = async (f: Parameters<typeof call>[0], target: Awaited<ReturnType<typeof createPreviewProviderFixture>>['target'], actors: string[] = []) => { const r = await call(f, 'alice', '/connections', { accountId: target.accountId, projectName: target.projectName, credential: token, actors }); assert.equal(r.status, 200, JSON.stringify(r.body)); return r.body.connections.at(-1); };
 const prepare = async (f: Parameters<typeof call>[0], connectionId?: string, versionId = 1, recoveryOf?: string) => { const r = await call(f, 'alice', '/plans', { versionId, ...(connectionId ? { connectionId } : {}), ...(recoveryOf ? { recoveryOf } : {}) }); assert.equal(r.status, 200, JSON.stringify(r.body)); return r.body.plans.at(-1); };
 const release = async (f: Parameters<typeof call>[0], actor: string, p: any) => call(f, actor, `/plans/${p.id}/release`, { planHash: p.planHash, approvePublicPreview: true });
-test('two participants prepare frozen private frontend bytes without credentials or inference; v5 cold restore binds every file and project', async () => {
+test('two participants prepare frozen private frontend bytes without credentials or inference; v6 cold restore binds every file and project', async () => {
     const store = await createArtifactFixture(), platform = store.platform(), projectId = randomUUID();
     await platform.claimCoordinator(projectId);
     const provider = await createPreviewProviderFixture(), f = await createCanvasArtifactsFixture({ durableStore: platform, projectId, previewProvider: provider.provider });

@@ -89,6 +89,9 @@ def inspect():
 
 def probe():
     evidence = {'version': '4.5.14', 'background': False, 'windows': len(bpy.context.window_manager.windows), 'renderer': gpu.platform.renderer_get(), 'credentialsAbsent': not any(name in os.environ for name in ('COCREATE_TEST_SECRET', 'OPENAI_API_KEY', 'SUPABASE_SERVICE_ROLE_KEY', 'AWS_SECRET_ACCESS_KEY'))}
+    with open('/proc/self/status', encoding='ascii') as status:
+        evidence['capabilitiesAbsent'] = 'CapEff:\t0000000000000000' in status.read()
+    evidence['cgroupAuthorityAbsent'] = not os.path.exists('/sys/fs/cgroup') and not os.path.exists('/run/cocreate-cgroup')
     other = x.XOpenDisplay(b':0')
     evidence['hostDisplayDenied'] = not bool(other)
     try:
@@ -151,6 +154,8 @@ def tick():
                 result = {'png': png()}
             elif kind == 'inspect':
                 result = inspect()
+            elif kind == 'probe':
+                result = probe()
             elif kind == 'click':
                 assert 0 <= request['x'] < 960 and 0 <= request['y'] < 640
                 xt.XTestFakeMotionEvent(display, -1, request['x'], request['y'], 0)

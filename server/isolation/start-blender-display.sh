@@ -9,4 +9,4 @@ until test -S /tmp/.X11-unix/X99; do
   attempt=$((attempt+1)); test "$attempt" -lt 100
   /bin/sleep .05
 done
-/blender/blender --factory-startup --disable-autoexec --threads 2 --window-geometry 0 0 960 640 --python-exit-code 1 --python /control/interactive-blender.py -- /session/input.json
+/blender/blender -noaudio --factory-startup --disable-autoexec --threads 2 --window-geometry 0 0 960 640 --python-exit-code 1 --python /control/interactive-blender.py -- /session/input.json

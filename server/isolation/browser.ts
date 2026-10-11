@@ -1,7 +1,7 @@
 import { StringDecoder } from 'node:string_decoder';
 import fs from 'node:fs';
 import path from 'node:path';
-import { spawn } from 'node:child_process';
+import { spawn, execFileSync } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
 import { IsolationError, isolationPolicy, prepareIsolation, type IsolationOptions } from '../isolation.js';
 import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
@@ -119,7 +119,9 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       const message = buffer.slice(0, end); buffer = buffer.slice(end + 1);
       try {
         const reply = JSON.parse(message), task = pending.get(reply.id);
-        if (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed') {
+        // Killing the completed job may report renderer termination before its browser exits.
+        // Only execution-phase crashes can invalidate the completed verification action.
+        if (!finishing && (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed')) {
           const resource = group?.cpuExceeded() ? 'CPU' : group?.memoryExceeded() ? 'memory' : group?.tasksExceeded() ? 'process' : undefined;
           const error = resource
             ? new IsolationError('isolation_resource_limit', `Verification renderer exceeded its ${resource} bound.`) : unavailable();
@@ -194,7 +196,14 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       if (!removed) throw unavailable();
     }
     if (path.dirname(path.resolve(workspace)) !== jobs) throw unavailable();
-    fs.rmSync(workspace, {recursive: true, force: true, maxRetries: 5, retryDelay: 100});
+    try {fs.rmSync(workspace, {recursive: true, force: true, maxRetries: 5, retryDelay: 100});}
+    catch(error){
+      if(process.platform!=='win32'||(error as NodeJS.ErrnoException).code!=='EPERM')throw error;
+      // Native LiteralPath removal handles the Windows profile cleanup/libuv EPERM case.
+      // Check the exact generated job path again inside the single deleting shell.
+      const script="$target=[IO.Path]::GetFullPath($env:COCREATE_VERIFICATION_CLEANUP);$root=[IO.Path]::GetFullPath($env:COCREATE_VERIFICATION_JOBS);if(-not [IO.Path]::GetDirectoryName($target).Equals($root,[StringComparison]::OrdinalIgnoreCase) -or [IO.Path]::GetFileName($target) -notmatch '^[a-f0-9-]{36}$'){throw 'Unsafe isolated profile cleanup'};if(Test-Path -LiteralPath $target){Remove-Item -LiteralPath $target -Recurse -Force -ErrorAction Stop}";
+      execFileSync('powershell.exe',['-NoProfile','-NonInteractive','-EncodedCommand',Buffer.from(script,'utf16le').toString('base64')],{windowsHide:true,timeout:10000,stdio:'ignore',env:{SystemRoot:process.env.SystemRoot||'C:\\Windows',COCREATE_VERIFICATION_CLEANUP:workspace,COCREATE_VERIFICATION_JOBS:jobs}});
+    }
     if (failure) throw failure;
   }
 }

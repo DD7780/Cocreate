@@ -105,7 +105,14 @@ jobs:
           echo "COCREATE_DESKTOP_CI_ROOT=$root" >> "$GITHUB_ENV"
       - name: Actual dedicated Blender graphics boundary
         if: ${{ !cancelled() && steps.image.outcome == 'success' }}
-        run: sh scripts/run-linux-desktop-check.sh node --import tsx --test --test-concurrency=1 tests/interactive-blender-native.test.ts
+        run: |
+          set +e
+          sh scripts/run-linux-desktop-check.sh node --import tsx --test --test-reporter=tap --test-concurrency=1 tests/interactive-blender-native.test.ts 2>&1 | tee /tmp/cocreate-native-desktop.log
+          native_status=${PIPESTATUS[0]}
+          if test "$native_status" -ne 0; then
+            node --input-type=module -e 'import fs from "node:fs"; const log=fs.readFileSync("/tmp/cocreate-native-desktop.log","utf8"); for(const match of log.matchAll(/\n\s+error: (?:\|[-+]?\n)?([^\n]*)/g)){const detail=match[1].trim().slice(0,1000).replaceAll("%","%25").replaceAll("\r","%0D");console.error("::error::Native Blender gate: "+detail)}'
+          fi
+          exit "$native_status"
       - name: Full regression suite in the production image
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' && steps.browser.outcome == 'success' && steps.browser_adversity.outcome == 'success' }}
         run: >-
