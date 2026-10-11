@@ -1,0 +1,52 @@
+{
+  "sourceCommit": "21eddd9a7a4064aa877790a0310d4a7289c87514",
+  "branch": "codex/canvas-artifacts",
+  "conclusion": "success",
+  "completedAt": "2026-10-11T12:31:08Z",
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38138898832",
+  "runId": 38138898832,
+  "jobId": 114468451505,
+  "scope": "Controlled native CI and local prerequisite evidence; not hosted account acceptance",
+  "fingerprint": "06658e22178760463acd49c8114af3387c3956b00e3bbc4798359d352ec653bb",
+  "productionCIImageId": "sha256:46b32399fd2c9550566173b54b83488cfd9dd9ba124b19563a89d3419aa5e606",
+  "registryRecoveryDigest": null,
+  "checks": {
+    "boundaries": {
+      "files": 205,
+      "violations": 0
+    },
+    "build": "passed",
+    "postgres": {
+      "passed": 3,
+      "total": 3
+    },
+    "compiler": {
+      "passed": 10,
+      "total": 10
+    },
+    "browser": {
+      "passed": 17,
+      "total": 17
+    },
+    "dedicatedBlender": {
+      "passed": 3,
+      "total": 3
+    },
+    "twoProfileArtifacts": {
+      "passed": 5,
+      "profiles": 2,
+      "actualGui": true,
+      "physicalInferenceCalls": 0
+    },
+    "productionRegression": {
+      "passed": 283,
+      "total": 285,
+      "failed": 0,
+      "skipped": 2,
+      "skipReason": "Desktop cases run separately in dedicated environment"
+    }
+  },
+  "hostedPermissionRecoveryVerified": false,
+  "mainPushed": false,
+  "cloudResourcesCreated": false
+}

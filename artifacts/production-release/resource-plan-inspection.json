@@ -1,0 +1,47 @@
+{
+  "checkedAt": "2026-10-11T12:28:48.663Z",
+  "scope": "Read-only inventory and pricing preparation; no resource creation or invoice confirmation",
+  "supabase": {
+    "organizationId": "lflzfrqblfyjopsjuqxk",
+    "plan": "free",
+    "activeVisibleProjects": 1,
+    "productionProject": "dnsapasubeoxxsgkiotw",
+    "publishedFreeActiveProjectLimit": 2,
+    "eligibility": "Potential second slot; Owner/Admin cross-organization limits must be confirmed before creation",
+    "getCost": "UNAVAILABLE: tool not returned by tools/list; no cost confirmation issued"
+  },
+  "cloudflare": {
+    "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "workers": [
+      "cocreate"
+    ],
+    "pagesProjects": 0,
+    "workersSubdomain": "susan981314271",
+    "subscriptions": {
+      "httpStatus": 403,
+      "verified": false
+    },
+    "usage": {
+      "periodStart": "2026-10-01",
+      "periodEndInclusive": "2026-10-11",
+      "currentDayPartial": true,
+      "sampledBillingEstimates": true,
+      "billingCycleConfirmed": false,
+      "days": 11,
+      "rawTotals": {
+        "cpuTimeSec": 20815.250000000044,
+        "allocatedMemory": 979967105942572.5,
+        "allocatedDisk": 3650661952579664,
+        "txBytes": 1468329829
+      },
+      "memoryGiBHours": 253.51819115136556,
+      "diskGBHours": 1014.0727646054622,
+      "cpuVCPUMinutes": 346.9208333333341,
+      "egressGB": 1.468329829
+    },
+    "remainingIncludedAllowances": "Unknown billing cycle and subscription; observed calendar-window memory/disk exceed published monthly included values, so do not assume free capacity"
+  },
+  "resourceCreationAuthorized": false,
+  "cloudMutationPerformed": false,
+  "planUpgradePerformed": false
+}

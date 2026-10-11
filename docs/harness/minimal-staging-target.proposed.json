@@ -1,0 +1,7 @@
+{
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerName": "cocreate-beta-staging",
+  "origin": "https://cocreate-beta-staging.susan981314271.workers.dev",
+  "supabaseUrl": "https://REPLACE_WITH_NEW_FREE_PROJECT_REF.supabase.co",
+  "publishableKey": "REPLACE_WITH_NEW_PROJECT_PUBLISHABLE_KEY"
+}
