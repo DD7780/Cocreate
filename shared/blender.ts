@@ -17,6 +17,7 @@ export type BlenderSessionView = {
   mode: 'human' | 'agent'; state: 'connected' | 'disconnected' | 'revoked' | 'expired';
   expiresAt: number; lastSeenAt: number; paused: boolean;
   observe: string[]; control: string[]; task?: Pick<BlenderCommand, 'id' | 'taskId' | 'state' | 'error'>;
+  interactive?: {policy: string; state: 'closed'|'open'|'unknown'; pending?: {id: string; action: string; state: string}; lastSave?: {artifactId: string; versionId: number}};
 };
 export type BlenderVersion = {
   id: number; projectId: string; artifactId: string; title: string; taskId: string; participantId: string;

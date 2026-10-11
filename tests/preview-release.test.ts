@@ -39,7 +39,7 @@ test('two participants prepare frozen private frontend bytes without credentials
         await connect(f, provider.target);
         await next.claimCoordinator(projectId);
         const restored: any = await next.loadSnapshot(projectId);
-        assert.equal(restored.artifactSchemaVersion, 5);
+        assert.equal(restored.artifactSchemaVersion, 6);
         assert.equal(restored.preview.plans[0].planHash, plan.planHash);
         assert.equal(restored.preview.connections.length, 1);
         assert.equal(JSON.stringify(restored.preview).includes(token), false);

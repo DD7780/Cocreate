@@ -49,7 +49,9 @@ export async function runBlenderCompanion(options: {
   observe: string[]; control: string[]; operations: string[]; name: string;
   approveLocal: (approval: LocalBlenderApproval) => Promise<boolean>; signal: AbortSignal;
   onState?: (state: string) => void;
+  interactive?: boolean;
 }) {
+  if(options.interactive)return (await import('./interactive-blender-companion.js')).runInteractiveBlenderCompanion(options);
   const server = new URL(options.server);
   if (server.username || server.password || server.search || server.hash || server.pathname !== '/' || !(server.protocol === 'https:' || server.protocol === 'http:' && ['127.0.0.1','localhost','[::1]'].includes(server.hostname))) throw new Error('Use an HTTPS server origin, or loopback HTTP for controlled development.');
   const workspace = approvedDirectory(options.workspace), connectionFile = path.join(workspace, '.cocreate-blender-connection.json');

@@ -22,6 +22,14 @@ export function registerBlenderRoutes(app: express.Express, manager: RoomManager
     const auth = authorize(req, res); if (!auth) return;
     try { res.json({ sessions: await manager.blenderControl(auth.room, String(req.params.sessionId), auth.session.participantId, req.body, () => fresh(auth.room, auth.session.participantId, true)) }); } catch (exception) { error(res, exception); }
   });
+  app.post('/api/rooms/:id/blender/sessions/:sessionId/input',async(req,res)=>{
+    const auth=authorize(req,res);if(!auth)return;
+    try{res.setHeader('Cache-Control','no-store');res.json(await manager.blenderInteractiveCommand(auth.room,String(req.params.sessionId),auth.session.participantId,req.body,()=>fresh(auth.room,auth.session.participantId,true)));}catch(exception){error(res,exception);}
+  });
+  app.get('/api/rooms/:id/blender/sessions/:sessionId/frame',async(req,res)=>{
+    const auth=authorize(req,res);if(!auth)return;
+    try{const selected=manager.blenderSessions(auth.room,auth.session.participantId).find(item=>item.id===String(req.params.sessionId));if(!selected)throw Object.assign(new Error('A separate observation grant is required.'),{status:403});const check=async()=>{await fresh(auth.room,auth.session.participantId);await fresh(auth.room,selected.ownerId,true);await fresh(auth.room,selected.controllerId,true);};await check();const frame=manager.blenderReadFrame(auth.room,selected.id,auth.session.participantId);await check();if(auth.session.exp&&auth.session.exp<=Date.now()/1000)return res.status(401).end();res.setHeader('Cache-Control','no-store');res.setHeader('X-Content-Type-Options','nosniff');res.setHeader('Referrer-Policy','no-referrer');res.type('image/png').send(frame);}catch(exception){error(res,exception);}
+  });
   // Only this endpoint admits larger output bodies; ordinary Canvas/command limits stay 40 KB.
   app.use('/api/blender/devices', express.json({ limit: '8mb' }));
   const deviceRoom = async (projectId: string) => {
@@ -36,12 +44,13 @@ export function registerBlenderRoutes(app: express.Express, manager: RoomManager
   app.post('/api/blender/devices/:projectId/pair', async (req, res) => {
     try { const room = await deviceRoom(String(req.params.projectId)), token = String(req.headers.authorization?.replace(/^Bearer /,'') || ''), info = manager.blenderPairInfo(room, token); res.setHeader('Cache-Control','no-store'); res.json(await manager.blenderApprove(room, token, req.body, () => fresh(room, info.ownerId, true))); } catch (exception) { error(res, exception); }
   });
-  for (const operation of ['poll','result','stop'] as const) app.post(`/api/blender/devices/:projectId/:deviceId/${operation}`, async (req, res) => {
+  for (const operation of ['poll','result','stop','frame','interactive-result'] as const) app.post(`/api/blender/devices/:projectId/:deviceId/${operation}`, async (req, res) => {
     try {
       const room = await deviceRoom(String(req.params.projectId)), id = String(req.params.deviceId), token = String(req.headers.authorization?.replace(/^Bearer /,'') || '');
       const actor = manager.blenderDeviceOwner(room, id, token), authorizeDevice = async () => { const current = manager.blenderDeviceOwner(room, id, token); await fresh(room, current.ownerId, true); await fresh(room, current.controllerId, true); manager.blenderDeviceOwner(room, id, token); };
       res.setHeader('Cache-Control','no-store');
-      res.json(operation === 'poll' ? await manager.blenderPoll(room, id, token, authorizeDevice) : operation === 'result' ? await manager.blenderResult(room, id, token, req.body, authorizeDevice) : await manager.blenderStopped(room, id, token, () => fresh(room, actor.ownerId, true)));
+      if(operation==='frame'){await authorizeDevice();const result=manager.blenderReceiveFrame(room,id,token,req.body);await authorizeDevice();return res.json(result);}
+      res.json(operation === 'poll' ? await manager.blenderPoll(room, id, token, authorizeDevice) : operation === 'result' ? await manager.blenderResult(room, id, token, req.body, authorizeDevice) : operation==='interactive-result'?await manager.blenderInteractiveResult(room,id,token,req.body,authorizeDevice):await manager.blenderStopped(room, id, token, () => fresh(room, actor.ownerId, true)));
     } catch (exception) { error(res, exception); }
   });
   app.get('/api/rooms/:id/blender/artifacts/:artifactId/versions/:version/:file', async (req, res) => {

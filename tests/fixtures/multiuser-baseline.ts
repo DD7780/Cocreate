@@ -102,8 +102,11 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       captures.set(id === 'alice' ? 'Alice' : 'Bob', performance.now() - started);
       return manager!.submitChanges(room!, id, key);
     };
-    const drain = () => until(() => !!room!.versions.length && !room!.buildTask &&
-      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000);
+    const drain = async () => {
+      await until(() => room!.status === 'Error' && !room!.buildTask || !!room!.versions.length && !room!.buildTask &&
+        room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000);
+      assert.ok(room!.versions.length, room!.lastError || 'No candidate promoted after workload drained');
+    };
 
     if (scenario === 'simultaneous-slow' || scenario === 'failed-interpreter') {
       edit('alice', 'Build a catalog'); edit('bob', 'Add favorites'); edit('cara', 'Add unsubmitted filters');

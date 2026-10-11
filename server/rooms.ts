@@ -4,6 +4,9 @@ import { previewState } from './preview-state.js';
 import { callOpenAI } from './generator.js';
 import { artifactHash } from './artifacts.js';
 import { initialBlenderState, recoverBlenderState, createPair, pairingOwner, approveDevice, deviceAccess, sessionCommand, sessionView, queueScene, inFlight, HEARTBEAT_MS, type BlenderState } from './blender-sessions.js';
+import {sessionAccess} from './blender-sessions.js';
+import {queueInteractive,activeInteractive,interactiveHash} from './blender-interactive-state.js';
+import {INTERACTIVE_BLENDER_POLICY} from '../shared/blender-interactive.js';
 import { snapshotBlender, checkBlenderResult, restoreBlender, blenderBytes, BLENDER_MIME } from './blender-artifacts.js';
 import { validateBlenderScene, blenderSceneSchema, type BlenderArtifact, type BlenderVersion } from '../shared/blender.js';
 import type { ArtifactTarget, DocumentArtifact, DocumentVersion, ArtifactInputVersion, SharedRequirement } from '../shared/types.js';
@@ -649,7 +652,7 @@ export class RoomManager {
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, documentArtifacts: room.documentArtifacts || [], blenderArtifacts: room.blenderArtifacts || [], blender: room.blender, browser: room.browser, preview: room.preview, artifactContractVersion: 5, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, documentArtifacts: room.documentArtifacts || [], blenderArtifacts: room.blenderArtifacts || [], blender: room.blender, browser: room.browser, preview: room.preview, artifactContractVersion: 6, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
@@ -2401,23 +2404,26 @@ export class RoomManager {
     });
     room.previewMutation=mutation;return mutation;
   }
-  private async mutateBlender<T>(room: Room, actorId: string, operation: (state: BlenderState) => T, authorize?: () => Promise<void>): Promise<T> {
+  private blenderFrames = new WeakMap<Room,Map<string,{epoch:number;at:number;bytes:Buffer}>>();
+  private async mutateBlender<T>(room: Room, actorId: string, operation: (state: BlenderState) => T|Promise<T>, authorize?: () => Promise<void>, event='blender.connection_changed'): Promise<T> {
     const previous = room.blenderMutation || Promise.resolve();
     const mutation = previous.catch(() => undefined).then(async () => {
       await room.intentCommit?.done;
       await authorize?.();
       this.assertOwned(room);
-      const prior = structuredClone(room.blender), state = initialBlenderState(room.blender);
-      const result = operation(state);
+      const prior = structuredClone(room.blender), priorArtifacts=room.blenderArtifacts, state = initialBlenderState(room.blender);
+      const result = await operation(state);
       room.blender = state;
       try {
-        if (await this.save(room, 'blender.connection_changed', actorId, 'user') === false) throw new Error('Blender connection change could not be confirmed. Reopen the project.');
+        if (await this.save(room, event, actorId, 'user') === false) throw new Error('Blender connection change could not be confirmed. Reopen the project.');
         await authorize?.(); this.assertOwned(room);
       } catch (error) {
         room.blender = prior;
+        if(event==='blender.promoted'){room.blenderArtifacts=priorArtifacts;room.pendingBlender=undefined;}
         if (this.config.durableStore) this.loseOwnership(room.id);
         throw error;
       }
+      if(event==='blender.promoted')room.pendingBlender=undefined;
       this.broadcastState(room);
       return result;
     });
@@ -2450,8 +2456,9 @@ export class RoomManager {
       const device = deviceAccess(state, id, credential);
       device.lastSeenAt = Date.now(); device.state = 'connected';
       if (device.command?.state === 'queued') device.command.state = 'running';
+      const interactive=activeInteractive(device);if(interactive?.state==='queued')interactive.state='running';
       const command = device.command;
-      return { session: sessionView(device), command: command && ['running','interrupted','cancel_requested'].includes(command.state) ? { ...command, result: undefined } : null };
+      return { session: sessionView(device), interactive:interactive||null, command: command && ['running','interrupted','cancel_requested'].includes(command.state) ? { ...command, result: undefined } : null };
     }, authorize);
   }
   async blenderResult(room: Room, id: string, credential: string, input: unknown, authorize: () => Promise<void>) {
@@ -2464,7 +2471,11 @@ export class RoomManager {
         return { acknowledged: true, state: command.state };
       }
       if (!['running','interrupted','cancel_requested'].includes(command.state) || (command.state === 'cancel_requested' && request.state === 'completed')) throw Object.assign(new Error('Execution cancelled or already settled.'), { status: 409 });
-      if (request.state === 'completed') command.result = checkBlenderResult(request.result, command.id, artifactHash(Buffer.from(JSON.stringify(command.scene)))).result;
+      if (request.state === 'completed') {
+        const checked=checkBlenderResult(request.result, command.id, artifactHash(Buffer.from(JSON.stringify(command.scene)))).result;
+        if(checked.evidence.policy!==(device.interactive?.policy||'windows-appcontainer-blender-v1'))throw new Error('Execution environment does not match local approval.');
+        command.result=checked;
+      }
       command.state = request.state as 'completed' | 'cancelled' | 'failed';
       command.error = typeof request.error === 'string' ? request.error.slice(0,1000) : undefined;
       device.mode = 'human'; device.lastSeenAt = Date.now(); device.lastActivityAt = Date.now();
@@ -2474,10 +2485,54 @@ export class RoomManager {
   async blenderStopped(room: Room, id: string, credential: string, authorize: () => Promise<void>) {
     return this.mutateBlender(room, 'device', state => {
       const device = deviceAccess(state, id, credential);
+      if(device.interactive){const pending=activeInteractive(device);if(pending)pending.state='cancelled';device.interactive.state='closed';this.blenderFrames.get(room)?.delete(id);}
       if (device.command && ['queued','running','cancel_requested'].includes(device.command.state)) { device.command.state = 'cancelled'; device.command.error = 'Local stop acknowledged after executor cleanup.'; }
       device.state = 'revoked'; device.mode = 'human'; device.epoch++;
       return { stopped: true };
     }, authorize);
+  }
+  async blenderInteractiveCommand(room:Room,id:string,actorId:string,input:unknown,authorize:()=>Promise<void>){
+    return this.mutateBlender(room,actorId,state=>{
+      const device=sessionAccess(state,id,actorId,true),command=queueInteractive(device,actorId,input);
+      return {id:command.id,state:command.state,hash:command.hash,session:sessionView(device)};
+    },authorize);
+  }
+  blenderReceiveFrame(room:Room,id:string,credential:string,input:unknown){
+    this.assertOwned(room);const device=deviceAccess(initialBlenderState(room.blender),id,credential),request=input as {epoch:number;png:string};
+    if(!request||Object.keys(request).sort().join()!=='epoch,png'||request.epoch!==device.epoch||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||typeof request.png!=='string'||request.png.length>1400000)throw new Error('Dedicated Blender frame is stale or unavailable.');
+    const bytes=Buffer.from(request.png,'base64');
+    if(bytes.length<45||bytes.length>1024**2||!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||bytes.readUInt32BE(16)!==960||bytes.readUInt32BE(20)!==640||bytes.subarray(-8,-4).toString()!=='IEND')throw new Error('Invalid dedicated Blender frame.');
+    let frames=this.blenderFrames.get(room);if(!frames){frames=new Map();this.blenderFrames.set(room,frames);}frames.set(id,{epoch:device.epoch,at:Date.now(),bytes});return {acknowledged:true};
+  }
+  blenderReadFrame(room:Room,id:string,actorId:string){
+    this.assertOwned(room);const device=sessionAccess(initialBlenderState(room.blender),id,actorId),frame=this.blenderFrames.get(room)?.get(id);
+    if(sessionView(device).state!=='connected'||device.mode!=='human'||device.paused||device.interactive?.state!=='open'||!frame||frame.epoch!==device.epoch||Date.now()-frame.at>2500)throw Object.assign(new Error('Dedicated app frame unavailable. Explicitly reopen after disconnect; no input is replayed.'),{status:409});
+    return frame.bytes;
+  }
+  async blenderInteractiveResult(room:Room,id:string,credential:string,input:unknown,authorize:()=>Promise<void>){
+    const request=input as {commandId:string;epoch:number;state:'completed'|'unknown'|'cancelled';result?:unknown};
+    if(!request||Object.keys(request).some(key=>!['commandId','epoch','state','result'].includes(key))||!['completed','unknown','cancelled'].includes(request.state))throw new Error('Invalid dedicated app receipt.');
+    return this.mutateBlender(room,'device',async state=>{
+      const device=deviceAccess(state,id,credential),interactive=device.interactive,command=interactive?.receipts.find(item=>item.id===request.commandId);
+      if(!interactive||!command||command.epoch!==request.epoch||device.epoch!==request.epoch)throw Object.assign(new Error('Stale dedicated app receipt.'),{status:409});
+      const checked=request.result!==undefined?checkBlenderResult(request.result,command.id,command.hash):undefined;
+      if(checked&&(command.action!=='save'||checked.result.evidence.policy!==INTERACTIVE_BLENDER_POLICY)||command.action==='save'&&request.state==='completed'&&!checked)throw new Error('Manual save requires verified isolated outputs and cleanup.');
+      if(command.state==='completed'){if(request.state!=='completed'||command.outputHash!==(checked?interactiveHash(checked.result):undefined))throw new Error('Conflicting immutable app receipt.');return {acknowledged:true};}
+      if(!['running','cancel_requested'].includes(command.state)||command.state==='cancel_requested'&&request.state==='completed')throw Object.assign(new Error('App command already cancelled or uncertain.'),{status:409});
+      if(checked&&request.state==='completed'){
+        const artifactId='blend_'+interactiveHash({sessionId:id,origin:'human'}).slice(0,24),current=room.blenderArtifacts?.find(item=>item.id===artifactId),versionId=(current?.versions.at(-1)?.id||0)+1;
+        const body=bodyFromBytes(blenderBytes(room.id,artifactId,versionId,checked.result),BLENDER_MIME);
+        const version:BlenderVersion={id:versionId,projectId:room.id,artifactId,title:current?.title||'Saved interactive scene',taskId:command.id,participantId:command.actorId,submissionIds:[],specificationRevision:room.specificationRevision,requirementRevisions:[],inputVersions:[],fingerprint:command.hash,contentRef:body.ref,contentHash:body.ref.slice(7),byteLength:body.byteLength,createdAt:now(),outputs:checked.outputs,evidence:checked.result.evidence};
+        restoreBlender(Buffer.from(body.base64,'base64'),version);this.eventStore.restoreArtifactBodies([body]);
+        await this.config.durableStore?.publishArtifactBodies?.(room.id,[body]);await authorize();this.assertOwned(room);
+        if(device.epoch!==request.epoch||device.paused||device.mode!=='human')throw new Error('Manual save authority changed.');
+        room.pendingBlender={artifactId,versionId};const artifact:BlenderArtifact={kind:'blender',id:artifactId,title:version.title,projectId:room.id,versions:[...(current?.versions||[]),version]};
+        room.blenderArtifacts=current?(room.blenderArtifacts||[]).map(item=>item.id===artifactId?artifact:item):[...(room.blenderArtifacts||[]),artifact];interactive.lastSave={artifactId,versionId};command.outputHash=interactiveHash(checked.result);
+      }
+      command.state=request.state;interactive.state=request.state!=='completed'?'unknown':['save','close'].includes(command.action)?'closed':'open';
+      if(interactive.state!=='open')this.blenderFrames.get(room)?.delete(id);
+      device.lastActivityAt=Date.now();return {acknowledged:true};
+    },authorize,request.result?'blender.promoted':'blender.connection_changed');
   }
   async blenderContent(room: Room, artifactId: string, versionId: number) {
     const version = room.blenderArtifacts?.find(artifact => artifact.id === artifactId)?.versions.find(item => item.id === versionId);

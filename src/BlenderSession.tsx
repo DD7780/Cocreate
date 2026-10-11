@@ -13,6 +13,7 @@ export function BlenderSession({ state, token, participantId }: { state: RoomVie
   const [sessions, setSessions] = useState<BlenderSessionView[]>([]), [selectedId, setSelectedId] = useState('');
   const [error, setError] = useState(''), [busy, setBusy] = useState(false), [handoff, setHandoff] = useState('');
   const [pair, setPair] = useState<{ pairingToken: string; expiresAt: number }>();
+  const [frame,setFrame]=useState(''),[numeric,setNumeric]=useState('');
   const base = `/api/rooms/${state.roomId}/blender`, session = sessions.find(item => item.id === selectedId) || sessions[0];
   const saved = state.artifacts?.filter(item => item.kind === 'blender').flatMap(artifact => artifact.versions.map(version => ({ artifact, version }))).find(item => item.version.taskId === session?.task?.taskId);
   useEffect(() => {
@@ -39,14 +40,28 @@ export function BlenderSession({ state, token, participantId }: { state: RoomVie
   };
   const name = (id: string) => state.participants.find(item => item.id === id)?.name || id;
   const canControl = !!session && session.state === 'connected' && session.control.includes(participantId) && session.controllerId === participantId && tokenRole(token) !== 'viewer';
+  useEffect(()=>{
+    let active=true,url='',loading=false;setFrame('');
+    const load=async()=>{if(loading||!session?.interactive||session.interactive.state!=='open'||session.mode!=='human'||session.paused)return;loading=true;
+      try{const response=await fetch(`${base}/sessions/${session.id}/frame`,{headers:{Authorization:`Bearer ${token}`},cache:'no-store'});if(!response.ok)throw Error('Frame unavailable');const blob=await response.blob();if(active){if(url)URL.revokeObjectURL(url);url=URL.createObjectURL(blob);setFrame(url);}}
+      catch{if(active){if(url)URL.revokeObjectURL(url);url='';setFrame('');}}finally{loading=false;}};
+    void load();const timer=setInterval(load,1000);return()=>{active=false;clearInterval(timer);if(url)URL.revokeObjectURL(url);};
+  },[base,token,session?.id,session?.epoch,session?.interactive?.state,session?.mode,session?.paused]);
+  const input=async(action:string,value?:unknown)=>{
+    if(!session)return;setBusy(true);setError('');
+    try{const result=await api(`${base}/sessions/${session.id}/input`,token,{method:'POST',body:JSON.stringify({requestId:crypto.randomUUID(),epoch:session.epoch,action,...(value?{input:value}:{})})});setSessions(items=>items.map(item=>item.id===session.id?result.session:item));}
+    catch(exception){setError(exception instanceof Error?exception.message:'Input outcome uncertain. Inspect before a new action.');}finally{setBusy(false);}
+  };
+  const canInput=canControl&&!busy&&session?.mode==='human'&&!session.paused&&!session.interactive?.pending;
   return <section className="document-artifact blender-session" aria-label="Connected Blender">
-    <div className="preview-bar"><div><strong>Connected Blender</strong><span>Background Blender execution with rendered previews · Windows x64 · Blender 4.5.14 LTS</span></div><button disabled={busy || tokenRole(token) === 'viewer'} onClick={() => void connect()}>Connect my computer</button></div>
-    <p>Only a dedicated task process is used. This view does not stream your desktop or provide an in-browser .blend editor. Closing the viewer keeps an authorized task running.</p>
+    <div className="preview-bar"><div><strong>Connected Blender</strong><span>{session?.interactive?'Dedicated interactive Blender · private Linux display':'Background Blender execution with rendered previews · Windows x64'} · Blender 4.5.14 LTS</span></div><button disabled={busy || tokenRole(token) === 'viewer'} onClick={() => void connect()}>Connect my computer</button></div>
+    <p>Only the dedicated Blender process is used. Observation and control require explicit connection-owner grants. Closing the viewer keeps an authorized session running.</p>
     {pair && <div className="blender-pair" role="status">
       <strong>Single-use pairing · expires {new Date(pair.expiresAt).toLocaleTimeString()}</strong>
       <p>Run the local companion, choose your executable/workspace and exact observation/control grants, then type CONNECT locally.</p>
       <label>Project ID<input readOnly value={state.roomId}/></label><label>Pairing token<input readOnly autoComplete="off" value={pair.pairingToken}/></label>
       <p>Companion: <code>node --import tsx scripts/blender-companion.ts</code> with <code>--server {location.origin} --project {state.roomId} --pair &lt;token&gt; --blender &lt;path&gt; --workspace &lt;directory&gt; --operations create_scene,save,render</code>. Add <code>--observe</code> and <code>--control</code> only for approved participant IDs.</p>
+      <p>Interactive viewing requires the verified dedicated Linux environment and an explicit <code>--interactive</code> local approval. The ordinary Windows companion provides background execution and saved renders.</p>
       <p>{state.participants.map(item => `${item.name}: ${item.id}`).join(' · ')}</p><button onClick={() => setPair(undefined)}>Hide pairing token</button>
     </div>}
     {error && <p role="alert">{error}</p>}
@@ -55,6 +70,16 @@ export function BlenderSession({ state, token, participantId }: { state: RoomVie
       <p role="status">{session.deviceName} · {session.state} · expires {new Date(session.expiresAt).toLocaleTimeString()}</p>
       <p>Active controller: <strong>{name(session.controllerId)}</strong> · {session.mode === 'agent' ? 'Agent executing authorized task' : 'Human control'} · epoch {session.epoch}</p>
       <p>Task: {session.task?.state || 'Idle'}{session.task?.error && ` · ${session.task.error}`} · {session.paused ? 'Paused' : 'Ready for explicit Canvas submission'}</p>
+      {session.interactive&&<section aria-label="Dedicated Blender display">
+        <p role="status">App: {session.interactive.state}{session.interactive.pending&&` · ${session.interactive.pending.action} ${session.interactive.pending.state}`}</p>
+        {frame?<img className="blender-render" src={frame} alt="Live dedicated Blender application" onClick={event=>{if(!canInput)return;const bounds=event.currentTarget.getBoundingClientRect();void input('input',{kind:'click',x:Math.min(959,Math.floor((event.clientX-bounds.left)*960/bounds.width)),y:Math.min(639,Math.floor((event.clientY-bounds.top)*640/bounds.height))});}}/>:<p>Frame unavailable. Open the dedicated app explicitly after disconnect or uncertainty.</p>}
+        <div className="blender-controls"><button disabled={!canInput||session.interactive.state==='open'} onClick={()=>void input('open')}>Open dedicated app</button>
+          <button disabled={!canControl||busy||!!session.interactive.pending||session.mode==='agent'} onClick={()=>void input('close')}>Close app after cleanup</button>
+          {(['g','r','s','x','y','z','a','Escape','Return','Delete','Tab'] as const).map(key=><button key={key} disabled={!canInput||session.interactive!.state!=='open'} onClick={()=>void input('input',{kind:'key',key})}>{key}</button>)}
+          <label>Numeric input<input value={numeric} maxLength={64} inputMode="decimal" onChange={event=>setNumeric(event.target.value)}/></label><button disabled={!canInput||session.interactive.state!=='open'||!/^[-+0-9. ]{1,64}$/.test(numeric)} onClick={()=>void input('input',{kind:'text',text:numeric})}>Send numeric input</button>
+          <button disabled={!canInput||session.interactive.state!=='open'} onClick={()=>void input('save')}>Save scene and render</button></div>
+        <p>Save closes the dedicated job before publishing private outputs in Artifacts. Canvas submission runs the agent in a fresh job after human cleanup. Interrupted input is never replayed.</p>
+      </section>}
       {saved && <figure><BlenderRender src={`/api/rooms/${state.roomId}/blender/artifacts/${saved.artifact.id}/versions/${saved.version.id}/render.png?token=${encodeURIComponent(token)}`} alt={`Saved render of ${saved.artifact.title}`}/><figcaption className="artifact-provenance">Completed rendered preview · saved v{saved.version.id} · background execution, not a live desktop stream</figcaption></figure>}
       <div className="blender-controls">
         <button disabled={!canControl || busy} onClick={() => void control(session.paused ? 'resume' : 'pause')}>{session.paused ? 'Resume' : 'Pause'}</button>

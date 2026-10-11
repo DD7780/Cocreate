@@ -22,6 +22,8 @@ export class InteractiveBlenderExecutor {
   private done?: Promise<void>;
   private failure?: Error;
   private closing = false;
+  private cleanup?:Promise<void>;
+  private closed?:Promise<void>;
   private timers: NodeJS.Timeout[] = [];
   private pending = new Map<string, { resolve: (value: any) => void; reject: (error: Error) => void }>();
   private readyResolve?: (value: any) => void;
@@ -32,9 +34,12 @@ export class InteractiveBlenderExecutor {
     if (this.child || signal?.aborted) throw unavailable();
     fs.mkdirSync(this.workspace, {recursive: true, mode: 0o700});
     fs.mkdirSync(path.join(this.workspace,'tmp'),{mode:0o700});
+    fs.mkdirSync(path.join(this.workspace,'tmp','.X11-unix'),{mode:0o700});
     fs.writeFileSync(path.join(this.workspace, 'input.json'), JSON.stringify({...probe, ...(scene ? {scene: validateBlenderScene(scene)} : {})}), {flag:'wx'});
     const ready = new Promise<any>((resolve, reject) => {this.readyResolve = resolve; this.readyReject = reject;});
+    void ready.catch(()=>undefined);
     const args = ['--cpu=60', '--fsize=' + interactiveBlenderLimits.profileBytes, '--nofile=256', '--', '/usr/bin/bwrap', '--unshare-all', '--cap-drop', 'ALL', '--die-with-parent', '--new-session', '--clearenv', '--ro-bind', '/opt/cocreate-blender', '/blender', '--ro-bind', path.resolve('server/isolation'), '/control', '--bind', this.workspace, '/session', '--ro-bind', '/usr/bin/Xvfb', '/bin/Xvfb', '--ro-bind', '/usr/bin/dash', '/bin/sh', '--ro-bind', '/usr/bin/sleep', '/bin/sleep', '--proc', '/proc', '--dev', '/dev', '--bind', path.join(this.workspace,'tmp'), '/tmp'];
+    args.push('--ro-bind','/usr/bin/xkbcomp','/usr/bin/xkbcomp');
     for (const directory of ['/lib','/lib64','/usr/lib','/usr/share/X11','/usr/share/fonts','/etc/fonts','/usr/share/fontconfig']) if (fs.existsSync(directory)) args.push('--ro-bind',directory,directory);
     for (const [key, value] of Object.entries({DISPLAY:':99', HOME:'/session', TMPDIR:'/tmp', LANG:'C.UTF-8', LIBGL_ALWAYS_SOFTWARE:'1', LP_NUM_THREADS:'2', OMP_NUM_THREADS:'2', BLENDER_USER_CONFIG:'/session/config', BLENDER_USER_SCRIPTS:'/session/scripts', PYTHONNOUSERSITE:'1'})) args.push('--setenv',key,value);
     args.push('--chdir','/session','/bin/sh','/control/start-blender-display.sh');
@@ -110,6 +115,7 @@ export class InteractiveBlenderExecutor {
     if(bytes.length<45||bytes.length>1024**2||!bytes.subarray(0,8).equals(Buffer.from([137,80,78,71,13,10,26,10]))||bytes.readUInt32BE(16)!==960||bytes.readUInt32BE(20)!==640) {this.stop(unavailable());throw unavailable();}
     return bytes;
   }
-  async waitClosed(){await this.done; await this.group?.cleanup();this.group=undefined;if(this.failure)throw this.failure;}
-  async close(){this.closing=true;this.stop(new Error('Dedicated session closed.'));await this.done;await this.group?.cleanup();this.group=undefined;}
+  private async cleanupGroup(){this.cleanup??=this.group?.cleanup()||Promise.resolve();await this.cleanup;this.group=undefined;}
+  async waitClosed(){await this.done;await this.cleanupGroup();if(this.failure)throw this.failure;}
+  close(){return this.closed??=(async()=>{this.closing=true;this.stop(new Error('Dedicated session closed.'));await this.done;await this.cleanupGroup();if(path.dirname(this.workspace)!==path.resolve('.runtime/isolation/jobs'))throw unavailable();fs.rmSync(this.workspace,{recursive:true,force:true});})();}
 }
