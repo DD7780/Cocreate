@@ -29,9 +29,9 @@ export function restoreBlender(bytes: Uint8Array, version: BlenderVersion) {
   } catch { throw new ArtifactUnavailableError('corrupt'); }
 }
 export function snapshotBlender(snapshot: Record<string, unknown>, projectId: string): BlenderArtifact[] {
-  if (snapshot.blenderArtifacts !== undefined && !Array.isArray(snapshot.blenderArtifacts) || [3,4].includes(snapshot.artifactContractVersion as number) && !Array.isArray(snapshot.blenderArtifacts)) throw new ArtifactUnavailableError('corrupt');
+  if (snapshot.blenderArtifacts !== undefined && !Array.isArray(snapshot.blenderArtifacts) || [3,4,5].includes(snapshot.artifactContractVersion as number) && !Array.isArray(snapshot.blenderArtifacts)) throw new ArtifactUnavailableError('corrupt');
   const artifacts = snapshot.blenderArtifacts || [];
-  if (!Array.isArray(artifacts) || (artifacts.length && ![3,4].includes(snapshot.artifactContractVersion as number))) throw new ArtifactUnavailableError('corrupt');
+  if (!Array.isArray(artifacts) || (artifacts.length && ![3,4,5].includes(snapshot.artifactContractVersion as number))) throw new ArtifactUnavailableError('corrupt');
   const ids = new Set<string>();
   for (const artifact of artifacts) {
     if (!artifact || artifact.kind !== 'blender' || artifact.projectId !== projectId || !/^blend_[a-f0-9]{24}$/.test(artifact.id) || ids.has(artifact.id) || typeof artifact.title !== 'string' || !artifact.title.trim() || artifact.title.length > 120 || !Array.isArray(artifact.versions)) throw new ArtifactUnavailableError('corrupt');

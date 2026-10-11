@@ -161,9 +161,11 @@ export function captureArtifacts(room: {
     documentArtifacts?: import('../shared/types.js').DocumentArtifact[];
     blenderArtifacts?: import('../shared/blender.js').BlenderArtifact[];
     browser?: import('../shared/browser-session.js').BrowserState;
+    preview?: import('./preview-state.js').PreviewState;
 }, store: EventStore) {
     const history = new Map((room.artifactHistory || []).map(version => [version.id, version]));
     const refs: string[] = [];
+    for (const plan of room.preview?.plans || []) if (store.readArtifact(plan.contentRef)) refs.push(plan.contentRef);
     for (const file of room.browser?.downloads || []) if (store.readArtifact(file.contentRef)) refs.push(file.contentRef);
     for (const artifact of room.blenderArtifacts || [])
         for (const version of artifact.versions)

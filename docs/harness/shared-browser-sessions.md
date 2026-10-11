@@ -1,5 +1,7 @@
 # Shared browser sessions — bounded change packet
 
+Exact milestone source `2ade99010d91e4a0124cfe4ce11f7dd7fa703ba8` is committed/pushed. [Production-image CI evidence](../../artifacts/shared-browser/ci-source-2ade990.json): run `38083250772` succeeded, 257/259 regression checks passed with two Windows-only shared-session checks skipped in Linux; native PostgreSQL 2/2, compiler 10/10 and acceptance-browser isolation 15/15 passed with zero skips. This complements, and does not replace, the dated Windows native shared-session/two-participant proof below. No hosted release or signed-in service acceptance occurred. That source wrote v4; the separately bounded frontend release milestone extends writers to v5 and retains v4 readers. Interactive Blender remains gated by the failed probe commit `f65b8ca`.
+
 Requested 2026-10-11. Base `e7d074158bb58547b9a3511cc6d48db2d5adf405`, branch `codex/canvas-artifacts`. The preceding Blender evidence is dated history, not a new result.
 
 ## Outcome and boundary

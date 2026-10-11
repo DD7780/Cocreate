@@ -1,5 +1,9 @@
 # Current harness architecture
 
+## Generated-app preview release boundary
+
+`PreviewReleases` lives in existing Artifacts with local viewer selection. Shared public types contain no credentials. `preview-state.ts` validates private v5 plan/body identity; room mutations serialize and persist before provider work. `preview-routes.ts` owns fresh project/coordinator/connection-owner authorization, explicit grant revisions and exact plan approval. Preparation compiles immutable retained source in existing OS isolation. `preview-provider.ts` reads Cloudflare account/project metadata, runs only the pinned trusted content-addressed asset helper in a clean fixed-file directory, and creates a preview through one REST POST. A separately persisted creation intent prevents unsafe cancellation/retry. Permanent receipts and non-expiring global SQL/SQLite reservations survive coordinator loss; uncertain outcomes reconcile provider metadata and exact immutable live files, then isolated rendering. Prior verified bytes are retained for reviewed recovery. HTTP/client/model input cannot supply tool commands, URLs, environment credentials or generated configuration. Background Blender, the failed interactive gate and shared-browser execution remain distinct boundaries.
+
 ## Shared browser boundary (2026-10-11)
 
 `shared/browser-session.ts` validates bounded input. `server/shared-browser-routes.ts` enforces current project/connection-owner membership, explicit observation/control, private login, one controller and epoch fencing. `RoomManager.mutateBrowser` serializes and saves receipt intent before `SharedBrowserExecutor` dispatch. Receipts contain hashes/acknowledgement state, never input text/cookies. Owner-private screens are inaccessible to others until explicit owner sharing; frame reads recheck current membership/epoch after capture. The executor is ephemeral and never recovered automatically.

@@ -68,6 +68,15 @@ export class EventStore{
     this.db=new DatabaseSync(this.file);
     this.db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
     this.migrate();
+    this.db.exec('CREATE TABLE IF NOT EXISTS preview_target_locks(target_key TEXT PRIMARY KEY, workspace_id TEXT NOT NULL, plan_id TEXT NOT NULL);');
+  }
+  reservePreviewTarget(key:string,projectId:string,planId:string){
+    this.db.prepare('INSERT OR IGNORE INTO preview_target_locks VALUES (?,?,?)').run(key,projectId,planId);
+    const prior=this.db.prepare('SELECT workspace_id,plan_id FROM preview_target_locks WHERE target_key=?').get(key);
+    if(prior?.workspace_id!==projectId||prior?.plan_id!==planId)throw new Error('Preview target has a durable unfinished release. Reconcile it first.');
+  }
+  releasePreviewTarget(key:string,projectId:string,planId:string){
+    this.db.prepare('DELETE FROM preview_target_locks WHERE target_key=? AND workspace_id=? AND plan_id=?').run(key,projectId,planId);
   }
   private migrate(){
     this.db.exec(`

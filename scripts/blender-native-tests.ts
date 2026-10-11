@@ -53,7 +53,7 @@ test('real Blender outputs use immutable private SDK Storage, cold restoration, 
   const coldDir=fs.mkdtempSync(path.join(os.tmpdir(),'canvas-artifacts-blender-cold-'));let cold:Awaited<ReturnType<typeof createCoCreateServer>>|undefined;
   try{
     await platform.publishArtifactBodies(projectId,[body,latestBody]);f.manager.eventStore.restoreArtifactBodies([body,latestBody]);f.room.blenderArtifacts=[{kind:'blender',id:artifactId,title,projectId,versions:[version,latest]}];await f.manager.save(f.room);
-    const snapshot=storage.snapshots.get(projectId)!.harness_state;assert.equal(snapshot.artifactSchemaVersion,4);assert.equal(snapshot.blenderArtifacts.length,1);assert.equal(snapshot.artifactBodies,undefined);
+    const snapshot=storage.snapshots.get(projectId)!.harness_state;assert.equal(snapshot.artifactSchemaVersion,5);assert.equal(snapshot.blenderArtifacts.length,1);assert.equal(snapshot.artifactBodies,undefined);
     const replacement=storage.platform();await replacement.claimCoordinator(projectId);let allowed=true;
     replacement.requireMembership=async()=>{if(!allowed)throw Object.assign(new Error('Project access denied.'),{status:403});return 'viewer';};
     cold=await createCoCreateServer({platform:replacement,dataDir:coldDir,port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'synthetic'});

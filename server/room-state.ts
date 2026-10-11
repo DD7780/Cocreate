@@ -188,6 +188,8 @@ export type Room = {
   blenderMutation?: Promise<unknown>;
   browser?: import('../shared/browser-session.js').BrowserState;
   browserMutation?: Promise<unknown>;
+  preview?: import('./preview-state.js').PreviewState;
+  previewMutation?: Promise<unknown>;
   pendingBlender?: { artifactId: string; versionId: number };
   artifactHistory?: ArchivedVersion[];
   artifactManifest?: ArtifactReference[];

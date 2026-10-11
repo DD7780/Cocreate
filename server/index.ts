@@ -40,8 +40,11 @@ import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
 import { registerBlenderRoutes } from './blender-routes.js';
 import { registerSharedBrowserRoutes } from './shared-browser-routes.js';
+import { registerPreviewRoutes } from './preview-routes.js';
+import type { PreviewProvider } from './preview-provider.js';
 type Options = {
   platform?: SupabasePlatform;
+  previewProvider?: PreviewProvider;
   port?: number;
   host?: string;
   serveClient?: boolean;
@@ -149,6 +152,7 @@ export async function createCoCreateServer(options: Options = {}) {
     };
     registerBlenderRoutes(app, manager, authorize, platformState.platform || undefined);
     const closeSharedBrowsers=registerSharedBrowserRoutes(app,manager,authorize,platformState.platform||undefined);
+    const closePreviews=registerPreviewRoutes(app,manager,authorize,encryptionSecret,platformState.platform||undefined,options.previewProvider);
     const owner = (req: express.Request, res: express.Response) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -861,6 +865,7 @@ export async function createCoCreateServer(options: Options = {}) {
         const drained = server.listening ? new Promise<void>((resolve, reject) => server.close(error => error ? reject(error) : resolve())) : Promise.resolve();
         for (const client of wss.clients)
             client.terminate();
+        closePreviews();
         await closeSharedBrowsers();
         await new Promise<void>(resolve => wss.close(() => resolve()));
         await drained;

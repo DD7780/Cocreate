@@ -1,0 +1,46 @@
+✔ empty cache restores compiled preview, current checkpoint, old version and receipts without inference (3726.3653ms)
+✔ upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies (323.1247ms)
+✔ missing/corrupt stored bodies are explicit failures, distinct from an empty project (382.8156ms)
+✔ private bucket and project-bound artifact identity fail closed; no public URL is created (67.2049ms)
+✔ authenticated lazy historical reads reject revoked users, including revocation during download (1018.6111ms)
+✔ an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact (6817.5637ms)
+✔ lease loss after private body upload cannot promote or start another physical attempt (6274.236ms)
+✔ synchronous publication failure clears the pending gate and preserves the previous product (6696.3326ms)
+✔ legacy inline checkpoint publication is verified and malformed metadata fails explicitly (167.831ms)
+✔ new promotion after a retained-product rollback never overwrites an archived version identity (7002.9361ms)
+✔ caller-only document submission executes, versions independently, reloads and downloads without navigation inference (5885.2267ms)
+✔ document failure retains published content and shared ledger keeps unknown usage honest (1710.2385ms)
+✔ ambiguous and unsupported outputs clarify without builder dispatch; hostile Markdown is inert (276.0747ms)
+✖ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (885.3997ms)
+✔ explicit private input versions are frozen as evidence, not accepted authority or cross-artifact conflicts (764.8415ms)
+✔ private schema v2 document bodies survive empty-cache restoration and revoke during read (3487.3964ms)
+✔ two participants prepare frozen private frontend bytes without credentials or inference; v5 cold restore binds every file and project (3646.7541ms)
+✔ actual provider adapter and independent participants enforce owner grants, exact approvals, single dispatch, live bytes and previous-version recovery (13998.6849ms)
+✔ uncertain provider outcome holds a durable global lock, never retries, survives restart, and reconciles exact live bytes (5902.6543ms)
+✔ target changes, revoked grants and authority loss during asset upload cannot authorize deployment creation (2979.7031ms)
+Embedded PostgreSQL: preview SQL permissions/transactions; native contention requires CI
+✔ global preview reservation SQL denies client roles, fences coordinators and preserves uncertain locks across projects (3271.2406ms)
+ℹ tests 21
+ℹ suites 0
+ℹ pass 20
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 82663.523
+
+✖ failing tests:
+
+test at tests\canvas-artifacts.test.ts:1:9722
+✖ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (885.3997ms)
+  AssertionError [ERR_ASSERTION]: Missing expected exception (ArtifactUnavailableError).
+      at TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\canvas-artifacts.test.ts:153:12)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async Test.processPendingSubtests (node:internal/test_runner/test:960:7) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: undefined,
+    operator: 'throws',
+    diff: 'simple'
+  }

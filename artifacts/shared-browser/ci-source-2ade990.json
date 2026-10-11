@@ -1,0 +1,28 @@
+{
+  "verifiedAt": "2026-10-10T20:25:17Z",
+  "commit": "2ade99010d91e4a0124cfe4ce11f7dd7fa703ba8",
+  "branch": "codex/canvas-artifacts",
+  "runId": 38083250772,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38083250772",
+  "conclusion": "success",
+  "scope": "Exact milestone 1 source in Linux production image; not hosted service acceptance; Windows-only shared-session executor remains locally verified.",
+  "fullRegression": {
+    "tests": 259,
+    "passed": 257,
+    "failed": 0,
+    "skipped": 2
+  },
+  "nativePostgres": {
+    "passed": 2,
+    "skipped": 0
+  },
+  "compilerIsolation": {
+    "passed": 10,
+    "skipped": 0
+  },
+  "browserIsolation": {
+    "passed": 15,
+    "skipped": 0
+  },
+  "sourceFingerprint": "8f928144fadd9f42a14770d040ca8e667e1277e9620f3fa7c332f2b92f496297"
+}

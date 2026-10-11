@@ -25,14 +25,14 @@ test('shared browser restart turns pending outcomes unknown and never restores c
   const restored=browserState(state,true);assert.equal(restored.sessions[0].state,'disconnected');assert.equal(restored.sessions[0].epoch,2);assert.equal(restored.sessions[0].receipts[0].state,'unknown');assert.equal(JSON.stringify(restored).includes('cookies'),false);assert.throws(()=>browserState({sessions:[],downloads:[{}]}));
 });
 
-test('schema v4 browser files survive private SDK cold restore and reject corrupt or cross-project descriptors',async()=>{
+test('current schema browser files survive private SDK cold restore and reject corrupt or cross-project descriptors',async()=>{
   const store=await createArtifactFixture(),platform=store.platform(),projectId=randomUUID();await platform.claimCoordinator(projectId);
   const f=await createCanvasArtifactsFixture({durableStore:platform,projectId});
   try{
     const bytes=Buffer.from('private immutable browser download'),metadata={id:randomUUID(),sessionId:randomUUID(),commandId:randomUUID(),participantId:'alice',projectId,name:'report.txt',mime:'text/plain' as const,byteLength:bytes.length,contentHash:browserHash(bytes),createdAt:new Date().toISOString()};
     const body=browserDownloadBytes(metadata,bytes),ref=f.manager.eventStore.writeArtifact(body,'application/vnd.cocreate.browser-download+json');
     await f.manager.mutateBrowser(f.room,'alice',state=>{state.downloads.push({...metadata,contentRef:ref.ref});},async()=>{});
-    const next=store.platform();await next.claimCoordinator(projectId);const snapshot:any=await next.loadSnapshot(projectId);assert.equal(snapshot.artifactSchemaVersion,4);assert.equal(snapshot.browser.downloads.length,1);
+    const next=store.platform();await next.claimCoordinator(projectId);const snapshot:any=await next.loadSnapshot(projectId);assert.equal(snapshot.artifactSchemaVersion,5);assert.equal(snapshot.browser.downloads.length,1);
     const restored=snapshot.artifactBodies.find((b:any)=>b.ref===ref.ref);assert.ok(restored);assert.equal(restoreBrowserDownload(Buffer.from(restored.base64,'base64'),snapshot.browser.downloads[0]).toString(),bytes.toString());
     const recorded=store.snapshots.get(projectId)!;recorded.harness_state.browser.downloads[0].projectId=randomUUID();await assert.rejects(next.loadSnapshot(projectId),/unavailable|integrity|invalid|corrupt/i);recorded.harness_state.browser.downloads[0].projectId=projectId;
     assert.throws(()=>restoreBrowserDownload(Buffer.from('{"schemaVersion":1}'),snapshot.browser.downloads[0]));

@@ -1,0 +1,17 @@
+{
+  "verifiedAt": "2026-10-10T20:51:59.437Z",
+  "scope": "Two independent local authenticated browser profiles; controlled provider API/asset helper and actual isolated compiler/render verifier. No live Cloudflare account or hosted acceptance.",
+  "checks": [
+    "Exact frontend v1, source/output hashes and private files prepared with no account or inference.",
+    "Two independent participants can read private plans and retain independent Artifacts selection.",
+    "Verified account/project/unique preview branch is reviewable; membership alone grants no release authority.",
+    "Owner explicitly approves frozen public preview; one creation, live byte hashes and real isolated render pass.",
+    "Explicit owner grant requires a new approval-bound plan; second participant releases and observes durable results.",
+    "Second participant retrieves the exact saved immutable output through authenticated project access.",
+    "Recovery prepares a new unique preview plan reusing verified immutable bytes; no production rollback mutation.",
+    "Preview review and hashes fit a 390-pixel viewport.",
+    "Workflow, Canvas and token tracking remain unchanged; zero inference and only controlled provider operations."
+  ],
+  "physicalCalls": 0,
+  "controlledDeploymentPosts": 2
+}

@@ -1,5 +1,18 @@
 # Harness status and outstanding work
 
+## Generated frontend preview milestone (2026-10-11)
+
+- [x] Separate provider packet/current official docs; Cloudflare Pages existing-project preview scope.
+- [x] Private frozen frontend plans, exact version/source/output hashes, owner/grant revisions and explicit public release approval.
+- [x] Server-only encrypted tokens, fixed isolated build output, one creation attempt, durable dispatch phases/global reservations and no automatic replay.
+- [x] Controlled provider/two-participant preparation, permissions, receipt viewing, file retrieval, live hash/render smoke and immutable recovery demonstration.
+- [x] Local embedded PostgreSQL permissions/fencing/transaction checks; prepared native PostgreSQL CI coverage.
+- [ ] Real account/project/token/billing verification and concrete upload approval.
+- [ ] Authorized hosted reservation migration, signed-in/RLS/coordinator replacement, real helper upload/live behavior/uncertain outcome/recovery acceptance.
+- [ ] Interactive Blender graphics isolation, real frame/effective input and two-participant acceptance: blocked by dated failed environment probe, not proved by background tests.
+
+[Packet and evidence](frontend-preview-deployment.md) own exact final source/tests; passing local fixtures are not hosted acceptance.
+
 ## Shared browser sessions — 2026-10-11
 
 - [x] Verify clean `e7d0741` checkout and prior Blender evidence; preserve dated/local/hosted distinction.

@@ -5,6 +5,7 @@ import { MarkdownDocument } from './MarkdownDocument';
 import { BlenderSession, BlenderRender } from './BlenderSession';
 import './artifacts.css';
 import { SharedBrowser } from './SharedBrowser';
+import { PreviewReleases } from './PreviewReleases';
 
 type Selection = { artifactId: string; versionId: number | null };
 export const artifactSelectionKey = (projectId: string, participantId: string) => `cocreate-artifacts:${encodeURIComponent(projectId)}:${encodeURIComponent(participantId)}`;
@@ -38,7 +39,7 @@ export function Artifacts({ state, token, participantId, application }: { state:
     catch { setCacheError('Viewer preference could not be saved on this device.'); }
   };
   useEffect(() => {
-    if (!['blender-session','browser-session'].includes(selection.artifactId) && selected && selected.id !== selection.artifactId) {
+    if (!['blender-session','browser-session','preview-releases'].includes(selection.artifactId) && selected && selected.id !== selection.artifactId) {
       const value = { artifactId: selected.id, versionId: null };
       setSelection(value);
       try { if (participantId) localStorage.setItem(key, JSON.stringify(value)); } catch { /* Optional device preference. */ }
@@ -47,20 +48,21 @@ export function Artifacts({ state, token, participantId, application }: { state:
   const tasks = state.workflow.tasks.filter(task => ['queued', 'running', 'verifying', 'failed', 'interrupted'].includes(task.state)).slice(-3);
   return <section className="artifact-workspace" aria-label="Project artifacts">
     <div className="artifact-controls">
-      <label>Artifact<select value={['blender-session','browser-session'].includes(selection.artifactId) ? selection.artifactId : selected?.id || ''} onChange={event => choose({ artifactId: event.target.value, versionId: null })}>
+      <label>Artifact<select value={['blender-session','browser-session','preview-releases'].includes(selection.artifactId) ? selection.artifactId : selected?.id || ''} onChange={event => choose({ artifactId: event.target.value, versionId: null })}>
         {!artifacts.length && <option value="">No saved artifacts</option>}
         {artifacts.map(item => <option key={item.id} value={item.id}>{item.title} · {item.kind === 'markdown' ? 'Document' : item.kind === 'blender' ? 'Blender scene + render' : 'App'}</option>)}
         <option value="blender-session">Connected Blender</option>
         <option value="browser-session">Shared browser</option>
+        <option value="preview-releases">Application previews</option>
       </select></label>
-      {selected && !['blender-session','browser-session'].includes(selection.artifactId) && <label>Version<select value={selection.versionId && selected.versions.some(item => item.id === selection.versionId) ? selection.versionId : ''} onChange={event => choose({ artifactId: selected.id, versionId: event.target.value ? Number(event.target.value) : null })}>
+      {selected && !['blender-session','browser-session','preview-releases'].includes(selection.artifactId) && <label>Version<select value={selection.versionId && selected.versions.some(item => item.id === selection.versionId) ? selection.versionId : ''} onChange={event => choose({ artifactId: selected.id, versionId: event.target.value ? Number(event.target.value) : null })}>
         <option value="">Latest (v{selected.versions.at(-1)?.id})</option>
         {[...selected.versions].reverse().map(item => <option key={item.id} value={item.id}>v{item.id} · {new Date(item.createdAt).toLocaleString()}</option>)}
       </select></label>}
     </div>
     {cacheError && <p role="status">{cacheError}</p>}
     {!!tasks.length && <div className="artifact-task-status" role="status" aria-live="polite">{tasks.map(task => <p key={task.id}><strong>{task.title}</strong> · {task.state}{task.blocker && <span> — {task.blocker}</span>}</p>)}</div>}
-    {selection.artifactId === 'browser-session' ? <SharedBrowser state={state} token={token} participantId={participantId}/> : selection.artifactId === 'blender-session' ? <BlenderSession state={state} token={token} participantId={participantId}/> : selected?.kind === 'blender' && version ? <section className="document-artifact">
+    {selection.artifactId === 'preview-releases' ? <PreviewReleases state={state} token={token} participantId={participantId}/> : selection.artifactId === 'browser-session' ? <SharedBrowser state={state} token={token} participantId={participantId}/> : selection.artifactId === 'blender-session' ? <BlenderSession state={state} token={token} participantId={participantId}/> : selected?.kind === 'blender' && version ? <section className="document-artifact">
       <div className="preview-bar"><div><strong>{selected.title} · v{version.id}</strong><span>Saved Blender scene and rendered image · integrity checked · no in-browser .blend editor</span></div><div>
         <a href={`/api/rooms/${state.roomId}/blender/artifacts/${selected.id}/versions/${version.id}/scene.blend?token=${encodeURIComponent(token)}`} download>Download .blend</a>
         <a href={`/api/rooms/${state.roomId}/blender/artifacts/${selected.id}/versions/${version.id}/render.png?download=1&token=${encodeURIComponent(token)}`} download>Download PNG</a>

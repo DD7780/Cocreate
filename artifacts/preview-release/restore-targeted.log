@@ -1,0 +1,32 @@
+✔ promotion hides pending documents, failure rolls back, and interrupted tasks reopen without inference (1518.3495ms)
+✖ two participants prepare frozen private frontend bytes without credentials or inference; v5 cold restore binds every file and project (2949.5181ms)
+✔ current schema browser files survive private SDK cold restore and reject corrupt or cross-project descriptors (390.4746ms)
+ℹ tests 3
+ℹ suites 0
+ℹ pass 2
+ℹ fail 1
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 9408.6745
+
+✖ failing tests:
+
+test at tests\preview-release.test.ts:1:2061
+✖ two participants prepare frozen private frontend bytes without credentials or inference; v5 cold restore binds every file and project (2949.5181ms)
+  AssertionError [ERR_ASSERTION]: {"code":"artifact_unavailable","reason":"corrupt","error":"Stored product or checkpoint data is corrupt. Reopen the project to retry, or ask the owner to recover a verified backup. Reopening does not start a build automatically."}
+
+  409 !== 200
+
+      at connect (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\preview-release.test.ts:18:309)
+      at process.processTicksAndRejections (node:internal/process/task_queues:104:5)
+      at async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\7a24\Devoffice\tests\preview-release.test.ts:39:9)
+      at async Test.run (node:internal/test_runner/test:1389:7)
+      at async startSubtestAfterBootstrap (node:internal/test_runner/harness:387:3) {
+    generatedMessage: false,
+    code: 'ERR_ASSERTION',
+    actual: 409,
+    expected: 200,
+    operator: 'strictEqual',
+    diff: 'simple'
+  }

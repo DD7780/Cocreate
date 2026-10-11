@@ -18,7 +18,7 @@ export function submittedOutput(passage: string, correctedTarget?: ArtifactTarge
   // App instructions such as "show Markdown documents in the app" still target the app.
   if (!/\b(?:write|generate|draft|create|revise|update|make)\s+(?:(?:a|an|the|my|our|this|new|existing|short|project|markdown)\s+){0,4}(?:markdown\s+)?(?:document|brief|report|readme)\b/i.test(passage)) {
     if (/\b(?:(?:use|open|control|launch|automate) (?:a |the )?(?:browser|desktop|chrome|edge)|browser automation|desktop control|blender|provision|deploy|spreadsheet|xlsx|powerpoint|pptx|pdf|word document|docx)\b/i.test(passage))
-      return { reason: 'This workflow supports application builds, Markdown documents and basic scenes on a locally approved connected Blender device. Shared browser viewing/input requires explicit owner-authorized Artifacts controls. Agent browser automation, desktop control, provisioning, deployment and other formats are unavailable.' };
+      return { reason: 'This workflow supports application builds, Markdown documents and basic scenes on a locally approved connected Blender device. Shared browser viewing/input requires explicit owner-authorized Artifacts controls. Generated frontend preview preparation and release use explicit owner-authorized Application previews controls in Artifacts. Agent browser automation, desktop control, provisioning, deployment and other formats are unavailable.' };
     return correctedTarget && !/\b(?:build|create|generate|update|revise)\s+(?:(?:a|an|the|my|our|existing|new)\s+){0,3}(?:app|application|website)\b/i.test(passage) ? { output: correctedTarget } : {};
   }
   if (/\b(?:as|in|export(?:ed)? (?:as|to)|save (?:as|to))\s+(?:(?:a|an|the)\s+)?(?:pdf|docx|xlsx|pptx|word|powerpoint|spreadsheet)\b/i.test(passage))

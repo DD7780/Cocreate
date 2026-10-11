@@ -1,0 +1,85 @@
+{
+  "verifiedAt": "2026-10-10T21:04:20.71Z",
+  "branch": "codex/canvas-artifacts",
+  "baseCommit": "f65b8caec28ba4a18fa57d6cecc392243b209b81",
+  "sourceFingerprint": "1f4d4880922cfaf6ef584ff0470abb0cf1d3725a727e24129342dc1a905065a2",
+  "releaseInputs": 116,
+  "scope": "Local preparation with controlled provider endpoints, actual isolated frontend compilation/rendering, and independent synthetic authenticated participants. Not hosted or real Cloudflare acceptance.",
+  "provider": "Cloudflare Pages Direct Upload: existing dedicated project, unique preview branch, public static files only",
+  "wranglerAssetHelper": {
+    "version": "4.131.1",
+    "command": "pages project upload",
+    "helpVerified": true,
+    "realUploadVerified": false
+  },
+  "checks": {
+    "securityRecovery": {
+      "passed": 7,
+      "skipped": 0,
+      "log": "security-final.log"
+    },
+    "ui": {
+      "passed": 9,
+      "inferenceCalls": 0,
+      "controlledCreationPosts": 2,
+      "evidence": "browser/checks.json"
+    },
+    "backgroundBlender": {
+      "passed": 3,
+      "skipped": 0,
+      "log": "blender-v5-regression.log",
+      "interactive": false
+    },
+    "credentialColdRestore": {
+      "passed": 1,
+      "skipped": 0,
+      "log": "credential-restore-final.log"
+    },
+    "affectedRestoration": {
+      "initialPassed": 20,
+      "initialTotal": 21,
+      "unsupportedVersionNegativeFixed": "v5 is supported; reject v6",
+      "correctedNegativePassed": true,
+      "browserV5ColdRestorePassed": true
+    },
+    "typescript": true,
+    "clientBuilds": [
+      "local-auth demo",
+      "production Supabase"
+    ],
+    "boundaries": {
+      "files": 188,
+      "violations": 0
+    },
+    "graph": {
+      "nodes": 2517,
+      "edges": 6425,
+      "astOnly": true,
+      "sqlParserAvailable": false
+    },
+    "strongServerEncryptionRequiredForRealCredentials": true,
+    "revocationDisconnectAndCredentialRotation": true,
+    "finalCancellationFocused": {
+      "skipped": 0,
+      "detail": "Credential rotation and server disconnect after final helper cleanup correction",
+      "passed": 1
+    }
+  },
+  "migration": {
+    "file": "supabase/migrations/20261011013000_preview_target_reservations.sql",
+    "sha256": "9197ab64043d2ca3cdb4f1ef5b934311c6cd3a95bcc32a3a18ac30dc84b2a3a7",
+    "hostedApplied": false,
+    "localEmbeddedSqlPassed": true,
+    "nativeSqlPendingCI": true
+  },
+  "realCloudMutations": 0,
+  "paidInference": 0,
+  "workflowAccountingChanged": false,
+  "hostedAcceptance": false,
+  "interactiveBlender": {
+    "sourceCommit": "f65b8caec28ba4a18fa57d6cecc392243b209b81",
+    "enabled": false,
+    "evidence": "artifacts/interactive-blender/environment-probe.json",
+    "reason": "GUI isolation probe failed before frames/effective input; bounded child removed."
+  }
+}

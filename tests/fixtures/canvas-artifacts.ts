@@ -10,7 +10,7 @@ import { createSession } from '../../server/auth.js';
 import type { DurableStore } from '../../server/room-state.js';
 import type { BlenderScene } from '../../shared/blender.js';
 
-export async function createCanvasArtifactsFixture(options: { durableStore?: DurableStore; projectId?: string; client?: boolean } = {}) {
+export async function createCanvasArtifactsFixture(options: { durableStore?: DurableStore; projectId?: string; client?: boolean; encryptionSecret?:string; previewProvider?: import('../../server/preview-provider.js').PreviewProvider } = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'canvas-artifacts-'));
   const calls: Array<{ kind: 'interpretation' | 'document' | 'application' | 'blender'; input: any }> = [];
   const control = { fail: false, missingUsage: false, markdown: '', hold: false, release: undefined as undefined | (() => void), scene: {
@@ -34,7 +34,7 @@ export async function createCanvasArtifactsFixture(options: { durableStore?: Dur
   });
   await new Promise<void>(resolve => provider.listen(0, '127.0.0.1', resolve));
   const address = provider.address(); if (!address || typeof address === 'string') throw new Error('Fixture provider did not start.');
-  const serverOptions = { dataDir, port: 0, host: '127.0.0.1', buildDebounceMs: 30, buildCooldownMs: 0, buildMaxWaitMs: 100, serveClient: options.client || false, sessionSecret: 'canvas-artifacts-synthetic', baseUrl: `http://127.0.0.1:${address.port}` };
+  const serverOptions = { dataDir, port: 0, host: '127.0.0.1', buildDebounceMs: 30, buildCooldownMs: 0, buildMaxWaitMs: 100, serveClient: options.client || false, sessionSecret: 'canvas-artifacts-synthetic', encryptionSecret:options.encryptionSecret||'canvas-artifacts-synthetic-encryption-secret', baseUrl: `http://127.0.0.1:${address.port}`, previewProvider: options.previewProvider };
   let service = await createCoCreateServer(serverOptions), manager = service.manager;
   // Use the production durable save path against the controlled private Storage fixture, when supplied.
   if (options.durableStore) (manager as any).config.durableStore = options.durableStore;

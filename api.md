@@ -1,5 +1,13 @@
 # 2guys1canvas implemented API contracts
 
+## Generated frontend previews (2026-10-11)
+
+All routes require current project/beta/coordinator access. `GET /api/rooms/:id/previews` returns public connection metadata, frozen plans and receipts, never credentials. `POST /previews/connections` accepts `{accountId,projectName,credential,actors}` and verifies an existing dedicated Direct Upload target read-only. Owner-only `POST /connections/:connectionId/grants` uses `{actors,expectedRevision}`; revoke increments revision; `POST /credential` replaces a scoped token only after verifying the same target. Grants invalidate old approvals.
+
+`POST /previews/plans` accepts exact `{versionId,connectionId?,recoveryOf?}` and persists private compiled bytes plus source/output/plan hashes. Account-free plans cannot release. `POST /plans/:planId/release` requires `{planHash,approvePublicPreview:true}` from an explicitly granted current actor. One permanent receipt/plan is saved before dispatch; grant/target/owner membership are rechecked before account mutation. Provider work and compilation are each admitted at most twice per server, once per project, with no queue. `POST /plans/:planId/reconcile` takes `{}` and never uploads. The connection owner may reconcile an old/revoked plan read-only; only a durable terminal receipt or proven pre-creation cancellation releases its exact global reservation. `GET /plans/:planId/files/:file` independently serves verified private fixed files to project readers. API paths above are beneath `/api/rooms/:id/previews`.
+
+Writers publish v5 snapshots/manifests with explicit v1/v2/v3/v4 readers. Hosted uploads require configured server encryption plus the prepared service-role-only reservation RPC migration; missing gates fail closed. Live verification proves exact static file hashes and isolated render smoke only. No Worker/control-plane deploy or production mutation endpoint exists. [Scope, tests and recovery](docs/harness/frontend-preview-deployment.md).
+
 ## Shared browser (2026-10-11)
 
 Project session/beta/current membership and coordinator gates apply. Connection-owner current editor/owner membership is independently required for session operations. Responses use no-store/nosniff/no-referrer. Session grants remain separate from saved file permissions.

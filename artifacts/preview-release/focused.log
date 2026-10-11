@@ -1,0 +1,14 @@
+✔ two participants prepare frozen private frontend bytes without credentials or inference; v5 cold restore binds every file and project (2759.7277ms)
+✔ actual provider adapter and independent participants enforce owner grants, exact approvals, single dispatch, live bytes and previous-version recovery (13298.0118ms)
+✔ uncertain provider outcome holds a durable global lock, never retries, survives restart, and reconciles exact live bytes (4544.7706ms)
+✔ target changes, revoked grants and authority loss during asset upload cannot authorize deployment creation (3352.7609ms)
+Embedded PostgreSQL: preview SQL permissions/transactions; native contention requires CI
+✔ global preview reservation SQL denies client roles, fences coordinators and preserves uncertain locks across projects (4081.5135ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 31777.2147

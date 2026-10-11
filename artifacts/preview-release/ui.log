@@ -1,0 +1,5 @@
+{"event":"collaboration.connected","connectionId":"2933c6f4-b3ca-4e53-b509-9b74e3de0394","correlationId":"8802e855-d0ca-4954-884e-c6d6122d4d7c"}
+{"event":"collaboration.connected","connectionId":"c270865a-4e70-4bde-aedf-d9b7f2fb9d5a","correlationId":"879684b7-6ef4-4f8e-aab7-cbdba4b74634"}
+{"checks":9,"physicalCalls":0,"output":"C:\\Users\\QUTA4\\.codex\\worktrees\\7a24\\Devoffice\\artifacts\\preview-release\\browser"}
+{"event":"collaboration.disconnected","connectionId":"2933c6f4-b3ca-4e53-b509-9b74e3de0394","code":1001}
+{"event":"collaboration.disconnected","connectionId":"c270865a-4e70-4bde-aedf-d9b7f2fb9d5a","code":1001}
