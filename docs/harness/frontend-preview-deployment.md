@@ -1,5 +1,7 @@
 # Generated frontend preview deployment — bounded change packet
 
+Current source `24c24f9b82111ee397efac4e9377f404c03e2bd3`, [CI 38125116322](https://github.com/DD7780/Cocreate/actions/runs/38125116322), passes both actual pinned asset-helper controlled upload/manifest/cancellation checks, all six controlled deployment security/recovery cases, native PostgreSQL checks 3/3 (including reservation concurrency) and full ordinary regression 273/275. Browser isolation 17/17 and separate native interactive Blender 3/3 also pass, keeping those capabilities distinct. The earlier independent generated-release UI 9/9 evidence remains dated and was not rerun without a relevant UI change. This completes local preparation only: real Cloudflare account/project/scoped token, exact public-preview approval, hosted reservation migration/RLS/coordinator replacement, actual upload/billing/live behavior/reconciliation/recovery remain unverified and require configuration/authorization. No real cloud resource was created or account mutated.
+
 Requested 2026-10-11. Base `e7d0741`, branch `codex/canvas-artifacts`. Independent of interactive desktop readiness.
 
 ## Supported stack and scope

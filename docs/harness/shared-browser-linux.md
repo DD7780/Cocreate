@@ -1,5 +1,7 @@
 # Shared browser Linux executor — bounded continuation packet
 
+Current accepted source `24c24f9b82111ee397efac4e9377f404c03e2bd3`, [CI 38125116322](https://github.com/DD7780/Cocreate/actions/runs/38125116322), passes actual Linux shared-session host-file/native-network denial, lifetime/aggregate CPU bounds, two independent authenticated participants/private login/sharing/handoff/stale fencing, no replay and private validated text downloads. Browser isolation 17/17 and full ordinary regression 273/275 pass; the two graphical skips pass in their separate dedicated Blender gate. Dated Windows evidence and earlier failed full runs remain history below. No repeated Windows UI run or hosted account proof is claimed. All grants, origin restrictions, pause/fresh private resume, expiry and whole-job cleanup remain unchanged. Hosted origin/account/auth/Storage/revocation/coordinator-replacement acceptance remains outstanding.
+
 2026-10-11, base `ac20bc1`, `codex/canvas-artifacts`. Finish the runtime prerequisite for the existing Linux production image; do not change session ownership, grants, private login, controller fencing, downloads, Canvas or Workflow accounting.
 
 Scope: build-time trusted Chromium binary attestation; shared browser admission; existing Bubblewrap/cgroup adapter; strict bounds and actual Linux session tests; Docker build preparation, canonical steering/runtime/API/recovery instructions. No deployment or cloud account mutation.

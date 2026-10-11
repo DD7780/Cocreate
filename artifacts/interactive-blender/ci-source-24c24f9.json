@@ -1,0 +1,101 @@
+{
+  "schemaVersion": 1,
+  "date": "2026-10-11",
+  "sourceCommit": "24c24f9b82111ee397efac4e9377f404c03e2bd3",
+  "branch": "codex/canvas-artifacts",
+  "sourceFingerprint": "b75caedb9091d0bdcc7fd7b2a45c7cd39706c55b4bdf1fd4768be07bbcbc0c62",
+  "releaseInputs": 126,
+  "workflowRun": 38125116322,
+  "job": 114427757171,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38125116322",
+  "overall": "success",
+  "postgres": {
+    "passed": 3,
+    "skipped": 0
+  },
+  "compiler": {
+    "passed": 10,
+    "skipped": 0
+  },
+  "browserIsolation": {
+    "passed": 17,
+    "skipped": 0
+  },
+  "regression": {
+    "total": 275,
+    "passed": 273,
+    "failed": 0,
+    "skipped": 2,
+    "skipScope": "The two native interactive desktop tests require the dedicated environment and both pass separately"
+  },
+  "sharedBrowser": {
+    "actualLinuxBoundary": true,
+    "twoIndependentParticipants": true,
+    "authenticatedViewInput": true,
+    "explicitPrivateLoginSharing": true,
+    "handoffStaleFencing": true,
+    "noReplay": true,
+    "validatedPrivateTextDownloads": true,
+    "windows": "Separate dated local evidence; not established by this Linux run"
+  },
+  "interactiveBlender": {
+    "environment": "Linux x64 pinned official Blender 4.5.14 / private Xvfb / llvmpipe",
+    "native": {
+      "passed": 3,
+      "skipped": 0,
+      "effectiveTranslation": 2,
+      "repeatedIsolation": true,
+      "outsideDenied": true,
+      "networkDenied": true,
+      "hostDisplayDenied": true,
+      "credentialsAbsent": true,
+      "capabilitiesAbsent": true,
+      "cgroupAuthorityAbsent": true,
+      "blendBytes": 505463,
+      "renderBytes": 208319,
+      "cleanupVerified": true,
+      "twoIndependentParticipants": true,
+      "handoffEpoch": 2,
+      "humanAgentExclusion": true,
+      "reopenAfterAgent": true,
+      "localStop": true,
+      "controlledInferenceCalls": 2
+    },
+    "artifactsUi": {
+      "passed": 5,
+      "profiles": 2,
+      "actualGui": true,
+      "manualInferenceCalls": 0,
+      "checks": [
+        "Independent Artifacts selection without inference",
+        "Explicit local owner observation/control approval",
+        "Real frames with observer input disabled",
+        "Handoff, UI input, manual save and authenticated private retrieval",
+        "Local STOP and unchanged zero-call Workflow accounting"
+      ],
+      "screenshots": "Generated in disposable image; not retained or manually inspected"
+    },
+    "windowsGui": "Unsupported; failed probes preserved"
+  },
+  "generatedFrontendPreview": {
+    "provider": "Cloudflare Pages, existing dedicated Direct Upload project, unique static preview branch",
+    "actualPinnedAssetHelper": {
+      "passed": 2,
+      "controlledEndpoints": true,
+      "realCloudUpload": false
+    },
+    "securityRecovery": "All six controlled provider cases pass in this source's full regression",
+    "globalReservationConcurrency": "Native PostgreSQL acceptance passes",
+    "ui": "Separate dated 9/9 two-profile demonstration; not rerun without a relevant UI change"
+  },
+  "hosted": {
+    "rollout": false,
+    "realSignedInActors": false,
+    "storageRlsReplacement": false,
+    "realProviderUpload": false,
+    "billing": false,
+    "liveRealPreviewRecovery": false
+  },
+  "cloudMutationsPerformed": false,
+  "paidInference": false
+}
