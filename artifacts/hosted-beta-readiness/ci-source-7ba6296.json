@@ -1,0 +1,43 @@
+{
+  "date": "2026-10-11",
+  "sourceCommit": "7ba6296496f3d7f93b8d53d7694e7b77882f53bb",
+  "branch": "codex/canvas-artifacts",
+  "workflowRun": 38135445261,
+  "job": 114458251332,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38135445261",
+  "conclusion": "success",
+  "fingerprint": "dc87daee569c4b2e189b83a7a39d4245e0a7f0176128a6d81175729f39113391",
+  "releaseInputs": 127,
+  "dockerImageId": "sha256:afb14d778b1c7b5e98b3886511629c3f9f24eb7153f36226cd5e4a38b5eb17d6",
+  "dockerImageScope": "Disposable CI build of the production Dockerfile; not a registry digest or deployed provider identity",
+  "checks": {
+    "frozenDependencies": "passed",
+    "typecheckAndBuild": "passed",
+    "boundaries": {"files": 203, "violations": 0},
+    "nativePostgreSQL": {"passed": 3, "total": 3},
+    "nativeCompiler": {"passed": 10, "total": 10},
+    "nativeBrowserIsolation": {"passed": 17, "total": 17},
+    "nativeDedicatedBlender": {"passed": 3, "total": 3},
+    "artifactsUI": {"passed": 5, "total": 5, "independentProfiles": 2, "actualGui": true, "physicalCalls": 0},
+    "productionImageRegression": {
+      "passed": 279,
+      "total": 281,
+      "failed": 0,
+      "skipped": 2,
+      "skippedScope": "Two interactive desktop cases run separately in the dedicated desktop job above"
+    },
+    "disposableCgroupCleanup": "passed"
+  },
+  "hostedAcceptance": false,
+  "platformDeployed": false,
+  "generatedApplicationDeployed": false,
+  "mainIntegration": "held; historical main push can trigger Cloudflare production release",
+  "remaining": [
+    "Authorized isolated staging target, configuration and migration dry run/application",
+    "Designated real accounts, Auth/HTTP/socket/direct RLS/private Storage/live revocation",
+    "Hosted runtime delegation, independently concurrent participants and coordinator replacement/recovery",
+    "Separate generated application/version, Cloudflare Pages account/project/token, concrete approval and live recovery",
+    "Reviewed exact platform release, tested v6-compatible recovery image and production smoke"
+  ],
+  "scope": "Controlled providers and disposable native CI environments; not hosted account or cloud-release evidence"
+}

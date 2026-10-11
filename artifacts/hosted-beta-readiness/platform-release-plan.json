@@ -1,0 +1,78 @@
+{
+  "schema": "cocreate-platform-release-draft-v1",
+  "date": "2026-10-11",
+  "status": "prepared-locally-hosted-gates-pending",
+  "authorized": false,
+  "source": {
+    "branch": "codex/canvas-artifacts",
+    "commit": "7ba6296496f3d7f93b8d53d7694e7b77882f53bb",
+    "fingerprint": "dc87daee569c4b2e189b83a7a39d4245e0a7f0176128a6d81175729f39113391",
+    "productionConfig": "wrangler.jsonc",
+    "productionConfigSha256": "849a688ccd41de905254e3fc37e78de89795d529ae96cd1a13d1f16607952d89",
+    "snapshotWrites": 6,
+    "snapshotReads": [1, 2, 3, 4, 5, 6]
+  },
+  "staging": {
+    "target": null,
+    "configSha256": null,
+    "fingerprint": null,
+    "registryImageDigest": null,
+    "workerVersion": null,
+    "containerVersion": null,
+    "designatedAccountVerification": "pending",
+    "coordinatorReplacementVerification": "pending",
+    "runtimeBoundaryVerification": "pending"
+  },
+  "production": {
+    "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "workerName": "cocreate",
+    "origin": "https://2guys1canvas.com",
+    "supabaseProjectRef": "dnsapasubeoxxsgkiotw",
+    "registryImageDigest": null,
+    "workerVersion": null,
+    "containerVersion": null,
+    "authorization": null,
+    "deployment": "not-performed",
+    "smokeVerification": "pending",
+    "mainIntegration": "held-historical-Cloudflare-auto-deployment"
+  },
+  "initialCapabilities": {
+    "COCREATE_SHARED_BROWSER": "disabled",
+    "COCREATE_CONNECTED_BLENDER": "disabled",
+    "COCREATE_INTERACTIVE_BLENDER": "disabled",
+    "COCREATE_GENERATED_PREVIEW": "disabled"
+  },
+  "requiredPrivateConfiguration": [
+    "SESSION_SECRET",
+    "CREDENTIAL_ENCRYPTION_SECRET",
+    "SUPABASE_SECRET_KEY"
+  ],
+  "migration": {
+    "candidate": "20261011013000_preview_target_reservations.sql",
+    "productionObserved": "missing-unapplied",
+    "stagingDiffAndDryRun": "pending-target",
+    "applicationAuthorized": false
+  },
+  "recovery": {
+    "retainedCompatibleImageDigest": null,
+    "required": "Tested v6-compatible disabled-capability image before release; otherwise recover forward",
+    "databaseRollbackAuthorized": false,
+    "preserve": "Immutable artifacts, beta grants, command/provider receipts and unresolved reservations"
+  },
+  "generatedApplicationPreview": {
+    "separateRelease": true,
+    "accountProjectConnection": null,
+    "artifactVersion": null,
+    "sourceHash": null,
+    "planHash": null,
+    "approval": null,
+    "deployment": "not-performed"
+  },
+  "limitations": [
+    "This draft is a review aid, not an executable deployment command or release authorization",
+    "CI/native local evidence does not prove hosted permissions or runtime delegation",
+    "Staging configuration changes produce their own config hash and source fingerprint",
+    "Application rollback does not roll back the database",
+    "No billed resource, account mutation, cloud release, email or paid inference was performed"
+  ]
+}

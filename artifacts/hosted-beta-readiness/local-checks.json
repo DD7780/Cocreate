@@ -1,7 +1,7 @@
 {
   "date": "2026-10-11",
   "baseCommit": "7aef200666dbf0e84d0431524c405af71d796aaa",
-  "scope": "Local Windows controlled providers and preparation; exact implementation commit will be recorded with CI",
+  "scope": "Local Windows controlled providers and preparation; exact implementation and separate CI recorded below",
   "fingerprint": "dc87daee569c4b2e189b83a7a39d4245e0a7f0176128a6d81175729f39113391",
   "releaseInputs": 127,
   "focusedFinal": {
@@ -63,10 +63,11 @@
   "generatedApplicationDeployed": false,
   "paidInferenceCalls": 0,
   "remaining": [
-    "Exact candidate CI",
     "Isolated staging configuration and account tests",
     "Coordinator replacement/expiry/live revocation",
     "Generated Pages account/project/token/exact authorization",
     "Reviewed platform release/production smoke"
-  ]
+  ],
+  "sourceCommit": "7ba6296496f3d7f93b8d53d7694e7b77882f53bb",
+  "ciEvidence": "ci-source-7ba6296.json"
 }
