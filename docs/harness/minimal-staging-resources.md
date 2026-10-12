@@ -1,5 +1,7 @@
 # Minimal isolated staging resource packet — 2026-10-11
 
+Update 2026-10-12: [authenticated account inspection and secure-login preparation](staging-preparation-checks.md) now confirm the second Free option and active Workers Paid subscription. Existing container inclusions are exhausted in the observed cycle; nominal two-hour basic allocation/full CPU plus a 30-minute tail is about $0.07, with platform overhead and ancillary usage additional. No new subscription, plan upgrade or Pages target is proposed. This supersedes the dated billing/eligibility uncertainty below; no resources or live URL exist yet. Creation/deployment and cleanup of exact IDs still require authority.
+
 ## Scope and authority
 
 The user has no existing staging resources and requested the smallest isolated setup, current Free-plan/quota checks, separate platform and generated-app targets, exact operations, costs and cleanup. This packet prepares those operations; it does not authorize creation, billing, plan upgrades, invitations, cloud configuration or releases. Keep main held. Preserve Canvas, Workflow, accounting, Artifacts, manual beta approval and all dated readiness evidence.

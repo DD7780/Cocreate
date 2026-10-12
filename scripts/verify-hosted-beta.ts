@@ -2,6 +2,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createHash } from 'node:crypto';
+import { execFileSync } from 'node:child_process';
 import { WebSocket } from 'ws';
 import { stagingConfiguration, type StagingTarget } from './prepare-hosted-staging.js';
 
@@ -11,10 +12,31 @@ type Account = { userId: string; accessToken: string };
 export type HostedFixture = {
   target: StagingTarget; sourceCommit: string; releaseFingerprint: string; projectId: string; otherProjectId: string;
   accounts: Record<Role, Account>; artifactPath: string; artifactSha256: string;
-  storagePath: string; storageSha256: string; browserSessionId: string; blenderSessionId: string;
+  storagePath: string; storageSha256: string; browserSessionId: string | null; blenderSessionId: string | null;
 };
 const uuid = /^[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/;
 const sha = /^[a-f0-9]{64}$/;
+
+export function assertPrivateHostedFixture(file: string) {
+  const info = fs.lstatSync(file);
+  if (!info.isFile() || info.isSymbolicLink() || process.platform !== 'win32' && (info.mode & 0o077) !== 0) throw new Error('Require a private regular credential fixture.');
+  if (process.platform === 'win32') {
+    // chmod's POSIX mode does not establish a private Windows DACL.
+    const script = `$ErrorActionPreference='Stop'
+$sid=[Security.Principal.WindowsIdentity]::GetCurrent().User.Value
+$acl=[IO.File]::GetAccessControl($env:COCREATE_FIXTURE_PATH)
+if($acl.GetOwner([Security.Principal.SecurityIdentifier]).Value -ne $sid){throw 'Private fixture owner required'}
+$readable=$false
+foreach($rule in $acl.GetAccessRules($true,$true,[Security.Principal.SecurityIdentifier])){
+ if($rule.AccessControlType -ne 'Allow'){continue}
+ if($rule.IdentityReference.Value -ne $sid -and $rule.IdentityReference.Value -ne 'S-1-5-18'){throw 'Private fixture ACL required'}
+ if($rule.IdentityReference.Value -eq $sid -and ($rule.FileSystemRights -band [Security.AccessControl.FileSystemRights]::ReadData)){$readable=$true}
+}
+if(-not $readable){throw 'Private fixture read permission required'}`;
+    execFileSync(path.join(process.env.SystemRoot || 'C:\\Windows','System32','WindowsPowerShell','v1.0','powershell.exe'),['-NoProfile','-NonInteractive','-Command',script],
+      {env:{...process.env,COCREATE_FIXTURE_PATH:path.resolve(file)},stdio:'pipe',windowsHide:true,timeout:10_000});
+  }
+}
 
 export function validateHostedFixture(value: HostedFixture, production: any): HostedFixture {
   stagingConfiguration(value.target, production);
@@ -24,7 +46,7 @@ export function validateHostedFixture(value: HostedFixture, production: any): Ho
     const account = value.accounts[role];
     if (!account || !uuid.test(account.userId) || typeof account.accessToken !== 'string' || account.accessToken.length < 20 || account.accessToken.length > 8192 || /\s/.test(account.accessToken)) throw new Error(`Configure a private access token for ${role}.`);
   }
-  if (!sha.test(value.artifactSha256) || !sha.test(value.storageSha256) || !uuid.test(value.browserSessionId) || !uuid.test(value.blenderSessionId)) throw new Error('Configure real retained test artifacts and owner-private browser/Blender sessions.');
+  if (!sha.test(value.artifactSha256) || !sha.test(value.storageSha256) || [value.browserSessionId,value.blenderSessionId].some(id => id !== null && !uuid.test(id))) throw new Error('Configure retained test artifacts; optional sessions require real UUIDs or null for platform-only testing.');
   if (!value.artifactPath.startsWith(`/api/rooms/${value.projectId}/`) || !/^\/api\/rooms\/[a-f0-9-]+\/(?:download\/\d+|artifacts\/doc_[a-f0-9]{24}\/versions\/\d+|blender\/artifacts\/blend_[a-f0-9]{24}\/versions\/\d+\/(?:scene\.blend|render\.png)|browser-downloads\/[a-f0-9-]+)$/.test(value.artifactPath)) throw new Error('Choose a fixed private artifact download in the test project.');
   if (!value.storagePath.startsWith(`${value.projectId}/`) || value.storagePath.includes('..') || !/^[A-Za-z0-9_./-]+$/.test(value.storagePath)) throw new Error('Choose a private immutable Storage object from this test project.');
   return value;
@@ -54,6 +76,12 @@ export async function verifyHostedBeta(fixture: HostedFixture, socketProbe = soc
   const health = await request(app, '/__cocreate/app-health');
   check('exact_candidate_health', health.status === 200 && json(health.bytes)?.release_fingerprint === fixture.releaseFingerprint);
   if (!checks[0].passed) return { checks, complete: false, pending: ['Candidate identity mismatch; no account requests sent'] };
+  for (const [kind, sessionId, flag] of [['browser',fixture.browserSessionId,'shared_browser'],['blender',fixture.blenderSessionId,'connected_blender']] as const) {
+    if (sessionId !== null) continue;
+    check(`${kind}_fixture_capability_disabled`, json(health.bytes)?.capabilities?.[flag] === false);
+    disabledGrantChecks.push(`${kind}: no session configured; separate capability/grant acceptance pending`);
+  }
+  if (checks.some(item => !item.passed)) return { checks, complete:false, pending:['Platform-only fixture requires disabled optional capabilities; no account requests sent'] };
   check('public_prelaunch', (await request(app, '/')).status === 200);
   for (const role of roles) {
     const account = fixture.accounts[role];
@@ -100,7 +128,8 @@ export async function verifyHostedBeta(fixture: HostedFixture, socketProbe = soc
         check('viewer_project_edit_denied', (await request(app, `/api/projects/${fixture.projectId}`, fixture.accounts.viewer.accessToken, 'PATCH', { title: 'Hosted permission fixture denial' })).status === 403);
         check('viewer_role_escalation_denied', (await request(app, `/api/projects/${fixture.projectId}/members/${fixture.accounts.viewer.userId}`, fixture.accounts.viewer.accessToken, 'PATCH', { role: 'editor' })).status === 403);
       }
-      if (role !== 'owner') for (const [kind, id] of [['browser', fixture.browserSessionId], ['blender/sessions', fixture.blenderSessionId]]) {
+      if (role !== 'owner') for (const [kind, id] of [['browser', fixture.browserSessionId], ['blender/sessions', fixture.blenderSessionId]] as const) {
+        if (id === null) continue;
         const frame = await request(app, `/api/rooms/${fixture.projectId}/${kind}/${id}/frame`, ticket);
         if (frame.status === 503) disabledGrantChecks.push(`${role}_${kind}: capability disabled; grant enforcement untested`);
         else check(`${role}_${kind}_separate_grant`, frame.status === 403);
@@ -141,8 +170,7 @@ if (process.argv[1] && path.resolve(process.argv[1]) === fileURLToPath(import.me
   const credentials = path.resolve('.runtime/hosted-beta/credentials.json');
   if (!process.argv.includes('--run-staging')) throw new Error('Configure the private fixture, then explicitly select --run-staging. No requests were sent.');
   try {
-    const info = fs.lstatSync(credentials);
-    if (!info.isFile() || info.isSymbolicLink() || process.platform !== 'win32' && (info.mode & 0o077) !== 0) throw new Error('Require a private regular credential fixture.');
+    assertPrivateHostedFixture(credentials);
     const fixture = validateHostedFixture(JSON.parse(fs.readFileSync(credentials, 'utf8')), JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8')));
     const result = await verifyHostedBeta(fixture);
     fs.writeFileSync('.runtime/hosted-beta/permission-evidence.json', JSON.stringify(result, null, 2) + '\n', { mode: 0o600 });

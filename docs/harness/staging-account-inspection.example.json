@@ -1,0 +1,16 @@
+{
+  "checkedAt": "REPLACE_WITH_INSPECTION_UTC_TIMESTAMP",
+  "source": "incomplete",
+  "supabase": {
+    "organizationId": "lflzfrqblfyjopsjuqxk",
+    "plan": "free",
+    "activeVisibleProjects": 1,
+    "freeEligibilityConfirmed": null
+  },
+  "cloudflare": {
+    "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "workersPaidConfirmed": null,
+    "billingCycleStart": null,
+    "billingCycleEnd": null
+  }
+}

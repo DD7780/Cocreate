@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-12T11:48:09Z",
+  "source": "mixed",
+  "supabase": {
+    "organizationId": "lflzfrqblfyjopsjuqxk",
+    "plan": "free",
+    "activeVisibleProjects": 1,
+    "freeEligibilityConfirmed": true
+  },
+  "cloudflare": {
+    "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "workersPaidConfirmed": true,
+    "billingCycleStart": "2026-09-13",
+    "billingCycleEnd": "2026-10-13"
+  }
+}

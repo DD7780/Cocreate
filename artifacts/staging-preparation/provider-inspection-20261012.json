@@ -1,0 +1,78 @@
+{
+  "checkedAt": "2026-10-12T11:48:09Z",
+  "scope": "Authenticated provider dashboard and connector read-only inspection; no resource or billing mutation",
+  "supabase": {
+    "organization": "Cocreate",
+    "plan": "Free",
+    "organizationsVisible": 1,
+    "activeVisibleProjects": 1,
+    "members": 1,
+    "owners": 1,
+    "administrators": 0,
+    "freeCreateFormAvailable": true,
+    "quotaWarningVisible": false,
+    "eligibility": "Second Free project currently eligible as observed; final provider admission must be rechecked before submit",
+    "currentUsage": {
+      "databaseMB": 34,
+      "egressGB": 0.18,
+      "storageGBDisplayed": 0,
+      "monthlyActiveUsers": 5
+    },
+    "getCostTool": "UNAVAILABLE: not returned by tools/list; no confirmation token or creation issued"
+  },
+  "cloudflare": {
+    "workersPlan": "Paid",
+    "currentPlan": true,
+    "subscriptionStatus": "Active",
+    "existingMonthlyMinimumUSD": 5,
+    "newSubscriptionRequired": false,
+    "renewalDate": "2026-10-13",
+    "observedUsagePeriod": {
+      "from": "2026-09-13",
+      "through": "2026-10-12",
+      "dateGranularity": true
+    },
+    "usageSummaryUSD": 6.84,
+    "containerMemory": {
+      "totalGiBSecondsDisplayed": "2.36M",
+      "billableGiBSecondsDisplayed": "2.27M",
+      "usageCostUSD": 5.67
+    },
+    "containerDisk": {
+      "totalGBSecondsDisplayed": "9.44M",
+      "billableGBSecondsDisplayed": "8.72M",
+      "usageCostUSD": 0.61
+    },
+    "containerCPU": {
+      "totalSecondsDisplayed": "50.12k",
+      "billableSecondsDisplayed": "27.62k",
+      "usageCostUSD": 0.55
+    },
+    "workerRequests": {
+      "displayed": "36.44k",
+      "billable": 0
+    },
+    "durableObjectDuration": {
+      "GBSecondsDisplayed": "302.53k",
+      "billable": 0
+    },
+    "remainingFreeContainerCapacity": "Memory, disk and CPU included allocations already exhausted in observed cycle; do not quote incremental container usage as free",
+    "inventoryCheckedAt": "2026-10-12T12:07:21.343Z",
+    "workers": [
+      "cocreate"
+    ],
+    "workersSubdomain": "susan981314271",
+    "proposedWorkerNameUnused": true
+  },
+  "proposedTestSession": {
+    "activeHours": 2,
+    "possibleIdleTailHours": 0.5,
+    "nominalBasicAllocationAndMaxCPUUSD": 0.07002,
+    "estimateNotHardCap": true,
+    "additionalWorkerDOLogsEgressPossible": true
+  },
+  "creationAuthorized": false,
+  "resourcesCreated": false,
+  "mainPushPerformed": false,
+  "credentialsRecorded": false
+}

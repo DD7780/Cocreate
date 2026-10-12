@@ -1,0 +1,64 @@
+{
+  "date": "2026-10-12",
+  "baseCommit": "78bb48b7da923b19328e705325df9d1da15eeaae",
+  "scope": "Local operator tooling and controlled fixtures; actual Windows file security; not deployed staging acceptance",
+  "sourceFileHashes": {
+    "scripts/check-staging-preparation.ts": "5e5909f8f318f75d6614f3dec05ac30232dfe7e7a3e594c425b83a6d4d92caf7",
+    "scripts/verify-hosted-beta.ts": "190f8b2d0781a7af018e33e7774654249dae3fbd1164489925663acc2858b375",
+    "tests/staging-preparation.test.ts": "bae3874eb648dd691615f3d51b2e72d55c2d6e3c3bb253172a9403cc1b414c83"
+  },
+  "focused": {
+    "passed": 16,
+    "total": 16,
+    "skipped": 0,
+    "nativeWindowsACL": true,
+    "platformOnlyFixture": true,
+    "files": [
+      "tests/staging-preparation.test.ts",
+      "tests/hosted-readiness.test.ts",
+      "tests/production-release.test.ts"
+    ]
+  },
+  "typecheck": "passed",
+  "boundaries": {
+    "files": 207,
+    "violations": 0,
+    "inferenceCalls": 0
+  },
+  "releaseRuntimeFingerprint": "06658e22178760463acd49c8114af3387c3956b00e3bbc4798359d352ec653bb",
+  "runtimeFingerprintUnchanged": true,
+  "privateFixtureDirectory": {
+    "path": ".runtime/hosted-beta",
+    "ownerAndSystemOnly": true,
+    "inheritanceProtected": true,
+    "credentialFixtureCreated": false
+  },
+  "accountInspection": "account-inspection-20261012.json",
+  "providerObservations": "provider-inspection-20261012.json",
+  "resourcesCreated": false,
+  "cloudMutationPerformed": false,
+  "hostedPermissionRecoveryVerified": false,
+  "mainPushPerformed": false,
+  "paidInferenceCalls": 0,
+  "pending": [
+    "Concrete resource/metered-operation approval",
+    "Allocated staging Supabase ref/public key and private configuration",
+    "Deployed staging identity and secure designated test accounts",
+    "Real hosted Auth/RLS/Storage/socket/recovery acceptance",
+    "Exact new tooling CI",
+    "Separate browser/local Blender verification",
+    "Compatible registry recovery digest and production release gates"
+  ],
+  "graph": {
+    "nodes": 2686,
+    "edges": 6931,
+    "communities": 141,
+    "modelCalls": 0,
+    "limitation": "Existing SQL parser dependency unavailable"
+  },
+  "documentationChecks": {
+    "localLinks": 370,
+    "publicJSON": "valid",
+    "diffCheck": "passed with repository line-ending configuration"
+  }
+}

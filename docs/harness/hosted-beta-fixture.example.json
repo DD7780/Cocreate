@@ -22,6 +22,6 @@
   "artifactSha256": "REPLACE_WITH_DOWNLOAD_BYTE_HASH",
   "storagePath": "REPLACE_PROJECT_UUID/bodies/REPLACE_BODY_HASH",
   "storageSha256": "REPLACE_WITH_STORED_BODY_HASH",
-  "browserSessionId": "REPLACE_WITH_OWNER_PRIVATE_TEST_SESSION_UUID",
-  "blenderSessionId": "REPLACE_WITH_OWNER_ONLY_OBSERVATION_TEST_DEVICE_UUID"
+  "browserSessionId": null,
+  "blenderSessionId": null
 }
