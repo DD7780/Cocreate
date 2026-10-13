@@ -1,0 +1,17 @@
+{
+  "checkedAt": "2026-10-13T07:19:09.291Z",
+  "worker": "cocreate-beta-staging",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "stagingBackendKeyVerified": true,
+  "rotationConfirmedByUser": true,
+  "secretNames": [
+    "CREDENTIAL_ENCRYPTION_SECRET",
+    "SESSION_SECRET",
+    "SUPABASE_SECRET_KEY"
+  ],
+  "bulkCommandSucceeded": true,
+  "secretValuesPrinted": false,
+  "sourceCommit": "6f6ef3ac304b9b095a06cea43bb93207f130734e",
+  "productionMutated": false,
+  "mainPushPerformed": false
+}

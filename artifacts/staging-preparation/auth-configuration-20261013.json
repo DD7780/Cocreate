@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-13T09:15:30.850Z",
+  "projectRef": "ctnjxvwyttnjehnbfktq",
+  "siteUrl": "https://cocreate-beta-staging.susan981314271.workers.dev",
+  "redirectUrls": [
+    "https://cocreate-beta-staging.susan981314271.workers.dev/api/auth/callback"
+  ],
+  "dashboardSaveVerified": true,
+  "screenshot": "auth-configuration-20261013.jpg",
+  "productionMutated": false
+}

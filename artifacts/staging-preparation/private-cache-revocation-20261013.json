@@ -1,0 +1,130 @@
+{
+  "checkedAt": "2026-10-13T07:43:55.871Z",
+  "sourceCommit": null,
+  "publisherSha256": "ac493ef98918b69e984a02a87139823be08e96f21c877c7deaea6341d120b0ef",
+  "operatorScriptSha256": "7070a8d013bc0edf0d65c82728732fbfcce659f34acf3cbd3d9ea672ceceb52b",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "projectId": "319c32bd-3a50-4363-b876-347a81150ee2",
+  "objectPath": "319c32bd-3a50-4363-b876-347a81150ee2/bodies/fe5bdd1f1a4b176f628b85bed5cb60ef699b459fc93d20a98819b94c48abbce0",
+  "objectSha256": "fe5bdd1f1a4b176f628b85bed5cb60ef699b459fc93d20a98819b94c48abbce0",
+  "checks": [
+    {
+      "name": "canonical_publisher_stored_zero_TTL",
+      "passed": true
+    },
+    {
+      "name": "owner_canonical_private_bytes",
+      "passed": true
+    },
+    {
+      "name": "editor_canonical_private_bytes",
+      "passed": true
+    },
+    {
+      "name": "viewer_canonical_private_bytes",
+      "passed": true
+    },
+    {
+      "name": "held_JWT_warm_URL_readable",
+      "passed": true
+    },
+    {
+      "name": "same_JWT_same_URL_denied_after_membership_revocation",
+      "passed": false
+    },
+    {
+      "name": "same_JWT_same_URL_denied_after_beta_revocation",
+      "passed": false
+    },
+    {
+      "name": "restored_approval_recovers_private_bytes",
+      "passed": true
+    },
+    {
+      "name": "independent_editor_access_survives_revocation",
+      "passed": true
+    }
+  ],
+  "observations": [
+    {
+      "role": "owner",
+      "stage": "published",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "editor",
+      "stage": "published",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "viewer",
+      "stage": "published",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "revoked",
+      "stage": "member_warm",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "revoked",
+      "stage": "membership_removed",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "viewer",
+      "stage": "beta_revoked",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "viewer",
+      "stage": "beta_restored",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    },
+    {
+      "role": "editor",
+      "stage": "beta_restored",
+      "status": 200,
+      "knownBytes": true,
+      "cacheControl": "public, max-age=0",
+      "cacheStatus": "HIT"
+    }
+  ],
+  "cacheRevocationChecksPassed": false,
+  "noCacheBypassUsed": true,
+  "legacy": {
+    "path": "319c32bd-3a50-4363-b876-347a81150ee2/fixtures/89e4ca06e0db2bc095803c57a81f3390a74fa766c7d83ddc4ca570f79f11a9e8.txt",
+    "status": 200,
+    "knownBytes": true,
+    "cacheStatus": "HIT",
+    "remainsReleaseBlocker": true
+  },
+  "viewerApprovalRestored": true,
+  "applicationAPISocketsTested": false,
+  "fullBetaReady": false,
+  "productionMutated": false,
+  "baseCommit": "a467b42d58c3c7a37fee47d145f74cf696fe4a7e",
+  "uncommittedSource": true,
+  "note": "Executed against the uncommitted publisher identified by publisherSha256; base commit is ancestry, not exact tested source."
+}

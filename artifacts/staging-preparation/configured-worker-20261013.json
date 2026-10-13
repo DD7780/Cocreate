@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-13T09:20:58.699Z",
+  "worker": "cocreate-beta-staging",
+  "origin": "https://cocreate-beta-staging.susan981314271.workers.dev",
+  "activeVersions": [
+    {
+      "versionId": "3320f897-d582-4034-89b8-ce11a975e278",
+      "percentage": 100
+    }
+  ],
+  "secretNames": [
+    "CREDENTIAL_ENCRYPTION_SECRET",
+    "SESSION_SECRET",
+    "SUPABASE_SECRET_KEY"
+  ],
+  "threeServerSecretsConfirmed": true,
+  "releaseFingerprint": "209f7f961b68f94c1d45f436724182b4eb7ee11e733d99d40200970df7888cf2",
+  "namespaceId": "fa67999dd3634304a5aa268eaf3a417d",
+  "workerHealthStatus": 200,
+  "workerHealthPassedDuringPriorBoundedProbe": true,
+  "applicationLoginStatus": null,
+  "applicationProbeOutcome": "15-second timeout; historical login was 503; no successful container deployment exists",
+  "containerReady": false,
+  "buildConnectionSubmitted": false,
+  "newBuildTokenCreated": false,
+  "userSelectedManualBuildCredentials": true,
+  "mainPushPerformed": false,
+  "productionMutated": false
+}

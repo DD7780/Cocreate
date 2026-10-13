@@ -1,0 +1,37 @@
+{
+  "checkedAt": "2026-10-13T08:47:00.246Z",
+  "participants": [
+    {
+      "role": "owner",
+      "identityStatus": 403,
+      "RLSStatus": 401,
+      "projectVisible": false,
+      "storageStatus": 400,
+      "errorClass": "unclassified",
+      "tokenExpiresAt": 1791880241,
+      "tokenExpired": true
+    },
+    {
+      "role": "editor",
+      "identityStatus": 403,
+      "RLSStatus": 401,
+      "projectVisible": false,
+      "storageStatus": 400,
+      "errorClass": "unclassified",
+      "tokenExpiresAt": 1791880239,
+      "tokenExpired": true
+    },
+    {
+      "role": "viewer",
+      "identityStatus": 403,
+      "RLSStatus": 401,
+      "projectVisible": false,
+      "storageStatus": 400,
+      "errorClass": "unclassified",
+      "tokenExpiresAt": 1791880244,
+      "tokenExpired": true
+    }
+  ],
+  "objectExists": true,
+  "cacheControl": "private, no-store, max-age=0, must-revalidate"
+}

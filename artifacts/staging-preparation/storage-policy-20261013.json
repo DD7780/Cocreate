@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-13T09:15:30.847Z",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "migrationName": "private_artifact_server_delivery",
+  "returnedMigrationVersion": "20261013085336",
+  "sourceFile": "supabase/migrations/20261013084500_private_artifact_server_delivery.sql",
+  "sourceSha256": "43b41091724e70b48d39559da26b396dbf6a93c3318f3ac8d1f451b605245136",
+  "applied": true,
+  "policy": {
+    "name": "artifact_objects_server_delivery",
+    "permissive": "RESTRICTIVE",
+    "roles": [
+      "authenticated"
+    ],
+    "command": "SELECT",
+    "predicate": "bucket_id <> 'cocreate-artifacts'"
+  },
+  "allRawParticipantReadsBlockedByPolicy": true,
+  "serverRoleUnaffected": true,
+  "legacyEdgeCacheEvictionProven": false,
+  "productionMutated": false
+}

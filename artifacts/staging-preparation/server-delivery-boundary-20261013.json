@@ -1,0 +1,185 @@
+{
+  "checkedAt": "2026-10-13T09:08:28.021Z",
+  "sourceCommit": null,
+  "baseCommit": "a467b42d58c3c7a37fee47d145f74cf696fe4a7e",
+  "uncommittedSource": true,
+  "publisherSha256": "e74cd3fe53128c9bbb307fe810082b74d8c60d69bb9961b61b7f67621f998cb5",
+  "operatorScriptSha256": "ce366a9c2449bf038f33a663fe4750580927e4d176e07322651c9cfd5f7782c0",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "projectId": "319c32bd-3a50-4363-b876-347a81150ee2",
+  "checks": [
+    {
+      "name": "owner_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "editor_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "viewer_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "unapproved_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "outsider_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "revoked_fresh_real_identity",
+      "passed": true
+    },
+    {
+      "name": "owner_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "editor_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "viewer_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "unapproved_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "outsider_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "revoked_local_API_project_permission",
+      "passed": true
+    },
+    {
+      "name": "owner_app_hash_verified_download",
+      "passed": true
+    },
+    {
+      "name": "editor_app_hash_verified_download",
+      "passed": true
+    },
+    {
+      "name": "viewer_app_hash_verified_download",
+      "passed": true
+    },
+    {
+      "name": "owner_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "editor_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "viewer_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "unapproved_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "outsider_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "revoked_raw_storage_denied",
+      "passed": true
+    },
+    {
+      "name": "owner_real_backend_local_socket",
+      "passed": true
+    },
+    {
+      "name": "editor_real_backend_local_socket",
+      "passed": true
+    },
+    {
+      "name": "two_local_clients_canvas_convergence",
+      "passed": true
+    },
+    {
+      "name": "unsubmitted_zero_physical_inference",
+      "passed": true
+    },
+    {
+      "name": "warm_private_download_revocation",
+      "passed": true
+    },
+    {
+      "name": "held_socket_revocation_on_input",
+      "passed": false
+    },
+    {
+      "name": "independent_owner_private_bytes_survive",
+      "passed": true
+    },
+    {
+      "name": "private_download_restore",
+      "passed": true
+    },
+    {
+      "name": "beta_revoked_download_denied",
+      "passed": true
+    },
+    {
+      "name": "viewer_restored_private_download",
+      "passed": true
+    },
+    {
+      "name": "real_storage_empty_local_cache_document_restore",
+      "passed": true
+    },
+    {
+      "name": "retained_document_versions_survive_replacement",
+      "passed": true
+    },
+    {
+      "name": "replacement_zero_physical_inference",
+      "passed": true
+    }
+  ],
+  "observations": [
+    {
+      "role": "owner",
+      "rawStorageStatus": 400
+    },
+    {
+      "role": "editor",
+      "rawStorageStatus": 400
+    },
+    {
+      "role": "viewer",
+      "rawStorageStatus": 400
+    },
+    {
+      "role": "unapproved",
+      "rawStorageStatus": 400
+    },
+    {
+      "role": "outsider",
+      "rawStorageStatus": 400
+    },
+    {
+      "role": "revoked",
+      "rawStorageStatus": 400
+    }
+  ],
+  "passed": false,
+  "environment": "local HTTP/WS application with real isolated Supabase Auth/PostgREST/Storage",
+  "seededOperatorAuthoredDocuments": true,
+  "documentGenerationTested": false,
+  "containerHostedOriginVerified": false,
+  "legacyWarmStorageCacheCutoffVerified": false,
+  "fullBetaReady": false,
+  "viewerApprovalRestored": true,
+  "editorMembershipRestored": true,
+  "paidInferenceCalls": 0,
+  "productionMutated": false
+}

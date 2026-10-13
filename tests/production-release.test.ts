@@ -18,7 +18,7 @@ function evidence(): ReleaseEvidence {
   return {
     staging: { origin, supabaseUrl: `https://${'a'.repeat(20)}.supabase.co`, releaseFingerprint: fingerprint, configSha256: 'c'.repeat(64), workerVersion: 'fixture-worker', containerVersion: 'fixture-container', imageDigest: `sha256:${'d'.repeat(64)}`, migrationsVerified: true, privateConfigurationVerified: true },
     permissions: { ...proof(['exact_candidate_health','public_prelaunch','beta_approval_required','storage_public_URL_denied','anonymous_direct_RLS','anonymous_project_api_denied','anonymous_artifact_denied','anonymous_socket_denied','viewer_submit_denied','viewer_budget_reset_denied','viewer_provider_connection_denied','viewer_project_edit_denied','viewer_role_escalation_denied', ...roles.flatMap(role => [`${role}_real_identity`,`${role}_direct_RLS`,`${role}_cross_project_RLS`,`${role}_private_storage`,`${role}_cross_project_denied`,`${role}_private_artifact`,`${role}_socket`]), ...['owner','editor','viewer'].flatMap(role => [`${role}_project_role`,`${role}_room_state`,`${role}_cross_project_artifact_denied`]),'outsider_approval_not_membership','revoked_approval_not_membership']), permissionChecksPassed: true },
-    recovery: proof(['independent_signed_in_profiles','shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary']),
+    recovery: proof(['independent_signed_in_profiles','shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','warm_private_download_revocation','beta_revoked_download_denied','private_download_restore','legacy_storage_cache_cutoff','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary']),
     ci: { sourceCommit: source, conclusion: 'success', url: 'https://github.com/DD7780/Cocreate/actions/runs/1234' },
     compatibleRecoveryImage: { digest: `sha256:${'e'.repeat(64)}`, snapshotVersion: 6, tested: true },
     optional: {
@@ -62,7 +62,7 @@ test('full beta release requires every intended capability and exact hosted evid
     const partial = evidence(); partial.optional[key]!.checks.pop();
     assert.equal(releaseGates(source,fullBetaConfig,partial,now).readyForProductionReview,false);
   }
-  for (const name of ['shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution']) {
+  for (const name of ['shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution','warm_private_download_revocation','beta_revoked_download_denied','private_download_restore','legacy_storage_cache_cutoff']) {
     const missing = evidence(); missing.recovery!.checks = missing.recovery!.checks.filter(check => check.name !== name);
     assert.ok(releaseGates(source,fullBetaConfig,missing,now).pending.includes('hosted_collaboration_recovery'));
   }
@@ -115,7 +115,7 @@ test('permission runner exercises actual contracts without treating disabled gra
     if(url.pathname === '/')return response({});
     if(url.pathname === '/auth/v1/user')return response({ id:fixture.accounts[role as keyof typeof fixture.accounts].userId });
     if(url.pathname === '/rest/v1/projects')return response(member && url.searchParams.get('id') === `eq.${projectId}` ? [{ id:projectId }] : []);
-    if(url.pathname.startsWith('/storage/'))return url.pathname.includes('/authenticated/') && member ? new Response(bytes) : response({},403);
+    if(url.pathname.startsWith('/storage/'))return response({},403);
     if(url.pathname.endsWith('/session'))return member && !url.pathname.includes(fixture.otherProjectId) ? response({role,participantId:fixture.accounts[role as keyof typeof fixture.accounts].userId,token:`ticket_${role}`}) : response({},403);
     if(url.pathname === '/api/projects')return role ? response({projects:[]},role === 'unapproved' ? 403 : 200) : response({},401);
     if(init?.method === 'PATCH')return response({},403);

@@ -1,0 +1,60 @@
+{
+  "checkedAt": "2026-10-13T07:30:45.000Z",
+  "sourceCommit": "6f6ef3ac304b9b095a06cea43bb93207f130734e",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "projectId": "319c32bd-3a50-4363-b876-347a81150ee2",
+  "otherProjectId": "aa3f7598-3dd8-4753-8f94-1799cdb1ae1e",
+  "accounts": {
+    "custodian": {
+      "userId": "ff32b110-cc74-45ca-aacb-3983c4dd2096",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": false
+    },
+    "editor": {
+      "userId": "8beb26e3-416e-4cf3-90b3-bc18cfd1300b",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": true
+    },
+    "outsider": {
+      "userId": "1f10b6ef-064b-44ce-8eeb-1f688f4428ef",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": false
+    },
+    "owner": {
+      "userId": "4bf5c6ec-40cd-4306-bcd4-ae5c35b8fc26",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": true
+    },
+    "revoked": {
+      "userId": "7b1231ba-ad20-43df-a3a7-5bd125f94484",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": false
+    },
+    "unapproved": {
+      "userId": "68f4d15f-f8ee-40b6-9a88-2a4589786fdf",
+      "realPasswordSignIn": true,
+      "betaApproved": false,
+      "fixtureMembership": false
+    },
+    "viewer": {
+      "userId": "4ec0be1b-eeba-4bff-a1d7-b2a6ae9f842c",
+      "realPasswordSignIn": true,
+      "betaApproved": true,
+      "fixtureMembership": true
+    }
+  },
+  "comparisonProjectOwner": "custodian",
+  "storagePath": "319c32bd-3a50-4363-b876-347a81150ee2/fixtures/89e4ca06e0db2bc095803c57a81f3390a74fa766c7d83ddc4ca570f79f11a9e8.txt",
+  "storageSha256": "89e4ca06e0db2bc095803c57a81f3390a74fa766c7d83ddc4ca570f79f11a9e8",
+  "emailsSent": 0,
+  "administratorProvisioningOnly": true,
+  "participantPermissionsVerified": false,
+  "passwordsPrinted": false,
+  "operatorFile": ".runtime/hosted-beta/test-accounts.json",
+  "productionMutated": false
+}

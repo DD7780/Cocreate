@@ -42,7 +42,7 @@
     "SUPABASE_JWKS_URL": "https://dnsapasubeoxxsgkiotw.supabase.co/auth/v1/.well-known/jwks.json",
     "SUPABASE_PUBLISHABLE_KEY": "sb_publishable_3K2iwsq_nMCgBnQIqS2IUg_2_qoNjv0",
     "SUPABASE_URL": "https://dnsapasubeoxxsgkiotw.supabase.co",
-    "COCREATE_RELEASE_FINGERPRINT": "06658e22178760463acd49c8114af3387c3956b00e3bbc4798359d352ec653bb"
+    "COCREATE_RELEASE_FINGERPRINT": "764e2b09dab66cf6b45d472994e2cb44d6e9d90ad194b744edcac7068dfaa7bc"
   },
   "containers": [
     {

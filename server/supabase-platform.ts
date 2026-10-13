@@ -286,8 +286,14 @@ export class SupabasePlatform {
 }
   private async uploadVerified(path: string, contents: Uint8Array, mimeType: string) {
     const storage = this.admin.storage.from(this.bucket);
-    const uploaded = await storage.upload(path, contents, { contentType: mimeType, upsert: false });
+    const cacheControl = 'private, no-store, max-age=0, must-revalidate';
+    const uploaded = await storage.upload(path, contents, { contentType: mimeType, headers: { 'cache-control': cacheControl }, upsert: false });
     if (uploaded.error && !/already exists|duplicate|resourcealreadyexists/i.test(uploaded.error.message) && String(uploaded.error.statusCode) !== '409')
+        throw new ArtifactUnavailableError('unavailable');
+    // Cached authenticated bytes can outlive membership. A duplicate body must
+    // meet the same cache boundary as a new upload before publishing its reference.
+    const info = await storage.info(path);
+    if (info.error || info.data?.cacheControl !== cacheControl)
         throw new ArtifactUnavailableError('unavailable');
     const downloaded = await storage.download(path);
     if (downloaded.error || !downloaded.data)

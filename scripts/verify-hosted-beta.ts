@@ -101,7 +101,10 @@ export async function verifyHostedBeta(fixture: HostedFixture, socketProbe = soc
     const otherRows = await request(backend, `/rest/v1/projects?select=id&id=eq.${fixture.otherProjectId}`, account.accessToken);
     check(`${role}_cross_project_RLS`, otherRows.status === 200 && JSON.stringify(json(otherRows.bytes)) === '[]');
     const stored = await request(backend, `/storage/v1/object/authenticated/cocreate-artifacts/${fixture.storagePath}`, account.accessToken);
-    check(`${role}_private_storage`, member ? stored.status === 200 && hash(stored.bytes) === fixture.storageSha256 : [400,401,403,404].includes(stored.status));
+    // Raw Storage URLs bypass the app's live authorization and may be cached
+    // beyond revocation. All participants retrieve private bytes through the
+    // app's hash-checked download route below, never a direct Storage URL.
+    check(`${role}_private_storage`, [400,401,403,404].includes(stored.status));
     const cross = await request(app, `/api/projects/${fixture.otherProjectId}/session`, account.accessToken, 'POST');
     check(`${role}_cross_project_denied`, cross.status === 403);
     if (role === 'unapproved') check('beta_approval_required', (await request(app, '/api/projects', account.accessToken)).status === 403);

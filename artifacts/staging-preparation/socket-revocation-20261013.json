@@ -1,0 +1,31 @@
+{
+  "checkedAt": "2026-10-13T09:13:59.604Z",
+  "sourceCommit": null,
+  "uncommittedSource": true,
+  "checks": [
+    {
+      "name": "real_editor_socket_connected_before_revocation",
+      "passed": true
+    },
+    {
+      "name": "held_socket_revocation_on_input",
+      "passed": true
+    },
+    {
+      "name": "same_held_ticket_private_download_denied",
+      "passed": true
+    },
+    {
+      "name": "editor_restored_private_bytes",
+      "passed": true
+    }
+  ],
+  "closeCode": 4403,
+  "passed": true,
+  "environment": "local HTTP/WS application with real isolated Supabase",
+  "focusedRetestFor": "close listener previously attached after revocation could miss an already delivered 4403",
+  "containerHostedOriginVerified": false,
+  "fullBetaReady": false,
+  "editorMembershipRestored": true,
+  "paidInferenceCalls": 0
+}

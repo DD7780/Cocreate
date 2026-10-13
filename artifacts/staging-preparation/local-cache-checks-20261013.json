@@ -1,0 +1,28 @@
+{
+  "checkedAt": "2026-10-13T09:15:30.851Z",
+  "sourceCommit": null,
+  "uncommittedSource": true,
+  "focusedArtifactTests": {
+    "passed": 6,
+    "total": 6
+  },
+  "sqlAndReleaseTests": {
+    "passed": 5,
+    "total": 5,
+    "sqlEnvironment": "embedded PostgreSQL; native PostgreSQL pending exact CI"
+  },
+  "typecheckPassed": true,
+  "boundaryAudit": {
+    "files": 210,
+    "violations": 0,
+    "physicalInferenceCalls": 0
+  },
+  "initialBroadWindowsRun": {
+    "passed": 14,
+    "total": 28,
+    "failed": 14,
+    "reason": "Generated compiler/browser native runtime unavailable in the sandbox account; full changed-source native CI required"
+  },
+  "noPassingCheckRelabeledHosted": true,
+  "fullBetaReady": false
+}

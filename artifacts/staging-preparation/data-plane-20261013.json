@@ -1,0 +1,159 @@
+{
+  "checkedAt": "2026-10-13T07:33:46.367Z",
+  "sourceCommit": "6f6ef3ac304b9b095a06cea43bb93207f130734e",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "projectId": "319c32bd-3a50-4363-b876-347a81150ee2",
+  "otherProjectId": "aa3f7598-3dd8-4753-8f94-1799cdb1ae1e",
+  "checks": [
+    {
+      "name": "unapproved_has_membership_without_beta_approval",
+      "passed": true
+    },
+    {
+      "name": "owner_real_identity",
+      "passed": true
+    },
+    {
+      "name": "owner_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "owner_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "owner_private_storage",
+      "passed": true
+    },
+    {
+      "name": "editor_real_identity",
+      "passed": true
+    },
+    {
+      "name": "editor_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "editor_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "editor_private_storage",
+      "passed": true
+    },
+    {
+      "name": "viewer_real_identity",
+      "passed": true
+    },
+    {
+      "name": "viewer_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "viewer_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "viewer_private_storage",
+      "passed": true
+    },
+    {
+      "name": "unapproved_real_identity",
+      "passed": true
+    },
+    {
+      "name": "unapproved_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "unapproved_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "unapproved_private_storage",
+      "passed": true
+    },
+    {
+      "name": "outsider_real_identity",
+      "passed": true
+    },
+    {
+      "name": "outsider_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "outsider_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "outsider_private_storage",
+      "passed": true
+    },
+    {
+      "name": "revoked_real_identity",
+      "passed": true
+    },
+    {
+      "name": "revoked_direct_RLS",
+      "passed": true
+    },
+    {
+      "name": "revoked_cross_project_RLS",
+      "passed": true
+    },
+    {
+      "name": "revoked_private_storage",
+      "passed": true
+    },
+    {
+      "name": "viewer_project_mutation_denied",
+      "passed": true
+    },
+    {
+      "name": "viewer_membership_escalation_denied",
+      "passed": true
+    },
+    {
+      "name": "self_beta_approval_denied",
+      "passed": true
+    },
+    {
+      "name": "unapproved_security_definer_RPC_denied",
+      "passed": true
+    },
+    {
+      "name": "revoked_token_readable_before_membership_removal",
+      "passed": true
+    },
+    {
+      "name": "same_JWT_denied_after_membership_revocation",
+      "passed": false
+    },
+    {
+      "name": "same_JWT_denied_after_beta_revocation",
+      "passed": false
+    },
+    {
+      "name": "viewer_beta_restore_recovers_private_bytes",
+      "passed": true
+    },
+    {
+      "name": "anonymous_direct_RLS_denied",
+      "passed": true
+    },
+    {
+      "name": "private_storage_public_URL_denied",
+      "passed": true
+    }
+  ],
+  "dataPlaneChecksPassed": false,
+  "environment": "real isolated Supabase Auth/PostgREST/Storage",
+  "unapprovedIsFixtureMemberWithoutApproval": true,
+  "heldJWTRevocationTested": true,
+  "viewerApprovalRestored": true,
+  "applicationAPISocketsTested": false,
+  "hostedCollaborationRecoveryTested": false,
+  "fullBetaReady": false,
+  "productionMutated": false,
+  "operatorScriptSha256": "de4cf01b2684406db9eea1b968397d23648dd12def310fef317039c80f4b08c0"
+}

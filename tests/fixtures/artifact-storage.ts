@@ -4,6 +4,7 @@ import { SupabasePlatform } from '../../server/supabase-platform.js';
 /** Real SDK over loopback HTTP; synthetic Storage/PostgREST, not real Supabase or SQL. */
 export async function createArtifactFixture() {
     const objects = new Map<string, Buffer>();
+    const cacheControls = new Map<string, string>();
     const snapshots = new Map<string, {
         revision: number;
         yjs_state: string;
@@ -22,6 +23,12 @@ export async function createArtifactFixture() {
             return respond(403, { message: 'Denied by controlled fixture' });
         if (url.pathname === '/storage/v1/bucket/cocreate-artifacts')
             return respond(200, { id: 'cocreate-artifacts', name: 'cocreate-artifacts', public: controls.publicBucket });
+        const infoMatch = /^\/storage\/v1\/object\/info\/cocreate-artifacts\/(.+)$/.exec(url.pathname);
+        if (infoMatch) {
+            const key = decodeURIComponent(infoMatch[1]);
+            return objects.has(key) ? respond(200, { cache_control: cacheControls.get(key) })
+                : respond(404, { statusCode: '404', message: 'Object not found' });
+        }
         const objectMatch = /^\/storage\/v1\/object\/(?:authenticated\/)?cocreate-artifacts\/(.+)$/.exec(url.pathname);
         if (objectMatch) {
             const key = decodeURIComponent(objectMatch[1]);
@@ -38,6 +45,7 @@ export async function createArtifactFixture() {
                 if (objects.has(key))
                     return respond(400, { statusCode: '409', message: 'The resource already exists' });
                 objects.set(key, controls.corruptUpload ? Buffer.from('corrupt') : Buffer.concat(chunks));
+                cacheControls.set(key, String(req.headers['cache-control'] || ''));
                 return respond(200, { Key: `cocreate-artifacts/${key}`, Id: randomUUID() });
             }
             if (req.method === 'GET') {
@@ -95,6 +103,6 @@ export async function createArtifactFixture() {
         platforms.push(instance);
         return instance;
     };
-    return { origin, objects, snapshots, counts, trace, controls, platform,
+    return { origin, objects, cacheControls, snapshots, counts, trace, controls, platform,
         async close() { await Promise.all(platforms.map(instance => instance.coordinator.close())); await new Promise<void>(resolve => server.close(() => resolve())); } };
 }

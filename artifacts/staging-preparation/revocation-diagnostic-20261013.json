@@ -1,0 +1,36 @@
+{
+  "checkedAt": "2026-10-13T07:36:45.714Z",
+  "scope": "Read-only revoked identity after completed fixture membership removal",
+  "results": [
+    {
+      "kind": "RLS",
+      "status": 200,
+      "knownObjectBytes": false,
+      "rowsEmpty": true,
+      "cacheControl": null,
+      "cacheStatus": "DYNAMIC",
+      "age": null,
+      "contentType": "application/json; charset=utf-8"
+    },
+    {
+      "kind": "storage_same_URL",
+      "status": 200,
+      "knownObjectBytes": true,
+      "rowsEmpty": false,
+      "cacheControl": "public, max-age=3600",
+      "cacheStatus": "HIT",
+      "age": null,
+      "contentType": "text/plain"
+    },
+    {
+      "kind": "storage_fresh_URL",
+      "status": 400,
+      "knownObjectBytes": false,
+      "rowsEmpty": false,
+      "cacheControl": null,
+      "cacheStatus": "DYNAMIC",
+      "age": null,
+      "contentType": "application/json; charset=utf-8"
+    }
+  ]
+}

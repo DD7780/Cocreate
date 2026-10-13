@@ -1,0 +1,13 @@
+{
+  "checkedAt": "2026-10-13T09:06:00.831Z",
+  "tokenExpired": false,
+  "verifierSucceeded": true,
+  "errorKeys": [],
+  "errorCode": "unclassified",
+  "userClaimsPresent": true,
+  "jwksStatus": 200,
+  "jwksKeyCount": 1,
+  "platformIdentityMatched": true,
+  "betaApproved": true,
+  "membershipPresent": true
+}

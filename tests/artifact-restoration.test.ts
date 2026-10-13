@@ -16,6 +16,29 @@ const files = applyOperations(undefined, [{ type: 'write', path: 'src/App.tsx', 
 const version = (id: number) => ({ id, createdAt: '2026-10-03T00:00:00Z', summary: `Version ${id}`, files, bundle: `window.fixtureVersion=${id}`, css: 'main{color:blue}', fileCount: files.length });
 const manager = (durableStore?: any) => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-')); return { dir, value: new RoomManager({ debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore }) }; };
 function clean(item: ReturnType<typeof manager>) { item.value.shutdown(); const resolved = path.resolve(item.dir); assert.equal(path.dirname(resolved), path.resolve(os.tmpdir())); assert.match(path.basename(resolved), /^artifact-step03-/); fs.rmSync(resolved, { recursive: true, force: true }); }
+
+test('private publication rejects cacheable duplicate bodies without overwriting bytes or committing references', async () => {
+    const fixture = await createArtifactFixture(), project = randomUUID(), platform = fixture.platform();
+    await platform.claimCoordinator(project);
+    const item = manager(platform), room = item.value.create(project);
+    try {
+        room.versions = [version(1)];
+        fixture.controls.failCommit = true;
+        assert.equal(await item.value.save(room), false);
+        assert.equal(fixture.objects.size, 1);
+        const [key, bytes] = [...fixture.objects][0];
+        assert.equal(fixture.cacheControls.get(key), 'private, no-store, max-age=0, must-revalidate');
+        fixture.cacheControls.set(key, 'max-age=3600');
+        fixture.controls.failCommit = false;
+        const replay = fixture.platform(); await replay.claimCoordinator(project);
+        const payload = item.value.eventStore.readWorkspaceSnapshot<any>(project);
+        await assert.rejects(replay.saveSnapshot(project, room.persistRevision, { ...payload,
+            artifactBodies: item.value.eventStore.artifactBodiesForWorkspace(project, [room.versions[0].artifactRef!]) }), ArtifactUnavailableError);
+        assert.equal(fixture.snapshots.has(project), false);
+        assert.deepEqual(fixture.objects.get(key), bytes);
+        assert.equal(fixture.objects.size, 1);
+    } finally { clean(item); await fixture.close(); }
+});
 test('empty cache restores compiled preview, current checkpoint, old version and receipts without inference', async () => {
     const fixture = await createArtifactFixture(), project = randomUUID(), platform = fixture.platform();
     await platform.claimCoordinator(project);
