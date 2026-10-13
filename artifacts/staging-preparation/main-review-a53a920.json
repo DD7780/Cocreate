@@ -1,0 +1,86 @@
+{
+  "checkedAt": "2026-10-13T09:42:37.652Z",
+  "candidateCommit": "04e45e2d58fb7127d62c11150a0fd5fcf9e7c9d9",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "mainCommit": "6c4402958bdec460b23c959bc99c8e824e53dd1c",
+  "readyForProductionReview": false,
+  "gates": [
+    {
+      "name": "isolated_staging_identity",
+      "passed": true
+    },
+    {
+      "name": "staging_provider_receipt",
+      "passed": false
+    },
+    {
+      "name": "staging_schema_private_configuration",
+      "passed": true
+    },
+    {
+      "name": "real_hosted_permissions",
+      "passed": false
+    },
+    {
+      "name": "hosted_collaboration_recovery",
+      "passed": false
+    },
+    {
+      "name": "exact_candidate_CI",
+      "passed": true
+    },
+    {
+      "name": "v6_compatible_recovery_image",
+      "passed": false
+    },
+    {
+      "name": "COCREATE_SHARED_BROWSER_enabled_and_verified",
+      "passed": false
+    },
+    {
+      "name": "COCREATE_CONNECTED_BLENDER_enabled_and_verified",
+      "passed": false
+    },
+    {
+      "name": "COCREATE_INTERACTIVE_BLENDER_enabled_and_verified",
+      "passed": false
+    },
+    {
+      "name": "COCREATE_GENERATED_PREVIEW_enabled_and_verified",
+      "passed": false
+    },
+    {
+      "name": "interactive_requires_connected_Blender",
+      "passed": true
+    },
+    {
+      "name": "main_fast_forward",
+      "passed": true
+    },
+    {
+      "name": "tested_source_unchanged",
+      "passed": true
+    }
+  ],
+  "pending": [
+    "staging_provider_receipt",
+    "real_hosted_permissions",
+    "hosted_collaboration_recovery",
+    "v6_compatible_recovery_image",
+    "COCREATE_SHARED_BROWSER_enabled_and_verified",
+    "COCREATE_CONNECTED_BLENDER_enabled_and_verified",
+    "COCREATE_INTERACTIVE_BLENDER_enabled_and_verified",
+    "COCREATE_GENERATED_PREVIEW_enabled_and_verified"
+  ],
+  "authorization": "Separate concrete user approval required; evidence files do not authorize a push or deployment",
+  "sourceDiff": [
+    "artifacts/staging-preparation/candidate-a53a920.json",
+    "artifacts/staging-preparation/ci-a53a920.json",
+    "docs/harness/beta-setup.md",
+    "docs/harness/checklist.md",
+    "docs/harness/hosted-staging-execution.md"
+  ],
+  "mainPushPerformed": false,
+  "cloudDeploymentPerformed": false,
+  "scope": "Read-only public-fact review; no private files or credentials read"
+}
