@@ -4,9 +4,9 @@ This guide covers the full intended beta. Deployment of the platform and deploym
 
 ## Operator setup
 
-Use only the separate Supabase project `ctnjxvwyttnjehnbfktq` and Worker `cocreate-beta-staging`. The proposed login URL is `https://cocreate-beta-staging.susan981314271.workers.dev/login`; it is not usable until a successful container-backed deployment is recorded. No custom production domain, production namespace, cron or production secret belongs in this setup. The [allocated public target](staging-target.allocated.json) supplies build configuration; it contains a publishable key only.
+Use only the separate Supabase project `ctnjxvwyttnjehnbfktq` and Worker `cocreate-beta-staging`. The proposed login URL is `https://cocreate-beta-staging.susan981314271.workers.dev/login`; the Worker now exists and its health passes, but application login currently returns 503 until a successful container-backed deployment is recorded. No custom production domain, production namespace, cron or production secret belongs in this setup. The [allocated public target](staging-target.allocated.json) supplies build configuration; it contains a publishable key only.
 
-The approved basic host is the first platform test environment. Build through the existing Cloudflare Workers Builds architecture because local Docker is unavailable. Use a frozen `codex/` staging branch, disable preview branch builds, and set these explicit commands:
+The approved basic host is the first platform test environment. Build through the existing Cloudflare Workers Builds architecture because local Docker is unavailable. Use the frozen `codex/beta-staging-20261013` branch at tested source `6f6ef3ac304b9b095a06cea43bb93207f130734e`, disable preview branch builds, and set these explicit commands:
 
 ```text
 Build: node --import tsx scripts/prepare-hosted-staging.ts --target docs/harness/staging-target.allocated.json

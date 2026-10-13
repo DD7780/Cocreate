@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-13",
+  "sourceCommit": "6f6ef3ac304b9b095a06cea43bb93207f130734e",
+  "runId": 38358183918,
+  "jobId": 115165879464,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38358183918",
+  "conclusion": "success",
+  "scope": "Exact candidate native controlled CI, not hosted capability acceptance",
+  "checks": {
+    "boundaryFiles": 209,
+    "boundaryViolations": 0,
+    "postgres": {
+      "pass": 3
+    },
+    "compiler": {
+      "pass": 10
+    },
+    "browser": {
+      "pass": 17
+    },
+    "interactiveBlender": {
+      "pass": 3
+    },
+    "twoParticipantArtifactsUI": {
+      "pass": 5,
+      "profiles": 2,
+      "actualGUI": true,
+      "physicalInferenceCalls": 0
+    },
+    "regression": {
+      "tests": 294,
+      "pass": 291,
+      "fail": 0,
+      "skipped": 3
+    }
+  },
+  "skipExplanation": "Two desktop tests run separately and pass. Native Windows ACL test passed on Windows and skips Linux.",
+  "imageId": "sha256:57d163c29eb064e79b29b99550e652d848065ec4b50bce9954b336788bbb9353",
+  "uiImageId": "sha256:0899733064ebd1320af4f9ffd2d3f909163da83f2857c7a498201a2dd7582356",
+  "registryRecoveryDigest": false,
+  "hostedProof": false
+}

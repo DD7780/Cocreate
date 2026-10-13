@@ -1,0 +1,23 @@
+{
+  "checkedAt": "2026-10-13T06:55:28.548Z",
+  "sourceCommit": "6f6ef3ac304b9b095a06cea43bb93207f130734e",
+  "worker": "cocreate-beta-staging",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "origin": "https://cocreate-beta-staging.susan981314271.workers.dev",
+  "workerVersion": "15cc57e9-6235-4baf-a355-aa10b6caca17",
+  "namespaceId": "fa67999dd3634304a5aa268eaf3a417d",
+  "namespaceDistinctFromProduction": true,
+  "configSha256": "ea50f6abf6c21bc87fc63cbcf0549ae57b635ba839af743f442245c622769e83",
+  "releaseFingerprint": "209f7f961b68f94c1d45f436724182b4eb7ee11e733d99d40200970df7888cf2",
+  "workerHealthPassed": true,
+  "applicationLoginStatus": 503,
+  "containerRolloutPerformed": false,
+  "containerVersion": null,
+  "imageDigest": null,
+  "applicationReady": false,
+  "hostedAcceptance": false,
+  "privateSecretsUploaded": false,
+  "mainPushPerformed": false,
+  "productionMutated": false,
+  "scope": "Approved isolated Worker/namespace only; container rollout deliberately skipped pending private configuration and build connection"
+}
