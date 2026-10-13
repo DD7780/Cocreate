@@ -1,0 +1,69 @@
+{
+  "recordedAt": "2026-10-13T09:27:28.651Z",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "branch": "codex/canvas-artifacts",
+  "productionFingerprint": "764e2b09dab66cf6b45d472994e2cb44d6e9d90ad194b744edcac7068dfaa7bc",
+  "sourceAssociation": {
+    "publisherBytesMatchCommittedSource": true,
+    "publisherSha256": "e74cd3fe53128c9bbb307fe810082b74d8c60d69bb9961b61b7f67621f998cb5",
+    "localEvidenceOriginallyCapturedBeforeCommit": true,
+    "originalReceiptsUnchanged": true
+  },
+  "localChecks": {
+    "artifactPublicationRecoveryPassed": 6,
+    "sqlReleasePassed": 5,
+    "typecheckPassed": true,
+    "boundaries": {
+      "files": 210,
+      "violations": 0,
+      "physicalInferenceCalls": 0
+    }
+  },
+  "realBackendLocalApplication": {
+    "receipt": "server-delivery-boundary-20261013.json",
+    "passed": 33,
+    "total": 34,
+    "focusedSocketRetest": {
+      "receipt": "socket-revocation-20261013.json",
+      "passed": 4,
+      "total": 4,
+      "observedCloseCode": 4403
+    },
+    "containerHostedOriginVerified": false,
+    "generatedDocumentQualityVerified": false
+  },
+  "ci": {
+    "runId": 38375934709,
+    "url": "https://github.com/DD7780/Cocreate/actions/runs/38375934709",
+    "conclusion": "success"
+  },
+  "staging": {
+    "origin": "https://cocreate-beta-staging.susan981314271.workers.dev",
+    "workerVersion": "3320f897-d582-4034-89b8-ce11a975e278",
+    "supabaseRef": "ctnjxvwyttnjehnbfktq",
+    "migrations": 13,
+    "serverSecretsVerified": true,
+    "authURLsSaved": true,
+    "independentTestAccounts": 7,
+    "usableHostedLogin": false,
+    "userWillConfigureBuildCredentials": true
+  },
+  "remaining": [
+    "Scoped staging build credential and GitHub trigger",
+    "Container/kernel isolation and exact hosted source health",
+    "Real hosted permissions/collaboration/recovery",
+    "Legacy warm raw-Storage cache cutoff",
+    "Shared browser full hosted participant acceptance",
+    "Windows companion/background Blender acceptance",
+    "Dedicated interactive Blender environment and participant acceptance",
+    "Separate Pages target/token and approved exact generated-app release",
+    "Uploaded v6-compatible recovery image"
+  ],
+  "mainCommit": "6c4402958bdec460b23c959bc99c8e824e53dd1c",
+  "mainHeld": true,
+  "productionMutated": false,
+  "fullBetaReady": false,
+  "frozenStagingBranch": "codex/beta-staging-20261013-a53a920",
+  "preparedStagingFingerprint": "345f4ee2f0e3d38635292aef493b746f716702d32c6b737558e56f0d44ebccdb",
+  "preparedStagingConfigSha256": "61b6658868c38728a087943d00324200f4760665bd5ecabaf6af2b8970dc859e"
+}

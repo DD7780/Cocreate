@@ -1,0 +1,42 @@
+{
+  "date": "2026-10-13",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "runId": 38375934709,
+  "jobId": 115224175167,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38375934709",
+  "conclusion": "success",
+  "scope": "Exact candidate native controlled CI, not hosted capability acceptance",
+  "checks": {
+    "boundaryFiles": 210,
+    "boundaryViolations": 0,
+    "postgres": {
+      "pass": 4
+    },
+    "compiler": {
+      "pass": 10
+    },
+    "browser": {
+      "pass": 17
+    },
+    "interactiveBlender": {
+      "pass": 3
+    },
+    "regression": {
+      "tests": 296,
+      "pass": 293,
+      "fail": 0,
+      "skipped": 3
+    },
+    "twoParticipantArtifactsUI": {
+      "pass": 5,
+      "profiles": 2,
+      "actualGUI": true,
+      "physicalInferenceCalls": 0
+    }
+  },
+  "skipExplanation": "Two desktop tests run separately and pass. Native Windows private-file ACL check skips Linux and was passed locally previously.",
+  "imageId": "sha256:1bf31a3fbe7b80f2490f6b226c0a0a5b26dc220e07eba24bca79c195b45fa065",
+  "uiImageId": "sha256:f8e5dc9644502bde42c2453af7fc0904355901f93b3211fd5a8ada05e1f62d76",
+  "registryRecoveryDigest": false,
+  "hostedProof": false
+}
