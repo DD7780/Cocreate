@@ -1,0 +1,40 @@
+{
+  "sourceCommit": "a61c9aa0471173a6536dbb168dd8783089a83281",
+  "runId": 38247175023,
+  "jobId": 114803870021,
+  "url": "https://github.com/DD7780/Cocreate/actions/runs/38247175023",
+  "conclusion": "success",
+  "date": "2026-10-12",
+  "scope": "Controlled native CI; not deployed staging acceptance",
+  "checks": {
+    "boundaryFiles": 207,
+    "boundaryViolations": 0,
+    "postgres": {
+      "pass": 3
+    },
+    "compiler": {
+      "pass": 10
+    },
+    "browser": {
+      "pass": 17
+    },
+    "interactiveBlender": {
+      "pass": 3
+    },
+    "twoParticipantArtifactsUI": {
+      "pass": 5,
+      "physicalInferenceCalls": 0
+    },
+    "regression": {
+      "tests": 291,
+      "pass": 288,
+      "fail": 0,
+      "skipped": 3
+    }
+  },
+  "skipExplanation": "Two desktop cases pass in the dedicated run. Windows ACL case passed actual local Windows and skips Linux.",
+  "imageId": "sha256:37e350be39a75881ca25b521e3ce80f879459e1211bb55c6db956e110a1a0b3a",
+  "uiImageId": "sha256:db699a9650592dd6b3f50090e978b9f950561ebe035506da63fbeddee207d524",
+  "registryRecoveryDigest": false,
+  "hostedProof": false
+}

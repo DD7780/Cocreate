@@ -1,5 +1,7 @@
 # Minimal isolated staging resource packet — 2026-10-11
 
+Current scope supersession (2026-10-13): [D-0070](full-beta-staging.md) requires the full beta, including all intended capabilities; disabled flags cannot pass main review. The [setup guide](beta-setup.md) owns secure operator/tester/device/provider preparation. The approved staging database now exists with applied schema; resource/verification statements below retain their original dates. The original platform-only release option is superseded. Worker deployment, genuine hosted checks and preview acceptance remain pending. Main and production stay held.
+
 Update 2026-10-12: [authenticated account inspection and secure-login preparation](staging-preparation-checks.md) now confirm the second Free option and active Workers Paid subscription. Existing container inclusions are exhausted in the observed cycle; nominal two-hour basic allocation/full CPU plus a 30-minute tail is about $0.07, with platform overhead and ancillary usage additional. No new subscription, plan upgrade or Pages target is proposed. This supersedes the dated billing/eligibility uncertainty below; no resources or live URL exist yet. Creation/deployment and cleanup of exact IDs still require authority.
 
 ## Scope and authority

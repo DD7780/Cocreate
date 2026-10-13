@@ -1,5 +1,7 @@
 # Production release prerequisite packet — 2026-10-11
 
+Current scope supersession (2026-10-13): [D-0070](full-beta-staging.md) requires the full beta, including all intended capabilities; disabled flags cannot pass main review. The [setup guide](beta-setup.md) owns secure operator/tester/device/provider preparation. The approved staging database now exists with applied schema; resource/verification statements below retain their original dates. The original platform-only release option is superseded. Worker deployment, genuine hosted checks and preview acceptance remain pending. Main and production stay held.
+
 ## Outcome and bounded scope
 
 Continue from clean handoff `9857ec0` / verified implementation `7ba6296`. Complete available prerequisite work for separate platform and generated-app tracks while awaiting isolated staging and designated accounts. Main remains held until hosted gates and concrete production authority exist. Preserve the UI, Canvas, Workflow, accounting and manual beta gate.

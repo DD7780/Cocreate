@@ -1,5 +1,7 @@
 # Staging preparation and secure login packet — 2026-10-12
 
+Current scope supersession (2026-10-13): [D-0070](full-beta-staging.md) requires the full beta, including all intended capabilities; disabled flags cannot pass main review. The [setup guide](beta-setup.md) owns secure operator/tester/device/provider preparation. The approved staging database now exists with applied schema; resource/verification statements below retain their original dates. The original platform-only release option is superseded. Worker deployment, genuine hosted checks and preview acceptance remain pending. Main and production stay held.
+
 ## Outcome and scope
 
 Continue from clean `78bb48b` using the existing Worker/basic-container/Durable Object and Supabase architecture. The user authorizes read-only eligibility/billing inspection and local configuration/automated check preparation; show exact resources, incremental costs and cleanup before any unapproved creation. Main stays held. Hosted platform comes first; browser and local background Blender are separately verified. No Pages resource is needed for platform staging.

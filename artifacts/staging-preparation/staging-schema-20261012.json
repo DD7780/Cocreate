@@ -1,0 +1,135 @@
+{
+  "date": "2026-10-12",
+  "projectId": "ctnjxvwyttnjehnbfktq",
+  "organizationId": "lflzfrqblfyjopsjuqxk",
+  "region": "ap-southeast-2",
+  "status": "ACTIVE_HEALTHY",
+  "sourceCommit": "a61c9aa0471173a6536dbb168dd8783089a83281",
+  "migrations": [
+    {
+      "version": "20261012123536",
+      "name": "projects_auth_persistence"
+    },
+    {
+      "version": "20261012123620",
+      "name": "email_invitations_and_sharing"
+    },
+    {
+      "version": "20261012123628",
+      "name": "repair_yjs_bytea"
+    },
+    {
+      "version": "20261012123637",
+      "name": "managed_ai_funding"
+    },
+    {
+      "version": "20261012150629",
+      "name": "preserve_invites_and_idempotent_delivery"
+    },
+    {
+      "version": "20261012150823",
+      "name": "provider_request_ledger"
+    },
+    {
+      "version": "20261012150832",
+      "name": "workflow_coordinator_fencing"
+    },
+    {
+      "version": "20261012150841",
+      "name": "coordinator_dispatch_updates"
+    },
+    {
+      "version": "20261012151236",
+      "name": "prelaunch_beta_access"
+    },
+    {
+      "version": "20261012151309",
+      "name": "prelaunch_waitlist_clock_fix"
+    },
+    {
+      "version": "20261012151320",
+      "name": "beta_access_requests"
+    },
+    {
+      "version": "20261012151505",
+      "name": "preview_target_reservations"
+    }
+  ],
+  "publicTables": 27,
+  "tablesWithRLSEnabled": 27,
+  "privateArtifactBucket": {
+    "id": "cocreate-artifacts",
+    "public": false
+  },
+  "reconciledTransportFailure": {
+    "file": "202609300001_preserve_invites_and_idempotent_delivery.sql",
+    "reason": "Invalid or expired requestState",
+    "beforeRetry": "Migration history and new columns confirmed absent",
+    "retryConfirmed": true
+  },
+  "participantPermissionChecksPerformed": false,
+  "authenticatedStorageByteChecksPerformed": false,
+  "productionMutated": false,
+  "mainPushed": false,
+  "sourceMigrationHashes": [
+    {
+      "file": "202609240001_projects_auth_persistence.sql",
+      "sha256": "0712cfb52e5edf02dba89d6206618c7a8c96957b72a608aeb21a5c30586055a1"
+    },
+    {
+      "file": "202609250001_email_invitations_and_sharing.sql",
+      "sha256": "fb717f69504be69c3e6d61b407f70b5f818442838904f77a69165da37cb778e3"
+    },
+    {
+      "file": "202609260001_repair_yjs_bytea.sql",
+      "sha256": "e86b90a1a85ce793d9064c19c4c1b4011514d2852f036d41ea68e2e30b470e17"
+    },
+    {
+      "file": "202609270001_managed_ai_funding.sql",
+      "sha256": "21c7fe95efccf26a9fe0fb3f83080185a1bb7f7c050c66d1addba6294a54da25"
+    },
+    {
+      "file": "202609300001_preserve_invites_and_idempotent_delivery.sql",
+      "sha256": "1061a7d4055b95ca414689858142807c7299c3f3b70060291ef4652fe7d248da"
+    },
+    {
+      "file": "202609300002_provider_request_ledger.sql",
+      "sha256": "9e20ee405540b8d8625c3b99bcd10632ae7380e4853cb5aae0a994170c46d69d"
+    },
+    {
+      "file": "20261001104120_workflow_coordinator_fencing.sql",
+      "sha256": "19d57437dba3a82ccb37ea0f99213ceaa69d451a8e97ad9d816a391091a19d30"
+    },
+    {
+      "file": "20261003203000_coordinator_dispatch_updates.sql",
+      "sha256": "369be1a32cc916c6e20c84ae05e4bab11370260d2c8d9beeff8a34469d6f677c"
+    },
+    {
+      "file": "20261006204612_prelaunch_beta_access.sql",
+      "sha256": "a50beff16b7d96cb78c7b730a5d6e73626f8fe555f43d8d0701cb58f2a1ee7e9"
+    },
+    {
+      "file": "20261008143555_prelaunch_waitlist_clock_fix.sql",
+      "sha256": "e0ac7fc59ebf65065dbe71614f3abfd3fb23e5250032e72d3da883811c04514a"
+    },
+    {
+      "file": "20261008191401_beta_access_requests.sql",
+      "sha256": "3d7115466329373b82a47e239eb4aa1acb0232cc003403a18ce02e9fee5fd0a6"
+    },
+    {
+      "file": "20261011013000_preview_target_reservations.sql",
+      "sha256": "9197ab64043d2ca3cdb4f1ef5b934311c6cd3a95bcc32a3a18ac30dc84b2a3a7"
+    }
+  ],
+  "hashScope": "Exact current checked-out source bytes; applied provider history names/versions are recorded separately. Metadata does not establish participant RLS or private Storage byte acceptance.",
+  "securityAdvisorReview": {
+    "checkedAt": "2026-10-12T15:25:33.455Z",
+    "noPolicyTables": 7,
+    "authenticatedSecurityDefinerFunctions": 4,
+    "review": "Seven service-only tables intentionally deny participant access. Four public authenticated SECURITY DEFINER RPCs use fixed search_path and current auth.uid/beta/membership checks; no anonymous EXECUTE. Warnings are retained for hosted adversarial acceptance.",
+    "remediation": [
+      "https://supabase.com/docs/guides/database/database-linter?lint=0008_rls_enabled_no_policy",
+      "https://supabase.com/docs/guides/database/database-linter?lint=0029_authenticated_security_definer_function_executable"
+    ]
+  }
+}

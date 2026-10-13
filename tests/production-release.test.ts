@@ -8,6 +8,8 @@ import { documentationOnlyHandoff, releaseGates, type ReleaseEvidence } from '..
 import { validateHostedFixture, verifyHostedBeta, type HostedFixture } from '../scripts/verify-hosted-beta.js';
 
 const config = JSON.parse(fs.readFileSync('wrangler.jsonc','utf8'));
+const fullBetaConfig = structuredClone(config);
+Object.assign(fullBetaConfig.vars, { COCREATE_SHARED_BROWSER:'enabled', COCREATE_CONNECTED_BLENDER:'enabled', COCREATE_INTERACTIVE_BLENDER:'linux-xvfb-v1', COCREATE_GENERATED_PREVIEW:'enabled' });
 const source = 'a'.repeat(40), fingerprint = 'b'.repeat(64), origin = 'https://cocreate-beta-staging.example.test';
 const now = Date.now();
 const proof = (names: string[]) => ({ environment: 'designated isolated staging' as const, sourceCommit: source, stagingOrigin: origin, releaseFingerprint: fingerprint, checkedAt: new Date(now).toISOString(), checks: names.map(name => ({ name, passed: true })) });
@@ -16,10 +18,15 @@ function evidence(): ReleaseEvidence {
   return {
     staging: { origin, supabaseUrl: `https://${'a'.repeat(20)}.supabase.co`, releaseFingerprint: fingerprint, configSha256: 'c'.repeat(64), workerVersion: 'fixture-worker', containerVersion: 'fixture-container', imageDigest: `sha256:${'d'.repeat(64)}`, migrationsVerified: true, privateConfigurationVerified: true },
     permissions: { ...proof(['exact_candidate_health','public_prelaunch','beta_approval_required','storage_public_URL_denied','anonymous_direct_RLS','anonymous_project_api_denied','anonymous_artifact_denied','anonymous_socket_denied','viewer_submit_denied','viewer_budget_reset_denied','viewer_provider_connection_denied','viewer_project_edit_denied','viewer_role_escalation_denied', ...roles.flatMap(role => [`${role}_real_identity`,`${role}_direct_RLS`,`${role}_cross_project_RLS`,`${role}_private_storage`,`${role}_cross_project_denied`,`${role}_private_artifact`,`${role}_socket`]), ...['owner','editor','viewer'].flatMap(role => [`${role}_project_role`,`${role}_room_state`,`${role}_cross_project_artifact_denied`]),'outsider_approval_not_membership','revoked_approval_not_membership']), permissionChecksPassed: true },
-    recovery: proof(['independent_signed_in_profiles','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary']),
+    recovery: proof(['independent_signed_in_profiles','shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary']),
     ci: { sourceCommit: source, conclusion: 'success', url: 'https://github.com/DD7780/Cocreate/actions/runs/1234' },
     compatibleRecoveryImage: { digest: `sha256:${'e'.repeat(64)}`, snapshotVersion: 6, tested: true },
-    optional: { sharedBrowser: null, connectedBlender: null, interactiveBlender: null, generatedPreview: null },
+    optional: {
+      sharedBrowser: proof(['two_participants','private_login_grants','controller_handoff','stale_command_denied','network_file_isolation','stop_disconnect_recovery','private_download']),
+      connectedBlender: proof(['two_participants','pairing_grants','controller_handoff','stop_recovery','private_outputs']),
+      interactiveBlender: proof(['dedicated_host_boundary','actual_view_input','human_agent_exclusion','two_participants','stop_private_outputs']),
+      generatedPreview: proof(['exact_approved_target_plan','scoped_server_credentials','durable_provider_receipt','live_exact_bytes_behavior','uncertain_reconciliation','reviewed_previous_version_recovery']),
+    },
   };
 }
 
@@ -37,20 +44,28 @@ test('hosted startup never falls back to local signing or encryption secrets', a
   finally { before === undefined ? delete process.env.COCREATE_HOSTED : process.env.COCREATE_HOSTED = before; }
 });
 
-test('main release keeps absent hosted evidence blocked and permits only a reviewed platform-only option', () => {
+test('full beta release requires every intended capability and exact hosted evidence', () => {
   const absent = JSON.parse(fs.readFileSync('docs/harness/production-evidence.example.json','utf8'));
   const blocked = releaseGates(source,config,absent,now);
   assert.equal(blocked.readyForProductionReview,false);
   assert.ok(blocked.pending.includes('real_hosted_permissions'));
   assert.ok(blocked.pending.includes('hosted_collaboration_recovery'));
   assert.ok(blocked.pending.includes('v6_compatible_recovery_image'));
-  const prepared = releaseGates(source,config,evidence(),now);
+  const prepared = releaseGates(source,fullBetaConfig,evidence(),now);
   assert.equal(prepared.readyForProductionReview,true);
   assert.match(prepared.authorization,/Separate concrete user approval/);
-  const enabled = structuredClone(config); enabled.vars.COCREATE_GENERATED_PREVIEW = 'enabled';
-  const pending = releaseGates(source,enabled,evidence(),now);
-  assert.equal(pending.readyForProductionReview,false);
-  assert.ok(pending.pending.includes('COCREATE_GENERATED_PREVIEW_verified_or_disabled'));
+  for (const [flag, key] of [['COCREATE_SHARED_BROWSER','sharedBrowser'],['COCREATE_CONNECTED_BLENDER','connectedBlender'],['COCREATE_INTERACTIVE_BLENDER','interactiveBlender'],['COCREATE_GENERATED_PREVIEW','generatedPreview']] as const) {
+    const disabled = structuredClone(fullBetaConfig); disabled.vars[flag] = 'disabled';
+    assert.ok(releaseGates(source,disabled,evidence(),now).pending.includes(`${flag}_enabled_and_verified`));
+    const missing = evidence(); missing.optional[key] = null;
+    assert.ok(releaseGates(source,fullBetaConfig,missing,now).pending.includes(`${flag}_enabled_and_verified`));
+    const partial = evidence(); partial.optional[key]!.checks.pop();
+    assert.equal(releaseGates(source,fullBetaConfig,partial,now).readyForProductionReview,false);
+  }
+  for (const name of ['shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution']) {
+    const missing = evidence(); missing.recovery!.checks = missing.recovery!.checks.filter(check => check.name !== name);
+    assert.ok(releaseGates(source,fullBetaConfig,missing,now).pending.includes('hosted_collaboration_recovery'));
+  }
 });
 
 test('release gates reject stale, failed, partial, production and mismatched candidate proof', () => {
@@ -67,7 +82,7 @@ test('release gates reject stale, failed, partial, production and mismatched can
     (input: ReleaseEvidence) => { input.ci!.sourceCommit = 'f'.repeat(40); },
   ]) {
     const input = evidence(); mutate(input);
-    assert.equal(releaseGates(source,config,input,now).readyForProductionReview,false);
+    assert.equal(releaseGates(source,fullBetaConfig,input,now).readyForProductionReview,false);
   }
   const unknown = structuredClone(config); unknown.vars.COCREATE_SHARED_BROWSER = 'typo';
   assert.equal(releaseGates(source,unknown,evidence(),now).readyForProductionReview,false);

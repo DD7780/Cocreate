@@ -7,7 +7,7 @@ import { fileURLToPath } from 'node:url';
 const hash = (value: string | Buffer) => createHash('sha256').update(value).digest('hex');
 const sha = /^[a-f0-9]{64}$/, commit = /^[a-f0-9]{40}$/;
 const roles = ['owner','editor','viewer','unapproved','outsider','revoked'];
-const recoveryChecks = ['independent_signed_in_profiles','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary'];
+const recoveryChecks = ['independent_signed_in_profiles','shared_canvas_convergence','independent_artifact_selection','document_version_download_recovery','caller_artifact_attribution','unsubmitted_zero_inference','concurrent_caller_only','duplicate_no_execution','artifact_usage_convergence','live_revocation','stale_coordinator_fenced','disconnect_reconnect','process_replacement','previous_artifact_retained','no_paid_replay','uncertain_action_reconciliation','empty_cache_private_restore','auth_callback_recovery','manual_beta_gate','hosted_compiler_browser_boundary'];
 export const documentationOnlyHandoff = (changed: string[]) => changed.every(file => /^(?:docs\/|artifacts\/|graphify-out\/)/.test(file) || /^(?:README|AGENTS|context|product|instructions|api)\.md$/.test(file));
 type Check = { name: string; passed: boolean };
 type Proof = { environment: 'designated isolated staging'; sourceCommit: string; stagingOrigin: string; releaseFingerprint: string; checkedAt: string; checks: Check[] };
@@ -46,8 +46,7 @@ export function releaseGates(sourceCommit: string, config: any, evidence: Releas
     ['COCREATE_GENERATED_PREVIEW', evidence.optional?.generatedPreview, ['exact_approved_target_plan','scoped_server_credentials','durable_provider_receipt','live_exact_bytes_behavior','uncertain_reconciliation','reviewed_previous_version_recovery']],
   ] as const) {
     const enabled = flag === 'COCREATE_INTERACTIVE_BLENDER' ? config.vars[flag] === 'linux-xvfb-v1' : config.vars[flag] === 'enabled';
-    const validFlag = config.vars[flag] === 'disabled' || enabled;
-    check(`${flag}_verified_or_disabled`, validFlag && (!enabled || contains(proof, [...required])));
+    check(`${flag}_enabled_and_verified`, enabled && contains(proof, [...required]));
   }
   check('interactive_requires_connected_Blender', config.vars.COCREATE_INTERACTIVE_BLENDER === 'disabled' || config.vars.COCREATE_CONNECTED_BLENDER === 'enabled');
   return { readyForProductionReview: gates.every(item => item.passed), gates, pending: gates.filter(item => !item.passed).map(item => item.name), authorization: 'Separate concrete user approval required; evidence files do not authorize a push or deployment' };

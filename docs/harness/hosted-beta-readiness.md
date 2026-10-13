@@ -1,5 +1,7 @@
 # Hosted beta release packet — 2026-10-11
 
+Current scope supersession (2026-10-13): [D-0070](full-beta-staging.md) requires the full beta, including all intended capabilities; disabled flags cannot pass main review. The [setup guide](beta-setup.md) owns secure operator/tester/device/provider preparation. The approved staging database now exists with applied schema; resource/verification statements below retain their original dates. The original platform-only release option is superseded. Worker deployment, genuine hosted checks and preview acceptance remain pending. Main and production stay held.
+
 ## Outcome and scope
 
 Prepare two independent release tracks: the 2guys1canvas platform and an explicitly approved generated static application preview. Preserve the pre-launch page, manual beta gate, Canvas, Workflow and accounting. User selected local preparation; staging targets and designated accounts will be configured later. No staging creation, migrations, email, paid inference or deployment is authorized in this packet.

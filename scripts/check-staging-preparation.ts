@@ -8,7 +8,7 @@ import { stagingConfiguration, type StagingTarget } from './prepare-hosted-stagi
 export type AccountInspection = {
   checkedAt: string;
   source: 'provider_dashboard' | 'provider_api' | 'mixed' | 'incomplete';
-  supabase: { organizationId: string; plan: string; activeVisibleProjects: number; freeEligibilityConfirmed: boolean | null };
+  supabase: { organizationId: string; plan: string; activeVisibleProjects: number; freeEligibilityConfirmed: boolean | null; allocatedStagingProjectRef?: string | null };
   cloudflare: { accountId: string; workersPaidConfirmed: boolean | null; billingCycleStart: string | null; billingCycleEnd: string | null };
 };
 
@@ -18,13 +18,14 @@ const keys = (value: unknown, expected: string[]) => {
 
 export function checkStagingPreparation(inspection: AccountInspection, target: StagingTarget | null, production: any, now = Date.now()) {
   keys(inspection, ['checkedAt','source','supabase','cloudflare']);
-  keys(inspection.supabase, ['organizationId','plan','activeVisibleProjects','freeEligibilityConfirmed']);
+  keys(inspection.supabase, ['organizationId','plan','activeVisibleProjects','freeEligibilityConfirmed', ...('allocatedStagingProjectRef' in inspection.supabase ? ['allocatedStagingProjectRef'] : [])]);
   keys(inspection.cloudflare, ['accountId','workersPaidConfirmed','billingCycleStart','billingCycleEnd']);
   const { supabase, cloudflare } = inspection;
   if (typeof inspection.checkedAt !== 'string' || !['provider_dashboard','provider_api','mixed','incomplete'].includes(inspection.source) ||
       !/^[a-z]{20}$/.test(supabase.organizationId) || !/^[a-f0-9]{32}$/.test(cloudflare.accountId) ||
       !['free','pro','team','enterprise'].includes(supabase.plan) || !Number.isSafeInteger(supabase.activeVisibleProjects) || supabase.activeVisibleProjects < 0 ||
       ![true,false,null].includes(supabase.freeEligibilityConfirmed) || ![true,false,null].includes(cloudflare.workersPaidConfirmed) ||
+      (supabase.allocatedStagingProjectRef != null && (typeof supabase.allocatedStagingProjectRef !== 'string' || !/^[a-z]{20}$/.test(supabase.allocatedStagingProjectRef))) ||
       [cloudflare.billingCycleStart,cloudflare.billingCycleEnd].some(value => value !== null && (typeof value !== 'string' || !Number.isFinite(Date.parse(value))))) throw new Error('Invalid public account inspection.');
   const checks: Array<{ name: string; passed: boolean }> = [];
   const check = (name: string, passed: boolean) => checks.push({ name, passed });
@@ -32,7 +33,9 @@ export function checkStagingPreparation(inspection: AccountInspection, target: S
   check('fresh_account_inspection', Number.isFinite(age) && age >= -300_000 && age <= 86_400_000);
   check('provider_inspection_complete', inspection.source !== 'incomplete');
   check('expected_supabase_organization', supabase.organizationId === 'lflzfrqblfyjopsjuqxk');
-  check('free_project_eligible', supabase.plan === 'free' && supabase.activeVisibleProjects < 2 && supabase.freeEligibilityConfirmed === true);
+  const allocated = supabase.allocatedStagingProjectRef != null;
+  const matchingAllocation = allocated && !!target && target.supabaseUrl === `https://${supabase.allocatedStagingProjectRef}.supabase.co` && target.supabaseUrl !== production.vars.SUPABASE_URL;
+  check('free_project_available_or_allocated', supabase.plan === 'free' && supabase.freeEligibilityConfirmed === true && (allocated ? matchingAllocation && supabase.activeVisibleProjects > 0 && supabase.activeVisibleProjects <= 2 : supabase.activeVisibleProjects < 2));
   check('expected_cloudflare_account', cloudflare.accountId === production.account_id);
   check('existing_workers_paid', cloudflare.workersPaidConfirmed === true);
   check('current_billing_cycle', cloudflare.billingCycleStart !== null && cloudflare.billingCycleEnd !== null && Date.parse(cloudflare.billingCycleStart) <= now && Date.parse(cloudflare.billingCycleEnd) > now);
@@ -50,6 +53,7 @@ export function checkStagingPreparation(inspection: AccountInspection, target: S
   return {
     checkedAt: new Date(now).toISOString(), scope: 'Local preparation and operator inspection review; not independently authenticated provider or hosted proof',
     readyForResourceReview, publicConfigurationPrepared: config !== null,
+    freeProjectStatus: allocated ? 'Existing staging allocation only; no additional Free slot established' : 'Reviewed creation eligibility; no slot reserved',
     draftConfigurationSha256: config ? createHash('sha256').update(JSON.stringify(config)).digest('hex') : null,
     proposedResources: { supabaseProject: 'cocreate-beta-staging', worker: 'cocreate-beta-staging', container: 'one basic instance', pages: 'none for platform staging' },
     proposedOrigin: 'https://cocreate-beta-staging.susan981314271.workers.dev',

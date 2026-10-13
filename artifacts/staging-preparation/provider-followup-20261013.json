@@ -1,0 +1,26 @@
+{
+  "date": "2026-10-13",
+  "scope": "Authenticated read-only provider metadata; not hosted participant acceptance",
+  "supabase": {
+    "organizationId": "lflzfrqblfyjopsjuqxk",
+    "plan": "free",
+    "activeVisibleProjects": 2,
+    "allocatedStagingProjectRef": "ctnjxvwyttnjehnbfktq",
+    "stagingStatus": "ACTIVE_HEALTHY",
+    "additionalFreeSlotEstablished": false
+  },
+  "cloudflare": {
+    "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+    "subscription": "Workers Paid",
+    "status": "Active",
+    "renewalDate": "2026-11-13",
+    "dateGranularity": "Provider dashboard calendar date; not exact UTC reset",
+    "currentContainerAllowanceVerified": false,
+    "planUpgradePerformed": false
+  },
+  "stagingGitHubConnectionApproved": true,
+  "workerContainerDeploymentPerformed": false,
+  "hostedAcceptancePerformed": false,
+  "mainPushPerformed": false,
+  "productionMutated": false
+}

@@ -35,6 +35,21 @@ test('unknown, false, incomplete, stale or wrong-account inspection never passes
   ]){const v=inspection();update(v);assert.equal(checkStagingPreparation(v,target,production,now).readyForResourceReview,false);}
 });
 
+test('existing second Free project permits preparation only for its exact separate allocation', () => {
+  const current = inspection(); current.supabase.activeVisibleProjects = 2;
+  current.supabase.allocatedStagingProjectRef = 'a'.repeat(20);
+  assert.equal(checkStagingPreparation(current,target,production,now).readyForResourceReview,true);
+  assert.match(checkStagingPreparation(current,target,production,now).freeProjectStatus,/no additional Free slot/);
+  assert.equal(checkStagingPreparation(current,null,production,now).readyForResourceReview,false);
+  assert.equal(checkStagingPreparation(current,{...target,supabaseUrl:`https://${'b'.repeat(20)}.supabase.co`},production,now).readyForResourceReview,false);
+  current.supabase.activeVisibleProjects = 3;
+  assert.equal(checkStagingPreparation(current,target,production,now).readyForResourceReview,false);
+  current.supabase.activeVisibleProjects = 2; current.supabase.allocatedStagingProjectRef = new URL(production.vars.SUPABASE_URL).hostname.split('.')[0];
+  assert.equal(checkStagingPreparation(current,{...target,supabaseUrl:production.vars.SUPABASE_URL},production,now).readyForResourceReview,false);
+  (current.supabase as any).allocatedStagingProjectRef = 'invalid secret-like value';
+  assert.throws(()=>checkStagingPreparation(current,target,production,now));
+});
+
 test('preparation rejects undeclared secret fields and invalid timestamps without echoing their values', () => {
   for(const update of [(v:any)=>{v.token='synthetic_private_value'},(v:any)=>{v.cloudflare.token='synthetic_private_value'},(v:any)=>{v.supabase.password='synthetic_private_value'},(v:any)=>{v.cloudflare.billingCycleStart='invalid'}]) {
     const v=inspection();update(v);assert.throws(()=>checkStagingPreparation(v,target,production,now),error=>!String(error).includes('synthetic_private_value'));
