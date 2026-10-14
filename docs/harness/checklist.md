@@ -4,6 +4,15 @@ Dated staging execution before scoped build setup (2026-10-13): [the authorized 
 
 # Harness status and outstanding work
 
+## Workflow Overview — 2026-10-15
+
+- [x] Implement the approved Overview in Workflow only: UTC usage/cost trends, partial/unknown reporting, unified Contradictions and accessible review/history.
+- [x] Keep existing affected-contributor agreement, caller-only corrections, server authorization and inference-free navigation. Canvas/Artifacts and global UI are unchanged.
+- [x] Initial checks: 31/31 focused tests, strict compilation and production builds, UI scope/import audit with zero boundary violations, seven three-context browser scenarios with no inference.
+- [ ] Wider UI issues are detected and reported; obtain the user's approval before editing those screens.
+- [ ] Full regression/runtime and hosted beta gates remain independent; current local isolation failures are retained in [the packet](workflow-overview.md), not concealed by the UI checks. Main/production held.
+
+
 Full-beta staging continuation (2026-10-13): [D-0070 packet](full-beta-staging.md) and [beta setup](beta-setup.md) preserve the full requested scope. Main review now requires enabled, freshly verified shared browsers, background and interactive Blender, and generated-app previews, plus explicit Canvas/document/artifact recovery evidence. This supersedes the earlier platform-only release option; initial disabled dispatch is preparation only. Approved Free staging project `ctnjxvwyttnjehnbfktq` has 12 applied migrations, 27 RLS-enabled public tables and a private artifact bucket. Worker/namespace are now created and isolated; application login is 503 pending container/private configuration. Exact candidate `6f6ef3a` passes native CI 38358183918; the frozen staging branch is `codex/beta-staging-20261013`. Real participant/capability acceptance remains pending. QUTA4 owns the private secrets directory/file with QUTA4/SYSTEM-only ACLs; the sanitized validator performs no provider operation. A staging key exposed by a validation parse error must be replaced/revoked before use. Canvas, Workflow and physical token tracking are unchanged. Main and production remain held. Earlier evidence below is dated history.
 
 Staging preparation (2026-10-12): [the current check/login packet](staging-preparation-checks.md) adds fail-closed local account/target checks and Windows Owner/SYSTEM-only private-fixture admission. Authenticated dashboards confirm one eligible second Free Supabase project and an active existing Workers Paid subscription; no new subscription is needed. Observed container inclusions are exhausted, so staging usage may be billed. The proposed platform uses a separate Free project and one basic Worker/container/namespace, no Pages, no production routes/cron or copied credentials. Six new local checks (including actual Windows ACL denial and platform-only fixtures) pass; affected suite 16/16 passes. Account review is ready; actual target/ref, resource authority, deployment, secure tester login and hosted permission/recovery remain pending. Main is held; browser/local Blender acceptance is separate.

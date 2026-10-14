@@ -1,0 +1,15 @@
+{
+  "checkedAt": "2026-10-14T22:15:40.308Z",
+  "checks": [
+    "Overview mount, recorded tokens, partial pricing and no duplicate sidebar",
+    "Period/metric controls, keyboard chart values and UTC periods",
+    "Independent viewer sees attributed alternatives but cannot choose",
+    "One choice waits; unanimous choices resolve and move to collapsed history",
+    "Different choices close the round and open the existing own-instruction review",
+    "Reload preserves choices and recorded usage; no inference dispatched",
+    "390px, 320px and 200%-equivalent viewport without horizontal overflow"
+  ],
+  "inferenceDispatches": 0,
+  "fixture": "local signed sessions and synthetic provider ledger; no hosted credentials",
+  "errors": []
+}

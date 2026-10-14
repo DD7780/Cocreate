@@ -102,7 +102,7 @@ try {
   assert.match(await alice.evaluate("document.querySelector('.document-artifact .preview-bar').textContent"), /v1/); assert.equal(fixture.calls.length, beforeReload);
   checks.push('Selections/version survive reload and reconnect without inference.');
   await clickText(alice, 'nav button', 'Workflow');
-  const usage = await alice.evaluate("document.querySelector('#workflow-usage').textContent"); assert.match(usage, new RegExp(`${fixture.calls.length} recorded attempts`)); checks.push('Existing Workflow layout records the same physical-call totals.');
+  const usage = await alice.evaluate("document.querySelector('.usage-coverage dd').textContent"); assert.match(usage, new RegExp(`${fixture.calls.length} calls`)); checks.push('Workflow Overview records the same physical-call totals for this period.');
   await screenshot(alice, 'workflow');
   await clickText(alice, 'nav button', 'Artifacts'); await alice.call('Emulation.setDeviceMetricsOverride', { width: 390, height: 844, deviceScaleFactor: 1, mobile: true }); await wait(250);
   assert.equal(await alice.evaluate('document.documentElement.scrollWidth<=window.innerWidth'), true); await screenshot(alice, 'mobile-document'); checks.push('390 px document controls remain within viewport.');

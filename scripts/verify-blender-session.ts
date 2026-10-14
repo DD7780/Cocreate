@@ -125,7 +125,7 @@ try {
     assert.equal(fixture.room.blender!.devices[0].state, 'revoked');
     assert.equal(fixture.calls.length, 0);
     await clickText(alice, 'nav button', 'Workflow');
-    assert.match(await alice.evaluate("document.querySelector('#workflow-usage').textContent"), /0 recorded attempts/);
+    assert.match(await alice.evaluate("document.querySelector('.usage-coverage dd').textContent"), /0 calls/);
     checks.push('Local STOP removes the entire display job; manual viewing/input/saving makes zero inference calls and preserves Workflow accounting.');
     fs.writeFileSync(path.join(output, 'checks.json'), JSON.stringify({ verifiedAt: new Date().toISOString(), scope: 'Two independent local browser profiles, actual isolated Linux Blender 4.5.14 GUI and companion; not hosted identities.', checks, physicalCalls: 0 }, null, 2));
     console.log('INTERACTIVE_ARTIFACTS_UI', JSON.stringify({ checks: checks.length, profiles: 2, actualGui: true, physicalCalls: fixture.calls.length }));
@@ -167,7 +167,7 @@ try {
   await until(()=>bob.evaluate("!!document.querySelector('.document-editor') && !document.querySelector('.connection-banner')"),'reconnect');
   await clickText(bob,'nav button','Artifacts'); await until(()=>bob.evaluate("document.querySelector('.blender-render')?.naturalWidth===512"),'saved selection after reload'); assert.equal(fixture.calls.length,before); checks.push('Reload preserves participant-local selection and private saved results without replay.');
   await clickText(alice,'nav button','Workflow');
-  assert.match(await alice.evaluate("document.querySelector('#workflow-usage').textContent"),new RegExp(`${fixture.calls.length} recorded attempts`)); await screenshot(alice,'workflow-accounting'); checks.push('Workflow layout and physical-call totals remain unchanged.');
+  assert.match(await alice.evaluate("document.querySelector('.usage-coverage dd').textContent"),new RegExp(`${fixture.calls.length} calls`)); await screenshot(alice,'workflow-accounting'); checks.push('Workflow Overview preserves recorded physical-call totals.');
   await bob.call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true}); await wait(250);assert.equal(await bob.evaluate('document.documentElement.scrollWidth<=window.innerWidth'),true);await screenshot(bob,'mobile-saved-render');checks.push('Saved render controls fit a 390 px viewport.');
   fs.writeFileSync(path.join(output,'checks.json'),JSON.stringify({verifiedAt:new Date().toISOString(),scope:'Two independent local browser profiles, controlled provider, actual Windows Blender 4.5.14 AppContainer execution; not hosted accounts or interactive streaming.',checks,localStates,physicalCalls:fixture.calls.length,reportedTokens:fixture.manager.view(fixture.room).physicalUsage.recorded.inputTokens+fixture.manager.view(fixture.room).physicalUsage.recorded.outputTokens},null,2));
   console.log(JSON.stringify({checks:checks.length,calls:fixture.calls.length,output}));
