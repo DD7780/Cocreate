@@ -1,0 +1,29 @@
+{
+  "checkedAt": "2026-10-14T21:04:35.272Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "checks": [
+    {
+      "name": "staging_worker_denied",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "production_worker_denied",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "builds_configuration_denied",
+      "status": 403,
+      "passed": true
+    },
+    {
+      "name": "containers_denied",
+      "status": 403,
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false
+}

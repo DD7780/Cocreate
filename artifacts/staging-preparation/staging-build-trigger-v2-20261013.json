@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-13T15:30:38.903Z",
+  "phase": "created_requires_readback",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "stagingBranch": "codex/beta-staging-20261013-a53a920",
+  "configuration": {
+    "branch_excludes": [],
+    "branch_includes": [
+      "codex/beta-staging-20261013-a53a920"
+    ],
+    "build_command": "test \"$(git rev-parse HEAD)\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_COMMIT_SHA\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_BRANCH\" = codex/beta-staging-20261013-a53a920 && node --import tsx scripts/prepare-hosted-staging.ts --target docs/harness/staging-target.allocated.json",
+    "build_token_uuid": "e2e144f3-45fb-42f4-a7ae-11b6527b089b",
+    "deploy_command": "test \"$(git rev-parse HEAD)\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_COMMIT_SHA\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_BRANCH\" = codex/beta-staging-20261013-a53a920 && node node_modules/wrangler/bin/wrangler.js deploy --config wrangler.staging.local.jsonc",
+    "external_script_id": "61437c819d0849f1bd2bca80ecba2867",
+    "path_excludes": [],
+    "path_includes": [
+      "*"
+    ],
+    "repo_connection_uuid": "ab2e2cc4-2d3a-49b0-b3cd-f7bb66b2533c",
+    "root_directory": "/",
+    "trigger_name": "staging-a53a920",
+    "build_caching_enabled": false
+  },
+  "priorRejected400AndZeroTriggersReconciled": true,
+  "change": "Shortened exact-source guarded commands and trigger name; permissions unchanged.",
+  "credentialValuesSuppressed": true,
+  "buildStarted": false,
+  "status": 200,
+  "success": true,
+  "errorCodes": [],
+  "errorClasses": [],
+  "triggerUuid": "07c8c3bd-4484-4471-a9d3-7d8a97862ea6"
+}

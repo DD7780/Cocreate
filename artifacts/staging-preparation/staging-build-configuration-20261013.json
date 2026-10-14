@@ -1,0 +1,32 @@
+{
+  "checkedAt": "2026-10-13T15:28:27.382Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerTag": "61437c819d0849f1bd2bca80ecba2867",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "stagingBranch": "codex/beta-staging-20261013-a53a920",
+  "phase": "trigger_rejected",
+  "credentialValuesSuppressed": true,
+  "productionMutated": false,
+  "buildStarted": false,
+  "repositoryStatus": 200,
+  "repoConnectionUuid": "ab2e2cc4-2d3a-49b0-b3cd-f7bb66b2533c",
+  "configuration": {
+    "branch_excludes": [],
+    "branch_includes": [
+      "codex/beta-staging-20261013-a53a920"
+    ],
+    "build_command": "node --input-type=module -e 'import fs from \"node:fs\";import{execFileSync}from\"node:child_process\";const sha=\"a53a92092d608620fdf6edef0bbea287e2cef162\",branch=\"codex/beta-staging-20261013-a53a920\";if(execFileSync(\"git\",[\"rev-parse\",\"HEAD\"],{encoding:\"utf8\"}).trim()!==sha||process.env.WORKERS_CI_COMMIT_SHA!==sha||process.env.WORKERS_CI_BRANCH!==branch)throw Error(\"Frozen staging source mismatch\");execFileSync(process.execPath,[\"--import\",\"tsx\",\"scripts/prepare-hosted-staging.ts\",\"--target\",\"docs/harness/staging-target.allocated.json\"],{stdio:\"inherit\"});const c=JSON.parse(fs.readFileSync(\"wrangler.staging.local.jsonc\",\"utf8\"));if(c.name!==\"cocreate-beta-staging\"||c.account_id!==\"fc419457dc350fcfada2b0a3f00bfe3e\"||c.vars.SUPABASE_URL!==\"https://ctnjxvwyttnjehnbfktq.supabase.co\"||c.vars.COCREATE_RELEASE_FINGERPRINT!==\"345f4ee2f0e3d38635292aef493b746f716702d32c6b737558e56f0d44ebccdb\"||c.routes.length||c.triggers.crons.length||c.containers[0].max_instances!==1)throw Error(\"Staging target mismatch\");'",
+    "build_token_uuid": "e2e144f3-45fb-42f4-a7ae-11b6527b089b",
+    "deploy_command": "node --input-type=module -e 'import fs from \"node:fs\";import{execFileSync}from\"node:child_process\";const sha=\"a53a92092d608620fdf6edef0bbea287e2cef162\",branch=\"codex/beta-staging-20261013-a53a920\";if(execFileSync(\"git\",[\"rev-parse\",\"HEAD\"],{encoding:\"utf8\"}).trim()!==sha||process.env.WORKERS_CI_COMMIT_SHA!==sha||process.env.WORKERS_CI_BRANCH!==branch)throw Error(\"Frozen staging source mismatch\");const c=JSON.parse(fs.readFileSync(\"wrangler.staging.local.jsonc\",\"utf8\"));if(c.name!==\"cocreate-beta-staging\"||c.account_id!==\"fc419457dc350fcfada2b0a3f00bfe3e\"||c.vars.COCREATE_RELEASE_FINGERPRINT!==\"345f4ee2f0e3d38635292aef493b746f716702d32c6b737558e56f0d44ebccdb\")throw Error(\"Staging target mismatch\");execFileSync(process.execPath,[\"node_modules/wrangler/bin/wrangler.js\",\"deploy\",\"--config\",\"wrangler.staging.local.jsonc\"],{stdio:\"inherit\"});'",
+    "external_script_id": "61437c819d0849f1bd2bca80ecba2867",
+    "path_excludes": [],
+    "path_includes": [
+      "*"
+    ],
+    "repo_connection_uuid": "ab2e2cc4-2d3a-49b0-b3cd-f7bb66b2533c",
+    "root_directory": "/",
+    "trigger_name": "cocreate-beta-staging-frozen-a53a920",
+    "build_caching_enabled": false
+  },
+  "triggerStatus": 400
+}

@@ -1,12 +1,14 @@
 # Beta setup and acceptance
 
+Current operator status (15 October Nepal): use only the frozen `codex/beta-staging-20261013-a53a920` branch at full `a53a92092d608620fdf6edef0bbea287e2cef162`. The [credential/expiry/recovery packet](staging-build-credentials.md) supersedes the earlier build-token guidance below. GitHub connection and the single exact-branch trigger exist; the first build failed before checkout, with no container or usable login. The renewed window and read-only bootstrap/masked staging deployment-token fallback are approved; bootstrap live expiry admission passes. Existing expired token renewals failed; two same-scope replacement reviews await manual creation/private entry. [Legacy-cache recovery](staging-cache-provider-handoff.md) remains independently blocked; the draft is unsent and no plan upgrade is authorized. Keep all full-beta gates required. Earlier execution details below remain dated history.
+
 This guide covers the full intended beta. Deployment of the platform and deployment of a generated application are separate operations. A feature awaiting its connection or hosted acceptance remains blocked, rather than removed from the release scope. [Current staging packet](full-beta-staging.md) owns exact verification and pending work.
 
 ## Operator setup
 
 Use only the separate Supabase project `ctnjxvwyttnjehnbfktq` and Worker `cocreate-beta-staging`. The proposed login URL is `https://cocreate-beta-staging.susan981314271.workers.dev/login`; the Worker now exists and its health passes, but application login currently returns 503 until a successful container-backed deployment is recorded. No custom production domain, production namespace, cron or production secret belongs in this setup. The [allocated public target](staging-target.allocated.json) supplies build configuration; it contains a publishable key only.
 
-The approved basic host is the first platform test environment. Build through the existing Cloudflare Workers Builds architecture because local Docker is unavailable. Use the frozen `codex/beta-staging-20261013` branch at tested source `6f6ef3ac304b9b095a06cea43bb93207f130734e`, disable preview branch builds, and set these explicit commands:
+The approved basic host is the first platform test environment. Build through the existing Cloudflare Workers Builds architecture because local Docker is unavailable. Use the frozen `codex/beta-staging-20261013-a53a920` branch at tested source `a53a92092d608620fdf6edef0bbea287e2cef162`, disable preview branch builds, and set these explicit commands:
 
 ```text
 Build: node --import tsx scripts/prepare-hosted-staging.ts --target docs/harness/staging-target.allocated.json
@@ -17,7 +19,7 @@ Never use a default deploy command against production to test a feature branch. 
 
 Keep `.runtime/hosted-beta/server-secrets.json` private and Git-ignored, owned by the operator. On this workstation the owner is QUTA4, with QUTA4/SYSTEM-only file and directory ACLs; operator checks run as QUTA4. Preserve independent `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` across restarts. Enter the staging project's modern `SUPABASE_SECRET_KEY` as a quoted JSON string. Run `node --import tsx scripts/check-staging-secrets.ts` before using the file. Failures suppress values, JSON excerpts and underlying errors. Never print the file or pass a key in command arguments, public build variables, Canvas or receipts. The 2026-10-13 exposed staging key must be replaced/revoked before it is used; production credentials were not read or changed.
 
-Configure these three values as staging Worker secrets, rather than build arguments. Verify the server key against the staging backend through an authenticated read without printing headers or bodies. The source schema is initialized with 12 migrations and private `cocreate-artifacts`; participant access still needs separate proof. Retain exact migration history/source hashes. Do not replay an uncertain migration or repair provider timestamps to filenames.
+Configure these three values as staging Worker secrets, rather than build arguments. Verify the server key against the staging backend through an authenticated read without printing headers or bodies. The source schema is initialized with 13 migrations and private `cocreate-artifacts`; participant access still needs separate proof. Retain exact migration history/source hashes. Do not replay an uncertain migration or repair provider timestamps to filenames.
 
 Configure Supabase Auth Site URL to the exact staging origin and permit only the exact staging `/api/auth/callback` redirect. Keep production origins and wildcard callbacks out. Password sign-in does not need Google configuration. If Google, confirmation/reset email or invitations are to be tested, configure their staging-only provider/sender and designated recipients explicitly; do not copy production secrets or send unapproved mail. [Official redirect guidance](https://supabase.com/docs/guides/auth/redirect-urls) supports exact allowlists.
 
@@ -71,7 +73,7 @@ Require fresh full-beta hosted evidence and a successful exact-source CI run bef
 
 For cleanup, stop/revoke sessions and drain/reconcile fixture work first. Review exact staging Worker/container/namespace IDs, staging Supabase ref and any separately created preview target IDs before deletion. Preserve sanitized receipts/recovery bytes, revoke dedicated test tokens and verify absence afterward. Do not delete production resources or shared images. Failed/uncertain cleanup stays explicit and may continue billing; the approved estimate is not a hard spending cap. [Detailed costs and cleanup](minimal-staging-resources.md) remain applicable.
 
-## Current staging continuation and manual build credential
+## Dated staging continuation before scoped build admission
 
 The server key now verifies and all three secrets are uploaded; the user confirms old-key revocation. Auth has the exact staging Site URL/callback. Seven test identities and two private fixture projects are provisioned without mail. Their unique passwords and fresh tokens are in the QUTA4/SYSTEM-only, ignored .runtime/hosted-beta/test-accounts.json. Retrieve/distribute passwords through your local password manager; never copy administrator keys, JWTs or bearer URLs into chat/Canvas. The Cloudflare Worker URL is allocated, but login remains 503 until container deployment. These credentials do not make the hosted beta usable yet.
 

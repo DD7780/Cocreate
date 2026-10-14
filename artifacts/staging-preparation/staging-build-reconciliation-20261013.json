@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-13T15:29:30.259Z",
+  "tokenRegistrationStatus": 200,
+  "registrationFound": true,
+  "ownerType": "user",
+  "stagingTriggersStatus": 200,
+  "stagingTriggerCount": 0,
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false
+}

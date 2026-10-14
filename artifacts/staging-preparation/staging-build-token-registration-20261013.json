@@ -1,0 +1,16 @@
+{
+  "checkedAt": "2026-10-13T15:26:39.732Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerTag": "61437c819d0849f1bd2bca80ecba2867",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "buildTokenName": "cocreate-beta-staging-scoped-deploy-20261013",
+  "cloudflareTokenId": "2d6696bb877659edbf36008b613239fd",
+  "documentedAccountOwnedSupport": false,
+  "phase": "registered_deployment_compatibility_unproved",
+  "credentialValuesSuppressed": true,
+  "buildStarted": false,
+  "productionMutated": false,
+  "status": 200,
+  "registrationAccepted": true,
+  "buildTokenUuid": "e2e144f3-45fb-42f4-a7ae-11b6527b089b"
+}

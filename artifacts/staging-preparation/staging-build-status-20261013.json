@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-13T15:34:43.124Z",
+  "buildUuid": "008cc49e-9026-433a-b3f3-1a2e238deeb3",
+  "status": 200,
+  "success": true,
+  "keys": [
+    "build_uuid",
+    "status",
+    "build_outcome",
+    "initializing_on",
+    "running_on",
+    "stopped_on",
+    "created_on",
+    "modified_on",
+    "trigger",
+    "build_trigger_metadata",
+    "pull_request",
+    "deploy_hook"
+  ],
+  "buildStatus": "stopped",
+  "buildOutcome": "fail",
+  "commitHash": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "branch": "codex/beta-staging-20261013-a53a920",
+  "versionId": null,
+  "credentialValuesSuppressed": true
+}

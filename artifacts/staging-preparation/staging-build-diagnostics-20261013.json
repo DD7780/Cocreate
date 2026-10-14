@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-13T15:35:43.216Z",
+  "buildUuid": "008cc49e-9026-433a-b3f3-1a2e238deeb3",
+  "status": 200,
+  "resultKeys": [
+    "cursor",
+    "truncated",
+    "lines",
+    "events"
+  ],
+  "entryShape": [
+    "0",
+    "1"
+  ],
+  "eventShape": [
+    "type",
+    "started_on"
+  ],
+  "entryCount": 3,
+  "diagnosticLines": [
+    "Initializing build environment...",
+    "Success: Finished initializing build environment",
+    "Failed: The build token selected for this build has been deleted or rolled and cannot be used for this build. Please update your build token in the Worker Builds settings and retry the build."
+  ],
+  "credentialValuesSuppressed": true
+}

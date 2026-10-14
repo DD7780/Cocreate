@@ -1,0 +1,10 @@
+{
+  "checkedAt": "2026-10-14T20:58:38.503Z",
+  "privateFileValid": true,
+  "status": 200,
+  "active": true,
+  "expiry": "2026-10-15T18:00:00Z",
+  "approvedExpiryMatches": true,
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false
+}

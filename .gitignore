@@ -70,3 +70,6 @@ next-env.d.ts
 /.review-cocreate-v1/
 /.review-cocreate-v2/
 /supabase/.temp/
+
+# Authenticated provider review screenshots remain operator-local.
+/artifacts/staging-preparation/*.png

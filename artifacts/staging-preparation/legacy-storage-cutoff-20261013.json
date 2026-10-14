@@ -1,0 +1,465 @@
+{
+  "checkedAt": "2026-10-13T12:38:08.853Z",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "backend": "https://ctnjxvwyttnjehnbfktq.supabase.co",
+  "projectId": "319c32bd-3a50-4363-b876-347a81150ee2",
+  "originalWarmReceipt": "private-no-store-fresh-20261013.json",
+  "originalWarmAt": "2026-10-13T08:49:26.071Z",
+  "heldTokensRetainedSince": "2026-10-13T08:49:13.807Z",
+  "originalWarmTokenFingerprintWasNotRecorded": true,
+  "heldTokenLineage": "Same private fixture token values retained since the refresh preceding the warm receipt; no later refresh before this test. Historical equality is inferred from that checkpoint lineage.",
+  "heldJWTsCurrentlyExpired": true,
+  "warmTTLWindowElapsed": true,
+  "cacheBypassHeadersUsed": false,
+  "queryParametersChanged": false,
+  "objects": [
+    {
+      "kind": "legacy_3600",
+      "path": "319c32bd-3a50-4363-b876-347a81150ee2/fixtures/89e4ca06e0db2bc095803c57a81f3390a74fa766c7d83ddc4ca570f79f11a9e8.txt",
+      "sha256": "89e4ca06e0db2bc095803c57a81f3390a74fa766c7d83ddc4ca570f79f11a9e8"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "path": "319c32bd-3a50-4363-b876-347a81150ee2/bodies/fe5bdd1f1a4b176f628b85bed5cb60ef699b459fc93d20a98819b94c48abbce0",
+      "sha256": "fe5bdd1f1a4b176f628b85bed5cb60ef699b459fc93d20a98819b94c48abbce0"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "path": "319c32bd-3a50-4363-b876-347a81150ee2/bodies/7beb34302e12d48717e04257a2979fef2c1e194d768773a7a7c772487edeec16",
+      "sha256": "7beb34302e12d48717e04257a2979fef2c1e194d768773a7a7c772487edeec16"
+    }
+  ],
+  "checks": [
+    {
+      "name": "held_initial_legacy_3600_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "held_repeat_legacy_3600_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "held_initial_legacy_3600_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "held_repeat_legacy_3600_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "held_initial_legacy_zero_ttl_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "held_repeat_legacy_zero_ttl_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "held_initial_legacy_zero_ttl_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "held_repeat_legacy_zero_ttl_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "held_initial_legacy_no_store_warmed_revoked_denied",
+      "passed": false
+    },
+    {
+      "name": "held_repeat_legacy_no_store_warmed_revoked_denied",
+      "passed": false
+    },
+    {
+      "name": "held_initial_legacy_no_store_warmed_viewer_denied",
+      "passed": false
+    },
+    {
+      "name": "held_repeat_legacy_no_store_warmed_viewer_denied",
+      "passed": false
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_owner_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_owner_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_owner_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_editor_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_editor_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_editor_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_viewer_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_unapproved_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_unapproved_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_unapproved_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_outsider_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_outsider_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_outsider_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_3600_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_zero_ttl_revoked_denied",
+      "passed": true
+    },
+    {
+      "name": "fresh_current_identity_legacy_no_store_warmed_revoked_denied",
+      "passed": true
+    }
+  ],
+  "observations": [
+    {
+      "kind": "legacy_3600",
+      "role": "revoked",
+      "phase": "held_initial",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "revoked",
+      "phase": "held_repeat",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "viewer",
+      "phase": "held_initial",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "viewer",
+      "phase": "held_repeat",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "revoked",
+      "phase": "held_initial",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "revoked",
+      "phase": "held_repeat",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "viewer",
+      "phase": "held_initial",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "viewer",
+      "phase": "held_repeat",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "revoked",
+      "phase": "held_initial",
+      "status": 200,
+      "knownBytes": true,
+      "cacheStatus": "HIT",
+      "cacheControl": "public, private, no-store, max-age=0, must-revalidate",
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "revoked",
+      "phase": "held_repeat",
+      "status": 200,
+      "knownBytes": true,
+      "cacheStatus": "HIT",
+      "cacheControl": "public, private, no-store, max-age=0, must-revalidate",
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "viewer",
+      "phase": "held_initial",
+      "status": 200,
+      "knownBytes": true,
+      "cacheStatus": "HIT",
+      "cacheControl": "public, private, no-store, max-age=0, must-revalidate",
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "viewer",
+      "phase": "held_repeat",
+      "status": 200,
+      "knownBytes": true,
+      "cacheStatus": "HIT",
+      "cacheControl": "public, private, no-store, max-age=0, must-revalidate",
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "owner",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "owner",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "owner",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "editor",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "editor",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "editor",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "viewer",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "viewer",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "viewer",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "unapproved",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "unapproved",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "unapproved",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "outsider",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "outsider",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "outsider",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_3600",
+      "role": "revoked",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_zero_ttl",
+      "role": "revoked",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    },
+    {
+      "kind": "legacy_no_store_warmed",
+      "role": "revoked",
+      "phase": "fresh_current_identity",
+      "status": 400,
+      "knownBytes": false,
+      "cacheStatus": "DYNAMIC",
+      "cacheControl": null,
+      "edge": "KTM"
+    }
+  ],
+  "allObservedRequestsDenied": false,
+  "providerCachePurgePerformed": false,
+  "freeProjectCachePurgeUnavailable": true,
+  "objectsDeletedOrOverwritten": false,
+  "liveJWTRevocationRetested": false,
+  "globalEdgeEvictionProved": false,
+  "applicationHostedRecoveryProved": false,
+  "fullBetaReady": false,
+  "productionMutated": false
+}

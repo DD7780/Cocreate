@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-13T12:11:11.612Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerName": "cocreate-beta-staging",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "status": 201,
+  "passed": true,
+  "registry": "registry.cloudflare.com",
+  "temporaryCredentialPermissions": [
+    "pull",
+    "push"
+  ],
+  "requestedLifetimeMinutes": 15,
+  "credentialValuesSuppressed": true,
+  "credentialPersisted": false,
+  "imagePushed": false,
+  "productionMutated": false
+}
