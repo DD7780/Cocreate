@@ -39,7 +39,7 @@ try{
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View usage'))?.click()`);
   await new Promise(resolve=>setTimeout(resolve,200));
   const workflow=await evaluate(`({text:document.body.innerText,usage:document.querySelector('#workflow-usage')?.innerText})`);
-  if(!workflow.usage?.includes('No build yet')||!workflow.usage?.includes('Setup tests'))throw new Error(`Workflow usage failed: ${JSON.stringify(workflow)}`);
+  if(!workflow.usage?.includes('Reported tokens')||!workflow.usage?.includes('Estimated AI cost')||!workflow.usage?.includes('Partial history'))throw new Error(`Workflow usage failed: ${JSON.stringify(workflow)}`);
   await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await new Promise(resolve=>setTimeout(resolve,200));
   const mobile=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,usage:!!document.querySelector("#workflow-usage")})');

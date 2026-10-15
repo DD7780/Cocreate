@@ -318,3 +318,8 @@ One pending request survives retries. Optional messages are bounded to 1,000 cha
 Reuse Resend and the approved sender `beta@2guys1canvas.com`; the user reports Sending verified and retains the Tokyo region. Receiving is unused. Freeze delivery payloads/keys before dispatch; use two-minute leases, five attempts and a 23-hour dispatch horizon inside provider dedup retention. Durable state distinguishes provider acceptance from inbox delivery and retains exhausted uncertainty for operator reconciliation. Wake the existing container only for due outbox work.
 
 The user explicitly chose manual hosted testing this time, superseding the original request for agent-run live account/email checks. Local synthetic SQL/API/provider checks and native PostgreSQL/Linux CI release gates remain required; deployed authenticated/email outcomes must be reported awaiting their verification. See the [feature packet](beta-access-requests.md).
+
+
+## D-0072 — Workflow Overview with one Contradictions category
+
+Accepted 2026-10-15. Workflow presents recorded token/cost trends and contradictions, preserving Studio Ivory. Different submitted choices stay within Contradictions rather than a separate Disagreements category. Keep partial recent history and missing-cost uncertainty explicit. Existing affected-contributor agreement, revision-safe correction, inference/funding checks and durable server records retain authority. Saving an agreement may resume previously submitted work and must disclose that consequence. Canvas, Artifacts and wider UI edits are outside this packet. The user subsequently authorized pushing this Workflow-only fix to main; this does not authorize merging unrelated foundation/staging changes. [Scope and evidence](workflow-overview.md).
