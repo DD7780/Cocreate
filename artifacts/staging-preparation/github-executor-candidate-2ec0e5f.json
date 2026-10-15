@@ -1,0 +1,33 @@
+{
+  "checkedAt": "2026-10-15T06:33:18.629Z",
+  "executorImplementationCommit": "2ec0e5f8e8329ecf40b67d0f265c07eb79233dc0",
+  "applicationSourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "sourceBranch": "codex/beta-staging-20261013-a53a920",
+  "localVerificationReceipt": "github-executor-checks-2026-10-15T06-18-43.json",
+  "localChecksPassed": 44,
+  "boundaryFiles": 210,
+  "boundaryViolations": 0,
+  "identities": [
+    {
+      "file": ".github/workflows/staging-deploy.yml",
+      "sha256": "795e42067cb512a97f2f4306608369d2f91b8089ae947eb0f39c1ab0e6c18716"
+    },
+    {
+      "file": ".github/workflows/code-checks.yml",
+      "sha256": "bc3781211fb96b2318c23309ac13ab68193f97b6db4518fbf48a1f50111e6514"
+    },
+    {
+      "file": "scripts/check-staging-executor.py",
+      "sha256": "d5b546043877e32dbb28c0b96a205a994377903a778fa877092a45a58227d050"
+    }
+  ],
+  "externalMainCommit": "ab28741308b784d5bb4edf30b5bbfd83bab14069",
+  "externalMainPreviousCommit": "6c4402958bdec460b23c959bc99c8e824e53dd1c",
+  "externalMainSubject": "Refresh Workflow with usage trends and unified Contradictions (#3)",
+  "externalMainPushedByThisTask": false,
+  "frozenSourceUnchanged": true,
+  "githubEnvironmentCreated": false,
+  "credentialUploaded": false,
+  "executorActivated": false,
+  "hostedReady": false
+}
