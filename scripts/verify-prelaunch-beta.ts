@@ -137,9 +137,9 @@ try {
   await call("Page.navigate", { url });
   await until("!!document.querySelector('.landing h1')");
   const desktop = await evaluate(
-    "({heading:document.querySelector('h1').innerText,forms:document.forms.length,video:!!document.querySelector('video,iframe'),planned:document.body.innerText.includes('Planned: automatic routing'),overflow:document.documentElement.scrollWidth>innerWidth})",
+    "({heading:document.querySelector('h1').innerText,forms:document.forms.length,video:!!document.querySelector('video,iframe'),planned:document.querySelector('.landing').textContent.includes('Automatic model selection based on the task is planned'),overflow:document.documentElement.scrollWidth>innerWidth})",
   );
-  assert.match(desktop.heading, /One canvas/);
+  assert.match(desktop.heading, /Meet\s+2guys1canvas/);
   assert.equal(desktop.forms, 1);
   assert.equal(desktop.video, false);
   assert.equal(desktop.planned, true);
