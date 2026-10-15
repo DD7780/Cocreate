@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Canvas writing surface (2026-10-15): Canvas sidebar removed and the editor made a full-width, top-left, click-to-focus writing surface. Local controlled browser checks, build, boundary and UI-scope audits are recorded in [the packet](canvas-writing-surface.md). Hosted visual review and reference comparison for the remaining Artifacts Shared context view stay open.
+
 Public entry cleanup (2026-10-15): simplified account shell and pre-launch copy prepared for local preview. The user approved publication to main; CI remains the merge gate. Verification evidence is tracked in the [packet](public-entry-cleanup.md).
 
 Woven C logo (2026-10-15): user-selected concept 04 is integrated in current client branding slots and declared favicon, with one SVG master and shared decorative BrandMark. Existing action icons and narrow workspace-header behavior are retained. [Scope and fresh verification](woven-c-brand.md) distinguish local checks, CI, main publication and hosted rollout.
@@ -220,14 +222,14 @@ Integrated `origin/codex/byok-mvp` through `472698a` (five commits since the com
 - [x] Source plus controlled evidence: ordered immutable saves, insertion/deletion receipts, flush failure before submission, reconnect cursor reset and rejection of older same-connection states.
 - [x] Source plus local/RPC-mock evidence: SQLite owner takeover fencing and hosted lost-owner rejection. The additive coordinator migration exists; this line does not mark it applied.
 - [x] Source plus controlled evidence: partial physical ledger deduplication/restore, final-record preference and optional usage field handling; recorded and generation scopes are separate from historical counters.
-- [x] Source plus local browser evidence: Canvas Shared context, durable accepted revision selector, empty explanation, requirement drawer/action, separate partial usage card, stage and usage navigation. This does not establish reference fidelity.
+- [x] Source plus local browser evidence (Canvas placement superseded by D-0076; the view now sits beside Artifacts): Shared context, durable accepted revision selector, empty explanation, requirement drawer/action, separate partial usage card, stage and usage navigation. This does not establish reference fidelity.
 - [x] 2026-09-30 historical SQL checks: non-revoking invitation and physical-ledger migrations were reported applied, preserving invitation/membership/snapshot fingerprints; replay, resend, confirmed-email role preservation and ledger reconciliation checks rolled back their synthetic rows. Preserve this narrower evidence; it does not prove the newer coordinator migration or deployed app.
 - [x] Source plus earlier local coverage: participant-scoped validated IndexedDB recovery, 40 ms batching, bounded reconnect diagnosis, current project permissions, conflict selection and fixed platform shortcut.
 - [x] Foundational source/evidence: versioned ordered SQLite events/content-addressed artifacts, legacy backups, safe workflow task/activity projections, audited apply/build/promote, unverified compilation state and restart interruption without inference.
 
 ## Immediate verification and operational work
 
-- [ ] **Reference available; comparison pending.** Compare [supplied image](references/shared-context-reference.jpg) at its reference viewport, then responsive sidebar/card/actions, readable contrast and keyboard access. Current Studio Ivory is not a verified match. The earlier missing-image fact remains in the dated report.
+- [ ] **Reference available; comparison pending.** Compare [supplied image](references/shared-context-reference.jpg) at its reference viewport, then responsive Artifacts sidebar/card/actions, readable contrast and keyboard access. Canvas no longer carries the sidebar (D-0076). Current Studio Ivory is not a verified match. The earlier missing-image fact remains in the dated report.
 - [ ] Run the Step 02 real Postgres contention runner and independent-instance takeover, stale epoch/atomic commit and membership checks against an authorized disposable target. The 2026-10-08 audit observed both coordinator migrations applied with matching source definitions; do not reapply or repair history blindly. Hosted code fails closed without its RPCs.
 - [ ] Independent hosted account checks: simultaneous submissions, third participant's unsubmitted draft, edit/reconnect/reload, submission during build, duplicate command, state/usage/artifact convergence, viewer denial and revoked access. Local browser sessions do not close these criteria.
 - [ ] Authorized live BYOK checks: full generation, output-exhaustion recovery, provider completion metadata/account limits, bounded spending/calls, failure retention, reconnect/retry, owner/editor authority and actual provider accounting. Earlier real-key interpretation stopped at an obsolete gate and does not prove successful live builds.

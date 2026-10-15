@@ -194,7 +194,7 @@ Status: accepted 2026-10-01 from the actual human reliability request; local imp
 
 Capture only authenticated participant steering, reconcile in capture order and persist pending batches, active submissions and replay receipts. Later accepted work stays queued behind a fixed-revision candidate. Immutable canonical saves acknowledge insertion AND deletion receipts. Local epochs fence owners; hosted service-role atomic fencing is prepared in an unapplied migration. Reconnect/restoration is inference-free. Controlled local evidence does not establish live SQL, hosted accounts or multi-instance routing.
 
-Shared context returns to Canvas with selected durable accepted revisions and separate partial recorded usage, also reachable in Workflow/Artifacts. This supersedes no-Canvas-sidebar and unbounded-recovery guidance. Counters deduplicate physical attempts, define generation separately, preserve unknowns and disclose scope. The supplied reference is now available; comparison pending. The earlier run lacked it and remains dated. Status vocabulary, complete actionable failure presentation, reference viewport/keyboard/contrast and hosted convergence remain explicit checklist checks, not new architecture decisions.
+Shared context returns to Canvas with selected durable accepted revisions and separate partial recorded usage, also reachable in Workflow/Artifacts (Canvas placement superseded by D-0076; Workflow placement by D-0072). This supersedes no-Canvas-sidebar and unbounded-recovery guidance. Counters deduplicate physical attempts, define generation separately, preserve unknowns and disclose scope. The supplied reference is now available; comparison pending. The earlier run lacked it and remains dated. Status vocabulary, complete actionable failure presentation, reference viewport/keyboard/contrast and hosted convergence remain explicit checklist checks, not new architecture decisions.
 
 ## D-0043 — Device recovery complements durable shared authority
 
@@ -337,3 +337,7 @@ Accepted 2026-10-15: the user selected the C design from five generated concepts
 ## D-0075 — Focused public entry and plain labels
 
 Accepted 2026-10-15: remove the account-entry marketing panel and redundant public-page qualifiers; use plain Sign in labels and retain helpful expanded product explanations. This changes presentation only, preserving beta approval and project membership. Prepare a local preview for review before publication. See [packet](public-entry-cleanup.md).
+
+## D-0076 — Canvas is a sidebar-free writing surface
+
+Accepted 2026-10-15 from the user's explicit request. Canvas shows only the formatting toolbar, save status and a full-width editor that starts at the top-left with a subtle inline placeholder, focuses from blank-surface clicks and grows with normal vertical scrolling. This supersedes D-0042's Canvas placement of Shared context and the boxed empty state. Recorded usage stays reachable in Workflow (D-0072). AgentPanel, IntentReview and the usage card remain reusable components, mounted beside Artifacts, for a future history design. Requirements, accepted revisions, attribution, history, usage records, collaboration, Build my changes / editor-focused Alt+X and workflow authority are unchanged; no stored history is deleted and focusing never infers. [Scope and evidence](canvas-writing-surface.md).

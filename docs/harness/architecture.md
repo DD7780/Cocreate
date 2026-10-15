@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Canvas writing surface (2026-10-15): `Workspace` in src/App.tsx mounts only the toolbar, save-status line and TipTap editor inside `.document-layout`; AgentPanel is no longer mounted there. A paper-level mouse handler maps blank-surface clicks to the nearest ProseMirror position and focuses the editor locally. Flex layout lets the editor fill and grow within the existing `.content` scroll container. No request, socket or storage contract changes. [Packet](canvas-writing-surface.md).
+
 Public entry presentation (2026-10-15): AuthShell supplies one centered account-entry card with optional task guidance and a home link. The obsolete auth-story markup/styles are removed. Existing auth handlers, routes, return destinations, access checks and waitlist contracts remain unchanged. [Review packet](public-entry-cleanup.md).
 
 Brand rendering (2026-10-15): src/BrandMark.tsx is a presentational decorative image component using public/brand/woven-c.svg. Existing visible names/link labels supply accessible meaning. public/favicon.svg shares the master path geometry with a dark-chrome ink-color adjustment. index.html now declares that SVG favicon. No request/auth/provider contract changes. [Packet](woven-c-brand.md).
@@ -120,7 +122,7 @@ Provider adapters record unique physical attempts, dispatch intent, purpose, fro
 
 Generation includes interpretation/build/recovery/repair; setup purposes are model discovery and connection/text/interpreter/builder capability tests. Reported-token totals use input plus output only; cache/reasoning subsets are not added twice. Missing usage, uncertain cost and pre-ledger gaps remain explicit. Coverage is partial; historical logical generation counters and estimates stay separate. Durable workflow admission is implemented locally; no automatic external provider-history lookup settles orphaned outcomes. Unknown prices retain explicit uncertain-call counts even when a USD estimate is unavailable. Real hosted/database contention and replacement evidence remain pending.
 
-Current UI loads Studio Ivory. Shared context is visible in Canvas/Workflow/Artifacts, with selected accepted revision snapshots, separate partial usage and stage. Conflict/provenance details use the existing drawer and controls. The [available reference target](../../product.md#shared-context-recorded-usage-and-requested-appearance) has not been compared. Historical themes and managed setup are retained only as [archive/compatibility history](archive/2026-10-01-pre-consolidation/README.md).
+Current UI loads Studio Ivory. Canvas has no Shared context sidebar (D-0076); Workflow shows usage and Contradictions (D-0072). Shared context is visible beside Artifacts, with selected accepted revision snapshots, separate partial usage and stage. Conflict/provenance details use the existing drawer and controls. The [available reference target](../../product.md#shared-context-recorded-usage-and-requested-appearance) has not been compared. Historical themes and managed setup are retained only as [archive/compatibility history](archive/2026-10-01-pre-consolidation/README.md).
 
 ## Policy and deferred boundaries
 

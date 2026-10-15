@@ -11,7 +11,7 @@ import {
 } from "./local-drafts";
 import { WorkflowBoard } from "./WorkflowBoard";
 import { ByokSetup } from "./ByokSetup";
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState, type MouseEvent as ReactMouseEvent } from "react";
 import * as Y from "yjs";
 import { Collaboration } from "@tiptap/extension-collaboration";
 import { CollaborationCaret } from "@tiptap/extension-collaboration-caret";
@@ -547,6 +547,19 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
             root?.removeEventListener('keydown', handle);
         };
     }, [editor, shortcut, submitChanges]);
+    // Blank page margins and the area below the text behave like the document: place the caret
+    // at the nearest position. Focusing is local editor state and never submits or infers.
+    const focusFromBlankSpace = useCallback((event: ReactMouseEvent<HTMLElement>) => {
+        const target = event.target as HTMLElement;
+        if (!editor || editor.isDestroyed || event.button !== 0 || editor.view.dom.contains(target) || target.closest('button,a,input,select,textarea,[contenteditable]'))
+            return;
+        event.preventDefault();
+        const bounds = editor.view.dom.getBoundingClientRect(), position = editor.view.posAtCoords({
+            left: Math.min(Math.max(event.clientX, bounds.left + 1), bounds.right - 1),
+            top: Math.min(Math.max(event.clientY, bounds.top + 1), bounds.bottom - 1)
+        });
+        editor.chain().focus(position?.pos ?? 'end').run();
+    }, [editor]);
     useEffect(() => {
         const context = (document as Document & {
             modelContext?: {
@@ -633,12 +646,9 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         }
     }}>{tokenOverride ? 'Sign in again' : 'Rejoin room'}</button>}{connection.state === 'error' && connection.reason === 'missing-room' && <button onClick={() => location.href = projectTitle ? '/projects' : '/'}>{projectTitle ? 'Return to projects' : 'Return home'}</button>}</div>}
     {state.ai.status === 'disconnected' && <div className="ai-banner"><KeyRound /><span><strong>Generation is paused.</strong> {isOwner ? 'Connect AI when you’re ready; writing still works.' : 'The project owner needs to connect AI. You can keep writing.'}</span>{isOwner && <button onClick={() => setSettings(true)}>Connect AI</button>}</div>}{(error || state.lastError) && <div className="error-banner"><span><strong>Error.</strong> {error || state.lastError} The last working product remains available.</span>{state.status === 'Error' && state.ai.status === 'connected' && (isOwner || state.ai.temporary?.authorizedSpenderIds.includes(me?.id || '')) && <button onClick={() => void retryFailedBuild()} disabled={submitting}>Retry build</button>}<button onClick={() => setError('')}>Dismiss</button></div>}
-    <section className={`content ${split ? 'is-split' : ''}`}>{tab === 'workflow' && !split && <div className="workflow-page workflow-overview-page"><div className="workflow-main"><WorkflowBoard state={state} me={me} token={token} onCanvas={() => setTab('document')}/></div></div>}{(tab === 'document' || split) && <div className="document-layout"><div className="paper-wrap"><Toolbar editor={editor}/><div className="paper"><div className="doc-meta"><span>SHARED CANVAS</span><span title="Browser recovery copy; shared saves are confirmed separately">{localDraft === 'saved' ? 'Saved on this device' : localDraft === 'saving' ? 'Saving on device…' : localDraft === 'unavailable' ? 'Device backup unavailable' : 'Opening device backup…'}</span><span className={saveState !== 'saved' ? 'saving' : ''}>{saveState === 'unsynced' || connection.state !== 'connected' && saveState === 'saving' ? 'Unsynced changes' : saveState === 'saving' ? 'Saving…' : savedAt ? `Synced ${new Date(savedAt).toLocaleTimeString([], {
+    <section className={`content ${split ? 'is-split' : ''}`}>{tab === 'workflow' && !split && <div className="workflow-page workflow-overview-page"><div className="workflow-main"><WorkflowBoard state={state} me={me} token={token} onCanvas={() => setTab('document')}/></div></div>}{(tab === 'document' || split) && <div className="document-layout"><div className="paper-wrap"><Toolbar editor={editor}/><div className="paper" onMouseDown={focusFromBlankSpace}><div className="doc-meta"><span>SHARED CANVAS</span><span title="Browser recovery copy; shared saves are confirmed separately">{localDraft === 'saved' ? 'Saved on this device' : localDraft === 'saving' ? 'Saving on device…' : localDraft === 'unavailable' ? 'Device backup unavailable' : 'Opening device backup…'}</span><span className={saveState !== 'saved' ? 'saving' : ''}>{saveState === 'unsynced' || connection.state !== 'connected' && saveState === 'saving' ? 'Unsynced changes' : saveState === 'saving' ? 'Saving…' : savedAt ? `Synced ${new Date(savedAt).toLocaleTimeString([], {
         hour: '2-digit', minute: '2-digit'
-    })}` : 'Not saved yet'}</span></div><EditorContent editor={editor}/></div></div>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
-        setTab('workflow');
-        requestAnimationFrame(() => document.getElementById('workflow-usage')?.scrollIntoView());
-    }}/>}</div>}{(tab === 'product' || split) && <div className="artifacts-layout"><Product state={state} token={token}/>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
+    })}` : 'Not saved yet'}</span></div><EditorContent className="editor-surface" editor={editor}/></div></div></div>}{(tab === 'product' || split) && <div className="artifacts-layout"><Product state={state} token={token}/>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
         setTab('workflow');
         requestAnimationFrame(() => document.getElementById('workflow-usage')?.scrollIntoView());
     }}/>}</div>}</section>

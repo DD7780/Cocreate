@@ -1,5 +1,7 @@
 # 2guys1canvas contributor instructions
 
+Canvas writing surface (2026-10-15): keep Canvas a full-width writing surface without a Shared context sidebar or reserved column. Retain AgentPanel/IntentReview as reusable views (currently beside Artifacts) and every requirement, revision, attribution, usage and history contract. Focusing or clicking the surface stays inference-free. [Scope and evidence](docs/harness/canvas-writing-surface.md).
+
 Landing scope accepted 2026-10-15: publish the user-approved local editorial preview through the existing main release path, preserving the real waitlist and same-origin sign-in links. Keep its CSS isolated from Canvas, Workflow, Artifacts and authentication screens. Do not merge separate capability foundations or interpret a marketing illustration as hosted acceptance. [Scope and verification](docs/harness/landing-editorial.md).
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](docs/harness/workflow-overview.md).
@@ -12,7 +14,7 @@ Read with [AGENTS.md](AGENTS.md). Explicit user instructions take precedence. Up
 
 Read [context.md](context.md), [product.md](product.md), the [architecture](docs/harness/architecture.md), relevant [checklist](docs/harness/checklist.md) entries and [decisions](docs/harness/decisions.md). Inspect the working tree and preserve unrelated changes and project data. Use Graphify first for codebase questions when its graph exists; use the wiki for broad navigation and verify findings against source. Follow AGENTS.md for current library documentation when library-specific behavior needs verification.
 
-Do not restore superseded managed-default setup, old wizards, three-mode activation, optional shortcut remapping, no-Canvas-sidebar layouts or comic/presentation effects from historical material. The authoritative hosted setup and limit rules are in [product.md](product.md#hosted-ai-and-limits); current presentation and the available reference target are in [its presentation section](product.md#shared-context-recorded-usage-and-requested-appearance). The reference still needs comparison. Compatibility modules and archived evidence do not override accepted current behavior.
+Do not restore superseded managed-default setup, old wizards, three-mode activation, optional shortcut remapping, the Canvas Shared context sidebar (removed by D-0076), the boxed “START WRITING” empty state or comic/presentation effects from historical material. The authoritative hosted setup and limit rules are in [product.md](product.md#hosted-ai-and-limits); current presentation and the available reference target are in [its presentation section](product.md#shared-context-recorded-usage-and-requested-appearance). The reference still needs comparison. Compatibility modules and archived evidence do not override accepted current behavior.
 
 ## Workflow and source ownership
 

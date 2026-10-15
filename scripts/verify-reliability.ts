@@ -404,6 +404,12 @@ try {
   );
   assert.deepEqual(states[0], states[1]);
   assert.deepEqual(states[1], states[2]);
+  // Canvas is a writing surface only; Shared context remains reusable beside Artifacts.
+  assert.equal(await a.evaluate("document.querySelector('.document-layout .agent-panel') === null"), true);
+  await a.evaluate(
+    "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Artifacts').click()",
+  );
+  await wait(100);
   await a.evaluate(
     "{const select=document.querySelector('.intent-revision-selector select');select.value='2';select.dispatchEvent(new Event('change',{bubbles:true}))}",
   );
@@ -443,10 +449,6 @@ try {
     "usage action",
   );
   await snapshot(a, "workflow.png");
-  await a.evaluate(
-    "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()",
-  );
-  await wait(100);
   const responsive = [];
   for (const width of [1440, 1024, 768, 390]) {
     await a.call("Emulation.setDeviceMetricsOverride", {
@@ -456,6 +458,18 @@ try {
       mobile: width < 600,
     });
     await wait(150);
+    await a.evaluate(
+      "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()",
+    );
+    await wait(100);
+    const canvas = await a.evaluate(
+      '({width:document.documentElement.scrollWidth,sidebar:!!document.querySelector(".document-layout .agent-panel"),paper:Math.round(document.querySelector(".paper").getBoundingClientRect().width),content:Math.round(document.querySelector(".content").clientWidth)})',
+    );
+    assert.ok(canvas.width <= width && !canvas.sidebar && canvas.paper === canvas.content, `Canvas at ${width}: ${JSON.stringify(canvas)}`);
+    await a.evaluate(
+      "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Artifacts').click()",
+    );
+    await wait(100);
     const layout = await a.evaluate(
       '({width:document.documentElement.scrollWidth,viewport:innerWidth,card:!!document.querySelector(".project-token-card"),selector:!!document.querySelector(".intent-revision-selector select")})',
     );
@@ -464,7 +478,7 @@ try {
       `Overflow at ${width}: ${JSON.stringify(layout)}`,
     );
     assert.ok(layout.card && layout.selector);
-    responsive.push({ width, ...layout });
+    responsive.push({ width, canvas, ...layout });
     if (width === 390) {
       await a.evaluate(
         "document.querySelector('.agent-panel').scrollIntoView()",
