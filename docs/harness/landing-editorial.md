@@ -34,6 +34,8 @@ Fresh local checks on the implementation:
 - Prepared source fingerprint: `f4ddcf64eec0f6fd1bfa3a793a41c945f73ac86769c39f5556eb493dfeb80758`, 94 unchanged manifest paths. The manifest contents are unchanged; only the trusted expected hash changes in wrangler.jsonc.
 - Graphify query and update were attempted; the executable is unavailable. No generated graph was represented as refreshed.
 
-Production-image CI and main publication are the next gates. Live rollout and live account/signup acceptance remain separate; local browser evidence does not establish hosted behavior.
+Release gate passed for exact candidate `dbef24630d16c3b179d0727c940a1b2c10111127`: [CI run 38722412091](https://github.com/DD7780/Cocreate/actions/runs/38722412091) passes native PostgreSQL 2/2, compiler/resource adversity 10/10, browser adversity 15/15 and full production-image regression 248/248, with zero failures or skips. Its duplicate push-triggered run 38722399900 also passed. [Release receipt](../../artifacts/landing-editorial/release-checks.json).
+
+The subsequent verification-record commit changes only this packet and its JSON receipt. Runtime source/configuration remain identical to the tested candidate and retain fingerprint `f4ddcf64eec0f6fd1bfa3a793a41c945f73ac86769c39f5556eb493dfeb80758`. The user authorized main publication through [PR #4](https://github.com/DD7780/Cocreate/pull/4); its merge receipt records actual publication. Live rollout and live account/signup acceptance remain separate; local browser evidence and a GitHub merge do not establish hosted behavior.
 
 Rollback: revert this landing change and reprepare source fingerprint, keeping beta/security/migrations and unrelated Workflow release intact. Do not roll back account or Storage policies for a UI release.
