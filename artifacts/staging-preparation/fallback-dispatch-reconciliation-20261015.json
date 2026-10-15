@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-14T21:43:21.958Z",
+  "status": 200,
+  "success": true,
+  "resultShape": "array",
+  "resultKeys": [],
+  "builds": [
+    {
+      "buildUuid": "008cc49e-9026-433a-b3f3-1a2e238deeb3",
+      "createdAt": "2026-10-13T15:32:23.577Z",
+      "status": "stopped",
+      "outcome": "fail",
+      "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+      "branch": "codex/beta-staging-20261013-a53a920",
+      "triggerUuid": null
+    }
+  ],
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false
+}

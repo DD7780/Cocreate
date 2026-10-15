@@ -1,0 +1,21 @@
+{
+  "checkedAt": "2026-10-15T05:58:32.437Z",
+  "buildUuid": "52338aa8-b375-43b2-9ec2-7661b6dc7910",
+  "status": 200,
+  "success": true,
+  "buildStatus": "stopped",
+  "buildOutcome": "fail",
+  "commitHash": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "branch": "codex/beta-staging-20261013-a53a920",
+  "versionId": null,
+  "exactSource": true,
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false,
+  "logStatus": 200,
+  "logEntryCount": 3,
+  "diagnosticLines": [
+    "Initializing build environment...",
+    "Success: Finished initializing build environment",
+    "Build failed: Your build is configured with a build token that belongs to a user who has left your organization. This token is no longer valid and cannot be managed by other members.\nTo fix: Go to your Worker > Settings > Builds > API token, select or create a new build token, and retry the build."
+  ]
+}

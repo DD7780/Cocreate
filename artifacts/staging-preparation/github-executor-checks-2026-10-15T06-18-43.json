@@ -1,0 +1,187 @@
+{
+  "checkedAt": "2026-10-15T06:18:43.381578+00:00",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "executorBranch": "codex/beta-staging-executor-a53a920",
+  "checks": [
+    {
+      "name": "only_dedicated_push",
+      "passed": true
+    },
+    {
+      "name": "read_only_repository_token",
+      "passed": true
+    },
+    {
+      "name": "serialized_without_cancellation",
+      "passed": true
+    },
+    {
+      "name": "standard_bounded_runner",
+      "passed": true
+    },
+    {
+      "name": "protected_staging_environment",
+      "passed": true
+    },
+    {
+      "name": "job_admission_expression",
+      "passed": true
+    },
+    {
+      "name": "pinned_actions",
+      "passed": true
+    },
+    {
+      "name": "frozen_checkout_without_credentials",
+      "passed": true
+    },
+    {
+      "name": "only_deploy_receives_secret",
+      "passed": true
+    },
+    {
+      "name": "only_executor_skips_unchanged_ci",
+      "passed": true
+    },
+    {
+      "name": "local_bash_and_node_available",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_0",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_2",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_5",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_6",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_7",
+      "passed": true
+    },
+    {
+      "name": "bash_syntax_8",
+      "passed": true
+    },
+    {
+      "name": "two_node_admission_blocks",
+      "passed": true
+    },
+    {
+      "name": "node_syntax_0",
+      "passed": true
+    },
+    {
+      "name": "node_syntax_1",
+      "passed": true
+    },
+    {
+      "name": "authorized_executor_guard",
+      "passed": true
+    },
+    {
+      "name": "reject_fork",
+      "passed": true
+    },
+    {
+      "name": "reject_main",
+      "passed": true
+    },
+    {
+      "name": "reject_pr",
+      "passed": true
+    },
+    {
+      "name": "reject_rerun",
+      "passed": true
+    },
+    {
+      "name": "reject_literal_injection",
+      "passed": true
+    },
+    {
+      "name": "no_injected_command",
+      "passed": true
+    },
+    {
+      "name": "frozen_source",
+      "passed": true
+    },
+    {
+      "name": "wrong_checkout",
+      "passed": true
+    },
+    {
+      "name": "moved_source_branch",
+      "passed": true
+    },
+    {
+      "name": "valid_target",
+      "passed": true
+    },
+    {
+      "name": "production_worker",
+      "passed": true
+    },
+    {
+      "name": "wrong_fingerprint",
+      "passed": true
+    },
+    {
+      "name": "larger_container",
+      "passed": true
+    },
+    {
+      "name": "credential_admission_valid",
+      "passed": true
+    },
+    {
+      "name": "no_secret_output_valid",
+      "passed": true
+    },
+    {
+      "name": "credential_admission_wrong_expiry",
+      "passed": true
+    },
+    {
+      "name": "no_secret_output_wrong_expiry",
+      "passed": true
+    },
+    {
+      "name": "credential_admission_wrong_namespace",
+      "passed": true
+    },
+    {
+      "name": "no_secret_output_wrong_namespace",
+      "passed": true
+    },
+    {
+      "name": "credential_admission_production_access",
+      "passed": true
+    },
+    {
+      "name": "no_secret_output_production_access",
+      "passed": true
+    },
+    {
+      "name": "credential_admission_invalid_secret",
+      "passed": true
+    },
+    {
+      "name": "no_secret_output_invalid_secret",
+      "passed": true
+    }
+  ],
+  "passed": true,
+  "providersContacted": false,
+  "credentialsRead": false,
+  "localOnly": true
+}

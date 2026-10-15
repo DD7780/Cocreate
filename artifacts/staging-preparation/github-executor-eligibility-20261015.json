@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-15T06:24:23.986Z",
+  "repository": "DD7780/Cocreate",
+  "repositoryId": 1367324234,
+  "repositoryPublicVerified": true,
+  "connectedAdminPermissionVerified": true,
+  "environmentListStatus": 200,
+  "environmentListVerified": true,
+  "stagingEnvironmentExists": false,
+  "proposedEnvironment": "cocreate-beta-staging",
+  "proposedSecret": "COCREATE_STAGING_DEPLOY_TOKEN",
+  "executorBranch": "codex/beta-staging-executor-a53a920",
+  "standardPublicRunnerExpectedIncrementalUsd": 0,
+  "paidOrLargerRunnerAllowed": false,
+  "newCloudflareResources": false,
+  "credentialUploadPerformed": false,
+  "mutationsPerformed": false
+}

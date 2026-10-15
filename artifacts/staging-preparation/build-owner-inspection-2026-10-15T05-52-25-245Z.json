@@ -1,0 +1,26 @@
+{
+  "checkedAt": "2026-10-15T05:52:25.245Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "profileReadStatus": 200,
+  "profileReadSucceeded": true,
+  "profileEmailMatchesActiveDashboardMember": true,
+  "profileIdHash": "143e5d2f245e67bec08b857a284405b95329a69852b237bd392f0fd6beb936b9",
+  "tokenActive": true,
+  "tokenExactFutureExpiry": true,
+  "buildTokenReadStatus": 200,
+  "selectedRegistrationFound": true,
+  "registrationKeys": [
+    "build_token_uuid",
+    "owner_type",
+    "build_token_name",
+    "cloudflare_token_id"
+  ],
+  "registrationOwnerType": "user",
+  "registrationOwnerKeys": [],
+  "registrationOwnerId": null,
+  "registrationOwnerMatchesProfile": null,
+  "registrationMatchesVerifiedTokenId": true,
+  "triggerAssociationMatches": true,
+  "valuesSuppressed": true,
+  "mutationsPerformed": false
+}

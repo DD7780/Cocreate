@@ -1,0 +1,114 @@
+name: Frozen staging deployment
+on:
+  push:
+    branches: [codex/beta-staging-executor-a53a920]
+permissions:
+  contents: read
+concurrency:
+  group: cocreate-beta-staging-deploy
+  cancel-in-progress: false
+jobs:
+  deploy:
+    if: >-
+      github.repository == 'DD7780/Cocreate' &&
+      github.event_name == 'push' &&
+      github.ref == 'refs/heads/codex/beta-staging-executor-a53a920' &&
+      github.run_attempt == 1
+    runs-on: ubuntu-22.04
+    timeout-minutes: 35
+    environment:
+      name: cocreate-beta-staging
+      url: https://cocreate-beta-staging.susan981314271.workers.dev
+    steps:
+      - name: Check executor authority
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$GITHUB_REPOSITORY" = DD7780/Cocreate
+          test "$GITHUB_EVENT_NAME" = push
+          test "$GITHUB_REF" = refs/heads/codex/beta-staging-executor-a53a920
+          test "$GITHUB_RUN_ATTEMPT" = 1
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
+        with:
+          ref: a53a92092d608620fdf6edef0bbea287e2cef162
+          persist-credentials: false
+      - name: Verify frozen source
+        shell: bash
+        run: |
+          set -euo pipefail
+          test "$(git rev-parse HEAD)" = a53a92092d608620fdf6edef0bbea287e2cef162
+          test "$(git ls-remote origin refs/heads/codex/beta-staging-20261013-a53a920 | cut -f1)" = a53a92092d608620fdf6edef0bbea287e2cef162
+      - uses: pnpm/action-setup@f40ffcd9367d9f12939873eb1018b921a783ffaa # v4
+        with:
+          version: 10.18.3
+      - uses: actions/setup-node@49933ea5288caeca8642d1e84afbd3f7d6820020 # v4
+        with:
+          node-version: 22
+          cache: pnpm
+      - run: pnpm install --frozen-lockfile
+      - name: Prepare existing staging target
+        run: node --import tsx scripts/prepare-hosted-staging.ts --target docs/harness/staging-target.allocated.json
+      - name: Verify target and source fingerprint
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const c = JSON.parse(fs.readFileSync('wrangler.staging.local.jsonc', 'utf8'));
+          assert.equal(c.account_id, 'fc419457dc350fcfada2b0a3f00bfe3e');
+          assert.equal(c.name, 'cocreate-beta-staging');
+          assert.equal(c.vars.COCREATE_PUBLIC_ORIGIN, 'https://cocreate-beta-staging.susan981314271.workers.dev');
+          assert.equal(c.vars.SUPABASE_URL, 'https://ctnjxvwyttnjehnbfktq.supabase.co');
+          assert.equal(c.vars.COCREATE_RELEASE_FINGERPRINT, '345f4ee2f0e3d38635292aef493b746f716702d32c6b737558e56f0d44ebccdb');
+          assert.deepEqual(c.routes, []);
+          assert.deepEqual(c.triggers, {crons: []});
+          assert.equal(c.preview_urls, false);
+          assert.equal(c.containers.length, 1);
+          assert.equal(c.containers[0].instance_type, 'basic');
+          assert.equal(c.containers[0].max_instances, 1);
+          console.log('Exact frozen source, staging target and approved basic size verified; hosted gates remain required.');
+          NODE
+      - name: Deploy approved staging target once
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.COCREATE_STAGING_DEPLOY_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: fc419457dc350fcfada2b0a3f00bfe3e
+          WRANGLER_SEND_METRICS: 'false'
+        shell: bash
+        run: |
+          set -euo pipefail
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import assert from 'node:assert/strict';
+          const account = 'fc419457dc350fcfada2b0a3f00bfe3e';
+          const token = process.env.CLOUDFLARE_API_TOKEN;
+          if (!/^[A-Za-z0-9_-]{40,256}$/.test(token ?? '')) throw new Error('Staging secret format invalid; value suppressed.');
+          async function get(route) {
+            const r = await fetch(`https://api.cloudflare.com/client/v4/accounts/${account}/${route}`, {
+              headers: {Authorization: `Bearer ${token}`}, redirect: 'error', signal: AbortSignal.timeout(20000),
+            });
+            const b = await r.json().catch(() => null);
+            return {status: r.status, success: r.ok && b?.success === true, result: b?.result};
+          }
+          const verification = await get('tokens/verify');
+          assert.equal(verification.success, true);
+          assert.equal(verification.result?.status, 'active');
+          const expiry = Date.parse(verification.result?.expires_on);
+          assert.equal(expiry, Date.parse('2026-10-15T18:00:00Z'));
+          assert.ok(expiry > Date.now());
+          const staging = await get('workers/scripts/cocreate-beta-staging/settings');
+          assert.equal(staging.success, true);
+          assert.equal(staging.result?.bindings?.find(b => b.name === 'COCREATE_CONTAINER')?.namespace_id, 'fa67999dd3634304a5aa268eaf3a417d');
+          const production = await get('workers/scripts/cocreate/settings');
+          assert.ok([401, 403].includes(production.status));
+          const receipt = {
+            phase: 'deployment_intent', createdAt: new Date().toISOString(), accountId: account,
+            worker: 'cocreate-beta-staging', sourceCommit: 'a53a92092d608620fdf6edef0bbea287e2cef162',
+            sourceBranch: 'codex/beta-staging-20261013-a53a920', executorCommit: process.env.GITHUB_SHA,
+            runId: process.env.GITHUB_RUN_ID, runAttempt: process.env.GITHUB_RUN_ATTEMPT,
+            fingerprint: '345f4ee2f0e3d38635292aef493b746f716702d32c6b737558e56f0d44ebccdb',
+            stagingNamespaceVerified: true, productionAccessDenied: true, credentialValuesSuppressed: true,
+          };
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `\nDeployment intent; reconcile this run before any retry.\n\n\`\`\`json\n${JSON.stringify(receipt, null, 2)}\n\`\`\`\n`);
+          console.log(JSON.stringify(receipt));
+          NODE
+          node node_modules/wrangler/bin/wrangler.js deploy --config wrangler.staging.local.jsonc
+          printf '%s\n' 'Wrangler completed. Container health, login, recovery image and full-beta acceptance remain required.' >> "$GITHUB_STEP_SUMMARY"

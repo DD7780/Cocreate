@@ -1,0 +1,18 @@
+{
+  "checkedAt": "2026-10-15T05:58:10.230Z",
+  "phase": "dispatched",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerTag": "61437c819d0849f1bd2bca80ecba2867",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "stagingBranch": "codex/beta-staging-20261013-a53a920",
+  "triggerUuid": "07c8c3bd-4484-4471-a9d3-7d8a97862ea6",
+  "buildTokenUuid": "8ceec27b-52ca-46b5-a39c-5c17ab0ba381",
+  "exactConfigurationReadback": true,
+  "maskedSecretReadbackVerified": true,
+  "unrelatedStagingBranchBuilds": false,
+  "credentialValuesSuppressed": true,
+  "productionMutated": false,
+  "status": 200,
+  "accepted": true,
+  "buildUuid": "52338aa8-b375-43b2-9ec2-7661b6dc7910"
+}

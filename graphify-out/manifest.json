@@ -522,9 +522,9 @@
     "semantic_hash": ""
   },
   "README.md": {
-    "mtime": 1791882930.8841436,
-    "seen": 1791882999.4697323,
-    "ast_hash": "89dcd0f54e91f2c18a560f182050b3c6",
+    "mtime": 1792011913.283212,
+    "seen": 1792045216.0494907,
+    "ast_hash": "b4792f7b1c4e9f0a3258a231250683ee",
     "semantic_hash": ""
   },
   "api.md": {
@@ -534,9 +534,9 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1791882930.8861418,
-    "seen": 1791882999.4697323,
-    "ast_hash": "c37ec610c62c7b4cb6072cfff51ce010",
+    "mtime": 1792011913.283212,
+    "seen": 1792045216.0575876,
+    "ast_hash": "2b8e9034940681309417159e0503e671",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1791882930.9244957,
-    "seen": 1791882999.4765089,
-    "ast_hash": "d1bb4a15712fd28b9e7c90806c8707bf",
+    "mtime": 1792011913.283212,
+    "seen": 1792045216.0575876,
+    "ast_hash": "6c3790a8b7ec6f8b29304183d36844b9",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -660,9 +660,9 @@
     "semantic_hash": ""
   },
   "docs/harness/reliability-verification.md": {
-    "mtime": 1791806644.519564,
-    "seen": 1791806660.70545,
-    "ast_hash": "b1659342a45cfa339fec86c9f3441f7e",
+    "mtime": 1792011913.283212,
+    "seen": 1792045216.078267,
+    "ast_hash": "a5a4f4b3df33e5e3fb2b39bbad85aab8",
     "semantic_hash": ""
   },
   "supabase/migrations/202609240001_projects_auth_persistence.sql": {
@@ -780,9 +780,9 @@
     "semantic_hash": ""
   },
   ".github/workflows/code-checks.yml": {
-    "mtime": 1791881536.4898298,
-    "seen": 1791882999.4697323,
-    "ast_hash": "81253d355dcedae580c3b49671c37429",
+    "mtime": 1792044237.6218421,
+    "seen": 1792045216.0494907,
+    "ast_hash": "61df53fc848e903fc2fc75dc5c58eaef",
     "semantic_hash": ""
   },
   "docs/harness/codebase-cleanup-plan.md": {
@@ -1836,9 +1836,9 @@
     "semantic_hash": ""
   },
   "docs/harness/beta-setup.md": {
-    "mtime": 1791882930.9294999,
-    "seen": 1791882999.475517,
-    "ast_hash": "97543d87e6afe77411346c99e4c1e899",
+    "mtime": 1792011913.283212,
+    "seen": 1792045216.0575876,
+    "ast_hash": "a02cd81080c152396c12a64758ab65f3",
     "semantic_hash": ""
   },
   "docs/harness/full-beta-staging.md": {
@@ -1854,15 +1854,51 @@
     "semantic_hash": ""
   },
   "docs/harness/hosted-staging-execution.md": {
-    "mtime": 1791875641.0744243,
-    "seen": 1791882999.477508,
-    "ast_hash": "30faf9c2ad5c59851791dba88c79ecdc",
+    "mtime": 1792012493.970363,
+    "seen": 1792045216.0658796,
+    "ast_hash": "5013afd2bc0371789f5bce4ff5aa04a4",
     "semantic_hash": ""
   },
   "docs/harness/private-artifact-cache.md": {
-    "mtime": 1791881496.198272,
-    "seen": 1791882999.4821265,
-    "ast_hash": "9799e1cdbfcbe5cd154d9857da7a48a9",
+    "mtime": 1792009725.654686,
+    "seen": 1792045216.078267,
+    "ast_hash": "f7ae62c058b99ab3dab0c89220fc4615",
+    "semantic_hash": ""
+  },
+  "scripts/check-staging-executor.py": {
+    "mtime": 1792044974.6192305,
+    "seen": 1792045215.9344013,
+    "ast_hash": "932bcd659969091bc2e0a2df5f64cafd",
+    "semantic_hash": ""
+  },
+  ".github/workflows/staging-deploy.yml": {
+    "mtime": 1792044969.6307278,
+    "seen": 1792045216.0494907,
+    "ast_hash": "67c0ba3b2472ec9046f8e88ac3b68e4e",
+    "semantic_hash": ""
+  },
+  "docs/harness/staging-build-credentials.md": {
+    "mtime": 1792012491.5573764,
+    "seen": 1792045216.0802763,
+    "ast_hash": "c1a823a3027843c5078c82bc4a9cb0ac",
+    "semantic_hash": ""
+  },
+  "docs/harness/staging-build-ownership-repair.md": {
+    "mtime": 1792043771.9510727,
+    "seen": 1792045216.0802763,
+    "ast_hash": "2bfd54491369888121fd4b2dff239ed9",
+    "semantic_hash": ""
+  },
+  "docs/harness/staging-cache-provider-handoff.md": {
+    "mtime": 1791905667.966462,
+    "seen": 1792045216.0802763,
+    "ast_hash": "1c06b87baae57b923d961d37cd3115dc",
+    "semantic_hash": ""
+  },
+  "docs/harness/staging-github-actions.md": {
+    "mtime": 1792044177.3249195,
+    "seen": 1792045216.0802763,
+    "ast_hash": "7b4deffea7bfb8b13f9e8d5f7c8234fb",
     "semantic_hash": ""
   }
 }

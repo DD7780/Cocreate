@@ -1,0 +1,53 @@
+{
+  "checkedAt": "2026-10-15T05:56:29.811Z",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "checks": [
+    {
+      "name": "active",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "exact_future_expiry",
+      "passed": true
+    },
+    {
+      "name": "same_bootstrap_identity",
+      "passed": true
+    },
+    {
+      "name": "profile_matches_active_dashboard_member",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "accepted_target_account_membership",
+      "passed": true,
+      "status": 200
+    },
+    {
+      "name": "staging_worker_denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "production_worker_denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "builds_configuration_denied",
+      "passed": true,
+      "status": 403
+    },
+    {
+      "name": "containers_denied",
+      "passed": true,
+      "status": 403
+    }
+  ],
+  "passed": true,
+  "membershipApiAccessEnabled": null,
+  "credentialValuesSuppressed": true,
+  "mutationsPerformed": false
+}

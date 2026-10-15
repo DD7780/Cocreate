@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-15T05:57:26.165Z",
+  "phase": "reassociated_requires_one_exact_source_build",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerTag": "61437c819d0849f1bd2bca80ecba2867",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "stagingBranch": "codex/beta-staging-20261013-a53a920",
+  "triggerUuid": "07c8c3bd-4484-4471-a9d3-7d8a97862ea6",
+  "previousBuildTokenUuid": "bea68064-4777-4ee4-81d3-99a8008b6b08",
+  "bootstrapTokenId": "167213e700e6d6ef223d8520fa3f3bc8",
+  "positiveAccountMembership": true,
+  "approvedMembershipRead": true,
+  "underlyingTokenRotated": false,
+  "maskedDeploymentSecretPreserved": true,
+  "credentialValuesSuppressed": true,
+  "productionMutated": false,
+  "buildDispatched": false,
+  "registrationStatus": 200,
+  "buildTokenUuid": "8ceec27b-52ca-46b5-a39c-5c17ab0ba381",
+  "triggerUpdateStatus": 200,
+  "exactTriggerReadbackVerified": true
+}

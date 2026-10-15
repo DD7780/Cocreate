@@ -1,6 +1,7 @@
 name: Code checks
 on:
   push:
+    branches-ignore: [codex/beta-staging-executor-a53a920]
   pull_request:
 permissions:
   contents: read

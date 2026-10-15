@@ -1,0 +1,27 @@
+{
+  "checkedAt": "2026-10-14T21:40:28.213Z",
+  "phase": "configured_requires_exact_source_dispatch",
+  "accountId": "fc419457dc350fcfada2b0a3f00bfe3e",
+  "workerTag": "61437c819d0849f1bd2bca80ecba2867",
+  "sourceCommit": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "stagingBranch": "codex/beta-staging-20261013-a53a920",
+  "triggerUuid": "07c8c3bd-4484-4471-a9d3-7d8a97862ea6",
+  "bootstrapTokenId": "167213e700e6d6ef223d8520fa3f3bc8",
+  "exactExpiry": "2026-10-15T18:00:00Z",
+  "bootstrapAccountWritesDenied": true,
+  "setupCredentialLocalOnly": true,
+  "credentialValuesSuppressed": true,
+  "productionMutated": false,
+  "buildDispatched": false,
+  "registrationStatus": 200,
+  "buildTokenUuid": "bea68064-4777-4ee4-81d3-99a8008b6b08",
+  "secretUpdateStatus": 200,
+  "deployCommand": "test \"$(git rev-parse HEAD)\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_COMMIT_SHA\" = a53a92092d608620fdf6edef0bbea287e2cef162 && test \"$WORKERS_CI_BRANCH\" = codex/beta-staging-20261013-a53a920 && test -n \"$STAGING_DEPLOY_TOKEN\" && CLOUDFLARE_API_TOKEN=\"$STAGING_DEPLOY_TOKEN\" node node_modules/wrangler/bin/wrangler.js deploy --config wrangler.staging.local.jsonc",
+  "triggerUpdateStatus": 200,
+  "triggerReadbackVerified": true,
+  "variableReadbackShape": "object",
+  "variableMetadataKeys": [
+    "STAGING_DEPLOY_TOKEN"
+  ],
+  "maskedSecretVerified": true
+}
