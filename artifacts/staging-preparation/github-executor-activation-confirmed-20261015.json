@@ -1,0 +1,11 @@
+{
+  "checkedAt": "2026-10-15T06:47:28.931Z",
+  "reviewedExecutorCommit": "2ec0e5f8e8329ecf40b67d0f265c07eb79233dc0",
+  "activationCommit": "5a9bfa9827cce0eb76647513e7e7a44ba62a7456",
+  "executorRef": "refs/heads/codex/beta-staging-executor-a53a920",
+  "runtimeSource": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "remoteConfirmed": true,
+  "mainPushed": false,
+  "jobReviewStillRequired": true,
+  "credentialValuesSuppressed": true
+}

@@ -1,0 +1,41 @@
+{
+  "checkedAt": "2026-10-15T06:43:21.074Z",
+  "environment": {
+    "id": 24359478841,
+    "name": "cocreate-beta-staging",
+    "can_admins_bypass": true,
+    "protection_rules": [
+      {
+        "id": 68870419,
+        "type": "required_reviewers",
+        "prevent_self_review": false,
+        "reviewers": [
+          {
+            "type": "User",
+            "id": 135539520,
+            "login": "DD7780"
+          }
+        ]
+      },
+      {
+        "id": 68870421,
+        "type": "branch_policy"
+      }
+    ],
+    "deployment_branch_policy": {
+      "protected_branches": false,
+      "custom_branch_policies": true
+    }
+  },
+  "branchPolicyStatus": 200,
+  "branchPolicies": [
+    {
+      "id": 63119295,
+      "name": "codex/beta-staging-executor-a53a920",
+      "type": "branch"
+    }
+  ],
+  "secretUploaded": false,
+  "buildActivated": false,
+  "credentialValuesSuppressed": true
+}

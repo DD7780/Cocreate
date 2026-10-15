@@ -1,0 +1,43 @@
+{
+  "checkedAt": "2026-10-15T06:48:07.129Z",
+  "activationCommit": "5a9bfa9827cce0eb76647513e7e7a44ba62a7456",
+  "runs": [
+    {
+      "id": 38694542991,
+      "name": "Frozen staging deployment",
+      "url": "https://github.com/DD7780/Cocreate/actions/runs/38694542991",
+      "headSha": "5a9bfa9827cce0eb76647513e7e7a44ba62a7456",
+      "branch": "codex/beta-staging-executor-a53a920",
+      "status": "waiting",
+      "conclusion": null,
+      "attempt": 1,
+      "createdAt": "2026-10-15T06:47:28Z",
+      "updatedAt": "2026-10-15T06:47:29Z",
+      "jobs": [
+        {
+          "id": 116287932695,
+          "name": "deploy",
+          "status": "waiting",
+          "conclusion": null,
+          "steps": []
+        }
+      ],
+      "pendingDeployments": [
+        {
+          "environmentId": 24359478841,
+          "environment": "cocreate-beta-staging",
+          "currentUserCanApprove": true,
+          "reviewers": [
+            {
+              "type": "User",
+              "id": 135539520,
+              "login": "DD7780"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "mutationsPerformed": false,
+  "credentialValuesSuppressed": true
+}

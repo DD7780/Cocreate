@@ -1,0 +1,22 @@
+{
+  "checkedAt": "2026-10-15T06:43:19.132Z",
+  "identity": {
+    "login": "DD7780",
+    "userId": 135539520,
+    "repositoryId": 1367324234,
+    "public": true,
+    "admin": true
+  },
+  "operation": "create protected staging environment and exact branch policy",
+  "environment": "cocreate-beta-staging",
+  "reviewer": {
+    "login": "DD7780",
+    "id": 135539520
+  },
+  "branch": "codex/beta-staging-executor-a53a920",
+  "administratorBypassMustBeDisabledBeforeSecret": true,
+  "authority": "Human approved protected GitHub staging fallback",
+  "newHostingResources": false,
+  "mainMutation": false,
+  "credentialValuesSuppressed": true
+}

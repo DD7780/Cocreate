@@ -1,0 +1,20 @@
+{
+  "checkedAt": "2026-10-15T06:47:22.947Z",
+  "reviewedExecutorCommit": "2ec0e5f8e8329ecf40b67d0f265c07eb79233dc0",
+  "activationCommit": "5a9bfa9827cce0eb76647513e7e7a44ba62a7456",
+  "runtimeSource": "a53a92092d608620fdf6edef0bbea287e2cef162",
+  "executorRef": "refs/heads/codex/beta-staging-executor-a53a920",
+  "workflowHashes": {
+    ".github/workflows/staging-deploy.yml": "795e42067cb512a97f2f4306608369d2f91b8089ae947eb0f39c1ab0e6c18716",
+    ".github/workflows/code-checks.yml": "bc3781211fb96b2318c23309ac13ab68193f97b6db4518fbf48a1f50111e6514",
+    "scripts/check-staging-executor.py": "d5b546043877e32dbb28c0b96a205a994377903a778fa877092a45a58227d050"
+  },
+  "mainBefore": "ab28741308b784d5bb4edf30b5bbfd83bab14069",
+  "environmentId": 24359478841,
+  "requiredReviewer": "DD7780",
+  "administratorBypass": false,
+  "authority": "Human approved one protected GitHub staging fallback build",
+  "operation": "Push new executor branch once; job must wait for environment review",
+  "applicationTreeUnchanged": true,
+  "credentialValuesSuppressed": true
+}
