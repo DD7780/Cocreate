@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Founder contacts (2026-10-15): the user supplied public email/LinkedIn links for Susan Bhatta and Aaryan Bastakoti, approved the expanded-footer placement and requested main publication. Remove the generic introduction sign-off; retain the footer logo and Sign in row. [Scope and checks](docs/harness/founder-contacts.md).
+
 Canvas writing surface (2026-10-15): the user requested removal of the Canvas Shared context sidebar and a spacious Docs-like editor. Canvas now fills the workspace, starts at the top-left with an inline placeholder, focuses from blank-space clicks and scrolls naturally. AgentPanel remains beside Artifacts; usage remains in Workflow. UI-only: no server, shared contract, storage or history change. [Scope and checks](docs/harness/canvas-writing-surface.md).
 
 Public entry cleanup (2026-10-15): local review revision centers the account form without its marketing panel and simplifies repeated pre-launch/account labels. The three-column pre-launch page, expandable feature details and existing auth/access/waitlist behavior are retained. The user approved the preview and requested main publication; CI remains the merge gate. [Scope and checks](docs/harness/public-entry-cleanup.md).

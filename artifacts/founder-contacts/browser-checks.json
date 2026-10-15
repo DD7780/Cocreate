@@ -1,0 +1,49 @@
+{
+  "links": [
+    {
+      "href": "mailto:susan981314271@gmail.com",
+      "label": "Email Susan Bhatta",
+      "rel": null,
+      "target": null
+    },
+    {
+      "href": "https://www.linkedin.com/in/susan-bhatta-18a7b9271/",
+      "label": "Susan Bhatta on LinkedIn (opens in a new tab)",
+      "rel": "noopener noreferrer",
+      "target": "_blank"
+    },
+    {
+      "href": "mailto:aaryanbastakoti@gmail.com",
+      "label": "Email Aaryan Bastakoti",
+      "rel": null,
+      "target": null
+    },
+    {
+      "href": "https://www.linkedin.com/in/aaryan-bastakoti-a0550a220/",
+      "label": "Aaryan Bastakoti on LinkedIn (opens in a new tab)",
+      "rel": "noopener noreferrer",
+      "target": "_blank"
+    }
+  ],
+  "placement": {
+    "inFooter": true,
+    "oldSignoff": false,
+    "signin": "/login?returnTo=%2Fapp"
+  },
+  "desktop": {
+    "columns": "296px 296px",
+    "overflow": false,
+    "width": 1440
+  },
+  "phone": {
+    "columns": "339.2px",
+    "names": [
+      "Susan Bhatta",
+      "Aaryan Bastakoti"
+    ],
+    "overflow": false,
+    "width": 390
+  },
+  "console": [],
+  "scope": "Local built footer presentation. Contact hrefs inspected without sending email or visiting/authenticating to LinkedIn; no waitlist/auth form submitted."
+}

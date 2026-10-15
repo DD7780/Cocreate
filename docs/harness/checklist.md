@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Founder footer (2026-10-15): exact names/email/LinkedIn details and expanded-footer placement approved for main. Verify built desktop/phone rendering, contact hrefs and production-image CI; [evidence packet](founder-contacts.md).
+
 Canvas writing surface (2026-10-15): Canvas sidebar removed and the editor made a full-width, top-left, click-to-focus writing surface. Local controlled browser checks, build, boundary and UI-scope audits are recorded in [the packet](canvas-writing-surface.md). Hosted visual review and reference comparison for the remaining Artifacts Shared context view stay open.
 
 Public entry cleanup (2026-10-15): simplified account shell and pre-launch copy prepared for local preview. The user approved publication to main; CI remains the merge gate. Verification evidence is tracked in the [packet](public-entry-cleanup.md).

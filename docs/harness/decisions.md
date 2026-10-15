@@ -341,3 +341,7 @@ Accepted 2026-10-15: remove the account-entry marketing panel and redundant publ
 ## D-0076 — Canvas is a sidebar-free writing surface
 
 Accepted 2026-10-15 from the user's explicit request. Canvas shows only the formatting toolbar, save status and a full-width editor that starts at the top-left with a subtle inline placeholder, focuses from blank-surface clicks and grows with normal vertical scrolling. This supersedes D-0042's Canvas placement of Shared context and the boxed empty state. Recorded usage stays reachable in Workflow (D-0072). AgentPanel, IntentReview and the usage card remain reusable components, mounted beside Artifacts, for a future history design. Requirements, accepted revisions, attribution, history, usage records, collaboration, Build my changes / editor-focused Alt+X and workflow authority are unchanged; no stored history is deleted and focusing never infers. [Scope and evidence](canvas-writing-surface.md).
+
+## D-0077 — Public founder contacts in the expanded footer
+
+Accepted 2026-10-15: place Susan Bhatta and Aaryan Bastakoti beneath the footer brand/Sign in row, with their explicitly supplied public email and LinkedIn links. Remove the generic introduction sign-off. Keep the layout quiet and stack profiles on phones. No contact form, bios, photos or backend integration is needed. Main publication is explicitly authorized. [Scope and checks](founder-contacts.md).

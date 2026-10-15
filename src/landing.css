@@ -828,12 +828,16 @@
   overflow: hidden;
 }
 .landing .lp-footer {
-  display: flex;
+  display: block;
   min-height: 116px;
+  padding-top: 30px;
+  padding-bottom: 34px;
+}
+.landing .lp-footer-main {
+  display: flex;
   align-items: center;
   justify-content: space-between;
   gap: 20px;
-  padding-bottom: 12px;
 }
 .landing .lp-footer .lp-brand {
   font-size: 16px;
@@ -843,7 +847,7 @@
   font-size: 11px;
   color: var(--muted);
 }
-.landing .lp-footer > a:last-child {
+.landing .lp-footer-main > a:last-child {
   font-size: 11px;
   display: flex;
   gap: 13px;
@@ -1019,12 +1023,9 @@
     padding: 28px;
   }
   .landing .lp-footer {
-    flex-wrap: wrap;
-    justify-content: space-between;
-    gap: 20px;
     padding-block: 28px 55px;
   }
-  .landing .lp-footer p {
+  .landing .lp-footer-main > p {
     order: 3;
     width: 100%;
   }
@@ -1303,7 +1304,7 @@
     gap: 7px;
   }
 
-  .landing .lp-footer > a:last-child {
+  .landing .lp-footer-main > a:last-child {
     font-size: 9px;
     gap: 6px;
   }
@@ -2080,17 +2081,7 @@
 .landing .lp-founder-copy p + p {
   margin-top: 18px;
 }
-.landing .lp-founder-signoff {
-  margin-top: 27px;
-  font-size: 14px;
-  line-height: 1.7;
-}
-.landing .lp-founder-signoff > span {
-  display: block;
-  color: var(--blue);
-  margin-top: 6px;
-  font-size: 13px;
-}
+
 .landing .lp-intro-links {
   display: flex;
   gap: 18px;
@@ -2292,9 +2283,7 @@
   .landing .lp-founder-copy {
     font-size: 17px;
   }
-  .landing .lp-founder-signoff {
-    font-size: 16px;
-  }
+
   .landing .lp-intro-links {
     font-size: 12px;
   }
@@ -2383,9 +2372,7 @@
   .landing .lp-founder-copy p + p {
     margin-top: 15px;
   }
-  .landing .lp-founder-signoff {
-    margin-top: 24px;
-  }
+
   .landing .lp-editorial-content {
     padding: 35px 0 0;
   }
@@ -2535,4 +2522,61 @@ html:has(.landing),
 body:has(.landing),
 #root:has(> .landing) {
   min-width: 0;
+}
+
+.landing .lp-founder-contacts {
+  margin-top: 27px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.landing .lp-founder-contacts > h2 {
+  margin: 0 0 20px;
+  font-size: 15px;
+  font-weight: 550;
+  letter-spacing: -0.3px;
+}
+.landing .lp-founder-profiles {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  width: min(640px, 100%);
+  gap: 48px;
+}
+.landing .lp-founder-profiles h3 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 550;
+  line-height: 1.5;
+  letter-spacing: -0.2px;
+}
+.landing .lp-founder-profiles p {
+  margin: 2px 0 9px;
+  font-size: 12px;
+  line-height: 1.6;
+}
+.landing .lp-founder-contact-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+.landing .lp-founder-contact-links a {
+  color: var(--blue);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+@media (max-width: 760px) {
+  .landing .lp-footer-main {
+    flex-wrap: wrap;
+  }
+  .landing .lp-footer-main > p {
+    order: 3;
+    width: 100%;
+  }
+}
+@media (max-width: 520px) {
+  .landing .lp-founder-profiles {
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
 }

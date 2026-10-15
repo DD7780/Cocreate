@@ -27,3 +27,6 @@ Base: main `64cce27ee2f25c5b90b0a969c8998c3ab2ca6d34`. Source fingerprint: `b3a4
 Local preview: `http://localhost:8719/login?returnTo=%2Fapp` and `http://localhost:8719/`. Local server mode is used only to serve the built presentation. This is not hosted authentication acceptance. No new real account, login, email, migration or release occurred. The user reviewed the preview and explicitly requested publication to main. Production-image CI and the main merge remain the publication gates; live rollout is a separate observation.
 
 Rollback: restore presentation files and harness notes and reprepare attestation; no database or authentication state rollback is involved.
+
+
+Founder contact follow-up: the user supplied both founders’ public details, approved expanded-footer placement and requested main publication. Current scope/evidence lives in [founder contacts](founder-contacts.md).

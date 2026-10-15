@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Founder footer (2026-10-15): LandingPage renders two static public contact profiles within its footer. Mailto links and external LinkedIn anchors require no API or account integration; landing-scoped CSS preserves other screens. [Packet](founder-contacts.md).
+
 Canvas writing surface (2026-10-15): `Workspace` in src/App.tsx mounts only the toolbar, save-status line and TipTap editor inside `.document-layout`; AgentPanel is no longer mounted there. A paper-level mouse handler maps blank-surface clicks to the nearest ProseMirror position and focuses the editor locally. Flex layout lets the editor fill and grow within the existing `.content` scroll container. No request, socket or storage contract changes. [Packet](canvas-writing-surface.md).
 
 Public entry presentation (2026-10-15): AuthShell supplies one centered account-entry card with optional task guidance and a home link. The obsolete auth-story markup/styles are removed. Existing auth handlers, routes, return destinations, access checks and waitlist contracts remain unchanged. [Review packet](public-entry-cleanup.md).
