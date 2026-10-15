@@ -281,32 +281,8 @@ select:focus-visible,
 .preview-bar { background: #f1eee6; }
 .product-shell iframe { background: #fff; }
 
-.auth-screen { background: #f6f3ea; }
-.auth-story {
-  background-color: #ebe7dc;
-  background-image: linear-gradient(#dce0d9 1px,transparent 1px),
-    linear-gradient(90deg,#dce0d9 1px,transparent 1px);
-  background-size: 30px 30px;
-  color: #26343a;
-}
-.auth-wordmark { color: #26343a; }
-.auth-story h2 {
-  font-family: 'DM Serif Display', serif;
-  font-weight: 400;
-  font-size: clamp(46px, 5vw, 78px);
-  letter-spacing: -.025em;
-  text-transform: none;
-}
-.auth-story h2 span { color: #b65d3f; }
-.auth-story p { color: #536369; }
-.auth-story>small { color: #566568; }
-.auth-pixel-art {
-  border: 1px solid #b65d3f;
-  background: #f6f3ea;
-  color: #b65d3f;
-  box-shadow: 5px 5px 0 #a7aaa3;
-}
-.auth-pixel-art span { text-shadow: 3px 3px 0 #dbc3b7; }
+.auth-screen { background: #f6f3ea; min-height: 100dvh; }
+
 .auth-card {
   border: 1px solid #8d9c99;
   background: #fffdf8;
@@ -427,7 +403,7 @@ select:focus-visible,
 }
 @media(max-width:600px) {
   .auth-screen { background: #f6f3ea; }
-  .auth-card { width: min(480px,100%); }
+  .auth-card { width: min(440px,100%); }
   .workflow-board>header h1 { font-size: 26px; }
   .workflow-stats article strong { font-size: 22px; }
 }
@@ -470,5 +446,10 @@ select:focus-visible,
 .brand-logo { display: block; flex: none; object-fit: contain; }
 .project-wordmark { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
 .project-sidebar>header .project-wordmark strong { text-transform: none; letter-spacing: -.5px; font-weight: 650; }
-.auth-wordmark { text-transform: none; letter-spacing: -.5px; font-weight: 650; }
+
 @media(max-width:410px) { .topbar .brand-logo { display: none; } }
+
+/* Account entry stays focused on the form; the public home carries the introduction. */
+.auth-brand { display: inline-flex; align-items: center; gap: 10px; justify-self: start; margin-bottom: 8px; font-size: 16px; font-weight: 650; letter-spacing: -.5px; text-decoration: none; }
+.auth-card .auth-brand { color: #20292d; }
+.auth-brand:focus-visible { outline: 2px solid #3158b8; outline-offset: 5px; }

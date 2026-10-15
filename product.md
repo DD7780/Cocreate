@@ -1,5 +1,7 @@
 # 2guys1canvas product brief
 
+Public entry presentation (2026-10-15): account screens use one centered form, the Woven C brand and plain Sign in labels. The public pre-launch page retains its introduction and expandable explanations; repeated slogans, beta qualifiers and procedural boilerplate are removed. Access approval remains required. [Review packet](docs/harness/public-entry-cleanup.md).
+
 Brand identity accepted 2026-10-15: use the Woven Canvas C selected from concept 04, combining cobalt #3158b8 and dark ink #20292d with transparent negative space. Pair it with accessible lowercase Inter wordmarks; do not use the raster concept sheet as application chrome. [Logo packet](docs/harness/woven-c-brand.md).
 
 Public landing direction accepted 2026-10-15: present 2guys1canvas as a multi-user AI building workspace with a Google Docs-like Canvas and shared Artifacts, not only a web-app generator. Keep the approved Studio Ivory/Inter three-column introduction and expandable plain-language explanations; workspace example, FAQ and private signup follow below. Explain product labels and the deliberate build action before relying on them. Distinguish current enabled features from expanded-beta document/browser/Blender illustrations still under verification. Explicit model selection remains current; automatic routing and direct cloud publishing remain planned. [Approved release packet](docs/harness/landing-editorial.md).

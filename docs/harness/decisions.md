@@ -333,3 +333,7 @@ The broader multi-user positioning does not enable or verify tools: mark expande
 ## D-0074 — Woven Canvas C brand mark
 
 Accepted 2026-10-15: the user selected the C design from five generated concepts and explicitly requested application integration on main. Reconstruct the interwoven cobalt/ink C as a clean transparent SVG; use one master through BrandMark for branding slots and matching geometry for a light/dark-browser favicon. Keep nearby wordmarks as accessible lowercase text and retain action icons, geometry, routes, private authority and unrelated capability work. [Scope, checks and rollback](woven-c-brand.md).
+
+## D-0075 — Focused public entry and plain labels
+
+Accepted 2026-10-15: remove the account-entry marketing panel and redundant public-page qualifiers; use plain Sign in labels and retain helpful expanded product explanations. This changes presentation only, preserving beta approval and project membership. Prepare a local preview for review before publication. See [packet](public-entry-cleanup.md).

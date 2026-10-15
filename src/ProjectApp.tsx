@@ -172,40 +172,18 @@ function AuthShell({
   children,
 }: {
   title: string;
-  intro: string;
+  intro?: string;
   children: React.ReactNode;
 }) {
   return (
     <main className="auth-screen">
-      <aside className="auth-story">
-        <span className="auth-wordmark">
-          <BrandMark size={34} />
-          2guys1canvas
-        </span>
-        <div className="auth-story-content">
-          <span className="section-eyebrow">A SHARED SPACE FOR IDEAS</span>
-          <h2>
-            From first thought
-            <br />
-            to working thing<span>.</span>
-          </h2>
-          <p>
-            Write together on one canvas. Submit what changed when you are
-            ready. Follow every decision through to the build.
-          </p>
-          <div className="auth-pixel-art" aria-hidden="true">
-            <span>✦</span>
-            <span>◆</span>
-            <span>✳</span>
-          </div>
-        </div>
-        <small>WRITE TOGETHER / BUILD TOGETHER</small>
-      </aside>
       <section className="auth-card">
-        <BrandMark size={46} />
-        <p className="kicker">WELCOME TO THE WORKSPACE</p>
+        <a className="auth-brand" href="/" aria-label="2guys1canvas home">
+          <BrandMark size={32} />
+          <span>2guys1canvas</span>
+        </a>
         <h1>{title}</h1>
-        <p>{intro}</p>
+        {intro && <p>{intro}</p>}
         {children}
       </section>
     </main>
@@ -307,10 +285,7 @@ function Login() {
     location.replace(returnTo);
   };
   return (
-    <AuthShell
-      title="Beta tester sign-in"
-      intro="Sign in with your existing account. Application access requires separate beta approval; your private projects keep their membership permissions."
-    >
+    <AuthShell title="Sign in">
       <button
         className="oauth-button"
         disabled={busy}
@@ -344,7 +319,7 @@ function Login() {
       </form>
       {new URLSearchParams(location.search).get("error") && (
         <p className="form-error">
-          Sign-in was cancelled or the link expired. Nothing was changed.
+          Sign-in was cancelled or the link expired. Please try again.
         </p>
       )}
       {error && (
@@ -353,10 +328,6 @@ function Login() {
         </p>
       )}
       <AuthLinks kind="login" returnTo={returnTo} />
-      <small>
-        2guys1canvas requests only basic identity information. It does not
-        request Drive or Gmail access.
-      </small>
     </AuthShell>
   );
 }
@@ -418,7 +389,7 @@ function Signup() {
   return (
     <AuthShell
       title="Create your account"
-      intro="Keep your projects private and available across devices."
+      intro="Create an account to request beta access."
     >
       <form className="auth-form" onSubmit={submit}>
         <label className="auth-field">
@@ -486,7 +457,7 @@ function ForgotPassword() {
   return (
     <AuthShell
       title="Reset your password"
-      intro="We’ll email recovery instructions if the address belongs to an account."
+      intro="Enter your email to receive a reset link."
     >
       <form className="auth-form" onSubmit={submit}>
         <label className="auth-field">
@@ -538,10 +509,7 @@ function ResetPassword() {
     location.replace("/projects");
   };
   return (
-    <AuthShell
-      title="Choose a new password"
-      intro="This password will apply only to email/password sign-in."
-    >
+    <AuthShell title="Choose a new password">
       <form className="auth-form" onSubmit={submit}>
         <PasswordField
           value={password}
@@ -704,7 +672,7 @@ function AcceptInvite({ session, token }: { session: Session; token: string }) {
       title={busy ? "Joining project…" : "Invitation unavailable"}
       intro={
         busy
-          ? "Verifying the intended recipient and project membership."
+          ? "Opening your project."
           : "This invitation may be expired, revoked, or intended for another verified email."
       }
     >
@@ -1207,7 +1175,10 @@ function Sidebar({
       aria-label="Projects"
     >
       <header>
-        <span className="project-wordmark"><BrandMark size={24} /><strong>2guys1canvas</strong></span>
+        <span className="project-wordmark">
+          <BrandMark size={24} />
+          <strong>2guys1canvas</strong>
+        </span>
         <button
           aria-label="Close projects"
           className="mobile-only"
@@ -1696,15 +1667,11 @@ function BetaAccess({ session }: { session: Session }) {
   if (approved !== true)
     return (
       <AuthShell
-        title={
-          approved === false
-            ? "Your beta access is pending"
-            : "Checking beta access"
-        }
+        title={approved === false ? "App access" : "Checking beta access"}
         intro={
           approved === false
-            ? "Confirm your email, then request beta access. Either reviewer can give access; private projects keep their membership permissions."
-            : "Verifying your access with the server."
+            ? "Confirm your email, then request access to join the beta."
+            : "Checking your access…"
         }
       >
         <p>Signed in as {session.user.email || "your account"}.</p>
@@ -1743,7 +1710,7 @@ function BetaAccess({ session }: { session: Session }) {
                 }}
               >
                 <label className="auth-field" htmlFor="beta-message">
-                  <span>Message to reviewers (optional)</span>
+                  <span>Message (optional)</span>
                   <textarea
                     id="beta-message"
                     rows={4}
@@ -1754,8 +1721,7 @@ function BetaAccess({ session }: { session: Session }) {
                   />
                 </label>
                 <small id="beta-message-help">
-                  Up to {betaMessageLimit} characters. Waitlist signup is
-                  separate from this account request.
+                  Up to {betaMessageLimit} characters.
                 </small>
                 <button
                   className="primary wide"
@@ -1791,9 +1757,9 @@ function BetaAccess({ session }: { session: Session }) {
           {checking ? "Checking…" : "Check access again"}
         </button>
         <button className="oauth-button" onClick={() => void switchAccount()}>
-          Log out / switch account
+          Switch account
         </button>
-        <a href="/">Return to the public page</a>
+        <a href="/">Back to home</a>
       </AuthShell>
     );
   if (location.pathname === "/beta/review")

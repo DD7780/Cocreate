@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Public entry presentation (2026-10-15): AuthShell supplies one centered account-entry card with optional task guidance and a home link. The obsolete auth-story markup/styles are removed. Existing auth handlers, routes, return destinations, access checks and waitlist contracts remain unchanged. [Review packet](public-entry-cleanup.md).
+
 Brand rendering (2026-10-15): src/BrandMark.tsx is a presentational decorative image component using public/brand/woven-c.svg. Existing visible names/link labels supply accessible meaning. public/favicon.svg shares the master path geometry with a dark-chrome ink-color adjustment. index.html now declares that SVG favicon. No request/auth/provider contract changes. [Packet](woven-c-brand.md).
 
 Public landing presentation (2026-10-15): src/main.tsx still lazily loads LandingPage only at /. Its native expandable explanations and React-controlled example tab groups are local UI, with no model execution. All landing style selectors and preview-specific class names are isolated under .landing; the narrow-screen root minimum-width exception is conditional on landing presence. The actual anonymous waitlist POST and sign-in paths remain unchanged. [Packet](landing-editorial.md).

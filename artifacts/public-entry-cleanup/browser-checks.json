@@ -1,0 +1,68 @@
+{
+  "desktop": {
+    "cardWidth": 440,
+    "heading": "Sign in",
+    "overflow": false,
+    "story": false,
+    "width": 1280
+  },
+  "phone": {
+    "cardWidth": 354.3999938964844,
+    "heading": "Sign in",
+    "overflow": false,
+    "story": false,
+    "url": "http://localhost:8719/login?returnTo=%2Fapp",
+    "width": 390
+  },
+  "signup": {
+    "forms": 1,
+    "heading": "Create your account",
+    "overflow": false
+  },
+  "recovery": {
+    "heading": "Reset your password",
+    "overflow": false,
+    "returnTo": "/app"
+  },
+  "landingPhone": {
+    "details": 17,
+    "oldCopy": false,
+    "overflow": false,
+    "signinLinks": [
+      {
+        "href": "/login?returnTo=%2Fapp",
+        "text": "Sign in ↗"
+      },
+      {
+        "href": "/login?returnTo=%2Fapp",
+        "text": "Sign in ↗"
+      },
+      {
+        "href": "/login?returnTo=%2Fapp",
+        "text": "Already have an account? Sign in ↗"
+      },
+      {
+        "href": "/login?returnTo=%2Fapp",
+        "text": "Sign in ↗"
+      }
+    ],
+    "waitlist": {
+      "consent": true,
+      "form": true
+    },
+    "width": 390
+  },
+  "expand": true,
+  "landingDesktop": {
+    "columns": "429.962px 914.825px",
+    "overflow": false,
+    "width": 1440
+  },
+  "console": [],
+  "scope": "Local built presentation only. No authentication, waitlist submission, account creation, recovery email or live access checks were performed.",
+  "keyboard": {
+    "emailTabReachesPassword": true,
+    "showHidePasswordWorks": true,
+    "syntheticValueCleared": true
+  }
+}

@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Public entry cleanup (2026-10-15): simplified account shell and pre-launch copy prepared for local preview. The user approved publication to main; CI remains the merge gate. Verification evidence is tracked in the [packet](public-entry-cleanup.md).
+
 Woven C logo (2026-10-15): user-selected concept 04 is integrated in current client branding slots and declared favicon, with one SVG master and shared decorative BrandMark. Existing action icons and narrow workspace-header behavior are retained. [Scope and fresh verification](woven-c-brand.md) distinguish local checks, CI, main publication and hosted rollout.
 
 Approved editorial landing (2026-10-15): three-column introduction, expandable plain-language explanations, multi-output illustrative demo and beta tester sign-in placement are implemented against main ab287413. Actual waitlist handler and private access contracts are preserved. Fresh local, CI and rollout observations are recorded in [the landing release packet](landing-editorial.md); main publication does not by itself prove live rollout.
