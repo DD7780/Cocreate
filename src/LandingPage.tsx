@@ -1,3 +1,4 @@
+import { BrandMark } from "./BrandMark";
 import { useEffect, useState, type KeyboardEvent } from "react";
 import "./landing.css";
 
@@ -69,9 +70,7 @@ function WorkspaceExample({
       <div className="lp-product-demo">
         <div className="lp-demo-titlebar">
           <div>
-            <span className="lp-mini-mark" aria-hidden="true">
-              ✳
-            </span>
+            <BrandMark size={22} />
             <strong>Repair café launch</strong>
             <span className="lp-project-tag">Shared project</span>
           </div>
@@ -592,9 +591,7 @@ export function LandingPage() {
                 href="#introduction"
                 aria-label="2guys1canvas home"
               >
-                <span className="lp-brand-mark" aria-hidden="true">
-                  ✳
-                </span>
+                <BrandMark size={30} />
                 2guys1canvas
               </a>
               <p className="lp-eyebrow lp-availability">
@@ -1299,9 +1296,7 @@ export function LandingPage() {
       </main>
       <footer className="lp-footer lp-wrap">
         <a className="lp-brand" href="#">
-          <span className="lp-brand-mark" aria-hidden="true">
-            ✳
-          </span>
+          <BrandMark size={30} />
           2guys1canvas
         </a>
         <p>A shared canvas for people working with AI.</p>

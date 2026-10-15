@@ -1,3 +1,4 @@
+import { BrandMark } from "./BrandMark";
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
 import { api } from "./api";
@@ -35,7 +36,6 @@ import {
   Pencil,
   Plug,
   RefreshCw,
-  Sparkles,
   Undo2,
   Redo2,
   Users,
@@ -102,9 +102,7 @@ function Join({ id, fresh = false }: { id?: string; fresh?: boolean }) {
   return (
     <main className="join-screen">
       <section className="join-card">
-        <div className="brand-mark">
-          <Sparkles />
-        </div>
+        <BrandMark size={46} />
         <p className="kicker">2guys1canvas</p>
         <h1>{id ? "Join the brainstorm" : "Start a shared canvas"}</h1>
         <p className="join-copy">
@@ -611,7 +609,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setTimeout(() => setCopied(false), 1300);
     };
     return <main className="workspace simple">
-    <header className="topbar"><div className="brand"><div className="brand-mark small-mark"><Sparkles /></div><div>{onRenameProject ? <button className="project-title-button" aria-label={`Rename project ${projectTitle}`} title="Rename project" onClick={onRenameProject}><strong>{projectTitle}</strong><Pencil aria-hidden="true"/></button> : <strong>{projectTitle || '2guys1canvas'}</strong>}<span>{projectTitle ? 'Private shared project · select the pencil to rename' : 'Shared product document'}</span></div></div><nav className="tabs" aria-label="Workspace views"><button className={tab === 'workflow' ? 'active' : ''} onClick={() => {
+    <header className="topbar"><div className="brand"><BrandMark size={34} /><div>{onRenameProject ? <button className="project-title-button" aria-label={`Rename project ${projectTitle}`} title="Rename project" onClick={onRenameProject}><strong>{projectTitle}</strong><Pencil aria-hidden="true"/></button> : <strong>{projectTitle || '2guys1canvas'}</strong>}<span>{projectTitle ? 'Private shared project · select the pencil to rename' : 'Shared product document'}</span></div></div><nav className="tabs" aria-label="Workspace views"><button className={tab === 'workflow' ? 'active' : ''} onClick={() => {
         setTab('workflow');
         setSplit(false);
     }}><BarChart3 />Workflow</button><button className={tab === 'document' ? 'active' : ''} onClick={() => {
