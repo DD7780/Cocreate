@@ -465,3 +465,10 @@ select:focus-visible,
 .agent-panel .workflow-compact{margin-top:18px}
 .agent-panel button:focus-visible,.agent-panel select:focus-visible{outline:3px solid #7852b3;outline-offset:3px}
 @media(max-width:900px){.document-layout:has(>.agent-panel){grid-template-columns:minmax(0,1fr)}.document-layout>.agent-panel{width:100%;max-width:none}.intent-revision-selector select{width:auto}}
+
+/* Woven C branding replaces the former sparkle tiles, without styling action icons. */
+.brand-logo { display: block; flex: none; object-fit: contain; }
+.project-wordmark { display: inline-flex; align-items: center; gap: 8px; min-width: 0; }
+.project-sidebar>header .project-wordmark strong { text-transform: none; letter-spacing: -.5px; font-weight: 650; }
+.auth-wordmark { text-transform: none; letter-spacing: -.5px; font-weight: 650; }
+@media(max-width:410px) { .topbar .brand-logo { display: none; } }

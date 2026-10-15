@@ -1,3 +1,4 @@
+import { BrandMark } from "./BrandMark";
 import {
   lazy,
   Suspense,
@@ -154,7 +155,7 @@ function ConfigurationError() {
   return (
     <main className="auth-screen">
       <section className="auth-card">
-        <Sparkles />
+        <BrandMark />
         <p className="kicker">2guys1canvas</p>
         <h1>Authentication needs configuration</h1>
         <p>{supabaseConfigurationError}</p>
@@ -178,10 +179,8 @@ function AuthShell({
     <main className="auth-screen">
       <aside className="auth-story">
         <span className="auth-wordmark">
-          <span className="brand-mark small-mark">
-            <Sparkles />
-          </span>{" "}
-          2GUYS1CANVAS
+          <BrandMark size={34} />
+          2guys1canvas
         </span>
         <div className="auth-story-content">
           <span className="section-eyebrow">A SHARED SPACE FOR IDEAS</span>
@@ -203,9 +202,7 @@ function AuthShell({
         <small>WRITE TOGETHER / BUILD TOGETHER</small>
       </aside>
       <section className="auth-card">
-        <div className="brand-mark">
-          <Sparkles />
-        </div>
+        <BrandMark size={46} />
         <p className="kicker">WELCOME TO THE WORKSPACE</p>
         <h1>{title}</h1>
         <p>{intro}</p>
@@ -1210,7 +1207,7 @@ function Sidebar({
       aria-label="Projects"
     >
       <header>
-        <strong>2guys1canvas</strong>
+        <span className="project-wordmark"><BrandMark size={24} /><strong>2guys1canvas</strong></span>
         <button
           aria-label="Close projects"
           className="mobile-only"
@@ -1546,7 +1543,7 @@ function Projects({ session }: { session: Session }) {
           />
         ) : (
           <div className="project-empty">
-            <Sparkles />
+            <BrandMark size={40} />
             <h1>Your shared work starts here</h1>
             <p>
               Create a private project. No model is called until a participant

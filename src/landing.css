@@ -121,11 +121,7 @@
   letter-spacing: -0.7px;
   white-space: nowrap;
 }
-.landing .lp-brand-mark {
-  font-size: 34px;
-  line-height: 1;
-  color: var(--blue);
-}
+
 .landing .lp-availability {
   display: inline-flex;
   align-items: center;
@@ -850,9 +846,7 @@
 .landing .lp-footer .lp-brand {
   font-size: 16px;
 }
-.landing .lp-footer .lp-brand-mark {
-  font-size: 29px;
-}
+
 .landing .lp-footer p {
   font-size: 11px;
   color: var(--muted);
@@ -912,9 +906,7 @@
   .landing .lp-brand {
     font-size: 16px;
   }
-  .landing .lp-brand-mark {
-    font-size: 29px;
-  }
+
   .landing .lp-availability {
     font-size: 8px;
     gap: 7px;
@@ -1327,9 +1319,7 @@
     font-size: 13px;
     gap: 7px;
   }
-  .landing .lp-footer .lp-brand-mark {
-    font-size: 25px;
-  }
+
   .landing .lp-footer > a:last-child {
     font-size: 9px;
     gap: 6px;

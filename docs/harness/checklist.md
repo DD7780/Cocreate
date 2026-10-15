@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Woven C logo (2026-10-15): user-selected concept 04 is integrated in current client branding slots and declared favicon, with one SVG master and shared decorative BrandMark. Existing action icons and narrow workspace-header behavior are retained. [Scope and fresh verification](woven-c-brand.md) distinguish local checks, CI, main publication and hosted rollout.
+
 Approved editorial landing (2026-10-15): three-column introduction, expandable plain-language explanations, multi-output illustrative demo and beta tester sign-in placement are implemented against main ab287413. Actual waitlist handler and private access contracts are preserved. Fresh local, CI and rollout observations are recorded in [the landing release packet](landing-editorial.md); main publication does not by itself prove live rollout.
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](workflow-overview.md).

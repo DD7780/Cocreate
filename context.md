@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Woven C brand (2026-10-15): the user selected concept 04 and requested integration on main. One transparent SVG and decorative BrandMark replace branding-only sparkles across landing, auth, local join, project sidebar/empty state and workspace header; the favicon uses matching geometry. Action icons and runtime behavior remain unchanged. [Scope and verification](docs/harness/woven-c-brand.md).
+
 Approved public landing redesign (2026-10-15): the user approved the three-column team introduction, expandable first-time-visitor explanations, lower workspace illustration and refined beta sign-in placement, then requested main publication. This client-only release retains actual waitlist persistence and all private access gates; it does not merge the separate artifact/browser/Blender/staging foundations. [Scope, evidence and rollback](docs/harness/landing-editorial.md). Source publication and live rollout are separate observations.
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](docs/harness/workflow-overview.md).
