@@ -122,14 +122,6 @@
   white-space: nowrap;
 }
 
-.landing .lp-availability {
-  display: inline-flex;
-  align-items: center;
-  gap: 9px;
-  margin-bottom: 28px;
-  font-size: 10px;
-  letter-spacing: 0.12em;
-}
 .landing .lp-button {
   display: inline-flex;
   align-items: center;
@@ -907,11 +899,6 @@
     font-size: 16px;
   }
 
-  .landing .lp-availability {
-    font-size: 8px;
-    gap: 7px;
-    margin-bottom: 24px;
-  }
   .landing .lp-section-meta {
     font-size: 8px;
   }
@@ -1093,11 +1080,7 @@
   .landing .lp-wrap {
     width: calc(100% - 36px);
   }
-  .landing .lp-availability {
-    font-size: 7px;
-    letter-spacing: 0.09em;
-    margin-bottom: 21px;
-  }
+
   .landing .lp-section-meta {
     align-items: flex-start;
   }
@@ -2071,13 +2054,7 @@
   font-size: 18px;
   margin-bottom: 42px;
 }
-.landing .lp-founder-note .lp-availability {
-  font-size: 9px;
-  letter-spacing: 0.07em;
-  margin: 0 0 20px;
-  display: flex;
-  line-height: 1.6;
-}
+
 .landing .lp-founder-note h1 {
   font-size: clamp(35px, 3.45vw, 65px);
   font-weight: 500;
@@ -2402,9 +2379,7 @@
     font-size: 15px;
     max-width: 620px;
   }
-  .landing .lp-founder-note .lp-availability {
-    font-size: 9px;
-  }
+
   .landing .lp-founder-copy p + p {
     margin-top: 15px;
   }
@@ -2457,10 +2432,7 @@
   .landing .lp-founder-copy {
     font-size: 15px;
   }
-  .landing .lp-founder-note .lp-availability {
-    font-size: 8px;
-    gap: 7px;
-  }
+
   .landing .lp-editorial-row {
     grid-template-columns: 1fr;
     gap: 26px;

@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Public entry cleanup (2026-10-15): local review revision centers the account form without its marketing panel and simplifies repeated pre-launch/account labels. The three-column pre-launch page, expandable feature details and existing auth/access/waitlist behavior are retained. The user approved the preview and requested main publication; CI remains the merge gate. [Scope and checks](docs/harness/public-entry-cleanup.md).
+
 Woven C brand (2026-10-15): the user selected concept 04 and requested integration on main. One transparent SVG and decorative BrandMark replace branding-only sparkles across landing, auth, local join, project sidebar/empty state and workspace header; the favicon uses matching geometry. Action icons and runtime behavior remain unchanged. [Scope and verification](docs/harness/woven-c-brand.md).
 
 Approved public landing redesign (2026-10-15): the user approved the three-column team introduction, expandable first-time-visitor explanations, lower workspace illustration and refined beta sign-in placement, then requested main publication. This client-only release retains actual waitlist persistence and all private access gates; it does not merge the separate artifact/browser/Blender/staging foundations. [Scope, evidence and rollback](docs/harness/landing-editorial.md). Source publication and live rollout are separate observations.

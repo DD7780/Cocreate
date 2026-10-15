@@ -594,10 +594,6 @@ export function LandingPage() {
                 <BrandMark size={30} />
                 2guys1canvas
               </a>
-              <p className="lp-eyebrow lp-availability">
-                <span className="lp-dot"></span> A NOTE FROM THE TEAM · PRIVATE
-                BETA
-              </p>
               <h1 id="hero-title">
                 Meet <br />
                 <span>2guys1canvas.</span>
@@ -639,7 +635,7 @@ export function LandingPage() {
                 className="lp-button lp-primary lp-intro-join"
                 href="#waitlist"
               >
-                Join the private beta <span aria-hidden="true">↗</span>
+                Join the waitlist <span aria-hidden="true">↗</span>
               </a>
             </div>
           </aside>
@@ -1082,19 +1078,18 @@ export function LandingPage() {
               </div>
             </section>
             <div className="lp-overview-invitation">
-              <p>Already a beta tester?</p>
+              <p>Already have an account?</p>
               <a
                 className="lp-button lp-beta-signin"
                 href="/login?returnTo=%2Fapp"
               >
-                Beta tester sign in <span aria-hidden="true">↗</span>
+                Sign in <span aria-hidden="true">↗</span>
               </a>
             </div>
           </div>
         </div>
 
         <div className="lp-workspace-intro lp-wrap">
-          <p className="lp-eyebrow">TAKE A LOOK AROUND</p>
           <h2>Explore the workspace.</h2>
           <p>
             Follow an example from a shared idea to the work it produces. Try
@@ -1114,7 +1109,6 @@ export function LandingPage() {
           aria-labelledby="faq-title"
         >
           <div className="lp-section-heading">
-            <p className="lp-eyebrow">MORE ABOUT THE WORKSPACE</p>
             <h2 id="faq-title">
               Frequently asked
               <br /> questions.
@@ -1190,15 +1184,14 @@ export function LandingPage() {
             </details>
             <details>
               <summary>
-                How do we get private beta access?
+                How do we get access?
                 <span aria-hidden="true">+</span>
               </summary>
               <p>
-                Join the waitlist to register interest, or sign in with a
-                confirmed account to request access. Beta access requires
-                approval. A project invitation or a known link does not bypass
-                that approval, and access to each private project still depends
-                on membership.
+                Join the waitlist and we’ll email when a beta spot is available.
+                If you already have an account, sign in to request access.
+                Approval is required, and teammates still need an invitation to
+                join your private project.
               </p>
             </details>
           </div>
@@ -1211,7 +1204,6 @@ export function LandingPage() {
         >
           <div className="lp-join-inner lp-wrap">
             <div className="lp-join-copy">
-              <p className="lp-eyebrow">LET’S MAKE SOMETHING TOGETHER</p>
               <h2 id="join-title">
                 Bring your team
                 <br /> into the beta.
@@ -1221,13 +1213,12 @@ export function LandingPage() {
                 your interest and we’ll email when a beta spot is available.
               </p>
               <a href="/login?returnTo=%2Fapp">
-                Have an account? Sign in or request access{" "}
+                Already have an account? Sign in{" "}
                 <span aria-hidden="true">↗</span>
               </a>
             </div>
             <div className="lp-waitlist-card">
-              <h3>Join the private beta.</h3>
-              <p>Register your interest in 2guys1canvas.</p>
+              <h3>Join the waitlist.</h3>
               <form id="waitlist-form" onSubmit={submit} aria-busy={busy}>
                 <label htmlFor="waitlist-email">Email address</label>
                 <input
@@ -1268,16 +1259,15 @@ export function LandingPage() {
                   disabled={busy || !!success}
                 >
                   {busy
-                    ? "Saving registration…"
+                    ? "Joining…"
                     : success
-                      ? "Registered"
-                      : "Join the beta waitlist"}
+                      ? "You’re on the list"
+                      : "Join the waitlist"}
                   <span aria-hidden="true">{success ? "✓" : "↗"}</span>
                 </button>
                 <p className="lp-privacy" id="waitlist-privacy">
-                  Registration is private and requires approval for app access.
-                  We store your email, consent and registration time. No
-                  tracking is added.
+                  Joining the waitlist doesn’t grant app access. We save your
+                  email, consent and signup time. No tracking.
                 </p>
                 {success && (
                   <p className="waitlist-success" role="status">
@@ -1301,7 +1291,7 @@ export function LandingPage() {
         </a>
         <p>A shared canvas for people working with AI.</p>
         <a className="lp-button lp-beta-signin" href="/login?returnTo=%2Fapp">
-          Beta tester sign in <span aria-hidden="true">↗</span>
+          Sign in <span aria-hidden="true">↗</span>
         </a>
       </footer>
     </div>
