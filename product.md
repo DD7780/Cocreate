@@ -1,5 +1,7 @@
 # 2guys1canvas product brief
 
+Founder contacts (2026-10-15): Meet the founders lives in the expanded public footer below the logo/description/Sign in row. Susan Bhatta and Aaryan Bastakoti each have a Co-founder label, email link and supplied LinkedIn profile; profiles stack on phones. The introduction has no generic team sign-off. [Packet](docs/harness/founder-contacts.md).
+
 Canvas writing surface (2026-10-15): Canvas is a full-width, Docs-like writing surface with no sidebar. Text starts at the top-left with a subtle inline placeholder; blank surface clicks focus the editor; the page grows and scrolls with content. Shared context remains a reusable view beside Artifacts, and recorded usage stays in Workflow. Storage, history and authority are unchanged. [Scope and evidence](docs/harness/canvas-writing-surface.md).
 
 Public entry presentation (2026-10-15): account screens use one centered form, the Woven C brand and plain Sign in labels. The public pre-launch page retains its introduction and expandable explanations; repeated slogans, beta qualifiers and procedural boilerplate are removed. Access approval remains required. [Review packet](docs/harness/public-entry-cleanup.md).

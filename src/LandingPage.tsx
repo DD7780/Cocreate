@@ -622,10 +622,6 @@ export function LandingPage() {
                   build with AI.
                 </p>
               </div>
-              <div className="lp-founder-signoff">
-                <p>Let’s make something together.</p>
-                <span>The 2guys1canvas team</span>
-              </div>
               <nav className="lp-intro-links" aria-label="Page navigation">
                 <a href="#features">Features ↓</a>
                 <a href="#beta-scope">Beta details ↓</a>
@@ -1285,14 +1281,65 @@ export function LandingPage() {
         </section>
       </main>
       <footer className="lp-footer lp-wrap">
-        <a className="lp-brand" href="#">
-          <BrandMark size={30} />
-          2guys1canvas
-        </a>
-        <p>A shared canvas for people working with AI.</p>
-        <a className="lp-button lp-beta-signin" href="/login?returnTo=%2Fapp">
-          Sign in <span aria-hidden="true">↗</span>
-        </a>
+        <div className="lp-footer-main">
+          <a className="lp-brand" href="#">
+            <BrandMark size={30} />
+            2guys1canvas
+          </a>
+          <p>A shared canvas for people working with AI.</p>
+          <a className="lp-button lp-beta-signin" href="/login?returnTo=%2Fapp">
+            Sign in <span aria-hidden="true">↗</span>
+          </a>
+        </div>
+        <section
+          className="lp-founder-contacts"
+          id="founders"
+          aria-labelledby="founders-title"
+        >
+          <h2 id="founders-title">Meet the founders</h2>
+          <div className="lp-founder-profiles">
+            <div>
+              <h3>Susan Bhatta</h3>
+              <p>Co-founder</p>
+              <div className="lp-founder-contact-links">
+                <a
+                  href="mailto:susan981314271@gmail.com"
+                  aria-label="Email Susan Bhatta"
+                >
+                  Email <span aria-hidden="true">↗</span>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/susan-bhatta-18a7b9271/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Susan Bhatta on LinkedIn (opens in a new tab)"
+                >
+                  LinkedIn <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+            <div>
+              <h3>Aaryan Bastakoti</h3>
+              <p>Co-founder</p>
+              <div className="lp-founder-contact-links">
+                <a
+                  href="mailto:aaryanbastakoti@gmail.com"
+                  aria-label="Email Aaryan Bastakoti"
+                >
+                  Email <span aria-hidden="true">↗</span>
+                </a>
+                <a
+                  href="https://www.linkedin.com/in/aaryan-bastakoti-a0550a220/"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Aaryan Bastakoti on LinkedIn (opens in a new tab)"
+                >
+                  LinkedIn <span aria-hidden="true">↗</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </section>
       </footer>
     </div>
   );
