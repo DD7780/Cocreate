@@ -534,15 +534,15 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1792167282.9297774,
-    "seen": 1792167338.4145513,
-    "ast_hash": "b5bc284cd4e7042637aed339c4c48f42",
+    "mtime": 1792168376.7203555,
+    "seen": 1792168401.2042289,
+    "ast_hash": "215c4953a6da4f77423690b2d15369b3",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1792167255.9175742,
-    "seen": 1792167338.4145513,
-    "ast_hash": "2fe1329f467806da605dc156df8aafbd",
+    "mtime": 1792168376.7233677,
+    "seen": 1792168401.2042289,
+    "ast_hash": "404977e7940ca644885ff22d3d7c7ee6",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1792167282.978083,
-    "seen": 1792167338.420604,
-    "ast_hash": "37a992b2daedbe1d5fbaa54fe8a2613f",
+    "mtime": 1792168376.7460632,
+    "seen": 1792168401.2082665,
+    "ast_hash": "955e72a302ec6ca6b96643fbe8939e5c",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -564,9 +564,9 @@
     "semantic_hash": ""
   },
   "docs/harness/decisions.md": {
-    "mtime": 1792167255.9454668,
-    "seen": 1792167338.4216037,
-    "ast_hash": "213f7166194d571c998d46b164c61732",
+    "mtime": 1792168376.7339692,
+    "seen": 1792168401.2082665,
+    "ast_hash": "1761aab4368b93ab9c09051ddf542cad",
     "semantic_hash": ""
   },
   "docs/harness/migration-plan.md": {
@@ -612,9 +612,9 @@
     "semantic_hash": ""
   },
   "product.md": {
-    "mtime": 1792167255.9723034,
-    "seen": 1792167338.4344494,
-    "ast_hash": "fdd9573c7492f58e09d2c061f3253096",
+    "mtime": 1792168376.7158372,
+    "seen": 1792168401.218848,
+    "ast_hash": "cae19cfbbb6720eb3f3c3d087d6605fd",
     "semantic_hash": ""
   },
   "public/favicon.svg": {
@@ -1200,9 +1200,9 @@
     "semantic_hash": ""
   },
   "src/LandingPage.tsx": {
-    "mtime": 1792166351.9653533,
-    "seen": 1792166449.3741927,
-    "ast_hash": "c2274145ff34ad073771a5e3fb308b93",
+    "mtime": 1792168182.4845366,
+    "seen": 1792168401.1806903,
+    "ast_hash": "a3538968f8b1a072c8b6404e0b3bf811",
     "semantic_hash": ""
   },
   "tests/beta-access.test.ts": {
@@ -1386,9 +1386,9 @@
     "semantic_hash": ""
   },
   "docs/harness/beta-registration-visibility.md": {
-    "mtime": 1792166651.2462237,
-    "seen": 1792167338.4195912,
-    "ast_hash": "330afba59145422625ef2f43f807559c",
+    "mtime": 1792167475.2901275,
+    "seen": 1792168401.2072687,
+    "ast_hash": "d7222fe122d6a76b1e921650947c4afc",
     "semantic_hash": ""
   },
   "docs/harness/workflow-overview.md": {
@@ -1434,9 +1434,9 @@
     "semantic_hash": ""
   },
   "docs/harness/founder-contacts.md": {
-    "mtime": 1792166351.8671618,
-    "seen": 1792166449.4706898,
-    "ast_hash": "9a72f45cfb0a804309cd4b819f41a91d",
+    "mtime": 1792168376.7480793,
+    "seen": 1792168401.2092671,
+    "ast_hash": "afdf682ea198b5100f19e3ee65c121a8",
     "semantic_hash": ""
   },
   "docs/harness/landing-editorial.md": {
@@ -1476,9 +1476,15 @@
     "semantic_hash": ""
   },
   "docs/harness/role-compatible-models.md": {
-    "mtime": 1792167255.947464,
-    "seen": 1792167338.4311438,
-    "ast_hash": "997933f69a6bb6685cda8e76e4091846",
+    "mtime": 1792167396.6086571,
+    "seen": 1792168401.2168474,
+    "ast_hash": "23f90b2c451b79c827458afa55ed8182",
+    "semantic_hash": ""
+  },
+  "docs/harness/references/founder-contact-icons.png": {
+    "mtime": 1792167690.9587157,
+    "seen": 1792168401.218848,
+    "ast_hash": "3b3d1b81b879436f4f7048da7dd75156",
     "semantic_hash": ""
   }
 }

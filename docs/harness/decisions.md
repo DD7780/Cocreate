@@ -348,6 +348,8 @@ Accepted 2026-10-15 from the user's explicit request. Canvas shows only the form
 
 Accepted 2026-10-15: place Susan Bhatta and Aaryan Bastakoti beneath the footer brand/Sign in row, with their explicitly supplied public email and LinkedIn links. Remove the generic introduction sign-off. Keep the layout quiet and stack profiles on phones. No contact form, bios, photos or backend integration is needed. Main publication is explicitly authorized. [Scope and checks](founder-contacts.md).
 
+2026-10-16 reference refinement: use stacked Email and LinkedIn rows with small filled grey icons, a boxed LinkedIn mark and muted serif labels. Retain the supplied destinations, keyboard focus and readable contrast. The screenshot's x.com example is styling reference only; no founder X account was supplied or requested. Publish to main; leave Cloudflare inspection to the user.
+
 
 ## D-0078 - Role-compatible model choices and explicit free pricing
 

@@ -2555,15 +2555,51 @@ body:has(.landing),
 }
 .landing .lp-founder-contact-links {
   display: flex;
-  flex-wrap: wrap;
-  gap: 16px;
-  font-size: 12px;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 8px;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 18px;
   line-height: 1.5;
 }
 .landing .lp-founder-contact-links a {
-  color: var(--blue);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  min-height: 28px;
+  color: var(--muted);
+  text-decoration: none;
+}
+.landing .lp-founder-contact-links a:hover {
+  color: var(--ink);
   text-decoration: underline;
   text-underline-offset: 3px;
+}
+.landing .lp-founder-contact-links a:focus-visible {
+  outline: 2px solid var(--blue);
+  outline-offset: 4px;
+}
+.landing .lp-contact-icon {
+  flex: none;
+  width: 18px;
+  height: 18px;
+  color: #8a8e8b;
+}
+.landing .lp-email-icon rect {
+  fill: currentColor;
+  stroke: none;
+}
+.landing .lp-email-icon path {
+  stroke: var(--paper);
+  stroke-width: 1.5px;
+}
+.landing .lp-linkedin-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 1px;
+  color: var(--paper);
+  background: #8a8e8b;
 }
 @media (max-width: 760px) {
   .landing .lp-footer-main {

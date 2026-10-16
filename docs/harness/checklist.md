@@ -30,7 +30,7 @@
 - [x] Cloudflare build successful; live canonical health matches the prepared `d735816b…` fingerprint and served client contains the fix. Anonymous desktop/phone home and sign-in browser checks pass without exceptions, failed resources or horizontal overflow. [Live evidence](../../artifacts/build-submission-recovery/live/canary.json).
 - [ ] Independent private hosted owner/editor submissions with a reconnected AI lease and live provider acceptance; production save-latency diagnosis. No paid inference or private mutation was run for publication.
 
-Founder footer (2026-10-15): exact names/email/LinkedIn details and expanded-footer placement approved for main. Verify built desktop/phone rendering, contact hrefs and production-image CI; [evidence packet](founder-contacts.md).
+Founder footer (2026-10-15; icon refinement 2026-10-16): exact names/email/LinkedIn details and expanded-footer placement are retained. Reference-style filled icons, stacked serif contact rows, all four hrefs, mobile/desktop/200% layout and keyboard focus pass local built-browser checks; strict build, boundaries and UI-only scope pass. No unrelated full runtime suite or Cloudflare inspection ran for the icon-only slice. [Evidence packet](founder-contacts.md).
 
 Canvas writing surface (2026-10-15): Canvas sidebar removed and the editor made a full-width, top-left, click-to-focus writing surface. Local controlled browser checks, build, boundary and UI-scope audits are recorded in [the packet](canvas-writing-surface.md). Hosted visual review and reference comparison for the remaining Artifacts Shared context view stay open.
 

@@ -1,4 +1,5 @@
 import { BrandMark } from "./BrandMark";
+import { Linkedin, Mail } from "lucide-react";
 import { useEffect, useState, type KeyboardEvent } from "react";
 import "./landing.css";
 
@@ -1306,7 +1307,8 @@ export function LandingPage() {
                   href="mailto:susan981314271@gmail.com"
                   aria-label="Email Susan Bhatta"
                 >
-                  Email <span aria-hidden="true">↗</span>
+                  <Mail className="lp-contact-icon lp-email-icon" size={18} aria-hidden="true" focusable="false" />
+                  Email
                 </a>
                 <a
                   href="https://www.linkedin.com/in/susan-bhatta-18a7b9271/"
@@ -1314,7 +1316,10 @@ export function LandingPage() {
                   rel="noopener noreferrer"
                   aria-label="Susan Bhatta on LinkedIn (opens in a new tab)"
                 >
-                  LinkedIn <span aria-hidden="true">↗</span>
+                  <span className="lp-contact-icon lp-linkedin-icon" aria-hidden="true">
+                    <Linkedin size={13} fill="currentColor" strokeWidth={0} focusable="false" />
+                  </span>
+                  LinkedIn
                 </a>
               </div>
             </div>
@@ -1326,7 +1331,8 @@ export function LandingPage() {
                   href="mailto:aaryanbastakoti@gmail.com"
                   aria-label="Email Aaryan Bastakoti"
                 >
-                  Email <span aria-hidden="true">↗</span>
+                  <Mail className="lp-contact-icon lp-email-icon" size={18} aria-hidden="true" focusable="false" />
+                  Email
                 </a>
                 <a
                   href="https://www.linkedin.com/in/aaryan-bastakoti-a0550a220/"
@@ -1334,7 +1340,10 @@ export function LandingPage() {
                   rel="noopener noreferrer"
                   aria-label="Aaryan Bastakoti on LinkedIn (opens in a new tab)"
                 >
-                  LinkedIn <span aria-hidden="true">↗</span>
+                  <span className="lp-contact-icon lp-linkedin-icon" aria-hidden="true">
+                    <Linkedin size={13} fill="currentColor" strokeWidth={0} focusable="false" />
+                  </span>
+                  LinkedIn
                 </a>
               </div>
             </div>
