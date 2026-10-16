@@ -1,22 +1,53 @@
 import { randomUUID } from 'node:crypto';
+import type { AIReasoningConfig, TemporaryModel } from '../shared/types.js';
 
 export const BYOK_LEASE_MS = 2 * 60 * 60 * 1000;
-export const BYOK_MODEL_VERSION = 'openrouter-mvp-2026-09-28';
+export const BYOK_MODEL_VERSION = 'openrouter-roles-2026-10-16';
+export const BYOK_ROLE_LIMITS = {
+  builder: { contextLength: 64_000, maxInputTokens: 60_000, maxOutputTokens: 16_000 },
+  personal: { contextLength: 32_000, maxInputTokens: 20_000, maxOutputTokens: 8_000 },
+} as const;
 const OPENROUTER = 'https://openrouter.ai/api/v1';
 
-export type LeaseModel = { id: string; name: string; inputPerMillion: number; outputPerMillion: number; contextLength: number; maxOutputTokens?: number };
+export type LeaseModel = TemporaryModel;
 type Lease = { handle: string; projectId: string; ownerId: string; key: string; expiresAt: number;
   builders: LeaseModel[]; interpreters: LeaseModel[]; spenders: Set<string> };
+
+function nonnegative(value: unknown): number | undefined {
+  if (typeof value !== 'number' && (typeof value !== 'string' || !value.trim())) return undefined;
+  const number = Number(value);
+  return Number.isFinite(number) && number >= 0 ? number : undefined;
+}
 
 function modelsFrom(value: unknown): LeaseModel[] {
   if (!Array.isArray(value)) throw new Error('OpenRouter model information is unavailable.');
   return value.flatMap((model: any) => {
-    if (typeof model?.id !== 'string' || !model?.architecture?.output_modalities?.includes('text') ||
-      !model?.supported_parameters?.includes('response_format')) return [];
-    const input = Number(model.pricing?.prompt), output = Number(model.pricing?.completion), context = Number(model.context_length);
-    if (![input, output, context].every(Number.isFinite) || input < 0 || output < 0 || context < 16_000) return [];
+    if (typeof model?.id !== 'string' || !model.id.trim() ||
+      !Array.isArray(model.architecture?.input_modalities) || !model.architecture.input_modalities.includes('text') ||
+      !Array.isArray(model.architecture?.output_modalities) || !model.architecture.output_modalities.includes('text') ||
+      !Array.isArray(model.supported_parameters) ||
+      !['response_format', 'structured_outputs', 'max_tokens'].every(parameter => model.supported_parameters.includes(parameter))) return [];
+    const input = nonnegative(model.pricing?.prompt), output = nonnegative(model.pricing?.completion);
+    const prices = Object.values(model.pricing || {}).map(nonnegative);
+    const requestPriceUsd = model.pricing?.request === undefined ? 0 : nonnegative(model.pricing.request);
+    const context = Math.min(nonnegative(model.context_length) ?? 0, nonnegative(model.top_provider?.context_length) ?? 0);
+    const maxOutputTokens = nonnegative(model.top_provider?.max_completion_tokens);
+    if (input === undefined || output === undefined || requestPriceUsd === undefined ||
+      prices.some(price => price === undefined) || context < BYOK_ROLE_LIMITS.personal.contextLength ||
+      maxOutputTokens === undefined || maxOutputTokens < BYOK_ROLE_LIMITS.personal.maxOutputTokens) return [];
+    let reasoningConfig: AIReasoningConfig | undefined;
+    if (model.reasoning || model.supported_parameters.includes('reasoning') || model.supported_parameters.includes('reasoning_effort')) {
+      // Do not inherit an unbounded/default-max reasoning policy inside a small JSON response allowance.
+      if (!model.supported_parameters.includes('reasoning')) return [];
+      const efforts = model.reasoning?.supported_efforts;
+      if (efforts === null || (Array.isArray(efforts) && efforts.includes('low'))) reasoningConfig = { effort: 'low' };
+      else if (Array.isArray(efforts) && efforts.includes('minimal')) reasoningConfig = { effort: 'minimal' };
+      else if (model.reasoning?.mandatory === false) reasoningConfig = { enabled: false };
+      else return []; // Unknown/mandatory reasoning without a supported bounded setting is not a qualified choice.
+    }
     return [{ id: model.id, name: String(model.name || model.id), inputPerMillion: input * 1_000_000,
-      outputPerMillion: output * 1_000_000, contextLength: context, ...(Number.isFinite(Number(model.top_provider?.max_completion_tokens))&&Number(model.top_provider?.max_completion_tokens)>0?{maxOutputTokens:Number(model.top_provider.max_completion_tokens)}:{}) }];
+      outputPerMillion: output * 1_000_000, contextLength: context, maxOutputTokens,
+      isFree: prices.every(price => price === 0), requestPriceUsd, ...(reasoningConfig ? { reasoningConfig } : {}) }];
   });
 }
 
@@ -46,7 +77,9 @@ export class OpenRouterLeases {
     if (!catalog.ok) throw new Error('OpenRouter model discovery failed.');
     const data = await catalog.json() as { data?: unknown };
     const compatible = modelsFrom(data.data);
-    const builders = compatible, interpreters = compatible;
+    const eligible = (role: keyof typeof BYOK_ROLE_LIMITS) => compatible.filter(model =>
+      model.contextLength >= BYOK_ROLE_LIMITS[role].contextLength && model.maxOutputTokens >= BYOK_ROLE_LIMITS[role].maxOutputTokens);
+    const builders = eligible('builder'), interpreters = eligible('personal');
     if (!builders.length || !interpreters.length) throw new Error('No currently compatible builder and interpretation models were returned.');
     const lease: Lease = { handle: randomUUID(), projectId, ownerId, key: secret,
       expiresAt: Date.now() + BYOK_LEASE_MS, builders, interpreters, spenders: new Set([ownerId]) };

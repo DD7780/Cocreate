@@ -6,7 +6,19 @@
 - [x] Reviewer-only registrations with consent/date, exact count and deterministic 50-row pagination; explicit distinction from confirmed-account requests.
 - [x] Loading/refresh controls, missing linked request, stale-load fencing and removal of private lists on failed/revoked refresh.
 - [x] Focused SQL/SDK/HTTP checks and controlled browser pagination, mobile, failure recovery and existing decisions. See [commands, results and limits](beta-registration-visibility.md).
-- [ ] Full regression gate and hosted deployment/acceptance: current Windows failures are retained in the packet; branch push is not production acceptance.
+- [x] Candidate production-image CI: native SQL 2/2, compiler 10/10, browser 15/15 and full 258/258, zero skips. Retain earlier Windows and stale-fingerprint failures in the packet.
+- [ ] Final combined main CI and hosted deployment/acceptance: the newer role-compatible model release is preserved; branch publication alone is not production acceptance.
+
+## Role-compatible models - 2026-10-16
+
+- [x] Distinct role lists enforce known context/output, text and JSON Schema support, valid prices and supported lower/optional reasoning. Exact-role selection remains server enforced.
+- [x] FREE/PAID groups and selected price/allowance/reasoning summaries; inference-free save; phone and editor read-only checks.
+- [x] 35 focused model/provider/authority/budget/submission tests pass. Browser fixture checks pass with no exceptions or overflow.
+- [ ] Full production-image CI and deployment verification. Local native-browser limitations remain separately recorded.
+- [ ] Exact failing provider response and live Kimi/Muse generation remain unverified; no paid inference was run.
+
+[Scope and current evidence](role-compatible-models.md).
+
 
 ## Build submission recovery — 2026-10-16
 

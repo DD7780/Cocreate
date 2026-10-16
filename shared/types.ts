@@ -456,6 +456,7 @@ export type AIRate = {
   sourceUrl: string;
   verifiedAt: string;
 };
+export type AIReasoningConfig = { effort: "low" | "minimal" } | { enabled: false };
 export type AIResolvedLayer = {
   connectionId: string;
   connectionName: string;
@@ -464,6 +465,7 @@ export type AIResolvedLayer = {
   rate: AIRate;
   maxInputTokens: number;
   maxOutputTokens: number;
+  reasoningConfig?: AIReasoningConfig;
   reasoning?: string[];
 };
 export type AIRecommendation = {
@@ -515,7 +517,10 @@ export type TemporaryModel = {
   inputPerMillion: number;
   outputPerMillion: number;
   contextLength: number;
-  maxOutputTokens?: number;
+  maxOutputTokens: number;
+  isFree: boolean;
+  requestPriceUsd: number;
+  reasoningConfig?: AIReasoningConfig;
 };
 export type AIConnection = {
   status: "disconnected" | "connected";

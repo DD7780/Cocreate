@@ -347,3 +347,8 @@ Accepted 2026-10-15 from the user's explicit request. Canvas shows only the form
 ## D-0077 — Public founder contacts in the expanded footer
 
 Accepted 2026-10-15: place Susan Bhatta and Aaryan Bastakoti beneath the footer brand/Sign in row, with their explicitly supplied public email and LinkedIn links. Remove the generic introduction sign-off. Keep the layout quiet and stack profiles on phones. No contact form, bios, photos or backend integration is needed. Main publication is explicitly authorized. [Scope and checks](founder-contacts.md).
+
+
+## D-0078 - Role-compatible model choices and explicit free pricing
+
+Accepted 2026-10-16 from the user's request following a Kimi K3 / "open muse" build failure. Show only models whose published capabilities fit the selected role; enforce selection on the server. Make FREE unmistakable and show PAID rates. Keep setup inference-free, disclose/freeze the response allowance and supported reasoning policy, and never substitute models or funding. Implementation thresholds and checks live in the [packet](role-compatible-models.md); catalog compatibility is not live quality proof. The exact error remains unknown (the user recalls either bigger or smaller model), so do not present a specific provider outcome as confirmed.

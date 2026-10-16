@@ -42,7 +42,7 @@ test('managed assignments remain historical and cannot dispatch', () => {
 
 test('temporary OpenRouter setup validates without generation and saves no secret',async()=>{
   const originalFetch=globalThis.fetch,urls:string[]=[];
-  const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
+  const model=(id:string)=>({id,name:id,architecture:{input_modalities:['text'],output_modalities:['text']},supported_parameters:['response_format','structured_outputs','max_tokens'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:128000,top_provider:{context_length:128000,max_completion_tokens:32000}});
   globalThis.fetch=async(input)=>{const url=String(input);urls.push(url);if(url.endsWith('/key'))return new Response(JSON.stringify({data:{limit_remaining:10}}),{status:200});if(url.endsWith('/models'))return new Response(JSON.stringify({data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});throw new Error('Generation request was made during setup')};
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-'));
   const manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
@@ -75,13 +75,13 @@ test('temporary OpenRouter setup validates without generation and saves no secre
 
 test('temporary key lease expires and is lost after restart',async()=>{
   const oldFetch=globalThis.fetch,oldNow=Date.now;
-  globalThis.fetch=async(input)=>new Response(JSON.stringify(String(input).endsWith('/key')?{data:{}}:{data:[{id:'deepseek/deepseek-v4.1-flash',name:'DeepSeek',architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000}]}),{status:200});
+  globalThis.fetch=async(input)=>new Response(JSON.stringify(String(input).endsWith('/key')?{data:{}}:{data:[{id:'deepseek/deepseek-v4.1-flash',name:'DeepSeek',architecture:{input_modalities:['text'],output_modalities:['text']},supported_parameters:['response_format','structured_outputs','max_tokens'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:128000,top_provider:{context_length:128000,max_completion_tokens:32000}}]}),{status:200});
   try{const leases=new OpenRouterLeases(),start=oldNow();Date.now=()=>start;const lease=await leases.connect('project','owner','sk-or-private');assert.equal(new OpenRouterLeases().status('project'),undefined);Date.now=()=>start+2*60*60*1000+1;assert.equal(leases.status('project'),undefined);assert.throws(()=>leases.require('project',lease.handle),/expired or was lost/)}finally{Date.now=oldNow;globalThis.fetch=oldFetch}
 });
 
 test('explicit builder reaches the OpenRouter request; unauthorized editor cannot dispatch',async()=>{
   const originalFetch=globalThis.fetch,requests:{url:string;model?:string;authorization?:string}[]=[];
-  const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
+  const model=(id:string)=>({id,name:id,architecture:{input_modalities:['text'],output_modalities:['text']},supported_parameters:['response_format','structured_outputs','max_tokens'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:128000,top_provider:{context_length:128000,max_completion_tokens:32000}});
   globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,model:init?.body?JSON.parse(String(init.body)).model:undefined,authorization:new Headers(init?.headers).get('Authorization')||undefined});if(url.endsWith('/key'))return new Response(JSON.stringify({data:{limit_remaining:10}}),{status:200});if(url.endsWith('/models'))return new Response(JSON.stringify({data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});return new Response(JSON.stringify({choices:[{message:{content:'OK'},finish_reason:'stop'}],usage:{prompt_tokens:8,completion_tokens:2}}),{status:200,headers:{'content-type':'application/json'}})};
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-dispatch-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
@@ -104,7 +104,7 @@ test('explicit builder reaches the OpenRouter request; unauthorized editor canno
 
 test('failed accepted work can be retried explicitly without reinterpreting the document',async()=>{
   const originalFetch=globalThis.fetch;
-  const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
+  const model=(id:string)=>({id,name:id,architecture:{input_modalities:['text'],output_modalities:['text']},supported_parameters:['response_format','structured_outputs','max_tokens'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:128000,top_provider:{context_length:128000,max_completion_tokens:32000}});
   globalThis.fetch=async(input)=>new Response(JSON.stringify(String(input).endsWith('/key')?{data:{limit_remaining:10}}:{data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-retry-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
