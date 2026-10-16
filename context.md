@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Beta registration visibility (2026-10-16): `/beta/review` now includes private, paginated landing-page registrations alongside submitted requests. Read-only production inspection found two waitlist rows and zero submitted requests, explaining the empty inbox. This is a source fix on `codex/beta-registration-visibility`; production acceptance and rollout are separate. [Scope and fresh verification](docs/harness/beta-registration-visibility.md).
+
 Build submission recovery (2026-10-16): live at https://2guys1canvas.com from main `1b004ac` / PR #8, with the prepared `d735816b…` fingerprint and recovery code independently observed in the served client. Production-image main CI passes 258/258 with zero skips; anonymous desktop/phone home and sign-in checks pass. Build my changes / editor-focused Alt+X show saving/submitting progress and errors, wait up to 15 seconds for canonical save, and recover an uncertain receipt before one fresh explicit submission only after confirmed failure. Owner/editor and temporary-key rules are unchanged. Private hosted-account/provider acceptance remains separate. [Evidence and limits](docs/harness/build-submission-recovery.md).
 
 Founder contacts (2026-10-15): the user supplied public email/LinkedIn links for Susan Bhatta and Aaryan Bastakoti, approved the expanded-footer placement and requested main publication. Remove the generic introduction sign-off; retain the footer logo and Sign in row. [Scope and checks](docs/harness/founder-contacts.md).

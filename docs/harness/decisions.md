@@ -311,6 +311,8 @@ D-0057 renderer reuse: main repeated verification proves a process/task limit re
 
 ## D-0058 — Confirmed account beta requests and separate reviewer grants
 
+2026-10-16 visibility refinement under the user's missing-registration fix: the protected reviewer page also lists the private landing waitlist, with bounded pagination and explicit interest/request distinction. Listing is read-only; email matching never creates request identity or approval. Existing confirmed-account submissions and UUID reviewer authority retain their contracts. [Change evidence](beta-registration-visibility.md).
+
 The user's 2026-10-09 feature request extends manual-only beta admission with durable account requests and protected explicit reviewer decisions. Both confirmed founder/cofounder UUIDs receive independent reviewer grants; the cofounder remains an ordinary beta user. Waitlist, Auth, beta approval, reviewer authority and project membership remain separate. Never derive authority from an email, project role or user metadata.
 
 One pending request survives retries. Optional messages are bounded to 1,000 characters; declined accounts may resubmit after seven days. First valid decision wins under database locks. Approval and ordinary access plus the result outbox commit together; repeats cannot reverse decisions or revive revocation. Links are token-free authenticated reads, with POST-only decisions.

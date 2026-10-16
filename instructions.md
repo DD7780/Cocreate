@@ -1,5 +1,7 @@
 # 2guys1canvas contributor instructions
 
+Beta registration visibility (2026-10-16): preserve reviewer-only waitlist inspection on `/beta/review`, separate from confirmed-account access requests. Never convert a waitlist email into an authenticated request, approval or notification during a read. Current source checks and rollout limits are in [the fix packet](docs/harness/beta-registration-visibility.md).
+
 Canvas writing surface (2026-10-15): keep Canvas a full-width writing surface without a Shared context sidebar or reserved column. Retain AgentPanel/IntentReview as reusable views (currently beside Artifacts) and every requirement, revision, attribution, usage and history contract. Focusing or clicking the surface stays inference-free. [Scope and evidence](docs/harness/canvas-writing-surface.md).
 
 Landing scope accepted 2026-10-15: publish the user-approved local editorial preview through the existing main release path, preserving the real waitlist and same-origin sign-in links. Keep its CSS isolated from Canvas, Workflow, Artifacts and authentication screens. Do not merge separate capability foundations or interpret a marketing illustration as hosted acceptance. [Scope and verification](docs/harness/landing-editorial.md).

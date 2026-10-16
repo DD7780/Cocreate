@@ -46,6 +46,40 @@ test("authenticated requests and review links preserve server identity, CSRF, re
       ...(body === undefined ? {} : { body: JSON.stringify(body) }),
     });
   try {
+    // Landing registrations must be reviewable without fabricating an Auth request or email.
+    await db.exec(`insert into public.beta_waitlist(email,consent_version,registered_at)
+      select 'waitlist-' || lpad(i::text,3,'0') || '@example.test','beta-updates-v1','2026-10-01T00:00:00Z'
+      from generate_series(0,50) i`);
+    assert.equal((await call("/api/beta/review")).status, 401);
+    assert.equal((await call("/api/beta/review", accounts.unconfirmed)).status, 403);
+    assert.equal((await call("/api/beta/review", accounts.other)).status, 403);
+    for (const role of ["anon", "authenticated"] as const)
+      await assert.rejects(db.asRole(role, "select * from public.beta_waitlist"), /permission denied/);
+    const registrations = await call("/api/beta/review", accounts.founder);
+    assert.equal(registrations.status, 200);
+    assert.equal(registrations.headers.get("Cache-Control"), "no-store");
+    const firstPage = await registrations.json();
+    assert.deepEqual(firstPage.pending, []);
+    assert.equal(firstPage.waitlist.total, 51);
+    assert.equal(firstPage.waitlist.registrations.length, 50);
+    assert.equal(firstPage.waitlist.nextOffset, 50);
+    assert.deepEqual(firstPage.waitlist.registrations[0], {
+      email: "waitlist-000@example.test",
+      consentVersion: "beta-updates-v1",
+      registeredAt: "2026-10-01T00:00:00.000Z",
+    });
+    const lastPage = await (await call("/api/beta/review?waitlistOffset=50", accounts.cofounder)).json();
+    assert.equal(lastPage.waitlist.registrations.length, 1);
+    assert.equal(lastPage.waitlist.registrations[0].email, "waitlist-050@example.test");
+    assert.equal(lastPage.waitlist.nextOffset, null);
+    for (const query of ["-1", "1.5", "nope", "1000001", "1&waitlistOffset=2"])
+      assert.equal((await call(`/api/beta/review?waitlistOffset=${query}`, accounts.founder)).status, 400);
+    assert.equal((await (await call("/api/beta/review?waitlistOffset=100", accounts.founder)).json()).waitlist.registrations.length, 0);
+    const readOnlyCounts = (await db.query(`select
+      (select count(*)::int from public.beta_access_requests) requests,
+      (select count(*)::int from public.beta_email_deliveries) deliveries,
+      (select count(*)::int from public.beta_access) approvals`)).rows[0];
+    assert.deepEqual(readOnlyCounts, { requests: 0, deliveries: 0, approvals: 2 });
     assert.equal((await call("/api/beta/request", undefined, {})).status, 401);
     assert.equal(
       (
@@ -192,6 +226,10 @@ test("authenticated requests and review links preserve server identity, CSRF, re
       (await call("/api/beta/review", accounts.cofounder)).status,
       403,
     );
+    await db.exec("drop table public.beta_waitlist");
+    const unavailable = await call("/api/beta/review", accounts.founder);
+    assert.equal(unavailable.status, 503);
+    assert.deepEqual(await unavailable.json(), { error: "Beta request service is temporarily unavailable." });
   } finally {
     await closeQueue();
     await new Promise<void>((resolve, reject) =>

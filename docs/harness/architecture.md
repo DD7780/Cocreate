@@ -40,6 +40,8 @@ The additive [request migration](../../supabase/migrations/20261008191401_beta_a
 
 `src/BetaReview.tsx` renders explicit POST decisions and safe text; `BetaAccess` displays own request state and retains its 30-second access recheck. Email GET links grant no authority. `server/beta-email.ts` builds escaped messages using the existing shared Resend transport. Immutable outbox payload/key, bounded leased retries and independently committed decisions preserve honest provider uncertainty. The Worker five-minute cron uses a private due-mail RPC to wake the existing primary container. No public mail dispatcher or new service is added. [Feature evidence](beta-access-requests.md) separates local/CI checks from the user's manual hosted acceptance.
 
+The review list also reads `beta_waitlist` through the existing confirmed reviewer gate and server-only administrative client. It returns email/time/consent in 50-row pages, an exact total and deterministic timestamp/email ordering. RLS/client grants are unchanged. Interest is never joined into account or approval authority. The client clears private lists after failed refreshes and ignores superseded loads. [Registration visibility evidence](beta-registration-visibility.md) distinguishes this source repair from deployment.
+
 | Boundary | Source and responsibility |
 | --- | --- |
 | Browser | `src/main.tsx`, `src/ProjectApp.tsx`, `src/App.tsx`: project/auth shell, workspace and derived UI |

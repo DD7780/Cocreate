@@ -3,8 +3,10 @@ import type express from "express";
 import {
   betaMessageLimit,
   betaDeclineCooldownDays,
+  betaWaitlistPageSize,
   type BetaRequest,
   type BetaRequestState,
+  type BetaReviewList,
 } from "../shared/beta-access.js";
 import type { SupabasePlatform } from "./supabase-platform.js";
 import {
@@ -142,8 +144,27 @@ export class BetaRequestService {
     return rowRequest(data);
   }
 
-  async list(userId: string, selectedId?: string) {
+  async list(
+    userId: string,
+    selectedId?: string,
+    waitlistOffset = 0,
+  ): Promise<BetaReviewList> {
     await this.requireReviewer(userId);
+    if (
+      !Number.isSafeInteger(waitlistOffset) ||
+      waitlistOffset < 0 ||
+      waitlistOffset > 1_000_000
+    )
+      throw Object.assign(new Error("Invalid registration page."), { status: 400 });
+    const waitlist = await this.platform.admin
+      .from("beta_waitlist")
+      .select("email,registered_at,consent_version", { count: "exact" })
+      .order("registered_at", { ascending: false })
+      .order("email", { ascending: true })
+      .range(waitlistOffset, waitlistOffset + betaWaitlistPageSize - 1);
+    databaseError(waitlist.error);
+    if (waitlist.count === null)
+      throw new Error("Registration count was not confirmed.");
     const pending = await this.platform.admin
       .from("beta_access_requests")
       .select(requestColumns)
@@ -176,6 +197,18 @@ export class BetaRequestService {
       pending: (pending.data || []).map(rowRequest),
       recent: (recent.data || []).map(rowRequest),
       selected,
+      waitlist: {
+        registrations: (waitlist.data || []).map((row) => ({
+          email: row.email,
+          registeredAt: row.registered_at,
+          consentVersion: row.consent_version,
+        })),
+        total: waitlist.count,
+        offset: waitlistOffset,
+        nextOffset:
+          waitlistOffset + betaWaitlistPageSize < waitlist.count
+            ? waitlistOffset + betaWaitlistPageSize : null,
+      },
     };
   }
 
@@ -357,6 +390,9 @@ export function registerBetaRequestRoutes(
       service.list(
         id,
         typeof req.query.request === "string" ? req.query.request : undefined,
+        req.query.waitlistOffset === undefined ? 0
+          : typeof req.query.waitlistOffset === "string" && /^\d+$/.test(req.query.waitlistOffset)
+            ? Number(req.query.waitlistOffset) : NaN,
       ),
     ),
   );

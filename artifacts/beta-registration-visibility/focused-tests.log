@@ -1,0 +1,172 @@
+TAP version 13
+# (node:6004) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+ok 1 - anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+  ---
+  duration_ms: 484.5088
+  type: 'test'
+  ...
+# Subtest: failed durable writes cannot show registration success; rate window expiry allows safe retry
+ok 2 - failed durable writes cannot show registration success; rate window expiry allows safe retry
+  ---
+  duration_ms: 70.0633
+  type: 'test'
+  ...
+# Subtest: registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+ok 3 - registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+  ---
+  duration_ms: 1.4107
+  type: 'test'
+  ...
+# Subtest: approval is fresh private authority, owner retains access, and approval grants no foreign membership
+ok 4 - approval is fresh private authority, owner retains access, and approval grants no foreign membership
+  ---
+  duration_ms: 14.442
+  type: 'test'
+  ...
+# Subtest: pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+ok 5 - pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+  ---
+  duration_ms: 2.4918
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"013b0436-8ff3-4a7a-b6b6-6e2857d7edb8"}
+# {"event":"collaboration.connected","connectionId":"f1f3349a-d11c-4033-931d-dbbef764ccd2","correlationId":"d3d49a2c-329a-47e0-beda-d14cbc6df856"}
+# {"event":"collaboration.disconnected","connectionId":"f1f3349a-d11c-4033-931d-dbbef764ccd2","code":4403}
+# {"event":"collaboration.connected","connectionId":"c46bfb99-abf2-4660-a09a-a2798ec489e4","correlationId":"569cf189-9afb-4e18-8c9c-fc943322df3f"}
+# {"event":"collaboration.disconnected","connectionId":"c46bfb99-abf2-4660-a09a-a2798ec489e4","code":4403}
+# Subtest: unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+ok 6 - unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+  ---
+  duration_ms: 293.6082
+  type: 'test'
+  ...
+# Embedded PostgreSQL: transaction semantics; native contention is a separate CI check
+# Subtest: beta request SQL enforces identity, privacy, pending uniqueness, atomic decisions and revocation
+ok 7 - beta request SQL enforces identity, privacy, pending uniqueness, atomic decisions and revocation
+  ---
+  duration_ms: 11615.6119
+  type: 'test'
+  ...
+# Subtest: durable email leases freeze payload, fence stale workers, bound retries and stop before idempotency expiry
+ok 8 - durable email leases freeze payload, fence stale workers, bound retries and stop before idempotency expiry
+  ---
+  duration_ms: 5084.7857
+  type: 'test'
+  ...
+# (node:26036) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: authenticated requests and review links preserve server identity, CSRF, reviewer and private project boundaries
+ok 9 - authenticated requests and review links preserve server identity, CSRF, reviewer and private project boundaries
+  ---
+  duration_ms: 10938.1024
+  type: 'test'
+  ...
+# Subtest: reviewer and requester emails are durable, escaped and retried with an identical provider key and payload
+ok 10 - reviewer and requester emails are durable, escaped and retried with an identical provider key and payload
+  ---
+  duration_ms: 4953.7441
+  type: 'test'
+  ...
+# Subtest: missing email configuration never dispatches; invalid origins cannot produce review links
+ok 11 - missing email configuration never dispatches; invalid origins cannot produce review links
+  ---
+  duration_ms: 1.3824
+  type: 'test'
+  ...
+# Subtest: the durable scheduler wakes only due email work and exposes no public delivery endpoint
+ok 12 - the durable scheduler wakes only due email work and exposes no public delivery endpoint
+  ---
+  duration_ms: 14.7364
+  type: 'test'
+  ...
+# (node:18356) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: project tickets are scoped and expire
+ok 13 - project tickets are scoped and expire
+  ---
+  duration_ms: 5.365
+  type: 'test'
+  ...
+# Subtest: hosted Supabase mode fails closed when the server secret is absent
+ok 14 - hosted Supabase mode fails closed when the server secret is absent
+  ---
+  duration_ms: 0.8792
+  type: 'test'
+  ...
+# Subtest: server Supabase configuration rejects mismatched credentials and JWKS
+ok 15 - server Supabase configuration rejects mismatched credentials and JWKS
+  ---
+  duration_ms: 0.6248
+  type: 'test'
+  ...
+# Subtest: public auth configuration is explicit and derives the Worker callback
+ok 16 - public auth configuration is explicit and derives the Worker callback
+  ---
+  duration_ms: 2.5155
+  type: 'test'
+  ...
+# Subtest: Wrangler uses matching server and Vite build-time Supabase configuration
+ok 17 - Wrangler uses matching server and Vite build-time Supabase configuration
+  ---
+  duration_ms: 20.673
+  type: 'test'
+  ...
+# Subtest: Google callback exchanges once, reports errors, and restores only local destinations
+ok 18 - Google callback exchanges once, reports errors, and restores only local destinations
+  ---
+  duration_ms: 2.0254
+  type: 'test'
+  ...
+# Subtest: Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+ok 19 - Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+  ---
+  duration_ms: 17.1534
+  type: 'test'
+  ...
+# Subtest: auth source preserves Google and adds password, confirmation, and recovery flows
+ok 20 - auth source preserves Google and adds password, confirmation, and recovery flows
+  ---
+  duration_ms: 1.7874
+  type: 'test'
+  ...
+# Subtest: project names and invitation emails use canonical validation
+ok 21 - project names and invitation emails use canonical validation
+  ---
+  duration_ms: 1.4643
+  type: 'test'
+  ...
+# Subtest: transactional invitation email is truthful and idempotent at the provider boundary
+ok 22 - transactional invitation email is truthful and idempotent at the provider boundary
+  ---
+  duration_ms: 49.1151
+  type: 'test'
+  ...
+# Subtest: email invitation migration binds recipients and enforces sharing permissions
+ok 23 - email invitation migration binds recipients and enforces sharing permissions
+  ---
+  duration_ms: 1.8421
+  type: 'test'
+  ...
+# Subtest: invite tokens are hashed before persistence
+ok 24 - invite tokens are hashed before persistence
+  ---
+  duration_ms: 0.3663
+  type: 'test'
+  ...
+# Subtest: migration enables RLS and keeps authoritative runtime writes server-only
+ok 25 - migration enables RLS and keeps authoritative runtime writes server-only
+  ---
+  duration_ms: 1.7036
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 25
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 43391.0385

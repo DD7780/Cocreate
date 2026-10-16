@@ -1,5 +1,13 @@
 # Harness status and outstanding work
 
+## Beta registration visibility — 2026-10-16
+
+- [x] Trace the live mismatch with read-only aggregate SQL: two landing registrations, zero submitted access requests. Existing release source lists only requests.
+- [x] Reviewer-only registrations with consent/date, exact count and deterministic 50-row pagination; explicit distinction from confirmed-account requests.
+- [x] Loading/refresh controls, missing linked request, stale-load fencing and removal of private lists on failed/revoked refresh.
+- [x] Focused SQL/SDK/HTTP checks and controlled browser pagination, mobile, failure recovery and existing decisions. See [commands, results and limits](beta-registration-visibility.md).
+- [ ] Full regression gate and hosted deployment/acceptance: current Windows failures are retained in the packet; branch push is not production acceptance.
+
 ## Build submission recovery — 2026-10-16
 
 - [x] Bounded [change packet](build-submission-recovery.md); client-only error/progress and failed-receipt recovery; caller-only/flush/idempotency and BYOK authority retained.

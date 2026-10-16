@@ -104,6 +104,10 @@ export async function betaDatabase(): Promise<BetaDatabase> {
       alter table public.beta_access enable row level security;
       revoke all on public.beta_access from public,anon,authenticated;
       grant select,insert,update,delete on public.beta_access to service_role;
+      create table public.beta_waitlist(email text primary key,consent_version text not null,registered_at timestamptz not null default now());
+      alter table public.beta_waitlist enable row level security;
+      revoke all on public.beta_waitlist from public,anon,authenticated;
+      grant select,insert,update,delete on public.beta_waitlist to service_role;
       grant usage on schema auth to service_role;
       create table public.project_members(project_id uuid,user_id uuid,role text,can_share boolean not null default false);
       grant select on public.project_members to service_role;
