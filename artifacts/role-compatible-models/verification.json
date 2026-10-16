@@ -70,16 +70,38 @@
   "newFailingTestNames": [
     "hosted reads, mutations and live delivery check current membership rather than a stale ticket role"
   ],
-  "fullScopeNote": "261-test run started before the three byok-dispatch tests were added; those three pass in the 35-test focused set. Production-image CI must run all 264.",
+  "fullScopeNote": "261-test local run started before the three byok-dispatch tests were added; those three pass in the 35-test focused set. All three production-image CI runs pass all 264 with zero skips.",
   "browser": "browser.json",
   "catalog": "catalog.json",
   "paidInference": false,
-  "productionCI": "pending",
-  "deployment": "pending",
+  "productionCI": {
+    "source": "940749c1874c2d185e173382e9414882fd940b53",
+    "merged": "2d710568d088a9ea40faf9fe038be5775ff95ea0",
+    "runs": [
+      38928238795,
+      38928254254,
+      38929255716
+    ],
+    "tests": 264,
+    "passed": 264,
+    "failed": 0,
+    "skipped": 0,
+    "postgresql": 2,
+    "compiler": 10,
+    "browserAuthority": 15
+  },
+  "deployment": {
+    "mergeCommit": "2d710568d088a9ea40faf9fe038be5775ff95ea0",
+    "fingerprint": "ecaa10650538b16310e00fdcff95b5ec2712fd80691abace34d57c1352422b83",
+    "verifiedAt": "2026-10-16T16:14:41.628Z",
+    "release": "live/release.json",
+    "canary": "live/canary.json",
+    "workerBuild": "https://dash.cloudflare.com/fc419457dc350fcfada2b0a3f00bfe3e/workers/services/view/cocreate/production/builds/12e330cf-df61-4395-a9cf-f511485ffd8d"
+  },
   "hostedMembershipRepeat": {
     "initial": "ECONNRESET",
     "subsequentFocusedRuns": "passed twice",
-    "scope": "Local mocked hosted membership/WebSocket behavior; production-image CI pending"
+    "scope": "Local mocked hosted membership/WebSocket behavior; production-image CI also passes"
   },
   "releaseFingerprint": "ecaa10650538b16310e00fdcff95b5ec2712fd80691abace34d57c1352422b83",
   "build": "passed",

@@ -1,0 +1,9 @@
+{
+  "observedAt": "2026-10-16T15:59:15.590Z",
+  "httpStatus": 200,
+  "body": {
+    "status": "ok",
+    "service": "cocreate-app",
+    "release_fingerprint": "d735816b8ad0cbb20dc8e5f42e821bd38d326288ba05a0e68b4abf14fbbd9d00"
+  }
+}
