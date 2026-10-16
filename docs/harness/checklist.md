@@ -1,5 +1,13 @@
 # Harness status and outstanding work
 
+## Build submission recovery — 2026-10-16
+
+- [x] Bounded [change packet](build-submission-recovery.md); client-only error/progress and failed-receipt recovery; caller-only/flush/idempotency and BYOK authority retained.
+- [x] Focused transport, submission, membership, temporary-key, ordering and shortcut regressions: 34/34 pass. Strict TypeScript/production build and boundary/UI-scope audits pass.
+- [x] Two independent signed local browser contexts: visible save errors, 3.3-second saves, owner button/editor Alt+X, retained focus and one caller-only interpretation each. Independent review is clear; graph and 97-path release fingerprint refreshed.
+- [x] Full local suite attempted: 231 passed, 19 failed, 8 skipped out of 258; unchanged server/isolation suites retain runtime/resource/timing failures. This is a failing local full run; Linux CI remains the release gate. [Details](build-submission-recovery.md).
+- [ ] Main integration/live rollout and private hosted-account/provider acceptance. Source push/PR status is reported at delivery and does not establish hosted acceptance.
+
 Founder footer (2026-10-15): exact names/email/LinkedIn details and expanded-footer placement approved for main. Verify built desktop/phone rendering, contact hrefs and production-image CI; [evidence packet](founder-contacts.md).
 
 Canvas writing surface (2026-10-15): Canvas sidebar removed and the editor made a full-width, top-left, click-to-focus writing surface. Local controlled browser checks, build, boundary and UI-scope audits are recorded in [the packet](canvas-writing-surface.md). Hosted visual review and reference comparison for the remaining Artifacts Shared context view stay open.

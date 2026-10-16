@@ -1,0 +1,27 @@
+{
+  "scope": "Two independent local signed browser contexts, current Vite client, real local server/RoomManager, controlled canonical-save outcomes and loopback interpretation provider; no hosted account or paid inference",
+  "checks": [
+    "Owner sees save error with zero submissions",
+    "Owner submits after 3.3-second save and stale error clears",
+    "Invited editor sees save error",
+    "Editor Alt+X preserves focus; exactly one interpretation per caller; no console exceptions"
+  ],
+  "outcomes": {
+    "submissions": [
+      {
+        "participantId": "alice",
+        "status": "queued"
+      },
+      {
+        "participantId": "bob",
+        "status": "queued"
+      }
+    ],
+    "interpretations": [
+      "Owner",
+      "Invited editor"
+    ],
+    "pending": []
+  },
+  "errors": []
+}

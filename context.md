@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Build submission recovery (2026-10-16): Build my changes / editor-focused Alt+X now show saving/submitting progress and surface flush errors. The canonical-save wait is bounded at 15 seconds. An explicit retry preserves uncertain request identity, recovers its receipt and permits one fresh caller-only submission only after confirmed failure. Owner/editor permissions and temporary-key rules are unchanged. Fresh local checks and publication status are tracked in [the packet](docs/harness/build-submission-recovery.md).
+
 Founder contacts (2026-10-15): the user supplied public email/LinkedIn links for Susan Bhatta and Aaryan Bastakoti, approved the expanded-footer placement and requested main publication. Remove the generic introduction sign-off; retain the footer logo and Sign in row. [Scope and checks](docs/harness/founder-contacts.md).
 
 Canvas writing surface (2026-10-15): the user requested removal of the Canvas Shared context sidebar and a spacious Docs-like editor. Canvas now fills the workspace, starts at the top-left with an inline placeholder, focuses from blank-space clicks and scrolls naturally. AgentPanel remains beside Artifacts; usage remains in Workflow. UI-only: no server, shared contract, storage or history change. [Scope and checks](docs/harness/canvas-writing-surface.md).

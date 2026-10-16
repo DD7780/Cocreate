@@ -2,6 +2,7 @@ import { BrandMark } from "./BrandMark";
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
 import { api } from "./api";
+import { submitDraftChanges } from "./submit-changes";
 import { AgentPanel } from "./workspace/AgentPanel";
 import {
   draftKey,
@@ -486,23 +487,20 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         }
         submittingRef.current = true;
         setSubmitting(true);
-        setNotice('');
         const keepFocus = activeEditor.isFocused;
         try {
-            await activeProvider.flush();
-            submissionRequest.current ||= crypto.randomUUID();
-            const result = await action(`/api/rooms/${id}/submit`, {
-                requestId: submissionRequest.current
+            await submitDraftChanges({
+                requestId: submissionRequest,
+                flush: () => activeProvider.flush(),
+                submit: requestId => action(`/api/rooms/${id}/submit`, { requestId }),
+                onNotice: setNotice,
+                onError: setError
             });
-            submissionRequest.current = undefined;
-            setNotice(result.message || 'Changes submitted.');
-        }
-        catch {
         }
         finally {
             submittingRef.current = false;
             setSubmitting(false);
-            if (keepFocus)
+            if (keepFocus && !activeEditor.isDestroyed)
                 requestAnimationFrame(() => activeEditor.commands.focus());
         }
     }, [action, connection, editor, id, provider, state]);
