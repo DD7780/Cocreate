@@ -6,7 +6,9 @@
 - [x] Focused transport, submission, membership, temporary-key, ordering and shortcut regressions: 34/34 pass. Strict TypeScript/production build and boundary/UI-scope audits pass.
 - [x] Two independent signed local browser contexts: visible save errors, 3.3-second saves, owner button/editor Alt+X, retained focus and one caller-only interpretation each. Independent review is clear; graph and 97-path release fingerprint refreshed.
 - [x] Full local suite attempted: 231 passed, 19 failed, 8 skipped out of 258; unchanged server/isolation suites retain runtime/resource/timing failures. This is a failing local full run; Linux CI remains the release gate. [Details](build-submission-recovery.md).
-- [ ] Main integration/live rollout and private hosted-account/provider acceptance. Source push/PR status is reported at delivery and does not establish hosted acceptance.
+- [x] PR #8 merged to main `1b004ac`; main Linux production-image CI: PostgreSQL 2/2, compiler/resource 10/10, browser/authority 15/15 and full 258/258, zero skips. The failed local run above remains dated evidence.
+- [x] Cloudflare build successful; live canonical health matches the prepared `d735816b…` fingerprint and served client contains the fix. Anonymous desktop/phone home and sign-in browser checks pass without exceptions, failed resources or horizontal overflow. [Live evidence](../../artifacts/build-submission-recovery/live/canary.json).
+- [ ] Independent private hosted owner/editor submissions with a reconnected AI lease and live provider acceptance; production save-latency diagnosis. No paid inference or private mutation was run for publication.
 
 Founder footer (2026-10-15): exact names/email/LinkedIn details and expanded-footer placement approved for main. Verify built desktop/phone rendering, contact hrefs and production-image CI; [evidence packet](founder-contacts.md).
 
