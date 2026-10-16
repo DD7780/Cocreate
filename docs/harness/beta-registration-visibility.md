@@ -30,3 +30,7 @@ The complete Windows regression gate is **not green**. Before the final rebase, 
 Read-only production aggregate inspection used the configured `dnsapasubeoxxsgkiotw` project. No personal registration emails are included in evidence. No production rows, reviewer grants, migrations, email, model calls or deployment were changed. The pushed branch is for review/integration; the new registration list is not claimed deployed or accepted in a real reviewer session. Existing release evidence in the predecessor packet remains dated history.
 
 Rollback: revert this source change while retaining all waitlist/request/approval/outbox rows and current RLS/grants. The earlier page will again show only explicitly submitted requests; no database rollback is needed.
+
+## Authorized main publication — 2026-10-16
+
+The user explicitly requested pushing to main for automatic deployment. Refreshed origin/main remains `3f86b2a`, already included by the fix. Prepared and verified the existing source manifest/fingerprint with `node scripts/release-fingerprint.mjs --write-config` and its read-only verification command: `255e9818593a5c4be78b9c6b4ce26b09b0b444d04a51817212f1edc56b52b0ad`, 97 source/build paths. Only the fingerprint value changes in deployment configuration. Final candidate Linux CI, main push and active release observations are recorded below when available; the earlier local limitations remain historical evidence.
