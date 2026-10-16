@@ -1,0 +1,61 @@
+{
+  "observedAt": "2026-10-16T15:52:01.473Z",
+  "controlledFixture": true,
+  "liveProviderGeneration": false,
+  "checks": [
+    "role-specific options and FREE/PAID prefixes/groups; opening makes zero requests",
+    "selected free/paid price summaries, low reasoning and role allowances visible",
+    "phone dialog and long model labels do not overflow",
+    "save confirms exact role choices; one setup POST, zero generation",
+    "invited editor retains read-only setup and cannot select or spend"
+  ],
+  "options": [
+    {
+      "label": "Builder",
+      "groups": [
+        "FREE models — $0 token cost",
+        "PAID models — billed to your OpenRouter key"
+      ],
+      "options": [
+        {
+          "id": "",
+          "label": "Choose a builder"
+        },
+        {
+          "id": "fixture/qualified:free",
+          "label": "FREE · Qualified free model · fixture/qualified:free"
+        },
+        {
+          "id": "moonshotai/kimi-k3",
+          "label": "PAID · Kimi K3 · moonshotai/kimi-k3 · $0.304 in / $11.936 out per 1M"
+        }
+      ]
+    },
+    {
+      "label": "Interpretation model",
+      "groups": [
+        "FREE models — $0 token cost",
+        "PAID models — billed to your OpenRouter key"
+      ],
+      "options": [
+        {
+          "id": "",
+          "label": "Choose an interpretation model"
+        },
+        {
+          "id": "fixture/qualified:free",
+          "label": "FREE · Qualified free model · fixture/qualified:free"
+        },
+        {
+          "id": "fixture/interpretation-only",
+          "label": "FREE · Interpretation only · fixture/interpretation-only"
+        },
+        {
+          "id": "moonshotai/kimi-k3",
+          "label": "PAID · Kimi K3 · moonshotai/kimi-k3 · $0.304 in / $11.936 out per 1M"
+        }
+      ]
+    }
+  ],
+  "errors": []
+}

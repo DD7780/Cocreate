@@ -130,7 +130,7 @@ import {
   managedCatalog,
   managedSetup,
 } from "./managed-catalog.js";
-import { BYOK_MODEL_VERSION, OpenRouterLeases } from "./byok-lease.js";
+import { BYOK_MODEL_VERSION, BYOK_ROLE_LIMITS, OpenRouterLeases } from "./byok-lease.js";
 import { aggregatePhysicalUsage } from "./usage-ledger.js";
 import { CoordinatorUnavailableError } from "./coordinator.js";
 const colors = [
@@ -227,15 +227,11 @@ export class RoomManager {
       const model = (
         role === "builder" ? lease.builders : lease.interpreters
       ).find((item) => item.id === modelId)!;
-      const maxOutputTokens = Math.min(
-        role === "builder" ? 8_000 : 2_400,
-        model.maxOutputTokens ?? Number.POSITIVE_INFINITY,
-        Math.floor(model.contextLength / 4),
-      );
+      const maxOutputTokens = BYOK_ROLE_LIMITS[role].maxOutputTokens;
       const maxInputTokens = Math.max(
         1_024,
         Math.min(
-          role === "builder" ? 60_000 : 20_000,
+          BYOK_ROLE_LIMITS[role].maxInputTokens,
           model.contextLength - maxOutputTokens - 2_000,
         ),
       );
@@ -256,6 +252,7 @@ export class RoomManager {
         },
         maxInputTokens,
         maxOutputTokens,
+        reasoningConfig: model.reasoningConfig,
       };
     };
     room.ai.personal = { connectionId: "byok", model: personalModel };
@@ -1177,6 +1174,7 @@ export class RoomManager {
         provider: "openrouter",
         maxInputTokens: expected.maxInputTokens,
         maxOutputTokens: expected.maxOutputTokens,
+        reasoningConfig: expected.reasoningConfig,
         workflowInstruction: workflowInstruction("developer"),
         presetVersion: setup.presetVersion,
         pricingVersion: setup.pricingVersion,
