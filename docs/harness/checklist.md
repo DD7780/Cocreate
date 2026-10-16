@@ -1,5 +1,16 @@
 # Harness status and outstanding work
 
+## Role-compatible models - 2026-10-16
+
+- [x] Distinct role lists enforce known context/output, text and JSON Schema support, valid prices and supported lower/optional reasoning. Exact-role selection remains server enforced.
+- [x] FREE/PAID groups and selected price/allowance/reasoning summaries; inference-free save; phone and editor read-only checks.
+- [x] 35 focused model/provider/authority/budget/submission tests pass. Browser fixture checks pass with no exceptions or overflow.
+- [ ] Full production-image CI and deployment verification. Local native-browser limitations remain separately recorded.
+- [ ] Exact failing provider response and live Kimi/Muse generation remain unverified; no paid inference was run.
+
+[Scope and current evidence](role-compatible-models.md).
+
+
 ## Build submission recovery — 2026-10-16
 
 - [x] Bounded [change packet](build-submission-recovery.md); client-only error/progress and failed-receipt recovery; caller-only/flush/idempotency and BYOK authority retained.

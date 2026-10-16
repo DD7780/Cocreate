@@ -48,7 +48,7 @@ Active client: `src/main.tsx`, `src/App.tsx`, React/Vite/TipTap/Yjs. Active serv
 
 Preserve TypeScript strict mode, pnpm lockfile and local import conventions. Write readable focused functions and explicit boundary types; avoid new compressed modules, unrelated formatting and competing frameworks/package managers. Keep provider requests in adapters, orchestration in the harness, and UI out of provider logic. Validate inputs and structured outputs before use, rather than casting invalid data to trusted types.
 
-Reuse accessible controls, editor formatting, participant colors, keyboard navigation, quiet document typography, reduced-motion support and preview style isolation. Opening/selecting/viewing setup never invokes inference. Explicit tests may consume provider usage and must distinguish capability from quality. Developer is the only active hosted workflow; retain historical Analyst/Researcher records without enabling absent tools.
+Reuse accessible controls, editor formatting, participant colors, keyboard navigation, quiet document typography, reduced-motion support and preview style isolation. Opening/selecting/viewing setup never invokes inference. Temporary model choices must meet their role's published context, completion and JSON Schema requirements; never treat missing metadata as capacity or free pricing. Preserve the disclosed frozen reasoning configuration through interpretation, generation and recovery; OpenRouter must not silently drop the requested schema. Explicit tests may consume provider usage and must distinguish capability from quality. Developer is the only active hosted workflow; retain historical Analyst/Researcher records without enabling absent tools.
 
 ## Permissions, persistence and sharing
 

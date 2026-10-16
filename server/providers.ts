@@ -4,6 +4,7 @@ import type {
   AIFormat,
   AIModel,
   AIProvider,
+  AIReasoningConfig,
   ProviderRequestPurpose,
   ProviderRequestRecord,
 } from "../shared/types.js";
@@ -56,6 +57,7 @@ export type ProviderConfig = {
   baseUrl: string;
   apiKey?: string;
   apiFormat?: AIFormat;
+  reasoningConfig?: AIReasoningConfig;
 };
 export type GenerateRequest = {
   model: string;
@@ -229,7 +231,7 @@ const classify = (
   if (status === 402 || /balance|credit|quota.*exceed|insufficient/.test(lower))
     return new ProviderError(
       "balance",
-      "The provider reports insufficient balance or quota.",
+      `The provider reports insufficient balance or quota. Check the key’s credit and limits; for paid models, add credit or choose a FREE model. ${message.slice(0, 180)}`.trim(),
       false,
     );
   if (
@@ -611,6 +613,10 @@ const openAICompatible = (
           schema: req.schema,
         },
       };
+    if (id === "openrouter" && req.schema) {
+      body.provider = { require_parameters: true };
+      if (config.reasoningConfig) body.reasoning = config.reasoningConfig;
+    }
     if (id === "openrouter" && accounting.getStore()?.managed) {
       body.provider = {
         allow_fallbacks: false,
@@ -633,7 +639,7 @@ const openAICompatible = (
       if (
         !(error instanceof ProviderError) ||
         error.kind !== "unsupported" ||
-        !req.schema
+        !req.schema || id === "openrouter"
       )
         throw error;
       delete body.response_format;
@@ -1209,14 +1215,14 @@ export async function generateStructured(
       ) {
         repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
         repairError.message =
-          "The response exhausted the per-call output allowance twice. The last working artifact is retained. Split the submitted work or choose a model with a verified larger output allowance; the spending limit controls cost but does not expand output or context capacity.";
+          `The model reached the ${request.maxOutputTokens?.toLocaleString('en-US') ?? 'configured'}-token response allowance twice, including any reasoning tokens. Submit a smaller change and try again. The last working artifact is retained. The spending limit controls cost but does not expand output or context capacity.`;
       } else if (
         repairError instanceof ProviderError &&
         repairError.kind === "invalid_output"
       ) {
         repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
         repairError.message =
-          "The model returned invalid structured JSON twice. The last working artifact is retained. Retry with a model that supports the Builder file schema.";
+          "The model returned invalid structured JSON twice. The last working artifact is retained. Submit a smaller change or choose another compatible model.";
       }
       throw repairError;
     }

@@ -1,0 +1,92 @@
+{
+  "observedAt": "2026-10-16T15:54:45.749Z",
+  "core": {
+    "tests": 35,
+    "passed": 35,
+    "failed": 0,
+    "skipped": 0,
+    "failures": []
+  },
+  "broaderFocused": {
+    "tests": 52,
+    "passed": 49,
+    "failed": 3,
+    "skipped": 0,
+    "failures": [
+      "required behavior failure retains the verified product, records actionable evidence and needs explicit retry",
+      "unavailable verification browser fails before builder spending and never reuses legacy covered evidence",
+      "independent participants submit in durable capture order, retain later build inputs and saved drafts on reload"
+    ]
+  },
+  "fullLocal": {
+    "tests": 261,
+    "passed": 239,
+    "failed": 14,
+    "skipped": 8,
+    "failures": [
+      "real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate",
+      "compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+      "unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks",
+      "actual verification browser denies a private host file and loopback network and removes its child/profile",
+      "browser CPU remains inside the isolated job bounds",
+      "browser protocol output remains inside the isolated job bounds",
+      "cancellation and wall limits terminate browser execution and leave no child jobs",
+      "hosted reads, mutations and live delivery check current membership rather than a stale ticket role",
+      "Current outcome of Step 01 scenario: simultaneous-slow",
+      "Current outcome of Step 01 scenario: failed-interpreter",
+      "Current outcome of Step 01 scenario: incorrect-product",
+      "required behavior failure retains the verified product, records actionable evidence and needs explicit retry",
+      "unavailable verification browser fails before builder spending and never reuses legacy covered evidence",
+      "independent participants submit in durable capture order, retain later build inputs and saved drafts on reload"
+    ]
+  },
+  "previousLocalBaseline": {
+    "tests": 258,
+    "passed": 231,
+    "failed": 19,
+    "skipped": 8,
+    "failures": [
+      "an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact",
+      "lease loss after private body upload cannot promote or start another physical attempt",
+      "synchronous publication failure clears the pending gate and preserves the previous product",
+      "sustained captures make revision-labelled progress each cycle without a quiet global queue",
+      "real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate",
+      "compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+      "unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks",
+      "actual verification browser denies a private host file and loopback network and removes its child/profile",
+      "browser CPU remains inside the isolated job bounds",
+      "browser protocol output remains inside the isolated job bounds",
+      "cancellation and wall limits terminate browser execution and leave no child jobs",
+      "CPU bound stops a busy child before the longer wall deadline",
+      "three collaborators create and maintain a runnable recipe app",
+      "Current outcome of Step 01 scenario: simultaneous-slow",
+      "Current outcome of Step 01 scenario: failed-interpreter",
+      "Current outcome of Step 01 scenario: incorrect-product",
+      "required behavior failure retains the verified product, records actionable evidence and needs explicit retry",
+      "unavailable verification browser fails before builder spending and never reuses legacy covered evidence",
+      "independent participants submit in durable capture order, retain later build inputs and saved drafts on reload"
+    ]
+  },
+  "newFailingTestNames": [
+    "hosted reads, mutations and live delivery check current membership rather than a stale ticket role"
+  ],
+  "fullScopeNote": "261-test run started before the three byok-dispatch tests were added; those three pass in the 35-test focused set. Production-image CI must run all 264.",
+  "browser": "browser.json",
+  "catalog": "catalog.json",
+  "paidInference": false,
+  "productionCI": "pending",
+  "deployment": "pending",
+  "hostedMembershipRepeat": {
+    "initial": "ECONNRESET",
+    "subsequentFocusedRuns": "passed twice",
+    "scope": "Local mocked hosted membership/WebSocket behavior; production-image CI pending"
+  },
+  "releaseFingerprint": "ecaa10650538b16310e00fdcff95b5ec2712fd80691abace34d57c1352422b83",
+  "build": "passed",
+  "boundaries": {
+    "files": 161,
+    "violations": 0
+  },
+  "graphify": "AST update completed",
+  "codeReview": "Independent scoped review: no actionable P1/P2"
+}
