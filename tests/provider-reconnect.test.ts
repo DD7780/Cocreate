@@ -3,6 +3,7 @@ import assert from 'node:assert/strict';
 import * as Y from 'yjs';
 import { deletionSignature } from '../shared/document-state.js';
 import {CoCreateProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
+import {submitDraftChanges} from '../src/submit-changes.js';
 
 class FakeWebSocket {
   static CONNECTING=0;static OPEN=1;static CLOSING=2;static CLOSED=3;static instances:FakeWebSocket[]=[];
@@ -17,6 +18,56 @@ class FakeWebSocket {
 
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);
+
+for (const outcome of ['slow-save', 'timeout', 'rejected-save', 'disconnect'] as const) {
+  test(`Build my changes ${outcome} keeps progress or reports failure before any submission`, async () => {
+    FakeWebSocket.instances = [];
+    const timers = new Map<number, { at: number; callback: () => void }>();
+    let timerId = 0, clock = 0, submissions = 0;
+    const advance = (ms: number) => {
+      clock += ms;
+      for (const [id, timer] of timers) if (timer.at <= clock) { timers.delete(id); timer.callback(); }
+    };
+    const doc = new Y.Doc(), notices: string[] = [], errors: string[] = [];
+    const provider = new CoCreateProvider(doc, 'room', 'token', () => {}, () => {}, () => {}, {
+      WebSocketImpl: FakeWebSocket as any, origin: 'http://example.test',
+      fetchImpl: async () => new Response('{}'),
+      setTimer: (callback, delay) => { timers.set(++timerId, { at: clock + delay, callback }); return timerId; },
+      clearTimer: id => { timers.delete(id); },
+    });
+    try {
+      const socket = FakeWebSocket.instances[0]; socket.open();
+      doc.getText('draft').insert(0, 'My pending change');
+      const pending = submitDraftChanges({ requestId: { current: undefined }, flush: () => provider.flush(),
+        submit: async () => { submissions++; return { status: 'queued', message: 'Changes accepted.' }; },
+        onNotice: message => notices.push(message), onError: message => errors.push(message),
+      });
+      const request = JSON.parse(socket.sent.at(-1) as string);
+      assert.equal(request.type, 'flush');
+      assert.equal(submissions, 0);
+      advance(3_300); await tick();
+      assert.match(notices.at(-1)!, /Saving/);
+      assert.equal(submissions, 0);
+      if (outcome === 'slow-save') socket.message(JSON.stringify({ type: 'flushed', requestId: request.requestId }));
+      if (outcome === 'timeout') advance(11_700);
+      if (outcome === 'rejected-save') socket.message(JSON.stringify({ type: 'flush-error', requestId: request.requestId, message: 'Canonical save failed.' }));
+      if (outcome === 'disconnect') socket.close();
+      await pending;
+      if (outcome === 'slow-save') {
+        assert.equal(submissions, 1);
+        assert.deepEqual(notices, ['Saving your changes before building…', 'Submitting your changes…', 'Changes accepted.']);
+        assert.equal(errors.at(-1), '');
+      } else {
+        assert.equal(submissions, 0);
+        assert.equal(notices.at(-1), '');
+        assert.match(errors.at(-1)!, /No build was started|Canonical save failed/);
+        socket.message(JSON.stringify({ type: 'flushed', requestId: request.requestId }));
+        assert.equal(submissions, 0, 'a late acknowledgement never submits after a failed gesture');
+      }
+      assert.equal(doc.getText('draft').toString(), 'My pending change');
+    } finally { provider.destroy(); doc.destroy(); }
+  });
+}
 
 test('delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored',()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saved:string[]=[],states:number[]=[];

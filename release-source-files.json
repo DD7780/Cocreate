@@ -84,6 +84,7 @@
   "src/provider.ts",
   "src/studio-ivory.css",
   "src/styles.css",
+  "src/submit-changes.ts",
   "src/supabase.ts",
   "src/vite-env.d.ts",
   "src/workflow-overview.css",
