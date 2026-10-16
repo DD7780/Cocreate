@@ -14,7 +14,7 @@
 - [x] Distinct role lists enforce known context/output, text and JSON Schema support, valid prices and supported lower/optional reasoning. Exact-role selection remains server enforced.
 - [x] FREE/PAID groups and selected price/allowance/reasoning summaries; inference-free save; phone and editor read-only checks.
 - [x] 35 focused model/provider/authority/budget/submission tests pass. Browser fixture checks pass with no exceptions or overflow.
-- [ ] Full production-image CI and deployment verification. Local native-browser limitations remain separately recorded.
+- [x] All three production-image CI runs pass 264/264 with zero skips; native PostgreSQL 2/2, compiler 10/10 and browser/authority 15/15. Main `2d71056` deployed; exact fingerprint/client labels and anonymous public desktop/phone browser checks pass. Local native-browser/WebSocket failures remain separately recorded.
 - [ ] Exact failing provider response and live Kimi/Muse generation remain unverified; no paid inference was run.
 
 [Scope and current evidence](role-compatible-models.md).
