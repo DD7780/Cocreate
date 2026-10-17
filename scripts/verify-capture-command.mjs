@@ -79,7 +79,7 @@ try{
   releaseInterpretation();await wait(()=>room.submissions[0].status==='built','question recorded without product');assert.equal(room.versions.length,0);assert.equal(interpreterCalls,1);
   // Lose only the reply from a real committed command; reload must recover its identical identity.
   await evaluate(`(()=>{const original=window.fetch;let drop=true;window.fetch=async(...args)=>{const result=await original(...args);if(drop&&String(args[0]).endsWith('/commands/capture')){drop=false;throw Error('Controlled capture reply lost')}return result}})()`);
-  await activate();await wait(()=>evaluate(`document.querySelector('.error-banner')?.innerText.includes('Controlled capture reply lost')`),'unknown capture');assert.equal(envelopes.length,2);
+  await activate();await wait(()=>evaluate(`document.querySelector('.error-banner')?.innerText.includes('Capture delivery outcome is unknown')`),'unknown capture');assert.equal(envelopes.length,2);
   await type(' New draft before reload.');
   await call('Page.reload');await wait(()=>evaluate(`typeof window.mountWorkspace==='function'`),'entry reload');
   await evaluate(`window.mountWorkspace(${JSON.stringify(roomId)},${JSON.stringify(renewed)})`);

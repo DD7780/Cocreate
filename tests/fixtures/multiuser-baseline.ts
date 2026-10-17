@@ -104,7 +104,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       return captureAndProcess(manager!,room!, id, key);
     };
     const drain = () => until(() => !!room!.versions.length && !room!.buildTask &&
-      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000);
+      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000).catch(error=>{console.error(JSON.stringify({event:'fixture.drain_failed',scenario,status:room!.status,error:room!.lastError,versions:room!.versions.map(item=>({id:item.id,revision:item.specificationRevision})),submissions:room!.submissions.map(item=>({actor:item.participantId,status:item.status,error:item.error})),active:!!room!.buildTask,scheduled:!!room!.buildTimer,closed:room!.buildAdmissionClosed,attempts:attempts.map(item=>({phase:item.phase,actor:item.actor}))}));throw error;});
 
     if (scenario === 'simultaneous-slow' || scenario === 'failed-interpreter') {
       edit('alice', 'Build a catalog'); edit('bob', 'Add favorites'); edit('cara', 'Add unsubmitted filters');

@@ -1,6 +1,6 @@
 import * as Y from 'yjs';
 import {deletionSignature} from '../shared/document-state';
-import {encodeCaptureBytes, validateCaptureEnvelope, type CaptureEnvelope, type CaptureReceipt, type CaptureSource} from '../shared/capture-command';
+import {decodeCaptureBytes, encodeCaptureBytes, validateCaptureEnvelope, type CaptureEnvelope, type CaptureReceipt, type CaptureSource} from '../shared/capture-command';
 import {browserDraftStore, type DraftStore} from './local-drafts';
 
 type Attempt={envelope:CaptureEnvelope;createdAt:number};
@@ -12,7 +12,14 @@ export class CaptureCommandController {
   private busy=false;
   private disposed=false;
   constructor(private key:string,private store:DraftStore=browserDraftStore){}
-  async restore(){const bytes=await this.store.read(this.key);if(bytes)Y.applyUpdate(this.cache,bytes);}
+  async restore(doc?:Y.Doc){
+    const bytes=await this.store.read(this.key);if(bytes)Y.applyUpdate(this.cache,bytes);
+    if(doc){
+      const updates=this.sources().map(source=>decodeCaptureBytes(source.update)),probe=new Y.Doc();
+      try{Y.applyUpdate(probe,Y.encodeStateAsUpdate(doc));for(const update of updates)Y.applyUpdate(probe,update);}finally{probe.destroy();}
+      for(const update of updates)Y.applyUpdate(doc,update,'command-recovery');
+    }
+  }
   private persist(){
     const bytes=Y.encodeStateAsUpdate(this.cache);
     this.writes=this.writes.catch(()=>{}).then(()=>this.store.merge(this.key,bytes));
@@ -79,6 +86,9 @@ export function captureTransport(projectId:string,token:()=>string,fetchImpl:typ
       if(response.status===404&&value.code==='capture_not_found')return undefined;
       if(!response.ok)throw Object.assign(new Error(value.error||'Capture could not be confirmed. Recover its status with Build my changes.'),{status:response.status});
       return value as CaptureReceipt;
+    }catch(error){
+      if(typeof (error as {status?:number}).status==='number')throw error;
+      throw new Error(`${body?'Capture delivery':'Receipt lookup'} outcome is unknown. Your original command and edits are retained; use Build my changes to recover its receipt.`);
     }finally{clearTimeout(timer);}
   };
   return {lookup:(id:string)=>request(encodeURIComponent(id)),send:async(envelope:CaptureEnvelope)=>{const receipt=await request('capture',envelope);if(!receipt)throw new Error('Capture response is missing. Recover its status.');return receipt;}};

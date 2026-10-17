@@ -508,7 +508,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
         catch (error) {
             if (coordinatorResponse(res, error))
                 return;
-            res.status(Number((error as {status?:number}).status)||(auth.room.captureUnknown?503:400)).json({
+            res.status(Number((error as {status?:number}).status)||503).json({
                 code:auth.room.captureUnknown?'capture_unknown':'capture_rejected',error:error instanceof Error?error.message:'Capture was not confirmed.'
             });
         }

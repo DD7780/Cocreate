@@ -1,0 +1,17 @@
+{"textFiles":973,"matchedFiles":252,"matches":4038,"unexplained":2,"reportPath":"artifacts/product-name-cleanup/residuals.json"}
+[
+  {
+    "file": "artifacts/canvas-capture-command/windows-full-first.log",
+    "line": 1708,
+    "column": 43,
+    "spelling": "cocreate",
+    "classification": "UNEXPLAINED"
+  },
+  {
+    "file": "artifacts/canvas-capture-command/windows-full-first.log",
+    "line": 1709,
+    "column": 41,
+    "spelling": "cocreate",
+    "classification": "UNEXPLAINED"
+  }
+]

@@ -12,7 +12,7 @@ export const api = async (
       },
     }),
     body = await res.json().catch(() => ({}));
-  if (!res.ok) throw new Error(body.error || "Request failed");
+  if (!res.ok) throw Object.assign(new Error(body.error || "Request failed"),{status:res.status});
   return body;
 };
 

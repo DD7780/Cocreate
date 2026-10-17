@@ -429,7 +429,8 @@ function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenamePro
         void (async () => {
             // Validate membership before reading private cached content into the editor.
             try {
-                await api('/api/rooms/' + id + '/state', credentials.current);
+                const access=new AbortController(),timer=setTimeout(()=>access.abort(),15_000);
+                try{await api('/api/rooms/' + id + '/state', credentials.current,{signal:access.signal});}finally{clearTimeout(timer);}
                 if (cancelled)
                     return;
                 const key = draftKey(id, tokenParticipant(credentials.current));
@@ -437,15 +438,18 @@ function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenamePro
                 if (cancelled)
                     return;
                 const commands=new CaptureCommandController(key+':commands');
-                await commands.restore();
+                await commands.restore(doc);
                 if(cancelled){commands.dispose();return;}
                 commandRef.current=commands;
                 setLocalDraft('saved');
                 stopDraft = persistDraft(doc, key, setLocalDraft);
             }
-            catch {
-                if (!cancelled)
+            catch(error) {
+                if (!cancelled){
                     setLocalDraft('unavailable');
+                    if([401,403,404].includes(Number((error as {status?:number}).status)))setAccessDenied(error instanceof Error?error.message:'Workspace access changed.');
+                    setConnection({state:'error',reason:'unavailable',message:'Workspace access or device recovery could not be opened. Check your connection and browser storage, then reopen. Your saved data was retained.'});
+                }
                 return;
             }
             if (cancelled)
@@ -453,7 +457,7 @@ function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenamePro
             p = new TwoGuysOneCanvasProvider(doc, id, credentials.current, receiveState, status=>{
                 if(cancelled)return;
                 setConnection(status);
-                if(status.state==='error'&&['forbidden','invalid-session','missing-room'].includes(status.reason)){
+                if(status.state==='error'&&(status.reason==='forbidden'||status.reason==='missing-room'||status.reason==='invalid-session'&&!tokenOverride)){
                     setAccessDenied(status.message);scopeActive.current=false;p?.destroy();commandRef.current?.dispose();
                 }
             }, (status, at) => {
@@ -638,7 +642,7 @@ function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenamePro
     }
     if(accessDenied)return <main className="loading"><p>{accessDenied}</p><button onClick={()=>location.href=projectTitle?'/projects':'/'}>Return home</button></main>;
     if (!state)
-        return <main className="loading"><LoaderCircle className="spin"/><p>{connection.message}</p></main>;
+        return <main className="loading">{connection.state!=='error'&&<LoaderCircle className="spin"/>}<p>{connection.message}</p>{connection.state==='error'&&<button onClick={()=>location.reload()}>Reopen workspace</button>}</main>;
     const initialSetup = false;
     const invite = async () => {
         if (onInvite)

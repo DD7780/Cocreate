@@ -90,3 +90,41 @@ test("hosted restore allocates above the remote journal high water and fails clo
     await assert.rejects(platform.loadSnapshot(project), /sequence/i);
   } finally { first.close(); second.close(); await fixture.close(); }
 });
+
+test("hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame", async () => {
+  const permission = gate(), dir = fs.mkdtempSync(path.join(os.tmpdir(), "save-ingress-"));
+  let hold = false, allowed = true, checks = 0;
+  const platform = {
+    saveSnapshot: async () => {}, appendDocumentUpdate: async () => {}, assertCoordinator: async () => {}, coordinator: { close: async () => {} },
+    requireMembership: async () => { checks++; if (hold) await permission.promise; if (!allowed) throw new Error("Revoked"); return "editor"; },
+  };
+  const service = await createTwoGuysOneCanvasServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: "127.0.0.1", sessionSecret: "synthetic" });
+  let socket: WebSocket | undefined;
+  const doc = new Y.Doc();
+  try {
+    const room = service.manager.create("project"); service.manager.join(room, "alice", "Alice"); await room.persistQueue;
+    const { port, url } = await service.start();
+    const token = createSession("synthetic", { roomId: "project", participantId: "alice", accountId: "alice", name: "Alice", role: "editor" });
+    const messages: any[] = [];
+    socket = new WebSocket(`ws://127.0.0.1:${port}/ws?room=project&token=${encodeURIComponent(token)}`, { origin: url });
+    socket.on("message", (raw, binary) => { if (!binary) messages.push(JSON.parse(raw.toString())); });
+    await until(() => messages.some(item => item.type === "room-state"), "socket initialized");
+    await pause(20); checks = 0; hold = true;
+    for (let i = 0; i < 70; i++) socket.send(packet(doc, `Request ${i}`));
+    await pause(30); permission.release();
+    await until(() => room.editHistory.length===70, "ordered burst applied");
+    assert.equal(room.editHistory.length, 70);
+    assert.deepEqual(room.editHistory.map(item => item.seq), Array.from({ length: 70 }, (_, i) => i + 1));
+    assert.ok(room.editHistory.every(item => item.participantId === "alice"));
+    assert.ok(checks <= 12, `burst caused ${checks} serialized permission lookups`);
+    assert.equal(room.submissions.length, 0);
+    allowed = false;
+    const closed = new Promise<number>(resolve => socket!.once("close", resolve));
+    socket.send(packet(doc, "Must not be applied"));
+    assert.equal(await closed, 4403);
+    assert.equal(room.editHistory.length, 70, "a fresh later batch cannot reuse the earlier permission");
+  } finally {
+    permission.release(); socket?.terminate(); doc.destroy(); await service.stop();
+    assert.equal(path.dirname(path.resolve(dir)), path.resolve(os.tmpdir())); fs.rmSync(dir, { recursive: true, force: true });
+  }
+});

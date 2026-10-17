@@ -156,7 +156,7 @@ Binary frames: discriminator 0 Yjs V1 update, 1 awareness, 2 server state vector
 | Direction/message | Contract |
 | --- | --- |
 | Client `{type:'awareness-client', clientId}` | Associates awareness identity |
-| Client `{type:'document-update', sourceId, update}` | Uniquely identified authenticated Yjs bytes; source identity also binds HTTP/WS races |
+| Client `{type:'document-updates', updates:[{id,update}]}` | 40 ms coalesced transport, at most 32 sources/512 KiB decoded; identities bind HTTP/WS races; prior single `document-update` form uses the same apply helper |
 | Legacy client `{type:'flush', requestId}` | `flush-error` with `capture_upgrade_required`; old clients show reload error; no inference or capture |
 | Server `{type:'room-state', state}` | Authoritative shared projection |
 | Server `{type:'saved', revision, savedAt, vector, deletions}` | Immutable committed snapshot receipt: base64 insertion vector plus canonical deletion-range JSON signature |

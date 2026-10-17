@@ -19,6 +19,20 @@ class FakeWebSocket {
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);
 
+test('tagged source bursts retain identities while sharing one coalesced transport frame',async()=>{
+  FakeWebSocket.instances=[];const callbacks=new Map<number,()=>void>(),doc=new Y.Doc(),remote=new Y.Doc();let timer=0;
+  const commands=new CaptureCommandController('scope',{read:async()=>undefined,merge:async()=>{}});await commands.restore();
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','ticket',()=>{},()=>{},()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:callback=>{callbacks.set(++timer,callback);return timer;},clearTimer:id=>{callbacks.delete(id);}},commands);
+  try{
+    const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'A');doc.getText('draft').insert(1,'B');
+    assert.equal(socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='document-updates').length,0);
+    for(const callback of [...callbacks.values()])callback();
+    const frames=socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='document-updates') as string[];
+    assert.equal(frames.length,1);const sources=JSON.parse(frames[0]).updates;assert.equal(sources.length,2);assert.notEqual(sources[0].id,sources[1].id);
+    for(const source of sources)Y.applyUpdate(remote,Buffer.from(source.update,'base64'));assert.equal(remote.getText('draft').toString(),'AB');
+  }finally{provider.destroy();commands.dispose();doc.destroy();remote.destroy();}
+});
+
 test('ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners',async()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),rows=new Map<string,Uint8Array>();
   const commands=new CaptureCommandController('scope',{read:async key=>rows.get(key),merge:async(key,value)=>{rows.set(key,value);}});await commands.restore();

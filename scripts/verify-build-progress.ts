@@ -3,10 +3,14 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import http from 'node:http';
+import express from 'express';
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
 process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+process.env.VITE_TWOGUYS1CANVAS_AUTH_MODE = 'local';
+const {build}=await import('vite');
+await build({configLoader:'runner',build:{outDir:'.runtime/build-progress-browser',emptyOutDir:true}});
 const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
 const output = path.resolve('artifacts/canvas-capture-command/progress-browser');
@@ -41,7 +45,10 @@ const fake = http.createServer(async (request, response) => {
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const address = fake.address(); assert.ok(address && typeof address !== 'string');
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(),'progress-browser-'));
-const service = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+const service = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+// Only the disposable harness permits its managed-worktree dot-path ancestor.
+service.app.use(express.static(path.resolve('.runtime/build-progress-browser'),{dotfiles:'allow'}));
+service.app.get('*path',(_req,res)=>res.sendFile(path.resolve('.runtime/build-progress-browser/index.html'),{dotfiles:'allow'}));
 const room = service.manager.create(`progress-${crypto.randomUUID()}`);
 for (const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']]) service.manager.join(room,id,name);
 const connection = await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${address.port}`,apiFormat:'responses',apiKey:'synthetic'});
@@ -112,7 +119,7 @@ try {
   const viewerDenied=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${session('cara')}`,'content-type':'application/json'},body:JSON.stringify({requestId:'viewer-progress-request'})});assert.equal(viewerDenied.status,403);
   await screenshot(a,'pending-desktop.png');
   gates.get(1)!();await until(async()=>room.versions.length===1&&gates.has(2),'first artifact with next candidate');
-  assert.equal(candidates[1].requirements,3);assert.equal(room.executionBudget?.calls,2);
+  assert.equal(candidates[1].requirements,3);assert.equal(room.executionBudget?.calls,5,'the allowance retains first build plus later interpretations and builder dispatch');
   await converge('Building r3');await converge('Available v1');await converge('r1');
   await submit(b,'Add progress labels.');await until(async()=>room.submissions.filter(item=>item.status==='submitted').length===1,'continued steering');await converge('1 submitted change waiting');
   await screenshot(a,'available-during-build.png');

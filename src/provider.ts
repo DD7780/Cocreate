@@ -1,5 +1,6 @@
 import { deletionSignature } from '../shared/document-state';
 import type { CaptureCommandController } from './capture-command';
+import {MAX_CAPTURE_BYTES,type CaptureSource} from '../shared/capture-command';
 import * as Y from 'yjs';
 import { Awareness, applyAwarenessUpdate, encodeAwarenessUpdate } from 'y-protocols/awareness';
 import type { RoomView } from '../shared/types';
@@ -28,8 +29,33 @@ export class TwoGuysOneCanvasProvider {
   private pendingUpdates: Uint8Array[] = [];
   private stateCursor=-1; private stateRevision=-1; private savedRevision=-1; private dirty=false;
   private updateTimer?: number;
-  private sendPendingUpdates(){if(this.updateTimer!==undefined){this.clearTimer(this.updateTimer);this.updateTimer=undefined}const updates=this.pendingUpdates.splice(0);if(updates.length&&this.ws?.readyState===this.WebSocketImpl.OPEN)this.ws.send(this.wrap(0,Y.mergeUpdates(updates)))}
-  private handleDocUpdate = (update: Uint8Array, origin: unknown) => { if(origin===this)return;const source=this.commands?.record(update);if(source&&this.ws?.readyState===this.WebSocketImpl.OPEN)this.ws.send(JSON.stringify({type:"document-update",sourceId:source.id,update:source.update}));this.dirty=true;this.onSave(this.ws?.readyState===this.WebSocketImpl.OPEN?'saving':'unsynced');if(!source&&this.ws?.readyState===this.WebSocketImpl.OPEN){this.pendingUpdates.push(update);if(this.updateTimer===undefined)this.updateTimer=this.setTimer(()=>this.sendPendingUpdates(),40)} };
+  private pendingSources:CaptureSource[]=[];
+  private sendSources(socket:WebSocket,sources:CaptureSource[]){
+    let batch:CaptureSource[]=[],bytes=0;
+    const send=()=>{if(batch.length)socket.send(JSON.stringify({type:'document-updates',updates:batch}));batch=[];bytes=0;};
+    for(const source of sources){
+      const size=Math.floor(source.update.length*3/4)-(source.update.endsWith('==')?2:source.update.endsWith('=')?1:0);
+      if(batch.length&&(batch.length===32||bytes+size>MAX_CAPTURE_BYTES))send();
+      batch.push(source);bytes+=size;
+    }
+    send();
+  }
+  private sendPendingUpdates(){
+    if(this.updateTimer!==undefined){this.clearTimer(this.updateTimer);this.updateTimer=undefined;}
+    const updates=this.pendingUpdates.splice(0),sources=this.pendingSources.splice(0);
+    if(this.ws?.readyState!==this.WebSocketImpl.OPEN)return;
+    this.sendSources(this.ws,sources);
+    if(updates.length)this.ws.send(this.wrap(0,Y.mergeUpdates(updates)));
+  }
+  private handleDocUpdate = (update: Uint8Array, origin: unknown) => {
+    if(origin===this)return;
+    const source=this.commands?.record(update);this.dirty=true;
+    this.onSave(this.ws?.readyState===this.WebSocketImpl.OPEN?'saving':'unsynced');
+    if(this.ws?.readyState===this.WebSocketImpl.OPEN){
+      if(source)this.pendingSources.push(source);else this.pendingUpdates.push(update);
+      if(this.updateTimer===undefined)this.updateTimer=this.setTimer(()=>this.sendPendingUpdates(),40);
+    }
+  };
   private handleAwarenessUpdate = ({added,updated,removed}:{added:number[];updated:number[];removed:number[]},origin:unknown) => {if(origin!==this&&this.ws?.readyState===this.WebSocketImpl.OPEN)this.ws.send(this.wrap(1,encodeAwarenessUpdate(this.awareness,[...added,...updated,...removed])))};
 
   constructor(public doc:Y.Doc,private roomId:string,private token:string,private onState:(state:RoomView)=>void,private onStatus:(status:ConnectionStatus)=>void,private onSave:(status:'saving'|'saved'|'unsynced',at?:string)=>void,dependencies:ProviderDependencies={},private commands?:CaptureCommandController){
@@ -52,7 +78,7 @@ export class TwoGuysOneCanvasProvider {
   private scheduleRetry(generation:number){this.failedAttempts+=1;if(this.failedAttempts>this.maxRetries){this.onStatus({state:'error',reason:'unavailable',message:this.coordinatorRetryMs?'The workflow owner is unavailable after several retries. Your in-memory edits remain on this page. Reopen the project to try again.':'Live collaboration is unavailable after several retries. Check your connection, then reload the page.'});return}const delay=Math.max(this.coordinatorRetryMs,retryDelay(this.failedAttempts,this.random));this.onStatus({state:'reconnecting',message:this.coordinatorRetryMs?'Waiting for the workflow owner. Your in-memory edits are retained on this page.':'Live collaboration disconnected. Your in-memory edits are retained on this page.',attempt:this.failedAttempts,retryInMs:delay});this.retry=this.setTimer(()=>{if(!this.stopped&&generation===this.generation)this.connect()},delay)}
   private connect(){if(this.stopped)return;if(this.ws&&(this.ws.readyState===this.WebSocketImpl.OPEN||this.ws.readyState===this.WebSocketImpl.CONNECTING))return;this.stateCursor=-1;this.stateRevision=-1;this.savedRevision=-1;const generation=++this.generation,origin=new URL(this.origin),protocol=origin.protocol==='https:'?'wss:':'ws:',socket=new this.WebSocketImpl(`${protocol}//${origin.host}/ws?room=${encodeURIComponent(this.roomId)}&token=${encodeURIComponent(this.token)}`);this.ws=socket;socket.binaryType='arraybuffer';
     socket.onopen=()=>{if(this.stopped||generation!==this.generation||this.ws!==socket)return socket.close();this.onStatus({state:'connected',message:'Live collaboration connected.'});socket.send(JSON.stringify({type:'awareness-client',clientId:this.doc.clientID}));if(this.awareness.getLocalState())socket.send(this.wrap(1,encodeAwarenessUpdate(this.awareness,[this.doc.clientID])))};
-    socket.onmessage=event=>{if(generation!==this.generation||this.ws!==socket)return;if(typeof event.data==='string'){try{const message=JSON.parse(event.data);if(message.type==='room-state'){const cursor=message.state.workflow?.activityCursor??0,revision=message.state.persistRevision??0;if(cursor>=this.stateCursor&&revision>=this.stateRevision){this.stateCursor=cursor;this.stateRevision=revision;this.failedAttempts=0;this.coordinatorRetryMs=0;this.onState(message.state)}}if(message.type==='saved'&&(message.revision??0)>=this.savedRevision){this.savedRevision=message.revision??0;const persisted=typeof message.vector==='string'?Y.decodeStateVector(Uint8Array.from(atob(message.vector),c=>c.charCodeAt(0))):undefined;const local=Y.decodeStateVector(Y.encodeStateVector(this.doc));if((persisted?[...local].every(([id,clock])=>(persisted.get(id)||0)>=clock):!this.dirty)&&(message.deletions===deletionSignature(this.doc)||(!message.deletions&&deletionSignature(this.doc)==='[]'))){this.dirty=false;this.onSave('saved',message.savedAt)}}if(message.type==='save-error')this.onSave('unsynced');if(message.type==='permission-error')this.onStatus({state:'error',reason:'forbidden',message:String(message.message||'You do not have permission to edit this project.')});}catch{}return}const data=new Uint8Array(event.data);if(data[0]===0)Y.applyUpdate(this.doc,data.slice(1),this);if(data[0]===1)applyAwarenessUpdate(this.awareness,data.slice(1),this);if(data[0]===2){for(const source of this.commands?.sources()||[])socket.send(JSON.stringify({type:"document-update",sourceId:source.id,update:source.update}));const missing=Y.encodeStateAsUpdate(this.doc,data.slice(1));if(missing.length>2&&socket.readyState===this.WebSocketImpl.OPEN)socket.send(this.wrap(0,missing))}};
+    socket.onmessage=event=>{if(generation!==this.generation||this.ws!==socket)return;if(typeof event.data==='string'){try{const message=JSON.parse(event.data);if(message.type==='room-state'){const cursor=message.state.workflow?.activityCursor??0,revision=message.state.persistRevision??0;if(cursor>=this.stateCursor&&revision>=this.stateRevision){this.stateCursor=cursor;this.stateRevision=revision;this.failedAttempts=0;this.coordinatorRetryMs=0;this.onState(message.state)}}if(message.type==='saved'&&(message.revision??0)>=this.savedRevision){this.savedRevision=message.revision??0;const persisted=typeof message.vector==='string'?Y.decodeStateVector(Uint8Array.from(atob(message.vector),c=>c.charCodeAt(0))):undefined;const local=Y.decodeStateVector(Y.encodeStateVector(this.doc));if((persisted?[...local].every(([id,clock])=>(persisted.get(id)||0)>=clock):!this.dirty)&&(message.deletions===deletionSignature(this.doc)||(!message.deletions&&deletionSignature(this.doc)==='[]'))){this.dirty=false;this.onSave('saved',message.savedAt)}}if(message.type==='save-error')this.onSave('unsynced');if(message.type==='permission-error')this.onStatus({state:'error',reason:'forbidden',message:String(message.message||'You do not have permission to edit this project.')});}catch{}return}const data=new Uint8Array(event.data);if(data[0]===0)Y.applyUpdate(this.doc,data.slice(1),this);if(data[0]===1)applyAwarenessUpdate(this.awareness,data.slice(1),this);if(data[0]===2){this.sendSources(socket,this.commands?.sources()||[]);const missing=Y.encodeStateAsUpdate(this.doc,data.slice(1));if(missing.length>2&&socket.readyState===this.WebSocketImpl.OPEN)socket.send(this.wrap(0,missing))}};
     socket.onerror=()=>{};socket.onclose=async()=>{if(generation!==this.generation||this.ws!==socket)return;this.ws=undefined;if(this.dirty)this.onSave('unsynced');if(this.stopped)return;const terminal=await this.diagnose(generation);if(generation!==this.generation||this.stopped)return;if(terminal)this.onStatus(terminal);else this.scheduleRetry(generation)};
   }
   updateCredentials(token:string){

@@ -29,5 +29,14 @@ test('real authenticated HTTP capture accepts bounded unsent bytes, returns 202 
     assert.equal((await fetch(`${url}/api/rooms/${room.id}/commands/http-command`)).status,401);
     assert.equal((await fetch(`${url}/api/rooms/${room.id}/submit`,{method:'POST',headers,body:'{}'})).status,426);
     const conflict=await fetch(`${url}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers,body:JSON.stringify({...envelope,sourceIds:[]})});assert.equal(conflict.status,409);assert.equal(room.submissions.length,1);assert.equal(room.providerCalls.length,0);
+    const before=Y.encodeStateVector(doc);text.insert(text.length,'b');
+    const next={id:crypto.randomUUID(),update:encodeCaptureBytes(Y.encodeStateAsUpdate(doc,before))};
+    const uncertain={version:1,requestId:'post-commit-unknown',sourceIds:[next.id],updates:[next],cutoff:{vector:encodeCaptureBytes(Y.encodeStateVector(doc)),deletions:deletionSignature(doc)}};
+    const projection=(service.manager as any).projectCaptureReceipt.bind(service.manager);
+    (service.manager as any).projectCaptureReceipt=()=>{throw new Error('Controlled receipt projection failure');};
+    const unknown=await fetch(`${url}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers,body:JSON.stringify(uncertain)});assert.equal(unknown.status,503);
+    (service.manager as any).projectCaptureReceipt=projection;
+    const recovered=await fetch(`${url}/api/rooms/${room.id}/commands/post-commit-unknown`,{headers});assert.equal(recovered.status,200);assert.equal((await recovered.json()).durable,true);assert.equal(room.submissions.length,2);assert.equal(room.providerCalls.length,0);
+
   }finally{doc.destroy();await service.stop();assert.equal(path.dirname(path.resolve(dataDir)),path.resolve(os.tmpdir()));fs.rmSync(dataDir,{recursive:true,force:true});}
 });

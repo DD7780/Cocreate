@@ -4,7 +4,7 @@ import * as Y from 'yjs';
 import {createProgressFixture,pause} from './fixtures/build-progress.js';
 import {captureEnvelope} from './fixtures/capture.js';
 import {RoomManager} from '../server/rooms.js';
-import {CaptureCommandController,type LocalCommandState} from '../src/capture-command.js';
+import {CaptureCommandController,captureTransport,type LocalCommandState} from '../src/capture-command.js';
 import {encodeCaptureBytes,type CaptureEnvelope,type CaptureReceipt} from '../shared/capture-command.js';
 import {replayCaptureJournal,type CaptureRecord} from '../server/capture-journal.js';
 import type {DraftStore} from '../src/local-drafts.js';
@@ -13,6 +13,17 @@ const options={buildDebounceMs:60_000,buildMaxWaitMs:60_000};
 const gate=()=>{let release!:()=>void;const promise=new Promise<void>(resolve=>release=resolve);return {promise,release};};
 function cache():DraftStore{const rows=new Map<string,Uint8Array>();return {read:async key=>rows.get(key),merge:async(key,value)=>{rows.set(key,Y.mergeUpdates([rows.get(key),value].filter((item):item is Uint8Array=>!!item)));}};}
 const receipt=(envelope:CaptureEnvelope,state:CaptureReceipt['state']='captured'):CaptureReceipt=>({durable:true,commandId:'command',requestId:envelope.requestId,actorId:'alice',cursor:1,sourceRevision:1,acceptedRevision:0,state,productVersion:null});
+
+test('an expired HTTP wait reports an unknown outcome with recovery action and never retries itself',async t=>{
+  let calls=0;t.mock.timers.enable({apis:['setTimeout']});
+  try{
+    const transport=captureTransport('room',()=> 'synthetic',async(_url,init)=>{
+      calls++;return new Promise<Response>((_resolve,reject)=>init?.signal?.addEventListener('abort',()=>reject(new Error('private network diagnostic'))));
+    });
+    const failed=assert.rejects(transport.lookup('retained-request'),error=>error instanceof Error&&/Receipt lookup outcome is unknown.*original command.*Build my changes/.test(error.message)&&!error.message.includes('private network'));
+    t.mock.timers.tick(15_000);await failed;assert.equal(calls,1);
+  }finally{t.mock.timers.reset();}
+});
 
 test('capture returns before interpretation, binds permanent identity and freezes each author cutoff',async()=>{
   const f=await createProgressFixture({...options,personalDelayMs:600});
@@ -84,4 +95,32 @@ test('unknown lookup failure never mints a fresh identity; definitive absence re
   await assert.rejects(()=>controller.capture(doc,[],{lookup:async()=>undefined,send:async value=>{original=structuredClone(value);throw new Error('unknown');}},()=>{}));
   await assert.rejects(()=>controller.capture(doc,[],{lookup:async()=>{throw new Error('lookup unavailable');},send:async()=>{throw new Error('must not send');}},()=>{}),/lookup unavailable/);
   await controller.capture(doc,[],{lookup:async()=>undefined,send:async value=>{assert.deepEqual(value,original);return receipt(value);}},()=>{});controller.dispose();doc.destroy();
+});
+
+test('a command backup restores unsent source bytes even if the ordinary document backup was lost',async()=>{
+  const store=cache(),first=new CaptureCommandController('scope',store),doc=new Y.Doc();await first.restore();
+  doc.on('update',(bytes:Uint8Array)=>first.record(bytes));doc.getText('draft').insert(0,'unsent recovery');
+  const source=first.sources()[0];await pause(5);first.dispose();doc.destroy();
+  const reopened=new CaptureCommandController('scope',store),restored=new Y.Doc();await reopened.restore(restored);
+  assert.equal(restored.getText('draft').toString(),'unsent recovery');assert.equal(reopened.sources()[0].id,source.id);
+  await reopened.capture(restored,[],{lookup:async()=>undefined,send:async value=>{assert.equal(value.updates[0].id,source.id);return receipt(value);}},()=>{});reopened.dispose();restored.destroy();
+});
+
+test('closing a scope during delivery does not turn a confirmed capture into a new request on reload',async()=>{
+  const store=cache(),controller=new CaptureCommandController('scope',store),doc=new Y.Doc(),held=gate();await controller.restore();
+  doc.getText('draft').insert(0,'kept');let sends=0;
+  const pending=controller.capture(doc,[],{lookup:async()=>undefined,send:async envelope=>{sends++;await held.promise;return receipt(envelope);}},()=>{});
+  await pause(5);controller.dispose();held.release();assert.equal((await pending).durable,true);
+  const restored=new CaptureCommandController('scope',store);await restored.restore();assert.equal(restored.sources().length,0);assert.equal(sends,1);restored.dispose();doc.destroy();
+});
+
+test('a canonical/checkpoint disagreement is quarantined and a stale local lease cannot append a command',async()=>{
+  const f=await createProgressFixture(options);
+  try{
+    f.edit('alice','Build a dashboard');await f.manager.captureChanges(f.room,'alice',captureEnvelope(f.room,'alice','consistent'));
+    const record=f.manager.eventStore.captureRecords(f.room.id)[0];
+    assert.throws(()=>f.manager.eventStore.commitCapture(f.room.id,record,{ownerId:'stale-owner',epoch:f.room.coordinatorEpoch}),/Stale/);
+    f.room.commandReceipts![JSON.stringify(['alice','consistent'])].payloadHash='wrong';
+    await assert.rejects(()=>f.manager.captureReceipt(f.room,'alice','consistent'),/disagrees/);
+  }finally{await f.close();}
 });
