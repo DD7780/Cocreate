@@ -6,7 +6,8 @@
 - [x] Legacy browser/durable/preview/config aliases retain sessions, actor-scoped drafts, immutable artifacts, permissions and deployed resources. Every residual is itemized with owner, reason, removal condition and evidence. [Packet and cutover plan](product-name-cleanup.md#residual-ledger-and-cutover).
 - [x] Naming 9/9 plus transport/save/core regressions 41/41 and corrected Worker/mail/private-storage fixtures 5/5; built-browser storage/adversity, eight UI surfaces, four preview pairs and six save/replay scenarios pass without inference.
 - [x] Boundaries, production build, source fingerprint, diff checks, tracked-text scan and AST graph refresh pass. Worker-only dry-run passes; local full image build lacks Docker.
-- [ ] Full Windows attempt: 272 passed, 7 failed, 8 skipped of 287. One stale preview assertion is corrected and reruns pass; preserve remaining publication/resource/timing and dot-path SPA failures. Linux production-image CI and hosted acceptance are separate release gates, not inferred from focused passes.
+- [x] Code `b45cb37` passes production-image CI attempt 2: native PostgreSQL 2/2, compiler 10/10, browser 15/15 and full 287/287, zero failures/skips. [CI](https://github.com/DD7780/Cocreate/actions/runs/39015352946/attempts/2). Retain attempt 1's protocol-output probe startup/classification failure and the Windows result (272 pass, 7 fail, 8 skip); its stale preview assertion is corrected and focused reruns pass. The evidence-only publication keeps the same prepared runtime fingerprint.
+- [ ] Hosted rollout and authenticated live-provider acceptance remain separate from the authorized main source publication.
 - [ ] Separately authorized Worker/DO, private bucket, host-root and original-storage retirement/cutover; originals and SQL history remain intact.
 
 ## Save acknowledgement publication — 2026-10-17

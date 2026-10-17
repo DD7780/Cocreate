@@ -1,0 +1,34 @@
+{
+  "date": "2026-10-17",
+  "baseline": "ae3653b4205ff73df78153467540858aac50c9d5",
+  "verifiedCode": "b45cb37aada90bcc9db5e59a2c26f5a48b39e174",
+  "releaseFingerprint": "1052d6b2d91319e388ab2b40513865bc56fe7ac067636d417e33dab56c77a058",
+  "sourceFiles": 101,
+  "ci": {
+    "url": "https://github.com/DD7780/Cocreate/actions/runs/39015352946/attempts/2",
+    "job": 117346939450,
+    "attempt": 2,
+    "nativePostgres": {"passed": 2, "failed": 0, "skipped": 0},
+    "compiler": {"passed": 10, "failed": 0, "skipped": 0},
+    "browser": {"passed": 15, "failed": 0, "skipped": 0},
+    "full": {"passed": 287, "failed": 0, "skipped": 0},
+    "firstAttempt": "ci-attempt1.log"
+  },
+  "local": {
+    "namingAndThroughputPassed": 19,
+    "canvasSubmissionReconnectPassed": 31,
+    "correctedCompatibilityFixturesPassed": 5,
+    "uiSurfaces": 8,
+    "previewPairs": 4,
+    "saveReplayScenarioGroups": 6,
+    "browserPhysicalProviderCalls": 0,
+    "build": "pass",
+    "boundaries": "pass",
+    "graph": "AST refresh; SQL parser unavailable; no semantic inference",
+    "fullWindowsAttempt": {"passed": 272, "failed": 7, "skipped": 8},
+    "windowsPreviewAssertion": "corrected; focused rerun and all four real preview pairs pass"
+  },
+  "releaseScope": "Main source publication authorized; no additional hosted resource/data cutover, live email or paid inference.",
+  "hostedAcceptance": "Not established by CI or local fixtures.",
+  "remainingCutovers": "See docs/harness/product-name-cleanup.md and product-name-compatibility.json; originals retained."
+}

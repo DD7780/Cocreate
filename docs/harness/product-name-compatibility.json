@@ -386,7 +386,10 @@
         "supabase/migrations/20261006204612_prelaunch_beta_access.sql",
         "artifacts/product-name-cleanup/full-tests.log",
         "artifacts/product-name-cleanup/scan.log",
-        "artifacts/product-name-cleanup/guards.log"
+        "artifacts/product-name-cleanup/guards.log",
+        "artifacts/product-name-cleanup/ci-attempt1.log",
+        "artifacts/product-name-cleanup/ci-attempt2.log",
+        "artifacts/product-name-cleanup/verification.json"
       ],
       "pattern": "co[-_ ]?create",
       "owner": "Evidence/schema/graph maintainers",
