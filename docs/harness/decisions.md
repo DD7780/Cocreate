@@ -106,6 +106,8 @@ Status: accepted 2026-09-24; strengthened by D-0042. Verify account/current proj
 
 Status: accepted 2026-09-24; refined by D-0042. Hosted saved follows confirmed canonical remote commit, never local memory/SQLite/frame receipt. The acknowledgement names the immutable committed revision/time plus insertion clocks AND deletion ranges. Failure stays unsynced and retains the promoted artifact. Older mutable acknowledgement descriptions are superseded.
 
+2026-10-17 throughput refinement: routine document autosaves coalesce behind canonical I/O; consequential saves retain their receipts. Explicit flush commits the full document and attributed pending edits without waiting for the independent recovery journal. A late journal failure cannot invalidate a covering committed snapshot. Restore reads the journal sequence high-water before allocating new edits and never overwrites old conflicts. [Scope and evidence](canonical-save-throughput.md).
+
 ## D-0024 — Keep bearer-token SPA auth instead of adding inactive Next.js middleware
 
 Accepted 2026-09-24. CoCreate remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.

@@ -1,0 +1,24 @@
+(node:2720) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+NotFoundError: Not Found
+    at createHttpError (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\send@1.2.1\node_modules\send\index.js:861:12)
+    at SendStream.error (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\send@1.2.1\node_modules\send\index.js:168:31)
+    at SendStream.pipe (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\send@1.2.1\node_modules\send\index.js:468:14)
+    at sendfile (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\express@5.2.1\node_modules\express\lib\response.js:1014:8)
+    at ServerResponse.sendFile (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\express@5.2.1\node_modules\express\lib\response.js:411:3)
+    at <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\server\index.ts:821:48)
+    at Layer.handleRequest (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\router@2.2.0\node_modules\router\lib\layer.js:152:17)
+    at next (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\router@2.2.0\node_modules\router\lib\route.js:157:13)
+    at Route.dispatch (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\router@2.2.0\node_modules\router\lib\route.js:117:3)
+    at handle (C:\Users\QUTA4\.codex\worktrees\beta-ui-overview\Devoffice\node_modules\.pnpm\router@2.2.0\node_modules\router\index.js:435:11)
+{"phase":"browser-failure","status":"Waiting for ideas","acceptedRevision":0,"versions":[],"candidates":[],"submissions":[],"runs":[]}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:17
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: workspace connection
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:17:9)
+    at async open (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:93:3)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:110:11)
+
+Node.js v22.23.2

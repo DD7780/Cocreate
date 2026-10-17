@@ -1,0 +1,115 @@
+TAP version 13
+# (node:940) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+not ok 1 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1412.6205
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\.runtime\\beta-registration-fix\\tests\\save-throughput.test.ts:1:1911'
+  failureType: 'testCodeFailure'
+  error: 'expected two coalesced snapshots, got 5'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:63:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+not ok 2 - flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+  ---
+  duration_ms: 822.6098
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\.runtime\\beta-registration-fix\\tests\\save-throughput.test.ts:1:3119'
+  failureType: 'testCodeFailure'
+  error: 'canonical commit acknowledges the explicit flush'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:24:10)
+    async TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:88:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=false
+not ok 3 - outbound receipt bursts use bounded fresh authorization batches; revoked=false
+  ---
+  duration_ms: 589.2307
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\.runtime\\beta-registration-fix\\tests\\save-throughput.test.ts:1:4494'
+  failureType: 'testCodeFailure'
+  error: 'expected bounded batching, got 72 individual lookups'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:113:14)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=true
+ok 4 - outbound receipt bursts use bounded fresh authorization batches; revoked=true
+  ---
+  duration_ms: 537.4017
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"59857099-5488-4a33-bb19-b00cdeda7c1e","correlationId":"0af367fd-a01c-480b-a0b3-747b5de7f279"}
+# {"event":"collaboration.disconnected","connectionId":"59857099-5488-4a33-bb19-b00cdeda7c1e","code":1006}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+not ok 5 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 770.8413
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\.runtime\\beta-registration-fix\\tests\\save-throughput.test.ts:1:5805'
+  failureType: 'testCodeFailure'
+  error: 'burst caused 73 serialized permission lookups'
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:148:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+not ok 6 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 296.31
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\OneDrive\\Desktop\\Devoffice\\.runtime\\beta-registration-fix\\tests\\save-throughput.test.ts:1:8265'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+    
+    undefined !== 40
+    
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 40
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\tests\save-throughput.test.ts:170:12)
+    process.processTicksAndRejections (node:internal/process/task_queues:103:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+1..6
+# tests 6
+# suites 0
+# pass 1
+# fail 5
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 16380.7903

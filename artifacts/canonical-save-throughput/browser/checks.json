@@ -1,0 +1,11 @@
+{
+  "scope": "Built local client, signed synthetic owner, real WebSocket and server workflow, gated canonical storage and stalled journal, loopback interpreter/builder; no paid inference or hosted mutation",
+  "visibleSaving": true,
+  "noSubmitBeforeCanonicalCommit": true,
+  "journalStillBlockedAtBuilderDispatch": true,
+  "exactlyOneCallerSubmission": true,
+  "interpreterCalls": 1,
+  "builderCalls": 1,
+  "canonicalCommits": 8,
+  "compilerPromotion": "not asserted here; production-image CI is authoritative"
+}

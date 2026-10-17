@@ -4,8 +4,9 @@
 
 - [x] Read-only production diagnostics identify delayed tiny-document snapshots and conflicting journal sequences; no data repair or migration. [Packet](canonical-save-throughput.md).
 - [x] Coalesce routine autosaves, separate full canonical flush from recovery-journal latency, authorize ordered batches with fresh membership/coordinator checks and restore the journal sequence high-water. Command receipts and inference authority remain unchanged.
-- [x] Initial regressions reproduce five failures; final focused queue/deletion/failure/revocation/restore checks pass **7/7**, existing provider/submission/hosted/coordinator/auth checks **40/40**, production build and boundaries pass. Windows artifact checks pass **5/10**, with isolated compiler resource failure/publication-gate timeouts retained; this is not a whole-suite pass.
-- [ ] Controlled browser dispatch and complete production-image CI; publication evidence and remaining hosted limits are tracked in the packet. Do not inspect Cloudflare deployment for this task.
+- [x] Initial regressions reproduce five failures; final focused queue/deletion/failure/revocation/restore checks pass **9/9**, combined provider/submission/hosted/coordinator/auth checks **49/49**, production build and boundaries pass. Windows artifact checks pass **5/10**, with isolated compiler resource failure/publication-gate timeouts retained; this is not a whole-suite pass.
+- [x] Built local browser saves before submitting, then dispatches exactly one caller's interpretation/build while the separate journal remains blocked. This does not establish promotion or live hosted acceptance. [Report](../../artifacts/canonical-save-throughput/browser/checks.json).
+- [x] Final code `6746806` passes native PostgreSQL **2/2**, Linux compiler/resource **10/10**, browser/memory/authority **15/15** and full production-image regression **273/273**, zero failures/skips. [CI](https://github.com/DD7780/Cocreate/actions/runs/39001133818), [manifest](../../artifacts/canonical-save-throughput/verification.json). AST graph refresh and source attestation pass; final documentation/evidence retain the same runtime fingerprint. Main publication is authorized; no live hosted post-release build or Cloudflare inspection is claimed.
 
 ## Beta registration visibility — 2026-10-16
 

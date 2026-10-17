@@ -1,0 +1,262 @@
+TAP version 13
+# (node:10988) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+ok 1 - remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+  ---
+  duration_ms: 41.1708
+  type: 'test'
+  ...
+# Subtest: closing during a claim releases the late epoch without reviving ownership
+ok 2 - closing during a claim releases the late epoch without reviving ownership
+  ---
+  duration_ms: 2.7928
+  type: 'test'
+  ...
+# Subtest: closing during renewal cannot validate an old worker; malformed epochs fail closed
+ok 3 - closing during renewal cannot validate an old worker; malformed epochs fail closed
+  ---
+  duration_ms: 3.3087
+  type: 'test'
+  ...
+# Subtest: loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+ok 4 - loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+  ---
+  duration_ms: 160.6091
+  type: 'test'
+  ...
+# Subtest: hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+ok 5 - hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+  ---
+  duration_ms: 13.2433
+  type: 'test'
+  ...
+# (node:31336) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"2758e4fa-8bbc-4406-a250-11cc4e952d71"}
+# {"event":"collaboration.connected","connectionId":"9d4e3fb6-1bbb-4503-bc1b-e4baad5be2d4","correlationId":"33b34662-81ac-49ef-a3a0-feaceea9a1cf"}
+# {"event":"collaboration.disconnected","connectionId":"9d4e3fb6-1bbb-4503-bc1b-e4baad5be2d4","code":4403}
+# Subtest: hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+ok 6 - hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+  ---
+  duration_ms: 556.3182
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"fae56911-5275-489e-90c3-9986ecf4b8f9"}
+# Subtest: non-owner ingress retries without hydrating a second writer or bypassing membership
+ok 7 - non-owner ingress retries without hydrating a second writer or bypassing membership
+  ---
+  duration_ms: 200.3271
+  type: 'test'
+  ...
+# (node:6604) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: project tickets are scoped and expire
+ok 8 - project tickets are scoped and expire
+  ---
+  duration_ms: 2.5872
+  type: 'test'
+  ...
+# Subtest: hosted Supabase mode fails closed when the server secret is absent
+ok 9 - hosted Supabase mode fails closed when the server secret is absent
+  ---
+  duration_ms: 0.5744
+  type: 'test'
+  ...
+# Subtest: server Supabase configuration rejects mismatched credentials and JWKS
+ok 10 - server Supabase configuration rejects mismatched credentials and JWKS
+  ---
+  duration_ms: 0.4241
+  type: 'test'
+  ...
+# Subtest: public auth configuration is explicit and derives the Worker callback
+ok 11 - public auth configuration is explicit and derives the Worker callback
+  ---
+  duration_ms: 1.4459
+  type: 'test'
+  ...
+# Subtest: Wrangler uses matching server and Vite build-time Supabase configuration
+ok 12 - Wrangler uses matching server and Vite build-time Supabase configuration
+  ---
+  duration_ms: 12.674
+  type: 'test'
+  ...
+# Subtest: Google callback exchanges once, reports errors, and restores only local destinations
+ok 13 - Google callback exchanges once, reports errors, and restores only local destinations
+  ---
+  duration_ms: 0.8313
+  type: 'test'
+  ...
+# Subtest: Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+ok 14 - Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+  ---
+  duration_ms: 10.7235
+  type: 'test'
+  ...
+# Subtest: auth source preserves Google and adds password, confirmation, and recovery flows
+ok 15 - auth source preserves Google and adds password, confirmation, and recovery flows
+  ---
+  duration_ms: 1.1279
+  type: 'test'
+  ...
+# Subtest: project names and invitation emails use canonical validation
+ok 16 - project names and invitation emails use canonical validation
+  ---
+  duration_ms: 0.9307
+  type: 'test'
+  ...
+# Subtest: transactional invitation email is truthful and idempotent at the provider boundary
+ok 17 - transactional invitation email is truthful and idempotent at the provider boundary
+  ---
+  duration_ms: 36.2282
+  type: 'test'
+  ...
+# Subtest: email invitation migration binds recipients and enforces sharing permissions
+ok 18 - email invitation migration binds recipients and enforces sharing permissions
+  ---
+  duration_ms: 17.0535
+  type: 'test'
+  ...
+# Subtest: invite tokens are hashed before persistence
+ok 19 - invite tokens are hashed before persistence
+  ---
+  duration_ms: 0.2836
+  type: 'test'
+  ...
+# Subtest: migration enables RLS and keeps authoritative runtime writes server-only
+ok 20 - migration enables RLS and keeps authoritative runtime writes server-only
+  ---
+  duration_ms: 15.2048
+  type: 'test'
+  ...
+# Subtest: Build my changes slow-save keeps progress or reports failure before any submission
+ok 21 - Build my changes slow-save keeps progress or reports failure before any submission
+  ---
+  duration_ms: 20.3541
+  type: 'test'
+  ...
+# Subtest: Build my changes timeout keeps progress or reports failure before any submission
+ok 22 - Build my changes timeout keeps progress or reports failure before any submission
+  ---
+  duration_ms: 11.2963
+  type: 'test'
+  ...
+# Subtest: Build my changes rejected-save keeps progress or reports failure before any submission
+ok 23 - Build my changes rejected-save keeps progress or reports failure before any submission
+  ---
+  duration_ms: 8.9257
+  type: 'test'
+  ...
+# Subtest: Build my changes disconnect keeps progress or reports failure before any submission
+ok 24 - Build my changes disconnect keeps progress or reports failure before any submission
+  ---
+  duration_ms: 49.396
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 25 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 6.9897
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 26 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.4898
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 27 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 4.9268
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 28 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 6.3209
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 29 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 8.1312
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 30 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 8.9212
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 31 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 4.1827
+  type: 'test'
+  ...
+# Subtest: disconnect rejects an in-flight flush and destroy removes document listeners
+ok 32 - disconnect rejects an in-flight flush and destroy removes document listeners
+  ---
+  duration_ms: 2.8305
+  type: 'test'
+  ...
+# Subtest: burst edits share one transport update and explicit flush drains before acknowledgement
+ok 33 - burst edits share one transport update and explicit flush drains before acknowledgement
+  ---
+  duration_ms: 2.8625
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 34 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 16.4781
+  type: 'test'
+  ...
+# (node:20512) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: save rejection is reported, keeps an uncertain request ID, and never submits
+ok 35 - save rejection is reported, keeps an uncertain request ID, and never submits
+  ---
+  duration_ms: 2.8128
+  type: 'test'
+  ...
+# Subtest: owner retries a confirmed failure on the next click and captures only their own edits
+ok 36 - owner retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 452.7022
+  type: 'test'
+  ...
+# Subtest: invited editor retries a confirmed failure on the next click and captures only their own edits
+ok 37 - invited editor retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 252.4336
+  type: 'test'
+  ...
+# Subtest: a lost successful reply replays the original receipt without inference or consuming newer edits
+ok 38 - a lost successful reply replays the original receipt without inference or consuming newer edits
+  ---
+  duration_ms: 221.2728
+  type: 'test'
+  ...
+# Subtest: recovery stops after one fresh attempt and retains its identity on another uncertain failure
+ok 39 - recovery stops after one fresh attempt and retains its identity on another uncertain failure
+  ---
+  duration_ms: 2.8334
+  type: 'test'
+  ...
+# Subtest: a failed response is shown as failure and does not automatically submit again
+ok 40 - a failed response is shown as failure and does not automatically submit again
+  ---
+  duration_ms: 0.8821
+  type: 'test'
+  ...
+1..40
+# tests 40
+# suites 0
+# pass 40
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9309.9876

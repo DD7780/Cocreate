@@ -1,0 +1,13 @@
+(node:15080) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"phase":"browser-failure","status":"Waiting for ideas","acceptedRevision":0,"versions":[],"candidates":[],"submissions":[],"runs":[]}
+C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:18
+  throw new Error(`Progress browser timed out: ${label}`);
+        ^
+
+Error: Progress browser timed out: workspace connection
+    at until (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:18:9)
+    at async open (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:97:3)
+    at async <anonymous> (C:\Users\QUTA4\OneDrive\Desktop\Devoffice\.runtime\beta-registration-fix\artifacts\canonical-save-throughput\browser-fixture.ts:114:11)
+
+Node.js v22.23.2

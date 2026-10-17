@@ -1,0 +1,46 @@
+GitHub Actions run 39001133818 / job 117304100471
+Code commit: 6746806c55d51394f8a3e19e6366f7da66f7c75a
+URL: https://github.com/DD7780/Cocreate/actions/runs/39001133818
+Scope: actual production Dockerfile, disposable PostgreSQL and Linux compiler/browser boundaries; no production deployment inspected
+2026-10-17T04:04:34.5599643Z # tests 2
+2026-10-17T04:04:34.5600993Z # pass 2
+2026-10-17T04:04:34.5602755Z # fail 0
+2026-10-17T04:04:34.5603318Z # cancelled 0
+2026-10-17T04:04:34.5604003Z # skipped 0
+2026-10-17T04:04:34.5605255Z # duration_ms 527.683965
+2026-10-17T04:05:56.2055122Z # tests 10
+2026-10-17T04:05:56.2059870Z # pass 10
+2026-10-17T04:05:56.2065933Z # fail 0
+2026-10-17T04:05:56.2066342Z # cancelled 0
+2026-10-17T04:05:56.2066753Z # skipped 0
+2026-10-17T04:05:56.2067548Z # duration_ms 21284.389914
+2026-10-17T04:06:37.2668479Z # tests 15
+2026-10-17T04:06:37.2671283Z # pass 15
+2026-10-17T04:06:37.2671659Z # fail 0
+2026-10-17T04:06:37.2674264Z # cancelled 0
+2026-10-17T04:06:37.2674827Z # skipped 0
+2026-10-17T04:06:37.2675307Z # duration_ms 40841.724739
+2026-10-17T04:10:09.9808810Z # Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+2026-10-17T04:10:09.9809890Z ok 245 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+2026-10-17T04:10:10.0190306Z # Subtest: flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+2026-10-17T04:10:10.0191440Z ok 246 - flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+2026-10-17T04:10:10.0504993Z # Subtest: a delayed journal failure cannot mark a successfully committed document unsynced
+2026-10-17T04:10:10.0505952Z ok 247 - a delayed journal failure cannot mark a successfully committed document unsynced
+2026-10-17T04:10:10.1717158Z # Subtest: flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+2026-10-17T04:10:10.1719675Z ok 248 - flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+2026-10-17T04:10:10.2745824Z # Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=false
+2026-10-17T04:10:10.2747137Z ok 249 - outbound receipt bursts use bounded fresh authorization batches; revoked=false
+2026-10-17T04:10:10.3787053Z # Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=true
+2026-10-17T04:10:10.3788446Z ok 250 - outbound receipt bursts use bounded fresh authorization batches; revoked=true
+2026-10-17T04:10:10.4109559Z # Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=later
+2026-10-17T04:10:10.4111813Z ok 251 - outbound receipt bursts use bounded fresh authorization batches; revoked=later
+2026-10-17T04:10:10.6050104Z # Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+2026-10-17T04:10:10.6051515Z ok 252 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+2026-10-17T04:10:17.6760597Z # Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+2026-10-17T04:10:17.6761605Z ok 253 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+2026-10-17T04:10:24.2330252Z # tests 273
+2026-10-17T04:10:24.2331394Z # pass 273
+2026-10-17T04:10:24.2331758Z # fail 0
+2026-10-17T04:10:24.2332099Z # cancelled 0
+2026-10-17T04:10:24.2332475Z # skipped 0
+2026-10-17T04:10:24.2333222Z # duration_ms 226737.61683

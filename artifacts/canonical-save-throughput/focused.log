@@ -1,0 +1,62 @@
+TAP version 13
+# (node:1644) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 1 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1503.8669
+  type: 'test'
+  ...
+# Subtest: flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+ok 2 - flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+  ---
+  duration_ms: 193.1174
+  type: 'test'
+  ...
+# Subtest: flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+ok 3 - flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+  ---
+  duration_ms: 197.0064
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=false
+ok 4 - outbound receipt bursts use bounded fresh authorization batches; revoked=false
+  ---
+  duration_ms: 782.2975
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=true
+ok 5 - outbound receipt bursts use bounded fresh authorization batches; revoked=true
+  ---
+  duration_ms: 690.0627
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=later
+ok 6 - outbound receipt bursts use bounded fresh authorization batches; revoked=later
+  ---
+  duration_ms: 803.9691
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"2698bde7-ab0e-4716-a490-3bb488978da9","correlationId":"eb0503e2-2d41-435c-8b0b-dc29b393a037"}
+# {"event":"collaboration.disconnected","connectionId":"2698bde7-ab0e-4716-a490-3bb488978da9","code":4403}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+ok 7 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 930.401
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 8 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 7580.218
+  type: 'test'
+  ...
+1..8
+# tests 8
+# suites 0
+# pass 8
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 15541.5955

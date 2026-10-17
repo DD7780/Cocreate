@@ -1,0 +1,5 @@
+(node:14352) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+{"event":"collaboration.connected","connectionId":"b56a1546-3f53-4bae-a0ea-af011501354e","correlationId":"77f9c89d-f123-4ccf-8bef-ccc83fd8111e"}
+{"scope":"Built local client, signed synthetic owner, real WebSocket and server workflow, gated canonical storage and stalled journal, loopback interpreter/builder; no paid inference or hosted mutation","visibleSaving":true,"noSubmitBeforeCanonicalCommit":true,"journalStillBlockedAtBuilderDispatch":true,"exactlyOneCallerSubmission":true,"interpreterCalls":1,"builderCalls":1,"canonicalCommits":8,"compilerPromotion":"not asserted here; production-image CI is authoritative"}
+{"event":"collaboration.disconnected","connectionId":"b56a1546-3f53-4bae-a0ea-af011501354e","code":1006}

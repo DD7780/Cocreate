@@ -1,0 +1,71 @@
+{
+  "date": "2026-10-17",
+  "codeCommit": "6746806c55d51394f8a3e19e6366f7da66f7c75a",
+  "releaseFingerprint": "ae0af22d9f2e9b5951f8fd20b2ca1faae503315eb9034780b45e4102799aa577",
+  "local": {
+    "focusedRegressionTests": {
+      "passed": 49,
+      "failed": 0,
+      "skipped": 0,
+      "log": "final-focused.log"
+    },
+    "newOutcomeTests": 9,
+    "initialNewTests": {
+      "passed": 1,
+      "failed": 5,
+      "log": "before.log"
+    },
+    "productionBuild": "passed",
+    "importBoundaries": 0,
+    "browserFixtureTypes": "passed",
+    "browser": "browser/checks.json",
+    "windowsArtifactRun": {
+      "passed": 5,
+      "failed": 5,
+      "log": "windows-artifacts.log",
+      "limits": "compiler resource failure and downstream publication gate timeouts; unchanged limits"
+    }
+  },
+  "githubCI": {
+    "runId": 39001133818,
+    "status": "success",
+    "url": "https://github.com/DD7780/Cocreate/actions/runs/39001133818",
+    "jobId": 117304100471,
+    "nativePostgres": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "compiler": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browser": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullRegression": {
+      "passed": 273,
+      "failed": 0,
+      "skipped": 0
+    },
+    "summary": "github-ci-summary.log"
+  },
+  "sourceSHA256": {
+    "server/index.ts": "d9d4f7588deae15a76247351f8d021c23cb85e73666d68db98456b06a60ebc7e",
+    "server/room-state.ts": "7b94c59f7e530b6ae73e46ab932cbbbec44df46aafefe5fac2b6091c387d3634",
+    "server/rooms.ts": "03112f0e4740392894b183f17fc3e02c0e14c36d8c3e694d32fb749b7a8fdf68",
+    "server/supabase-platform.ts": "b479dd228ed7a5e6637e8e305cede7cbfd3bdba7ea681833090788436aa91212",
+    "tests/save-throughput.test.ts": "73f496836376274f2c9de3f244bf213e235313c1cc5e4997936df1c67e262e8a",
+    "tests/fixtures/artifact-storage.ts": "1c47aa06a78f239b42134aa9e1dbd784f026da0e0b4cca75ea7703d1f09c2c92"
+  },
+  "limits": [
+    "No Cloudflare deployment inspection",
+    "No authenticated post-release build or paid inference",
+    "Read-only hosted diagnostics only; no historical journal repair",
+    "AST refresh has no SQL parser or semantic relabeling"
+  ],
+  "publicationTarget": "main"
+}
