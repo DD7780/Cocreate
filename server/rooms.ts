@@ -46,6 +46,7 @@ import {
   type ArchivedVersion,
 } from "./artifacts.js";
 import { deletionSignature } from "../shared/document-state.js";
+import { DOCUMENT_SAVE_TIMEOUT_MS } from "../shared/save-timing.js";
 import { applySteeringUpdate } from "./steering-edits.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -857,12 +858,19 @@ export class RoomManager {
     if (record.before || record.after) this.queueEdit(room, p, record);
   }
   private async flushDocument(room: Room, ws: ClientSocket, requestId: string) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
     try {
       clearTimeout(room.saveTimer);
       room.documentSaveRequested = false;
       // This full snapshot commits the document and attributed edits; the recovery journal is independent.
-      if ((await this.save(room)) === false)
-        throw new Error("The document could not be durably saved.");
+      const confirmed = await Promise.race([
+        this.save(room),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => reject(new Error("Save acknowledgement timed out; the remote save outcome is unknown. No build was started. Your edits remain on this page; check the connection and try again.")), DOCUMENT_SAVE_TIMEOUT_MS);
+        }),
+      ]);
+      if (confirmed === false)
+        throw new Error("The document save was not confirmed. No build was started. Your edits remain on this page; check the connection and try again.");
       this.sendJson(ws, { type: "flushed", requestId });
     } catch (error) {
       this.sendJson(ws, {
@@ -873,6 +881,8 @@ export class RoomManager {
             ? error.message
             : "Document persistence failed. No build started.",
       });
+    } finally {
+      clearTimeout(timer);
     }
   }
   private sendPacket(ws: ClientSocket, data: string | Buffer) {

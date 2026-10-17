@@ -1,5 +1,12 @@
 # Harness status and outstanding work
 
+## Save acknowledgement publication — 2026-10-17
+
+- [x] Integrate onto `8515724` while preserving the newer queue/sequence fixes, current UI and submit replay helper.
+- [x] 39/39 focused checks; boundaries/build and six controlled-browser scenario groups pass, with zero physical provider calls in the browser harness.
+- [x] Bound server/client acknowledgement waits at 20/30 seconds; preserve canonical writes and no inference on late replies. First-build errors do not promise an absent product.
+- [ ] Candidate production-image CI, exact main publication and separate hosted acceptance. [Integration packet](build-save-timeout-publication.md).
+
 ## Canonical save throughput — 2026-10-17
 
 - [x] Read-only production diagnostics identify delayed tiny-document snapshots and conflicting journal sequences; no data repair or migration. [Packet](canonical-save-throughput.md).

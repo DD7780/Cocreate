@@ -1,5 +1,7 @@
 # Build my changes recovery
 
+Later timing/status follow-up: the [main acknowledgement integration](build-save-timeout-publication.md) uses a 30-second client limit and 20-second server wait. The 15-second evidence below remains historical. The replay helper and failed-receipt recovery implemented here remain in place.
+
 ## Change packet — 2026-10-16
 
 **Outcome.** The owner or an invited editor clicks Build my changes, or uses editor-focused Alt+X. A slow or rejected save currently ends the action silently; a later click after a recorded submission failure only replays the failed receipt. Show saving/submitting progress and actionable failures, allow a bounded 15-second canonical-save wait, and let an explicit retry recover the old receipt before creating a fresh submission when that receipt confirms failure.

@@ -58,6 +58,7 @@
   "server/zip.ts",
   "shared/beta-access.ts",
   "shared/document-state.ts",
+  "shared/save-timing.ts",
   "shared/types.ts",
   "src/App.tsx",
   "src/BetaReview.tsx",

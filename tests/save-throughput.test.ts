@@ -45,6 +45,28 @@ function edit(manager: RoomManager, room: Room, value: string, socket?: ClientSo
   } finally { doc.destroy(); }
 }
 
+test("an indefinitely queued canonical commit ends the flush wait without releasing the write queue or acknowledging late", async t => {
+  const canonical = gate(), messages: any[] = [];
+  let hold = false, started = false;
+  const f = setup({ saveSnapshot: async () => { if (hold) { started = true; await canonical.promise; } }, appendDocumentUpdate: async () => {} });
+  try {
+    const room = f.manager.create("flush-deadline"); f.manager.join(room, "alice", "Alice"); await room.persistQueue;
+    const client = { participantId: "alice", readyState: 1, send(raw: unknown) { if (typeof raw === "string") messages.push(JSON.parse(raw)); }, close() {} } as ClientSocket;
+    room.clients.add(client);edit(f.manager, room, "Keep this draft", client);hold = true;
+    t.mock.timers.enable({ apis: ["setTimeout"] });
+    f.manager.handleMessage(room, client, Buffer.from(JSON.stringify({ type: "flush", requestId: "deadline" })), false);
+    await new Promise(resolve => setImmediate(resolve));assert.equal(started, true);
+    const canonicalWrite = room.persistQueue;
+    t.mock.timers.tick(20_000);await new Promise(resolve => setImmediate(resolve));
+    assert.match(messages.find(item => item.type === "flush-error")?.message, /outcome is unknown/);
+    assert.equal(room.persistQueue, canonicalWrite, "timeout does not release canonical write serialization");
+    assert.equal(room.providerCalls.length, 0);assert.equal(room.submissions.length, 0);assert.equal(room.pending.get("alice")?.length, 1);
+    canonical.release();await canonicalWrite;await new Promise(resolve => setImmediate(resolve));
+    assert.equal(messages.filter(item => item.type === "flushed").length, 0);
+    assert.equal(messages.filter(item => item.type === "saved").length, 1, "a later confirmed commit still reports its immutable receipt");
+  } finally { t.mock.timers.reset();canonical.release();f.close(); }
+});
+
 test("routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies", async () => {
   const blocked = gate(), captures: string[] = [];
   let hold = false;

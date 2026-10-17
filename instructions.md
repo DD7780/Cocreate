@@ -1,5 +1,7 @@
 # 2guys1canvas contributor instructions
 
+Save acknowledgement bounds (2026-10-17): keep the server/client 20/30-second budgets in `shared/save-timing.ts`. Expiry ends the attempt, never cancels or releases an underlying canonical write and never revives inference on a late reply. Preserve coalesced autosaves, independent recovery journal, fresh authorization batches, high-water sequence restore and uncertain-submit replay. [Publication scope](docs/harness/build-save-timeout-publication.md).
+
 Beta registration visibility (2026-10-16): preserve reviewer-only waitlist inspection on `/beta/review`, separate from confirmed-account access requests. Never convert a waitlist email into an authenticated request, approval or notification during a read. Current source checks and rollout limits are in [the fix packet](docs/harness/beta-registration-visibility.md).
 
 Canvas writing surface (2026-10-15): keep Canvas a full-width writing surface without a Shared context sidebar or reserved column. Retain AgentPanel/IntentReview as reusable views (currently beside Artifacts) and every requirement, revision, attribution, usage and history contract. Focusing or clicking the surface stays inference-free. [Scope and evidence](docs/harness/canvas-writing-surface.md).

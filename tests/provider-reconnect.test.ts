@@ -1,3 +1,4 @@
+import { DOCUMENT_FLUSH_WAIT_MS } from '../shared/save-timing.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Y from 'yjs';
@@ -18,6 +19,67 @@ class FakeWebSocket {
 
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);
+
+test('save wait supports a five-second acknowledgement while typing, then submits once',async()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[],timers=new Map<number,{at:number,run:()=>void}>();let now=0,id=0,submits=0;
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
+    WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',
+    setTimer:(run,delay)=>{timers.set(++id,{at:now+delay,run});return id},clearTimer:id=>{timers.delete(id)}
+  });
+  const advance=(ms:number)=>{now+=ms;for(const [id,timer] of timers)if(timer.at<=now){timers.delete(id);timer.run()}};
+  try{
+    const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'A');
+    const waiting=provider.flush().then(()=>{submits++});const result=waiting.then(()=>undefined,error=>error);
+    const request=JSON.parse(socket.sent.at(-1) as string),vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');
+    advance(4_000);await Promise.resolve();assert.equal(submits,0);
+    doc.getText('draft').insert(1,'B');advance(1_000);
+    socket.message(JSON.stringify({type:'saved',revision:1,vector,deletions:'[]'}));
+    assert.equal(saves.at(-1),'saving','an older commit cannot label later typing saved');
+    socket.message(JSON.stringify({type:'flushed',requestId:request.requestId}));
+    assert.equal(await result,undefined);assert.equal(submits,1);assert.equal(doc.getText('draft').toString(),'AB');
+  }finally{provider.destroy();doc.destroy()}
+});
+
+test('missing acknowledgement ends unsynced, and a late reply cannot start a build',async()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[],timers=new Map<number,()=>void>();let id=0,submits=0;
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
+    WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:run=>{timers.set(++id,run);return id},clearTimer:id=>{timers.delete(id)}
+  });
+  try{
+    const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'kept');
+    const waiting=provider.flush().then(()=>{submits++});const rejected=assert.rejects(waiting,/save outcome is unknown/i);
+    const request=JSON.parse(socket.sent.at(-1) as string);[...timers.values()].at(-1)!();await rejected;
+    assert.equal(saves.at(-1),'unsynced');socket.message(JSON.stringify({type:'flushed',requestId:request.requestId}));
+    await Promise.resolve();assert.equal(submits,0);assert.equal(doc.getText('draft').toString(),'kept');
+    socket.message(JSON.stringify({type:'saved',revision:1,vector:Buffer.from(Y.encodeStateVector(doc)).toString('base64'),deletions:'[]'}));
+    assert.equal(saves.at(-1),'saved','only a covering canonical receipt resolves save status');
+  }finally{provider.destroy();doc.destroy()}
+});
+
+test('explicit flush failure ends pending save status and dispatches nothing',async()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[];
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
+  try{
+    const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'kept');const waiting=provider.flush();
+    const request=JSON.parse(socket.sent.at(-1) as string);socket.message(JSON.stringify({type:'flush-error',requestId:request.requestId,message:'Snapshot was not confirmed.'}));
+    await assert.rejects(waiting,/Snapshot was not confirmed/);assert.equal(saves.at(-1),'unsynced');assert.equal(doc.getText('draft').toString(),'kept');
+  }finally{provider.destroy();doc.destroy()}
+});
+
+test('a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt',async()=>{
+  FakeWebSocket.instances=[];const doc=new Y.Doc(),remote=new Y.Doc(),callbacks:(()=>void)[]=[],saves:string[]=[];
+  doc.getText('draft').insert(0,'Remove this');Y.applyUpdate(remote,Y.encodeStateAsUpdate(doc));
+  const oldDeletions=deletionSignature(doc),vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');
+  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}'),setTimer:run=>{callbacks.push(run);return callbacks.length},clearTimer:()=>{}});
+  try{
+    FakeWebSocket.instances[0].open();FakeWebSocket.instances[0].close();await tick();doc.getText('draft').delete(0,11);callbacks.shift()!();
+    const socket=FakeWebSocket.instances[1];socket.open();const remoteVector=Y.encodeStateVector(remote),packet=new Uint8Array(remoteVector.length+1);packet[0]=2;packet.set(remoteVector,1);socket.message(binary(packet));
+    const update=socket.sent.find(value=>value instanceof Uint8Array&&value[0]===0) as Uint8Array;assert.ok(update);Y.applyUpdate(remote,update.slice(1));assert.equal(remote.getText('draft').toString(),'');
+    socket.message(JSON.stringify({type:'saved',revision:1,vector,deletions:oldDeletions}));assert.notEqual(saves.at(-1),'saved');
+    socket.message(JSON.stringify({type:'saved',revision:2,vector,deletions:deletionSignature(remote)}));assert.equal(saves.at(-1),'saved');
+    assert.equal(socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='flush').length,0,'reconnect does not submit');
+  }finally{provider.destroy();doc.destroy();remote.destroy()}
+});
 
 for (const outcome of ['slow-save', 'timeout', 'rejected-save', 'disconnect'] as const) {
   test(`Build my changes ${outcome} keeps progress or reports failure before any submission`, async () => {
@@ -49,7 +111,7 @@ for (const outcome of ['slow-save', 'timeout', 'rejected-save', 'disconnect'] as
       assert.match(notices.at(-1)!, /Saving/);
       assert.equal(submissions, 0);
       if (outcome === 'slow-save') socket.message(JSON.stringify({ type: 'flushed', requestId: request.requestId }));
-      if (outcome === 'timeout') advance(11_700);
+      if (outcome === 'timeout') advance(DOCUMENT_FLUSH_WAIT_MS - 3_300);
       if (outcome === 'rejected-save') socket.message(JSON.stringify({ type: 'flush-error', requestId: request.requestId, message: 'Canonical save failed.' }));
       if (outcome === 'disconnect') socket.close();
       await pending;

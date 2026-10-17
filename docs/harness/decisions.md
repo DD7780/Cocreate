@@ -1,5 +1,9 @@
 # Harness decision log
 
+## D-0079 — Bounded save acknowledgement with honest uncertainty
+
+Accepted repair and main publication requested 2026-10-17. Bound the server's canonical-save wait at 20 seconds and the client's acknowledgement wait at 30 seconds, including ingress/auth/delivery allowance. These are finite supported operating bounds, not a production latency guarantee. Timeout ends the attempt without cancelling or releasing a canonical write; late covering receipts may update save status but cannot start inference. Preserve the newer coalesced autosaves, independent recovery journal, fresh authorized batches, sequence high-water restore and uncertain HTTP submission replay. Mention a retained product only when one is available. This supersedes the older 15-second tolerance, not the throughput or authority contract. [Integration and checks](build-save-timeout-publication.md).
+
 Updated 2026-10-05. Each stable identifier names one decision. Accepted behavior, local implementation and hosted verification are separate; the [checklist](checklist.md) owns evidence-backed status. Superseded/rejected records below preserve rationale, not current instructions. Current setup/limits live in [product.md](../../product.md#hosted-ai-and-limits).
 
 Identifier repair: D-0035 retains BYOK; device recovery is D-0043. D-0021 retains hosted Supabase authority; JSON serialization recovery is D-0044. The one erroneous D-0036 gate-removal reference was corrected by meaning to D-0035, refined by D-0042. D-0036 remains historical comic motion. No decision was inferred from an assistant-generated prompt.

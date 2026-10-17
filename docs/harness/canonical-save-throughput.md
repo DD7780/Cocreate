@@ -1,5 +1,7 @@
 # Canonical save throughput — 2026-10-17
 
+Timing follow-up: the later [acknowledgement publication](build-save-timeout-publication.md) extends the client wait to 30 seconds and bounds the server wait at 20 seconds. The 15-second references below describe this earlier throughput slice. Its coalescing, canonical/journal independence, authorized batching and journal sequence restore remain authoritative.
+
 ## Bounded change packet
 
 Outcome: the reported project repeatedly times out before Build my changes can submit. Keep the 15-second client limit and mandatory canonical save, but prevent routine collaboration/persistence work from creating an ever-growing queue in front of that acknowledgement. The previous recovery change surfaced the error; it did not fix the production queue.
