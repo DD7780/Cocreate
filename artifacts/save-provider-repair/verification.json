@@ -38,10 +38,14 @@
   "hosted": {
     "paidCallsMade": 0,
     "verifiedEndToEnd": false,
-    "designatedAccountAndBudgetPending": true,
+    "designatedAccountAndBudgetPending": false,
     "unresolved": [
       "Historical provider rejected argument",
       "Historical intermittent canonical save stage"
-    ]
+    ],
+    "userManualAcceptance": true,
+    "agentLiveInferenceAuthorized": false,
+    "releaseFingerprintObserved": "ee2e582c39b4c752275ab7fabe54e05b3b22093b5509e90e67adbbd8482096d2",
+    "releaseObservation": "live-release.json"
   }
 }

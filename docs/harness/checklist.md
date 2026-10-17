@@ -6,7 +6,8 @@
 - [x] Honor retry eligibility, record sanitized metadata, preserve full selected-route schema/reasoning, reuse only confirmed covering saves and correlate stages without cancelling writes.
 - [x] Connected regressions and controlled two-participant browser scenarios pass, including late/failed saves, deletion, replay, authority loss and inference-free reconnect.
 - [x] Source 0526cae passes production-image PostgreSQL 2/2, compiler 10/10, browser/resource 15/15 and full 303/303, zero skips, CI 39018603723 attempt 1. Fingerprint ee2e582c…; Windows failures remain retained and distinct.
-- [ ] Obtain designated account/project and explicit live-inference budget; identify the actual rejected argument and intermittent hosted save stage, then verify selected-route save/capture/interpret/accept/build/functional verification/promote/reopen. Do not claim end-to-end repair yet. [Evidence and handoff](save-provider-repair.md).
+- [x] Main 8cdb3eb and its checks pass; beta app-health confirms the expected fingerprint, Worker health is 200 and anonymous project access is 401. The user chose manual signed-in/provider acceptance.
+- [ ] User chose manual hosted acceptance on the incident project; no agent inference/spend is authorized. Identify any remaining rejected argument or stalled save stage, then verify selected-route save/capture/interpret/accept/build/functional verification/promote/reopen. Do not claim end-to-end repair yet. [Evidence and handoff](save-provider-repair.md).
 
 ## Canonical product naming — 2026-10-17
 

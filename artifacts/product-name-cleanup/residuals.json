@@ -4,7 +4,7 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 916,
+  "textFiles": 917,
   "matchedFiles": 247,
   "matches": 3912,
   "classificationCounts": {
@@ -21155,14 +21155,14 @@
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 17,
+      "line": 18,
       "column": 183,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 35,
+      "line": 36,
       "column": 234,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
