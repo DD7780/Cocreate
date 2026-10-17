@@ -5,7 +5,8 @@
 - [x] Integrate onto `8515724` while preserving the newer queue/sequence fixes, current UI and submit replay helper.
 - [x] 39/39 focused checks; boundaries/build and six controlled-browser scenario groups pass, with zero physical provider calls in the browser harness.
 - [x] Bound server/client acknowledgement waits at 20/30 seconds; preserve canonical writes and no inference on late replies. First-build errors do not promise an absent product.
-- [ ] Candidate production-image CI, exact main publication and separate hosted acceptance. [Integration packet](build-save-timeout-publication.md).
+- [x] Code `f28df44` passes production-image CI attempt 2: PostgreSQL 2/2, compiler 10/10, browser 15/15 and full 278/278, zero failures/skips. Retain the first attempt's browser-memory classification failure. Runtime fingerprint remains `6c63bcd1…` for the evidence-only main publication follow-up. [Integration packet](build-save-timeout-publication.md).
+- [ ] Hosted rollout and authenticated real-provider acceptance remain separate from the explicitly authorized GitHub main publication.
 
 ## Canonical save throughput — 2026-10-17
 
