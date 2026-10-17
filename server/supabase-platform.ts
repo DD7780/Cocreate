@@ -1,5 +1,6 @@
 import { productEnvironment } from '../shared/product-environment.js';
 import type {SaveTrace} from './save-diagnostics.js';
+import {replayCaptureJournal,type CaptureRecord} from './capture-journal.js';
 import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -193,7 +194,8 @@ export class SupabasePlatform {
 
   async loadSnapshot(projectId:string) {
     const {data,error}=await this.admin.from('project_snapshots').select('revision,yjs_state,harness_state,committed_at').eq('project_id',projectId).maybeSingle();fail('Snapshot restore failed',error);
-    if(!data)return null;
+    const captures=await this.loadCaptures(projectId,Number(data?.harness_state?.captureCursor)||0);
+    if(!data)return captures.length?replayCaptureJournal(null,captures):null;
     const {data:lastUpdate,error:sequenceError}=await this.admin.from('project_document_updates').select('sequence').eq('project_id',projectId).order('sequence',{ascending:false}).limit(1).maybeSingle();
     fail('Document sequence restore failed',sequenceError);
     const journalSequence=Number(lastUpdate?.sequence??0),snapshotSequence=Number(data.harness_state?.documentSequence??0);
@@ -205,10 +207,31 @@ export class SupabasePlatform {
       await this.quarantine(projectId,'snapshot',Number(data.revision),raw,error);
       const recovered=await this.recoverDocumentUpdates(projectId);
       if(!recovered)throw new Error('Stored collaboration data is unreadable and no verified update history can recover it. The original bytes were quarantined; contact the project owner before making further edits.');
-      return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
+      return replayCaptureJournal({...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'},captures);
     }
     if(decoded.legacyBufferJson&&!await this.quarantine(projectId,'snapshot',Number(data.revision),raw,new Error('Legacy Node Buffer JSON serialization backed up before verified in-memory recovery.')))throw new Error('The collaboration snapshot is recoverable, but its required backup could not be recorded. Apply the persistence-quarantine migration before reopening this project.');
-    return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
+    return replayCaptureJournal({...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined},captures);
+  }
+
+  async commitCapture(projectId:string,record:CaptureRecord):Promise<CaptureRecord>{
+    const {data,error}=await this.admin.rpc('commit_workflow_capture',{target_project_id:projectId,...this.coordinator.fence(projectId),target_actor_id:record.submission.participantId,target_request_id:record.submission.requestId,target_payload_hash:record.payloadHash,target_record:record});
+    this.checkFenceError(projectId,error);if(error)throw Object.assign(new Error('Durable capture was not confirmed. Recover this command before retrying.'),{code:error.code,status:error.code==='22023'?409:error.code==='42501'?403:503});
+    if(!data||!Number.isSafeInteger(Number(data.cursor))||Number(data.cursor)<1)throw new Error('Canonical capture receipt is missing.');
+    return {...data,cursor:Number(data.cursor)} as CaptureRecord;
+  }
+  async readCapture(projectId:string,actorId:string,requestId:string):Promise<CaptureRecord|undefined>{
+    const {data,error}=await this.admin.rpc('read_workflow_capture',{target_project_id:projectId,...this.coordinator.fence(projectId),target_actor_id:actorId,target_request_id:requestId});
+    this.checkFenceError(projectId,error);if(error)throw Object.assign(new Error('Canonical capture lookup failed. Retain the original command.'),{code:error.code,status:503});
+    return data?{...data,cursor:Number(data.cursor)} as CaptureRecord:undefined;
+  }
+  private async loadCaptures(projectId:string,after:number):Promise<CaptureRecord[]>{
+    const records:CaptureRecord[]=[];
+    for(let offset=0;;offset+=100){
+      const {data,error}=await this.admin.from('workflow_capture_commands').select('cursor,command_record').eq('project_id',projectId).gt('cursor',after).order('cursor').range(offset,offset+99);
+      fail('Canonical capture recovery failed',error);
+      records.push(...(data||[]).map(row=>({...row.command_record,cursor:Number(row.cursor)} as CaptureRecord)));
+      if((data||[]).length<100)return records;
+    }
   }
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {

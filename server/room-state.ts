@@ -1,5 +1,6 @@
 import type {WorkflowBudget} from "./workflow-budget.js";
 import type {SaveTrace} from './save-diagnostics.js';
+import type {CaptureRecord} from './capture-journal.js';
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import type { WebSocket } from "ws";
@@ -35,6 +36,8 @@ import type { ArtifactBody, ArtifactReference, ArchivedVersion } from "./artifac
 export type ProjectRole = "owner" | "editor" | "viewer";
 export const collaborationBatchSize = 32;
 export type DurableStore = {
+  commitCapture?: (projectId:string,record:CaptureRecord)=>Promise<CaptureRecord>;
+  readCapture?: (projectId:string,actorId:string,requestId:string)=>Promise<CaptureRecord|undefined>;
   publishArtifactBodies?: (
     projectId: string,
     bodies: ArtifactBody[],
@@ -76,7 +79,7 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
-  deliveryBatch?: Array<{data:string | Buffer;trace?:SaveTrace}>;
+  deliveryBatch?: Array<{data:string | Buffer}>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;
@@ -92,6 +95,8 @@ export type StoredVersion = Version & {
   specification?: ProjectSpec;
 };
 export type EditRecord = AgentChange & {
+  sourceId?:string;
+  sourceHash?:string;
   participantId: string;
   at: string;
   update: string;
@@ -103,6 +108,10 @@ export type SubmissionStatus =
   | "built"
   | "failed";
 export type StoredSubmission = {
+  payloadHash?:string;
+  captureCursor?:number;
+  interrupted?:boolean;
+  outcome?:'no_build_needed';
   intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
   id: string;
@@ -176,6 +185,11 @@ export type UsageMeta = {
   model: string;
 };
 export type Room = {
+  captureSources?:Map<string,{actorId:string;hash:string}>;
+  captureCursor?:number;
+  captureQueue?:Promise<unknown>;
+  captureWaiting?:number;
+  captureUnknown?:{actorId:string;requestId:string;payloadHash:string};
   intentCommit?: { done: Promise<void>; projection: Partial<Room> };
   interpretationHistory?: Requirement[];
   intentCorrections?: IntentCorrection[];
@@ -204,6 +218,10 @@ export type Room = {
       participantId: string;
       requestId: string;
       status: SubmissionStatus;
+      payloadHash?:string;
+      interrupted?:boolean;
+      outcome?:'no_build_needed';
+      error?:string;
     }
   >;
   recoveryCheckpoint?: {

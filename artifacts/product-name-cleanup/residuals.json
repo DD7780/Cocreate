@@ -4,7 +4,7 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 917,
+  "textFiles": 947,
   "matchedFiles": 247,
   "matches": 3912,
   "classificationCounts": {
@@ -21155,14 +21155,14 @@
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 18,
+      "line": 30,
       "column": 183,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 36,
+      "line": 48,
       "column": 234,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
@@ -21183,28 +21183,28 @@
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 75,
+      "line": 79,
       "column": 180,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 125,
+      "line": 129,
       "column": 130,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 125,
+      "line": 129,
       "column": 169,
       "spelling": "cocreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 125,
+      "line": 129,
       "column": 304,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
@@ -26846,42 +26846,42 @@
     },
     {
       "file": "server/event-store.ts",
-      "line": 67,
+      "line": 68,
       "column": 88,
       "spelling": "cocreate",
       "classification": "durable-local"
     },
     {
       "file": "server/event-store.ts",
-      "line": 160,
+      "line": 196,
       "column": 272,
       "spelling": "cocreate",
       "classification": "durable-local"
     },
     {
       "file": "server/event-store.ts",
-      "line": 204,
+      "line": 240,
       "column": 516,
       "spelling": "cocreate",
       "classification": "durable-local"
     },
     {
       "file": "server/index.ts",
-      "line": 71,
+      "line": 70,
       "column": 74,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
     },
     {
       "file": "server/index.ts",
-      "line": 85,
+      "line": 84,
       "column": 152,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
     },
     {
       "file": "server/index.ts",
-      "line": 88,
+      "line": 87,
       "column": 48,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
@@ -26937,7 +26937,7 @@
     },
     {
       "file": "server/supabase-platform.ts",
-      "line": 42,
+      "line": 43,
       "column": 45,
       "spelling": "cocreate",
       "classification": "hosted-resources"
@@ -27049,14 +27049,14 @@
     },
     {
       "file": "tests/artifact-restoration.test.ts",
-      "line": 138,
+      "line": 139,
       "column": 92,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/artifact-restoration.test.ts",
-      "line": 145,
+      "line": 146,
       "column": 73,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
@@ -27084,35 +27084,35 @@
     },
     {
       "file": "tests/fixtures/artifact-storage.ts",
-      "line": 23,
+      "line": 24,
       "column": 50,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/fixtures/artifact-storage.ts",
-      "line": 24,
+      "line": 25,
       "column": 40,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/fixtures/artifact-storage.ts",
-      "line": 24,
+      "line": 25,
       "column": 68,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/fixtures/artifact-storage.ts",
-      "line": 25,
+      "line": 26,
       "column": 74,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/fixtures/artifact-storage.ts",
-      "line": 41,
+      "line": 42,
       "column": 45,
       "spelling": "cocreate",
       "classification": "regression-fixtures"

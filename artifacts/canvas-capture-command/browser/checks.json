@@ -1,0 +1,10 @@
+{
+  "renewalPreservesEditorAndFrozenAttempt": true,
+  "duplicateButtonShortcutSingleCapture": true,
+  "receiptBeforeBlockedInterpretation": true,
+  "lostReplyReloadLookupNoResend": true,
+  "accountSwitchSeparatesCommandScope": true,
+  "controlledInterpreterCalls": 3,
+  "paidCalls": 0,
+  "products": 0
+}

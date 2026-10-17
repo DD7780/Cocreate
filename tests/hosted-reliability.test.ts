@@ -18,7 +18,7 @@ test('hosted reads, mutations and live delivery check current membership rather 
     const token=createSession(secret,{roomId:'project',participantId:'alice',accountId:'alice',name:'Alice',role:'editor'}),headers={Authorization:`Bearer ${token}`,'Content-Type':'application/json'};
     assert.equal((await fetch(`${url}/api/rooms/project/state`)).status,401);
     assert.equal((await fetch(`${url}/api/rooms/project/state`,{headers})).status,200);
-    role='viewer';assert.equal((await fetch(`${url}/api/rooms/project/submit`,{method:'POST',headers,body:'{"requestId":"one"}'})).status,403);
+    role='viewer';assert.equal((await fetch(`${url}/api/rooms/project/commands/capture`,{method:'POST',headers,body:'{"requestId":"one"}'})).status,403);
     role=undefined;assert.equal((await fetch(`${url}/api/rooms/project/state`,{headers})).status,403);
     assert.equal((await fetch(`${url}/preview/project/1`,{headers})).status,403);
     const status=await new Promise<number>((resolve,reject)=>{const rejected=new WebSocket(`ws://127.0.0.1:${port}/ws?room=project&token=${encodeURIComponent(token)}`,{origin:url});rejected.once('unexpected-response',(_req,res)=>{resolve(res.statusCode||0);res.resume()});rejected.once('open',()=>reject(new Error('Revoked upgrade accepted')));rejected.on('error',()=>{});});assert.equal(status,403);
@@ -40,7 +40,7 @@ test('non-owner ingress retries without hydrating a second writer or bypassing m
   try{
     const room=owner.service.manager.create('project');owner.service.manager.join(room,'alice','Alice');
     const token=createSession('synthetic',{roomId:'project',participantId:'alice',accountId:'alice',name:'Alice',role:'editor'}),headers={Authorization:`Bearer ${token}`,'Content-Type':'application/json'};
-    for(const route of ['/api/rooms/project/state','/api/rooms/project/submit','/api/projects/project/session']){
+    for(const route of ['/api/rooms/project/state','/api/rooms/project/commands/capture','/api/projects/project/session']){
       const response=await fetch(other.url+route,{method:route.endsWith('state')?'GET':'POST',headers,body:route.endsWith('state')?undefined:'{"requestId":"retained-command"}'});
       assert.equal(response.status,503);assert.equal(response.headers.get('Retry-After'),'2');assert.equal(response.headers.get('Location'),null);
       const body=await response.json() as any;assert.equal(body.code,'coordinator_unavailable');assert.match(body.error,/same request ID/);assert.doesNotMatch(JSON.stringify(body),/private|UUID|credential/);
@@ -49,7 +49,7 @@ test('non-owner ingress retries without hydrating a second writer or bypassing m
     const upgrade=await new Promise<{status:number;retry:unknown}>(resolve=>{const socket=new WebSocket(`ws://127.0.0.1:${other.port}/ws?room=project&token=${encodeURIComponent(token)}`,{origin:other.url});socket.once('unexpected-response',(_req,res)=>{resolve({status:res.statusCode||0,retry:res.headers['retry-after']});res.resume()});socket.on('error',()=>{})});assert.deepEqual(upgrade,{status:503,retry:'2'});
     assert.equal((await fetch(owner.url+'/api/rooms/project/state',{headers})).status,200);
     const prior=ownershipChecks;role=undefined;assert.equal((await fetch(other.url+'/api/rooms/project/state',{headers})).status,403);assert.equal(ownershipChecks,prior);
-    role='viewer';assert.equal((await fetch(other.url+'/api/rooms/project/submit',{method:'POST',headers,body:'{"requestId":"retained-command"}'})).status,403);assert.equal(ownershipChecks,prior);
+    role='viewer';assert.equal((await fetch(other.url+'/api/rooms/project/commands/capture',{method:'POST',headers,body:'{"requestId":"retained-command"}'})).status,403);assert.equal(ownershipChecks,prior);
     assert.equal((await fetch(other.url+'/api/rooms/project/state')).status,401);assert.equal(ownershipChecks,prior);
   }finally{await owner.service.stop();await other.service.stop();for(const dir of dirs)fs.rmSync(dir,{recursive:true,force:true})}
 });

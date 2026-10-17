@@ -1,5 +1,17 @@
 # Harness status and outstanding work
 
+## Canvas capture replacement — 2026-10-17 (D-0081)
+
+- [x] Reproduce provider teardown and interpretation-coupled acknowledgement; preserve original failing evidence.
+- [x] Implement immutable per-author cutoffs, canonical capture journal/RPC, receipt-first admission and unknown-reply lookup; integrate the existing serial coordinator.
+- [x] Replace client lifecycle/controller, preserve ticket-renewal identity and remove superseded submission wiring after vertical-slice checks.
+- [x] Prepare additive service-only SQL and verify embedded PostgreSQL semantics; built browser verifies renewal, pending identity, lost reply/reload, two actor scopes and no automatic resubmission.
+- [ ] Complete current source full/native production-image checks and release package: [evidence ledger](canvas-capture-command.md).
+- [ ] Authorized hosted migration/release and designated-provider end-to-end acceptance. User chose manual provider testing; no spend cap supplied.
+
+Earlier completed checks below apply to their dated source versions.
+
+
 ## Save/provider reliability follow-up — 2026-10-17
 
 - [x] Reproduce permanent HTTP 400 making three calls and a covering flush unnecessarily queuing a second remote commit; preserve failed evidence.

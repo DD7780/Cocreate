@@ -265,6 +265,7 @@ export type ConflictGroup = {
   obsoleteReason?: string;
 };
 export type Participant = {
+  draftSourceIds?:string[];
   id: string;
   name: string;
   color: string;

@@ -1,0 +1,30 @@
+(node:18388) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1703 modules transformed.
+rendering chunks...
+computing gzip size...
+.runtime/build-capture-ui/.runtime/capture-browser.html          0.19 kB │ gzip:   0.15 kB
+.runtime/build-capture-ui/assets/capture-browser-Bx-odlxU.css   11.19 kB │ gzip:   2.68 kB
+.runtime/build-capture-ui/assets/capture-browser-DXZ6ApyY.js   795.27 kB │ gzip: 253.28 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 8.68s
+{"event":"collaboration.connected","connectionId":"036b5f21-b43c-4b11-8610-bc5a1e500bdc","correlationId":"ec488ad4-2e55-4b03-bacb-f40abd1e7729"}
+{"event":"collaboration.disconnected","connectionId":"036b5f21-b43c-4b11-8610-bc5a1e500bdc","code":1005}
+{"event":"collaboration.connected","connectionId":"5ef9b664-9e20-4043-8b4a-36ec66840b83","correlationId":"ec6b4367-ca41-4ea9-a4c4-80165af7dc18"}
+{"event":"command.captured","commandId":"c3e3a125-28ad-42a6-8332-aae814c8c6ea","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":12}
+{"event":"collaboration.disconnected","connectionId":"5ef9b664-9e20-4043-8b4a-36ec66840b83","code":1006}
+C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-capture-command.mjs:56
+  const wait=async(check,label)=>{for(let i=0;i<100;i++){if(await check())return;await sleep(100)}throw Error('Timed out: '+label)};
+                                                                                                        ^
+
+Error: Timed out: question recorded without product
+    at wait (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-capture-command.mjs:56:105)
+    at async <anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-capture-command.mjs:78:27)
+
+Node.js v22.23.2

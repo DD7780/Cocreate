@@ -1,108 +1,53 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { submitDraftChanges } from '../src/submit-changes.js';
-import { createProgressFixture } from './fixtures/build-progress.js';
-
-function feedback() {
-  const notices: string[] = [], errors: string[] = [];
-  return { notices, errors, onNotice: (message: string) => notices.push(message), onError: (message: string) => errors.push(message) };
-}
-
-test('save rejection is reported, keeps an uncertain request ID, and never submits', async () => {
-  const view = feedback(), requestId = { current: 'uncertain-earlier-request' };
-  let submissions = 0;
-  await submitDraftChanges({ ...view, requestId,
-    flush: async () => { throw new Error('The document could not be durably saved.'); },
-    submit: async () => { submissions++; return { status: 'queued' }; },
-  });
-  assert.equal(submissions, 0);
-  assert.match(view.notices[0], /Saving/);
-  assert.equal(view.notices.at(-1), '');
-  assert.match(view.errors.at(-1)!, /durably saved/);
-  assert.equal(requestId.current, 'uncertain-earlier-request');
+import * as Y from 'yjs';
+import {createProgressFixture,pause} from './fixtures/build-progress.js';
+import {captureEnvelope} from './fixtures/capture.js';
+import {encodeCaptureBytes} from '../shared/capture-command.js';
+import {deletionSignature} from '../shared/document-state.js';
+const options={buildDebounceMs:60_000,buildMaxWaitMs:60_000};
+test('HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch',async()=>{
+  const f=await createProgressFixture(options),doc=new Y.Doc();
+  try{
+    Y.applyUpdate(doc,Y.encodeStateAsUpdate(f.room.doc));const vector=Y.encodeStateVector(doc);
+    const paragraph=new Y.XmlElement('paragraph'),text=new Y.XmlText();doc.transact(()=>{doc.getXmlFragment('default').push([paragraph]);paragraph.push([text]);text.insert(0,'Build a dashboard');});
+    const source={id:crypto.randomUUID(),update:encodeCaptureBytes(Y.encodeStateAsUpdate(doc,vector))};
+    const envelope={version:1 as const,requestId:'http-first',cutoff:{vector:encodeCaptureBytes(Y.encodeStateVector(doc)),deletions:deletionSignature(doc)},sourceIds:[source.id],updates:[source]};
+    const result=await f.manager.captureChanges(f.room,'alice',envelope);
+    f.manager.handleMessage(f.room,{participantId:'alice',readyState:0,send(){},close(){}} as never,Buffer.from(JSON.stringify({type:'document-update',sourceId:source.id,update:source.update})),false);
+    assert.equal(f.room.editHistory.length,1);assert.equal(f.room.pending.get('alice')?.length,0);assert.equal(f.room.submissions.length,1);
+    await assert.rejects(()=>f.manager.captureChanges(f.room,'bob',{...envelope,requestId:'forged-source'}),/conflicts with authenticated provenance/);
+    assert.equal((await f.manager.captureReceipt(f.room,'alice','http-first'))?.commandId,result.commandId);
+  }finally{doc.destroy();await f.close();}
 });
-
-for (const [actor, teammate] of [['alice', 'bob'], ['bob', 'alice']]) {
-  test(`${actor === 'alice' ? 'owner' : 'invited editor'} retries a confirmed failure on the next click and captures only their own edits`, async () => {
-    let authorizations = 0;
-    const f = await createProgressFixture({ buildDebounceMs: 60_000, buildMaxWaitMs: 60_000,
-      authorize: async () => { if (++authorizations === 1) throw new Error('Controlled temporary authorization failure'); },
-    });
-    try {
-      f.edit(actor, 'Please build a project dashboard');
-      f.edit(teammate, 'Please add a calendar');
-      const view = feedback(), requestId: { current: string | undefined } = { current: undefined };
-      const options = { ...view, requestId, flush: async () => {}, submit: (id: string) => f.manager.submitChanges(f.room, actor, id) };
-      await submitDraftChanges(options);
-      assert.match(view.errors.at(-1)!, /temporary authorization failure/);
-      assert.equal(f.room.submissions.length, 1);
-      assert.equal(f.room.submissions[0].status, 'failed');
-      assert.equal(f.personal.length, 0);
-      const failedRequestId = requestId.current;
-      await submitDraftChanges(options);
-      assert.equal(f.room.submissions.length, 2);
-      assert.notEqual(f.room.submissions[1].requestId, failedRequestId);
-      assert.equal(f.room.submissions[1].status, 'queued');
-      assert.equal(f.personal.length, 1);
-      assert.equal(f.personal[0].actor, actor);
-      assert.equal(f.room.pending.get(teammate)?.length, 1);
-      assert.equal(f.room.pending.get(actor)?.length || 0, 0);
-      assert.equal(requestId.current, undefined);
-      assert.match(view.notices.at(-1)!, /accepted and queued/);
-      assert.equal(view.errors.at(-1), '');
-    } finally { await f.close(); }
-  });
-}
-
-test('a lost successful reply replays the original receipt without inference or consuming newer edits', async () => {
-  const f = await createProgressFixture({ buildDebounceMs: 60_000, buildMaxWaitMs: 60_000 });
-  try {
-    f.edit('alice', 'Please build a project dashboard');
-    const view = feedback(), requestId: { current: string | undefined } = { current: undefined }, sent: string[] = [];
-    let loseReply = true;
-    const options = { ...view, requestId, flush: async () => {}, submit: async (id: string) => {
-      sent.push(id);
-      const result = await f.manager.submitChanges(f.room, 'alice', id);
-      if (loseReply) { loseReply = false; throw new Error('Connection lost after submission'); }
-      return result;
-    } };
-    await submitDraftChanges(options);
-    assert.equal(requestId.current, sent[0]);
-    assert.match(view.errors.at(-1)!, /Connection lost/);
-    f.edit('alice', 'Please add a search field');
-    await submitDraftChanges(options);
-    assert.deepEqual(sent, [sent[0], sent[0]]);
-    assert.equal(f.room.submissions.length, 1);
-    assert.equal(f.personal.length, 1);
-    assert.equal(f.room.pending.get('alice')?.length, 1);
-    assert.equal(requestId.current, undefined);
-    assert.match(view.notices.at(-1)!, /already submitted/);
-  } finally { await f.close(); }
+test('a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture',async()=>{
+  const f=await createProgressFixture(options),doc=new Y.Doc();
+  try{
+    f.edit('alice','Build a dashboard');await f.manager.captureChanges(f.room,'alice',captureEnvelope(f.room,'alice','insert'));
+    await new Promise(resolve=>setImmediate(resolve));await f.room.steeringQueue;
+    const revision=f.room.specificationRevision;assert.ok(revision>0);
+    Y.applyUpdate(doc,Y.encodeStateAsUpdate(f.room.doc));const vector=Y.encodeStateVector(doc);doc.getXmlFragment('default').delete(0,1);
+    const source={id:crypto.randomUUID(),update:encodeCaptureBytes(Y.encodeStateAsUpdate(doc,vector))};
+    const envelope={version:1 as const,requestId:'delete',cutoff:{vector:encodeCaptureBytes(Y.encodeStateVector(doc)),deletions:deletionSignature(doc)},sourceIds:[source.id],updates:[source]};
+    await assert.rejects(()=>f.manager.captureChanges(f.room,'alice',{...envelope,cutoff:{...envelope.cutoff,deletions:'[]'}}),/cutoff/);
+    const result=await f.manager.captureChanges(f.room,'alice',envelope);assert.equal(result.state,'captured');
+    assert.equal(f.room.submissions[1].capturedChanges?.[0].kind,'delete');assert.equal(f.room.specificationRevision,revision);
+  }finally{doc.destroy();await f.close();}
 });
-
-test('recovery stops after one fresh attempt and retains its identity on another uncertain failure', async () => {
-  const view = feedback(), requestId: { current: string | undefined } = { current: 'confirmed-failed-request' }, sent: string[] = [];
-  await submitDraftChanges({ ...view, requestId, flush: async () => {}, submit: async id => {
-    sent.push(id);
-    if (sent.length === 1) return { status: 'failed' };
-    throw new Error('Fresh attempt reply lost');
-  } });
-  assert.equal(sent.length, 2);
-  assert.equal(sent[0], 'confirmed-failed-request');
-  assert.notEqual(sent[1], sent[0]);
-  assert.equal(requestId.current, sent[1]);
-  assert.match(view.errors.at(-1)!, /reply lost/);
-  assert.equal(view.notices.at(-1), '');
+test('membership revocation before canonical admission creates no command and preserves drafts',async()=>{
+  let revoked=false;const f=await createProgressFixture({...options,authorize:async()=>{if(revoked)throw Object.assign(new Error('Revoked'),{status:403});}});
+  try{
+    f.edit('alice','Build a dashboard');revoked=true;
+    await assert.rejects(()=>f.manager.captureChanges(f.room,'alice',captureEnvelope(f.room,'alice','revoked')),/Revoked/);
+    assert.equal(f.room.submissions.length,0);assert.equal(f.room.pending.get('alice')?.length,1);assert.equal(f.personal.length,0);
+    await assert.rejects(()=>f.manager.captureReceipt(f.room,'alice','revoked'),/Revoked/);
+  }finally{await f.close();}
 });
-
-test('a failed response is shown as failure and does not automatically submit again', async () => {
-  const view = feedback(), requestId: { current: string | undefined } = { current: undefined };
-  let submissions = 0;
-  await submitDraftChanges({ ...view, requestId, flush: async () => {}, submit: async () => {
-    submissions++; return { status: 'failed', message: 'Your edits are retained; submit again.' };
-  } });
-  assert.equal(submissions, 1);
-  assert.equal(requestId.current, undefined);
-  assert.equal(view.notices.at(-1), '');
-  assert.match(view.errors.at(-1)!, /edits are retained/);
+test('unsupported old submission messages require upgrade without saving or inference',async()=>{
+  const f=await createProgressFixture(options),messages:any[]=[];
+  try{
+    f.edit('alice','Build a dashboard');
+    f.manager.handleMessage(f.room,{participantId:'alice',readyState:1,send(raw:string){messages.push(JSON.parse(raw));},close(){}} as never,Buffer.from(JSON.stringify({type:'flush',requestId:'old'})),false);
+    await pause(10);assert.equal(messages[0].type,'flush-error');assert.equal(messages[0].code,'capture_upgrade_required');assert.equal(f.room.submissions.length,0);assert.equal(f.personal.length,0);
+  }finally{await f.close();}
 });

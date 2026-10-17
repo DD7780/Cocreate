@@ -1,3 +1,4 @@
+import {captureAndProcess} from './fixtures/capture.js';
 import {usedBudget} from './fixtures/workflow-budget.js';
 import { verifiedList } from './fixtures/verified-list.js';
 import test from 'node:test';
@@ -30,10 +31,10 @@ test('required behavior failure retains the verified product, records actionable
   let manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
   try {
     let room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
-    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
+    edit(manager,room,'Build a catalog with a working filter');await captureAndProcess(manager,room,'alice','one');
     await waitFor(()=>room.versions.length===1||room.status==='Error',25_000);assert.equal(room.status,'Updated',room.lastError+JSON.stringify(manager.eventStore.eventsForWorkspace(id).filter(event=>event.eventType==='tool.failed').at(-1)?.payload));await waitFor(()=>!room.buildTask);const prior=structuredClone(room.versions[0]);
     assert.equal(prior.aiRun?.verification.verified,true);
-    broken=true;edit(manager,room,'Add sorting');await manager.submitChanges(room,'alice','two');
+    broken=true;edit(manager,room,'Add sorting');await captureAndProcess(manager,room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask,25_000);
     assert.equal(builds,2,'functional failures do not spend on automatic provider repairs');
     assert.deepEqual(room.versions,[prior]);assert.match(room.lastError||'',/Required behavior verification failed/);
@@ -41,13 +42,13 @@ test('required behavior failure retains the verified product, records actionable
     assert.equal(run.verification.requirementSatisfaction,'failed');assert.equal(run.verification.regressionCheck,'failed');
     assert.equal(run.verification.evidence?.checks.find(check=>check.kind==='filter')?.passed,false);
     assert.equal(run.verification.evidence?.checks.find(check=>check.kind==='sort')?.passed,true);
-    const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
+    const calls=manager.view(room).physicalUsage.recorded.requests;await captureAndProcess(manager,room,'alice','two');
     assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
     await manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get(id)!;
     assert.deepEqual(room.aiRuns.at(-1)?.verification.evidence,run.verification.evidence);
     assert.equal(manager.view(room).latestVersion,1);assert.equal(builds,2);
     assert.equal(manager.eventStore.eventsForWorkspace(id).filter(event=>event.eventType==='candidate.verification_recorded').length,2);
-    broken=false;await manager.buildNow(room);assert.equal(room.versions.length,2);assert.equal(builds,3);
+    broken=false;(manager as any).requestBuild(room,true);await room.buildTask;assert.equal(room.versions.length,2);assert.equal(builds,3);
     assert.equal(room.versions[1].aiRun?.verification.evidence?.status,'passed');
     assert.notEqual(room.versions[1].aiRun?.verification.evidence?.candidateHash,run.verification.evidence?.candidateHash);
     assert.equal(manager.view(room).workflow?.tasks.at(-1)?.evidenceStatus,'passed');
@@ -69,16 +70,16 @@ test('unavailable verification browser fails before builder spending and never r
   const previous=process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER;
   try {
     const room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
-    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
+    edit(manager,room,'Build a catalog with a working filter');await captureAndProcess(manager,room,'alice','one');
     await waitFor(()=>room.versions.length===1&&!room.buildTask,25_000);
     const prior=structuredClone(room.versions[0]);room.versions[0].aiRun!.verification.evidence=undefined;
     process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER=path.join(dir,'missing-browser.exe');
-    edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','two');
+    edit(manager,room,'Build a catalog with a working filter');await captureAndProcess(manager,room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask,25_000);
     assert.equal(builds,1,'same semantic fingerprint cannot silently bypass newly required checks');
     assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0].files,prior.files);
     assert.match(room.lastError||'',/verification browser is unavailable/);
-    const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
+    const calls=manager.view(room).physicalUsage.recorded.requests;await captureAndProcess(manager,room,'alice','two');
     assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
   } finally {
     previous===undefined?delete process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER:process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER=previous;
@@ -159,14 +160,13 @@ test('remote saves commit in revision order and acknowledge the actual snapshot'
   try{const one=manager.save(room),two=manager.save(room);await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,1);pending.shift()!.resolve(true);await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,2);pending.shift()!.resolve(true);await one;await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,3);pending.shift()!.resolve(true);await two;assert.deepEqual(messages.filter(item=>item.type==='saved').map(item=>item.revision),[1,2,3]);assert.ok(messages.every(item=>item.vector));}finally{manager.shutdown();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
-test('failed cloud snapshots reject flushes and interrupted captured edits return to their author',async()=>{
+test('failed cloud snapshots remain unsaved and interrupted captured edits return to their author',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-flush-'));
   const manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async()=>{throw new Error('Cloud unavailable')},appendDocumentUpdate:async()=>{}}});
   try{
     const room=manager.create('room');manager.join(room,'alice','Alice');const messages:any[]=[];
     const client={participantId:'alice',readyState:1,send(raw:unknown){if(typeof raw==='string')messages.push(JSON.parse(raw));}} as any;
-    room.clients.add(client);manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'flush-1'})),false);
-    await waitFor(()=>messages.some(item=>item.type==='flush-error'));assert.ok(!messages.some(item=>item.type==='flushed'));assert.ok(!messages.some(item=>item.type==='saved'));
+    room.clients.add(client);await manager.save(room);assert.ok(messages.some(item=>item.type==='save-error'));assert.ok(!messages.some(item=>item.type==='saved'));
     const recovered=manager.hydrate('other',{participants:[{id:'alice',name:'Alice'}],editHistory:[],pending:[],submissions:[{capturedChanges:[{seq:1,participantId:'alice',after:'Build catalog',before:'',kind:'insert'}],id:'command',requestId:'one',participantId:'alice',editSeqs:[1],status:'interpreting'}]});
     assert.equal(recovered.pending.get('alice')?.[0].after,'Build catalog');assert.equal(recovered.submissions[0].status,'failed');assert.equal(recovered.pending.get('bob'),undefined);
   }finally{manager.shutdown();fs.rmSync(dir,{recursive:true,force:true});}
@@ -190,14 +190,14 @@ test('interpretation submits every captured source without silently clipping old
 test('failed cloud acceptance restores the accepted baseline and the captured participant draft',async()=>{
   const provider=await fixture(()=>response(interpreted('Build catalog'))),dir=fs.mkdtempSync(path.join(os.tmpdir(),'acceptance-rollback-'));
   const manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{if(payload.specificationRevision===1)throw new Error('Cloud unavailable');},appendDocumentUpdate:async()=>{}}});
-  try{const room=manager.create('room');manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await assert.rejects(()=>manager.submitChanges(room,'alice','request-one'),/durably saved/);assert.equal(room.specificationRevision,0);assert.equal(room.sharedRequirements.length,0);assert.equal(room.participants.get('alice')?.latest,undefined);assert.equal(room.pending.get('alice')?.[0].after,'Build catalog');assert.equal(room.submissions[0].status,'failed');assert.equal(room.requirementRevisions?.at(-1)?.revision,0);await room.persistQueue;}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+  try{const room=manager.create('room');manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await assert.rejects(()=>captureAndProcess(manager,room,'alice','request-one'),/durably saved/);assert.equal(room.specificationRevision,0);assert.equal(room.sharedRequirements.length,0);assert.equal(room.participants.get('alice')?.latest,undefined);assert.equal(room.pending.get('alice')?.[0].after,'Build catalog');assert.equal(room.submissions[0].status,'failed');assert.equal(room.requirementRevisions?.at(-1)?.revision,0);await room.persistQueue;}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('an exhausted recovery leaves the previously promoted and compiled artifact available',async()=>{
   let exhaust=false;
   const provider=await fixture(body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals'))return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')));return exhaust?response({},'incomplete'):response(plan('src/App.tsx','export default function App(){return <main>Working catalog</main>}'));});
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'artifact-retention-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
-  try{const room=manager.create(`retained-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await manager.submitChanges(room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);const working=structuredClone(room.versions[0]);exhaust=true;edit(manager,room,'Add favorites');await manager.submitChanges(room,'alice','two');await waitFor(()=>room.status==='Error'&&!room.buildTask);assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0],working);assert.match(room.lastError||'',/Working artifact v1 retained/);assert.match(room.lastError||'',/24 physical calls/);assert.equal(manager.view(room).latestVersion,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+  try{const room=manager.create(`retained-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);const working=structuredClone(room.versions[0]);exhaust=true;edit(manager,room,'Add favorites');await captureAndProcess(manager,room,'alice','two');await waitFor(()=>room.status==='Error'&&!room.buildTask);assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0],working);assert.match(room.lastError||'',/Working artifact v1 retained/);assert.match(room.lastError||'',/24 physical calls/);assert.equal(manager.view(room).latestVersion,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('independent participants submit in durable capture order, retain later build inputs and saved drafts on reload',async()=>{
@@ -207,7 +207,7 @@ test('independent participants submit in durable capture order, retain later bui
   const docs:Y.Doc[]=[];
   const write=(id:string,text:string)=>{let doc=docs[['alice','bob','cara'].indexOf(id)];if(!doc){doc=new Y.Doc();docs[['alice','bob','cara'].indexOf(id)]=doc;Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));}const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.transact(()=>{doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);});manager.handleMessage(room,{participantId:id,readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);};
   try{for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])manager.join(room,id,name);const connection=(await manager.saveConnection(room,{name:'Synthetic',provider:'custom',baseUrl:provider.baseUrl,apiFormat:'responses',apiKey:'synthetic'})).id;room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};await manager.assignAI(room,{connectionId:connection,model:'builder'},{connectionId:connection,model:'builder'});
-    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');assert.equal(room.submissions.find(item=>item.requestId==='request-c')?.status,'submitted');assert.deepEqual(seen,['Alice','Bob']);releaseFirstBuild();await waitFor(()=>room.versions.length>=1,25_000);assert.equal(room.versions[0].specificationRevision,2);await waitFor(()=>room.versions.length===2&&!room.buildTask&&!room.buildTimer,25_000);assert.equal(builds,2,'the fixed active build publishes before captured later steering builds');assert.deepEqual(room.versions.map(item=>item.specificationRevision),[2,3]);assert.deepEqual(seen,['Alice','Bob','Alice']);assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
+    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=captureAndProcess(manager,room,'alice','request-a'),b=captureAndProcess(manager,room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await captureAndProcess(manager,room,'alice','request-c');assert.equal(room.submissions.find(item=>item.requestId==='request-c')?.status,'submitted');assert.deepEqual(seen,['Alice','Bob']);releaseFirstBuild();await waitFor(()=>room.versions.length>=1,25_000);assert.equal(room.versions[0].specificationRevision,2);await waitFor(()=>room.versions.length===2&&!room.buildTask&&!room.buildTimer,25_000);assert.equal(builds,2,'the fixed active build publishes before captured later steering builds');assert.deepEqual(room.versions.map(item=>item.specificationRevision),[2,3]);assert.deepEqual(seen,['Alice','Bob','Alice']);assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await captureAndProcess(manager,room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
   }finally{releaseFirstBuild();manager.shutdown();for(const doc of docs)doc?.destroy();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
@@ -220,8 +220,8 @@ test('ownership loss after compilation blocks promotion; command replay adds no 
   manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
     const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
-    const first=await manager.submitChanges(room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error');assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
-    assert.equal((await manager.submitChanges(room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
+    const first=await captureAndProcess(manager,room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error');assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
+    assert.equal((await captureAndProcess(manager,room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
     lose(room.id);release();await room.buildTask;await room.persistQueue;
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);
   }finally{release();manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
@@ -239,13 +239,13 @@ test('unavailable isolation retains the promoted artifact and stops before build
   const prior=process.env.TWOGUYS1CANVAS_ISOLATION_MODE;
   try{
     const room=manager.create(`isolated-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
-    edit(manager,room,'Build catalog');await manager.submitChanges(room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);
+    edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);
     const working=structuredClone(room.versions[0]);assert.equal(builders,1);
-    process.env.TWOGUYS1CANVAS_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await manager.submitChanges(room,'alice','two');
+    process.env.TWOGUYS1CANVAS_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await captureAndProcess(manager,room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask);
     assert.deepEqual(room.versions,[working]);assert.equal(manager.view(room).latestVersion,1);
     assert.match(room.lastError||'',/isolation is unavailable/);assert.match(room.lastError||'',/explicitly retry/);
     assert.equal(builders,1,'no builder or repair dispatch after isolation preflight failure');assert.equal(interpreters,2,'only explicit caller submissions interpreted');
-    assert.equal((await manager.submitChanges(room,'alice','two')).submissionId,command.submissionId);assert.equal(builders,1);assert.equal(interpreters,2);
+    assert.equal((await captureAndProcess(manager,room,'alice','two')).submissionId,command.submissionId);assert.equal(builders,1);assert.equal(interpreters,2);
   }finally{prior===undefined?delete process.env.TWOGUYS1CANVAS_ISOLATION_MODE:process.env.TWOGUYS1CANVAS_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
 });

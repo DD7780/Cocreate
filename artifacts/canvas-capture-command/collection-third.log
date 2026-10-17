@@ -1,0 +1,104 @@
+TAP version 13
+# (node:8600) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"d80b7503-b2a3-4e4d-b1d4-01fdcde94565","epoch":1,"sourceRevision":29,"cursor":1,"durationMs":10}
+# {"phase":"controlled-first-build","versions":[],"personalCalls":1,"builderCalls":1,"status":"Error","error":"Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained. Build r1; 2/24 physical calls used. No working artifact has been promoted. Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 1 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 6163.6192
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\auto-build-budget.test.ts:1:857'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\auto-build-budget.test.ts:17:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\auto-build-budget.test.ts:222:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:18140) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"5aa2d6b8-568a-4260-b607-f68fc45fb5c5","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"c7f50830-b7b0-41fd-8d2a-9dcfa1f85525","epoch":1,"sourceRevision":3,"cursor":2,"durationMs":5}
+# {"event":"command.captured","commandId":"36034e1b-91cc-4afa-8bbe-5bd6a34ad12d","epoch":1,"sourceRevision":4,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"8047f4b1-328a-4a5b-9ff1-3d3dadf3bafa","epoch":1,"sourceRevision":5,"cursor":4,"durationMs":5}
+# {"event":"command.captured","commandId":"83cac267-4f6e-4de4-89d4-8187cc19d3ac","epoch":1,"sourceRevision":6,"cursor":5,"durationMs":5}
+# {"event":"command.captured","commandId":"10a82f92-839d-4c8a-a49a-cecd812c8a9f","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"b1b73b76-5143-4294-8951-05346d68a4f4","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"fc4c01a7-a209-447b-a1d4-934257900318","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"f3aae4a6-1139-4dd1-8019-3b9500563a44","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":4}
+# {"event":"command.captured","commandId":"1ab75ac7-63fd-418d-810c-19026d9fecd9","epoch":1,"sourceRevision":5,"cursor":5,"durationMs":5}
+# {"event":"command.captured","commandId":"eccdf39d-26ff-490a-9cad-55b9d449045a","epoch":1,"sourceRevision":6,"cursor":6,"durationMs":4}
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+ok 2 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 10030.2607
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"c83a18da-35ba-45db-aaec-ca7d75a9438d","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: collection deadline closes admission despite an interpretation backlog
+ok 3 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 4580.6948
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"a11fde88-93fa-4052-b9bc-1ab4c2e2daf1","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# {"event":"command.captured","commandId":"122bb9f8-c5cd-413c-a556-b614d2bdb1ac","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 4 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 418.3604
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"312afffb-96b0-437a-9fc2-0ecb1e5cd9e6","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"07390782-2629-4cf7-97df-c91364710a19","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+ok 5 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 4235.6622
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"fa1f574b-282d-4b52-8891-2edd14f5aab1","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# {"event":"command.captured","commandId":"19b536d0-8f01-43eb-857e-6fefb4609699","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 6 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 4053.4667
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"55cfb112-a919-47a8-853f-b640d52643bf","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"8d08fe80-519c-4397-8d58-b11e078a80ce","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 7 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 4634.3612
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"6bd3e6b3-3cd6-4122-a031-ced89171401c","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# {"event":"command.captured","commandId":"b01fa835-aeba-44dc-9628-0013ec511170","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":4}
+# {"event":"command.captured","commandId":"c21cf1f0-6d56-46c6-ae19-9d8b70e0573b","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":6}
+# {"event":"command.captured","commandId":"e112ca28-0329-4c72-aad8-4517303ff7a3","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: sustained captures make revision-labelled progress each cycle without a quiet global queue
+ok 8 - sustained captures make revision-labelled progress each cycle without a quiet global queue
+  ---
+  duration_ms: 17720.2684
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"48ce5a2c-b813-43d5-aff6-e5808c098c40","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":8}
+# Subtest: attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+ok 9 - attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+  ---
+  duration_ms: 4220.4323
+  type: 'test'
+  ...
+1..9
+# tests 9
+# suites 0
+# pass 8
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 57447.8675

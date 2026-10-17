@@ -1,3 +1,4 @@
+import {captureAndProcess} from './fixtures/capture.js';
 import http from 'node:http';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -59,7 +60,7 @@ test('empty cache restores compiled preview, current checkpoint, old version and
         const old = await second.value.restoredVersion(restored, 1);
         assert.equal(old!.bundle, compiled.javascript);
         assert.deepEqual(old!.files, files);
-        const reply = await second.value.submitChanges(restored, 'alice', 'replayed-command');
+        const reply = await captureAndProcess(second.value,restored, 'alice', 'replayed-command');
         assert.equal(reply.submissionId, 'submission');
         assert.equal(restored.providerCalls.length, 0);
         assert.equal(second.value.view(restored).versions.length, 8);
@@ -246,7 +247,7 @@ test('an interrupted canonical promotion stays hidden; concurrent saves retain e
         await release.promise;
     } };
     try {
-        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
+        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
         await gateEntered(entered.promise);
         assert.equal(context.item.value.view(context.room).latestVersion, 1);
         assert.equal(context.item.value.version(context.room, 2), null);
@@ -267,7 +268,7 @@ test('an interrupted canonical promotion stays hidden; concurrent saves retain e
         Y.applyUpdate(restored, Buffer.from(canonical.yjs_state.slice(2), 'hex'));
         assert.equal(restored.getMap('fixture').get('later-edit'), 'retained');
         restored.destroy();
-        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
+        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
         assert.equal(context.calls(), before);
         assert.equal(before, 2);
     }
@@ -284,7 +285,7 @@ test('lease loss after private body upload cannot promote or start another physi
         await release.promise;
     } return result; };
     try {
-        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
+        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
         await gateEntered(entered.promise);
         assert.equal(context.item.value.view(context.room).latestVersion, 1);
         context.platform.coordinator.invalidate(context.room.id);
@@ -307,7 +308,7 @@ test('synchronous publication failure clears the pending gate and preserves the 
         throw new ArtifactUnavailableError('corrupt');
     } return save(room, eventType, ...args); };
     try {
-        await context.item.value.submitChanges(context.room, 'alice', 'synchronous-publication-failure');
+        await captureAndProcess(context.item.value,context.room, 'alice', 'synchronous-publication-failure');
         await gateEntered(entered.promise);
         await context.room.steeringQueue;
         await context.room.buildTask;
@@ -351,7 +352,7 @@ test('new promotion after a retained-product rollback never overwrites an archiv
     context.room.versions.push(version(2));await context.item.value.save(context.room);
     context.room.versions.pop();await context.item.value.save(context.room);
     const entered=deferred();context.fixture.controls.beforeCommit=async body=>{if(body.target_harness_state.versions.some((value:any)=>value.id===3))entered.resolve()};
-    await context.item.value.submitChanges(context.room,'alice','after-retained-product-rollback');
+    await captureAndProcess(context.item.value,context.room,'alice','after-retained-product-rollback');
     try{await gateEntered(entered.promise)}catch(error){console.error('Retained-product fixture diagnostics',JSON.stringify({status:context.room.status,lastError:context.room.lastError,requirements:context.room.sharedRequirements.map(item=>({description:item.description,status:item.status})),activeBuild:!!context.room.buildTask,versions:context.room.versions.map(item=>item.id),calls:context.calls()}));throw error}
     await context.room.buildTask;await context.room.persistQueue;
     assert.equal(context.item.value.view(context.room).latestVersion,3);

@@ -1,5 +1,4 @@
 import { productEnvironment } from '../shared/product-environment.js';
-import {SaveTrace} from './save-diagnostics.js';
 import { assertIsolationAvailable } from "./isolation.js";
 import {assertVerificationBrowserAvailable} from './isolation/browser.js';
 import fs from 'node:fs';
@@ -66,25 +65,26 @@ const duration = (
   return Math.max(min, Math.min(max, safe));
 };
 export async function createTwoGuysOneCanvasServer(options: Options = {}) {
+    const releaseFile = fs.existsSync('/usr/local/share/2guys1canvas-release.json') ? '/usr/local/share/2guys1canvas-release.json' : '/usr/local/share/cocreate-release.json';
+    const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
+    if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
     const app = express(), server = http.createServer(app), wss = new WebSocketServer({
         noServer: true
     }), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {
         mode: 'supabase' as const, platform: options.platform, error: null
     } : supabasePlatformFromEnv(), manager = new RoomManager({
-        debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {
+        releaseFingerprint,debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner', 'editor']);
         } : undefined, authorizeBudgetReset: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner']);
         } : undefined, mvpByokOnly: !!platformState.platform
     });
+    app.use('/api/rooms/:id/commands/capture',express.json({limit:'3mb'}));
     app.use(express.json({
         limit: '40kb'
     }));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
     const closeBetaRequests = platformState.platform ? registerBetaRequestRoutes(app,platformState.platform) : null;
-    const releaseFile = fs.existsSync('/usr/local/share/2guys1canvas-release.json') ? '/usr/local/share/2guys1canvas-release.json' : '/usr/local/share/cocreate-release.json';
-    const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
-    if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
     app.get(['/__2guys1canvas/app-health', '/__cocreate/app-health'], (_req, res) => platformState.error ? res.status(503).json({
         status: 'configuration-error', service: '2guys1canvas-app', error: platformState.error
     }) : res.json({
@@ -496,28 +496,35 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             error: 'Use Build my changes to submit only your own edits.'
         });
     });
-    app.post('/api/rooms/:id/submit', async (req, res) => {
+    app.post('/api/rooms/:id/commands/capture', async (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
             return;
         try {
             if (platformState.platform)
                 await platformState.platform.requireMembership(auth.room.id, auth.session.participantId, ['owner', 'editor']);
-            const requestId = String(req.body.requestId || '');
-            if (!requestId || requestId.length > 100)
-                return res.status(400).json({
-                    error: 'A valid submission request ID is required.'
-                });
-            res.json(await manager.submitChanges(auth.room, auth.session.participantId, requestId));
+            res.status(202).json(await manager.captureChanges(auth.room, auth.session.participantId, req.body));
         }
         catch (error) {
             if (coordinatorResponse(res, error))
                 return;
-            res.status(400).json({
-                error: error instanceof Error ? error.message : String(error)
+            res.status(Number((error as {status?:number}).status)||(auth.room.captureUnknown?503:400)).json({
+                code:auth.room.captureUnknown?'capture_unknown':'capture_rejected',error:error instanceof Error?error.message:'Capture was not confirmed.'
             });
         }
     });
+    app.get('/api/rooms/:id/commands/:requestId',async(req,res)=>{
+        const auth=authorize(req,res);if(!auth)return;
+        try{
+            const receipt=await manager.captureReceipt(auth.room,auth.session.participantId,String(req.params.requestId));
+            if(!receipt)return res.status(404).json({code:'capture_not_found',error:'No canonical capture exists for this identity.'});
+            res.json(receipt);
+        }catch(error){
+            if(coordinatorResponse(res,error))return;
+            res.status(503).json({code:'capture_lookup_unavailable',error:'Canonical capture status is unavailable. Retain this attempt and retry its status.'});
+        }
+    });
+    app.post('/api/rooms/:id/submit',(_req,res)=>res.status(426).json({code:'capture_upgrade_required',error:'Reload this workspace to use durable capture commands. Your drafts are retained.'}));
     app.post('/api/rooms/:id/conflicts/:groupId/selections', async (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -773,39 +780,30 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
                 manager.connect(room, ws, session.participantId, session.role || 'editor', expiresAt);
                 const expiryTimer = expiresAt ? setTimeout(() => ws.close(4401, 'Project ticket expired'), Math.max(1, expiresAt - Date.now())) : undefined;
                 let messages = Promise.resolve();
-                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean; trace?:SaveTrace }> | undefined;
+                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean }> | undefined;
                 ws.on('message', (data, isBinary) => {
                     const packet = Buffer.from(data as any);
-                    let trace:SaveTrace|undefined;
-                    if(!isBinary&&packet.length<=2048){
-                        try{const message=JSON.parse(packet.toString());if(message.type==='flush'&&typeof message.requestId==='string')trace=new SaveTrace({requestId:message.requestId,connectionId})}catch{}
-                    }
                     if (pendingBatch && pendingBatch.length < collaborationBatchSize) {
-                        pendingBatch.push({ packet, isBinary, trace });
+                        pendingBatch.push({ packet, isBinary });
                         return;
                     }
-                    const batch = [{ packet, isBinary, trace }];
+                    const batch = [{ packet, isBinary }];
                     pendingBatch = batch;
                     messages = messages.then(async () => {
                         if (pendingBatch === batch) pendingBatch = undefined;
-                        const traces=batch.flatMap(item=>item.trace?[item.trace]:[]);
-                        for(const trace of traces)trace.end('ingress-queue');
-                        if (ws.readyState !== 1) {for(const trace of traces)trace.finish('closed');return}
+                        if (ws.readyState !== 1) return;
                         if (platformState.platform) {
-                            for(const trace of traces)trace.start('ingress-membership');
                             const role = await platformState.platform.requireMembership(roomId, session.accountId!);
-                            for(const trace of traces){trace.end('ingress-membership');trace.start('ingress-coordinator')}
                             (ws as WebSocket & {
                                 role?: string;
                             }).role = role;
                             await platformState.platform.assertCoordinator(roomId);
-                            for(const trace of traces)trace.end('ingress-coordinator');
                         }
                         for (const item of batch) {
                             if (ws.readyState !== 1) return;
-                            manager.handleMessage(room, ws, item.packet, item.isBinary,item.trace);
+                            manager.handleMessage(room, ws, item.packet, item.isBinary);
                         }
-                    }).catch(error => {for(const item of batch)item.trace?.finish('failed');ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed')});
+                    }).catch(error => {ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed')});
                 });
                 ws.on('close', code => {
                     if (expiryTimer)
@@ -858,6 +856,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             client.terminate();
         await new Promise<void>(resolve => wss.close(() => resolve()));
         await drained;
+        await manager.drain();
         manager.shutdown();
         closeBeta();
         await closeBetaRequests?.();

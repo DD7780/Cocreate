@@ -1,0 +1,227 @@
+TAP version 13
+# (node:18804) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"329346fe-d6ab-497d-9e7d-e8bb15679d80","epoch":1,"sourceRevision":29,"cursor":1,"durationMs":9}
+# {"phase":"controlled-first-build","personalCalls":1,"builderCalls":1,"status":"Updated","intents":[{"id":"intent_1f99477969e9","text":"Build a calm shared workspace","category":"goal","classification":"explicit_request","rationale":"Direct build instruction.","sourcePassage":"Build a calm shared workspace","affectedRequirementIds":[],"participantId":"alice","participantName":"Alice","sourceRevision":29,"sourceEditSeqs":[1,2,3,4,5,6,7,8,9,10,11,12,13,14,15,16,17,18,19,20,21,22,23,24,25,26,27,28,29],"authority":"authenticated_submission","contextReferences":[],"validation":{"status":"verified"}}]}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+not ok 1 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 6291.6243
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\auto-build-budget.test.ts:1:857'
+  failureType: 'testCodeFailure'
+  error: 'Timed out waiting for submitted build state'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\auto-build-budget.test.ts:17:9)
+    runNextTicks (node:internal/process/task_queues:64:5)
+    process.processTimers (node:internal/timers:518:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\auto-build-budget.test.ts:222:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# (node:21724) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"510aacfb-3359-4a14-ac03-3a33346b4c58","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# {"event":"command.captured","commandId":"71ca0cce-a231-4850-b0e2-96fdda471408","epoch":1,"sourceRevision":3,"cursor":2,"durationMs":6}
+# {"event":"command.captured","commandId":"829c0c08-e36f-40c1-9130-997e395c1a15","epoch":1,"sourceRevision":4,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"a28df3ae-4a25-4a6b-a1a4-52686a51860d","epoch":1,"sourceRevision":5,"cursor":4,"durationMs":5}
+# {"event":"command.captured","commandId":"f9077085-f1e3-4f61-b74b-ff8ce53daf68","epoch":1,"sourceRevision":6,"cursor":5,"durationMs":6}
+# {"event":"command.captured","commandId":"aa3cdab1-0b29-483b-b801-2c3cca981468","epoch":1,"sourceRevision":5,"cursor":1,"durationMs":6}
+# {"event":"command.captured","commandId":"a72f6269-8446-4bf9-a193-5d2d0c819593","epoch":1,"sourceRevision":6,"cursor":2,"durationMs":4}
+# Subtest: later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+ok 2 - later captured submissions cannot starve a fixed accepted candidate and drain in capture order
+  ---
+  duration_ms: 10508.1949
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"a562c249-48ab-4f55-a14f-47d839307ff2","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":6}
+# Subtest: collection deadline closes admission despite an interpretation backlog
+not ok 3 - collection deadline closes admission despite an interpretation backlog
+  ---
+  duration_ms: 623.5475
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\build-progress.test.ts:1:3036'
+  failureType: 'testCodeFailure'
+  error: |-
+    The expression evaluated to a falsy value:
+
+      assert.ok(f.room.submissions.some(item=>item.status==='submitted'))
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: true
+  actual: false
+  operator: '=='
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\build-progress.test.ts:41:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# {"event":"command.captured","commandId":"21fbd57c-1088-493b-b59b-8d2478890e0c","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"9e28dc27-ca8e-43fe-b4fc-85f0dcabdcb6","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: pending captured steering survives actual local restart without inference or replay spending
+ok 4 - pending captured steering survives actual local restart without inference or replay spending
+  ---
+  duration_ms: 401.3218
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"fea38ea2-7e48-4363-86c0-0d880f89a16b","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"7ccf6c52-656b-429f-be81-9715fcf674de","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+ok 5 - explicit correction bypasses deferred submissions, cancels assumptions and retains executor allowance
+  ---
+  duration_ms: 3753.8075
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"d9f3484c-c644-4ab9-8bf9-3c5d4af4b7c8","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":6}
+# {"event":"command.captured","commandId":"846e68a6-cd12-4006-b542-53cf6ca4c8c5","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: current membership is rechecked before deferred interpretation dispatch
+ok 6 - current membership is rechecked before deferred interpretation dispatch
+  ---
+  duration_ms: 4366.534
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"b454252a-4263-4dcd-b47b-b853f5d82e70","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":37}
+# {"event":"command.captured","commandId":"2114a26b-d935-46be-b959-ddc37e2a76ab","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: continuous captures do not replenish the executor ceiling between collected candidates
+ok 7 - continuous captures do not replenish the executor ceiling between collected candidates
+  ---
+  duration_ms: 4098.3712
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"f445afbe-e1f9-4ca4-9932-58fc62954b3d","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":6}
+# {"event":"command.captured","commandId":"29428a70-61d6-45cc-b4c7-d825cfbf482b","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"91d9fe98-4c48-409d-89b0-f531448ba21b","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":7}
+# {"event":"command.captured","commandId":"cc42d503-d690-4f26-a58c-7dcbc9bc4258","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# Subtest: sustained captures make revision-labelled progress each cycle without a quiet global queue
+ok 8 - sustained captures make revision-labelled progress each cycle without a quiet global queue
+  ---
+  duration_ms: 17062.1904
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"c0cbee7c-8c8f-4619-b04b-4c9dd88bcac3","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# Subtest: attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+ok 9 - attribution-only deferred acceptance neither rebuilds nor leaves a stuck budget or queue
+  ---
+  duration_ms: 4946.5344
+  type: 'test'
+  ...
+# (node:27916) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"c47ae873-7a37-41cf-9ee7-0eb03ed16277","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"09e43167-2df9-42bb-a02c-2db5e7520aa1","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"88f9b47d-46f5-43bd-aae0-15926b6e773e","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"9533931e-11c7-49a3-b06c-f24bcb9d8e7b","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":7}
+# {"event":"command.captured","commandId":"afa1887c-79f4-4b23-bc9f-a88bd343dcaf","epoch":1,"sourceRevision":5,"cursor":5,"durationMs":4}
+# {"event":"command.captured","commandId":"240335e5-b8ff-48da-9ccf-3c08e6dbaa69","epoch":1,"sourceRevision":3,"cursor":1,"durationMs":8}
+# Subtest: serial acceptance and deferred capture order survive SQLite restart without replay spending
+ok 10 - serial acceptance and deferred capture order survive SQLite restart without replay spending
+  ---
+  duration_ms: 896.1924
+  type: 'test'
+  ...
+# Subtest: a failed authority check does not poison capture order or spend the later caller allowance twice
+ok 11 - a failed authority check does not poison capture order or spend the later caller allowance twice
+  ---
+  duration_ms: 268.9903
+  type: 'test'
+  ...
+# Subtest: ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+ok 12 - ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+  ---
+  duration_ms: 26.3259
+  type: 'test'
+  ...
+# Subtest: a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+ok 13 - a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+  ---
+  duration_ms: 63.5553
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 14 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 4.1558
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 15 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.2373
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 16 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 3.4231
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 17 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 18.8611
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 18 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 20.1684
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 19 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 4.9843
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 20 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 5.0288
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 21 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 8.6751
+  type: 'test'
+  ...
+# (node:9860) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"d3c3a8a4-d787-4506-91eb-c78084855b5a","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"5ba28e9a-f78a-4792-94e3-fb9ae319cd9b","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+ok 22 - HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+  ---
+  duration_ms: 373.7863
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"3195d553-a424-451e-88da-8d211850afd9","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":6}
+# Subtest: a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+ok 23 - a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+  ---
+  duration_ms: 341.7545
+  type: 'test'
+  ...
+# Subtest: membership revocation before canonical admission creates no command and preserves drafts
+ok 24 - membership revocation before canonical admission creates no command and preserves drafts
+  ---
+  duration_ms: 127.5929
+  type: 'test'
+  ...
+# Subtest: unsupported old submission messages require upgrade without saving or inference
+ok 25 - unsupported old submission messages require upgrade without saving or inference
+  ---
+  duration_ms: 184.0805
+  type: 'test'
+  ...
+1..25
+# tests 25
+# suites 0
+# pass 23
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 57701.7599

@@ -1,3 +1,4 @@
+import {captureAndProcess} from './fixtures/capture.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { createProgressFixture, pause } from './fixtures/build-progress.js';
@@ -26,9 +27,9 @@ test('serial acceptance and deferred capture order survive SQLite restart withou
     assert.ok(f.room.pending.get('cara')!.some(item => item.after.includes('pending sorting')));
     assert.equal(f.room.executionBudget!.id, scopeId);
     assert.equal(f.room.executionBudget!.calls, 3);
-    assert.equal((await f.manager.submitChanges(f.room, 'alice', 'ordered-0')).status, 'queued');
-    assert.equal((await f.manager.submitChanges(f.room, 'bob', 'held-first')).status, 'failed');
-    assert.equal((await f.manager.submitChanges(f.room, 'cara', 'held-second')).status, 'failed');
+    assert.equal((await captureAndProcess(f.manager,f.room, 'alice', 'ordered-0')).status, 'queued');
+    assert.equal((await captureAndProcess(f.manager,f.room, 'bob', 'held-first')).status, 'failed');
+    assert.equal((await captureAndProcess(f.manager,f.room, 'cara', 'held-second')).status, 'failed');
     assert.equal(f.personal.length, 3);
     assert.equal(f.room.buildTask, undefined); assert.equal(f.room.buildTimer, undefined);
   } finally { await f.close(); }
@@ -49,8 +50,9 @@ test('a failed authority check does not poison capture order or spend the later 
     assert.ok(f.room.sharedRequirements.every(item => item.sources.every(source => source.participantId === 'bob')));
     assert.ok(f.room.pending.get('alice')!.some(item => item.after.includes('unauthorized catalog')));
     assert.ok(f.room.pending.get('cara')!.some(item => item.after.includes('unsubmitted')));
-    assert.equal((await f.manager.submitChanges(f.room, 'alice', 'rejected-first')).status, 'failed');
-    assert.equal((await f.manager.submitChanges(f.room, 'bob', 'accepted-second')).status, 'queued');
+    await assert.rejects(()=>captureAndProcess(f.manager,f.room,'alice','rejected-first'),/Membership revoked/);
+    assert.equal(f.room.submissions.some(item=>item.requestId==='rejected-first'),false);
+    assert.equal((await captureAndProcess(f.manager,f.room, 'bob', 'accepted-second')).status, 'queued');
     assert.equal(f.room.executionBudget!.calls, 1);
     assert.equal(f.manager.eventStore.allProviderRequestRecordsForWorkspace(f.room.id).length, 1);
     assert.equal(f.personal.length, 1);

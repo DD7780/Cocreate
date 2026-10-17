@@ -1,5 +1,8 @@
 # Reliability verification — 2026-10-01
 
+Capture boundary replacement (2026-10-17, D-0081): [current evidence](canvas-capture-command.md) separates immutable command durability, ordinary save receipts and asynchronous model/build acceptance. Baseline and intermediate failures are retained. A real built React workspace exercises same-account credential renewal while capture is pending, duplicate button/shortcut activation, later drafts, lost replies, reload lookup and account switching using a controlled loopback interpreter. Embedded PostgreSQL checks use the actual prepared SQL; native contention and production-image regression remain distinct gates. No hosted migration or paid inference is performed. Earlier test counts below apply to their dated commits.
+
+
 2026-10-17 saving/provider follow-up is recorded separately in [the current repair packet](save-provider-repair.md). Its reproduced retry/duplicate-commit defects, connected regressions and controlled browser evidence do not resolve the earlier hosted save stall or demonstrate a successful selected-provider build. Production-image and explicitly budgeted hosted acceptance retain separate status.
 
 Latest 2026-10-08 release repair checks are separate in [the current packet](prelaunch-release-repair.md): fresh Windows 227/228 with one retained failure and unchanged focused 1/1 retry, local/mocked UI acceptance, Linux compiler 10/10 with browser/full-suite gate still open, and actual Cloudflare read-only cgroup metadata. New physical-job enforcement must pass its own Linux checks; none of this promotes historical or synthetic evidence to deployed acceptance.

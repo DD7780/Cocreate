@@ -9,7 +9,7 @@ process.env.NODE_ENV = 'production';
 process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
 const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
-const output = path.resolve('artifacts/multiuser-step06/browser');
+const output = path.resolve('artifacts/canvas-capture-command/progress-browser');
 fs.mkdirSync(output, { recursive: true });
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 async function until(check: () => Promise<boolean>, label: string) {
@@ -77,7 +77,7 @@ async function open(id:string,index:number): Promise<Browser> {
   };
   const browser={call,evaluate,socket,process:processHandle,profile}; browsers.push(browser);
   await call('Page.enable'); await call('Runtime.enable');
-  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/submit'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/commands/capture'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin}); await wait(200);
   await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(session(id))})`);
@@ -106,10 +106,10 @@ try {
   assert.equal(interpreterCalls,1);assert.equal(room.specificationRevision,1);
   await converge('Building r1');await converge('2 submitted changes waiting');
   const replay=await b.evaluate('window.__progressRequests[0]');
-  const replayResponse=await fetch(`${origin}/api/rooms/${room.id}/submit`,{method:'POST',headers:{authorization:`Bearer ${session('bob')}`,'content-type':'application/json'},body:JSON.stringify(replay)});
-  assert.equal(replayResponse.status,200);assert.equal(interpreterCalls,1);
+  const replayResponse=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${session('bob')}`,'content-type':'application/json'},body:JSON.stringify(replay)});
+  assert.equal(replayResponse.status,202);assert.equal(interpreterCalls,1);
   await b.call('Page.reload');await until(()=>b.evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')"),'reload during candidate');await converge('2 submitted changes waiting');
-  const viewerDenied=await fetch(`${origin}/api/rooms/${room.id}/submit`,{method:'POST',headers:{authorization:`Bearer ${session('cara')}`,'content-type':'application/json'},body:JSON.stringify({requestId:'viewer-progress-request'})});assert.equal(viewerDenied.status,403);
+  const viewerDenied=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${session('cara')}`,'content-type':'application/json'},body:JSON.stringify({requestId:'viewer-progress-request'})});assert.equal(viewerDenied.status,403);
   await screenshot(a,'pending-desktop.png');
   gates.get(1)!();await until(async()=>room.versions.length===1&&gates.has(2),'first artifact with next candidate');
   assert.equal(candidates[1].requirements,3);assert.equal(room.executionBudget?.calls,2);

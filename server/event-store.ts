@@ -3,6 +3,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
+import type {CaptureRecord} from './capture-journal.js';
 import type { ProviderRequestRecord, WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../shared/types.js';
 
 export type ActorType='user'|'personal_agent'|'builder'|'system'|'tool';
@@ -74,6 +75,15 @@ export class EventStore{
   private migrate(){
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
+      CREATE TABLE IF NOT EXISTS capture_commands(
+        cursor INTEGER PRIMARY KEY AUTOINCREMENT,workspace_id TEXT NOT NULL,actor_id TEXT NOT NULL,
+        request_id TEXT NOT NULL,payload_hash TEXT NOT NULL,record_json TEXT NOT NULL,
+        UNIQUE(workspace_id,actor_id,request_id)
+      );
+      CREATE TABLE IF NOT EXISTS capture_sources(
+        workspace_id TEXT NOT NULL,source_id TEXT NOT NULL,actor_id TEXT NOT NULL,source_hash TEXT NOT NULL,
+        PRIMARY KEY(workspace_id,source_id)
+      );
       CREATE TABLE IF NOT EXISTS coordinator_leases(
         workspace_id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,epoch INTEGER NOT NULL,expires_at INTEGER NOT NULL
       );
@@ -122,6 +132,35 @@ export class EventStore{
     `);
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(1,?)').run(new Date().toISOString());
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(2,?)').run(new Date().toISOString());
+    this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(3,?)').run(new Date().toISOString());
+  }
+  captureRecord(workspaceId:string,actorId:string,requestId:string):CaptureRecord|undefined{
+    const row=this.db.prepare('SELECT cursor,record_json FROM capture_commands WHERE workspace_id=? AND actor_id=? AND request_id=?').get(workspaceId,actorId,requestId) as {cursor:number;record_json:string}|undefined;
+    return row?{...JSON.parse(row.record_json),cursor:row.cursor}:undefined;
+  }
+  captureRecords(workspaceId:string,after=0):CaptureRecord[]{
+    return (this.db.prepare('SELECT cursor,record_json FROM capture_commands WHERE workspace_id=? AND cursor>? ORDER BY cursor').all(workspaceId,after) as {cursor:number;record_json:string}[]).map(row=>({...JSON.parse(row.record_json),cursor:row.cursor}));
+  }
+  commitCapture(workspaceId:string,record:CaptureRecord,fence:{ownerId:string;epoch:number}):CaptureRecord{
+    this.db.exec('BEGIN IMMEDIATE');
+    try{
+      const lease=this.db.prepare('SELECT owner_id,epoch,expires_at FROM coordinator_leases WHERE workspace_id=?').get(workspaceId) as {owner_id:string;epoch:number;expires_at:number}|undefined;
+      if(!lease||lease.owner_id!==fence.ownerId||lease.epoch!==fence.epoch||lease.expires_at<=Date.now())throw new Error('Stale capture coordinator.');
+      const submission=record.submission,prior=this.captureRecord(workspaceId,submission.participantId,submission.requestId);
+      if(prior){
+        if(prior.payloadHash!==record.payloadHash)throw new Error('Capture request identity was reused with different input.');
+        this.db.exec('COMMIT');return prior;
+      }
+      for(const edit of submission.capturedChanges||[])if(edit.sourceId){
+        const source=this.db.prepare('SELECT actor_id,source_hash FROM capture_sources WHERE workspace_id=? AND source_id=?').get(workspaceId,edit.sourceId) as {actor_id:string;source_hash:string}|undefined;
+        if(source&&(source.actor_id!==submission.participantId||source.source_hash!==edit.sourceHash))throw new Error('Capture source identity conflict.');
+        this.db.prepare('INSERT OR IGNORE INTO capture_sources VALUES(?,?,?,?)').run(workspaceId,edit.sourceId,submission.participantId,edit.sourceHash!);
+      }
+      const inserted=this.db.prepare('INSERT INTO capture_commands(workspace_id,actor_id,request_id,payload_hash,record_json) VALUES(?,?,?,?,?)').run(workspaceId,submission.participantId,submission.requestId,record.payloadHash,JSON.stringify(record));
+      const stored={...record,cursor:Number(inserted.lastInsertRowid)};
+      this.insert({workspaceId,actorId:submission.participantId,actorType:'user',eventType:'submission.captured',payload:{submissionId:submission.id,requestId:submission.requestId,cursor:stored.cursor,sourceRevision:submission.documentRevision}});
+      this.db.exec('COMMIT');return stored;
+    }catch(error){this.db.exec('ROLLBACK');throw error}
   }
   claimCoordinator(workspaceId:string,ownerId:string,ttlMs=30_000,at=Date.now()){
     this.db.exec('BEGIN IMMEDIATE');try{

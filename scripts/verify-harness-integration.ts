@@ -84,7 +84,7 @@ async function open(id:string,index:number): Promise<Browser> {
   };
   const browser={call,evaluate,socket,process:processHandle,profile}; browsers.push(browser);
   await call('Page.enable'); await call('Runtime.enable'); await call('Network.enable');
-  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__sockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__sockets.push(this)}};window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/submit'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__sockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__sockets.push(this)}};window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/commands/capture'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin}); await wait(200);
   await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(session(id))})`);
@@ -187,7 +187,7 @@ try {
   assert.equal(interpreterCalls+candidates.length,beforeReconnect);
   const replay=await b.evaluate('window.__progressRequests[0]');assert.equal((await request('bob','submit',replay)).status,200);
   assert.equal(interpreterCalls+candidates.length,beforeReconnect);
-  const denied=await fetch(`${origin}/api/rooms/${room.id}/submit`,{method:'POST',headers:{authorization:`Bearer ${createSession('step10-browser',{roomId:room.id,participantId:'cara',name:'cara',role:'viewer'})}`,'content-type':'application/json'},body:JSON.stringify({requestId:'step10-viewer-denied'})});assert.equal(denied.status,403);
+  const denied=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${createSession('step10-browser',{roomId:room.id,participantId:'cara',name:'cara',role:'viewer'})}`,'content-type':'application/json'},body:JSON.stringify({requestId:'step10-viewer-denied'})});assert.equal(denied.status,403);
   const beforeRestore=await states();assert.deepEqual(beforeRestore[0],beforeRestore[1]);assert.deepEqual(beforeRestore[1],beforeRestore[2]);
   assert.equal(beforeRestore[0].usage.recorded.requests,9);assert.equal(beforeRestore[0].usage.generation.requests,9);
   assert.equal(beforeRestore[0].usage.recorded.inputTokens+beforeRestore[0].usage.recorded.outputTokens,1350);

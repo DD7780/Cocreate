@@ -104,7 +104,7 @@ async function request<T>(
   if (needsSessionRefresh(current.expires_at)) {
     const refreshed = await supabase?.auth.refreshSession();
     if (refreshed?.error || !refreshed?.data.session)
-      throw new Error("Your session expired. Sign in again.");
+      throw Object.assign(new Error("Your session expired. Sign in again."),{status:401});
     current = refreshed.data.session;
   }
   const response = await fetch(path, {
@@ -122,7 +122,7 @@ async function request<T>(
   }
   const body = await response.json().catch(() => ({}));
   if (!response.ok)
-    throw new Error(body.error || `Request failed (${response.status})`);
+    throw Object.assign(new Error(body.error || `Request failed (${response.status})`),{status:response.status});
   return body as T;
 }
 const selectedId = () =>
@@ -1310,7 +1310,8 @@ function ProjectWorkspace({
   onProjectChanged: () => void;
   onRename: () => void;
 }) {
-  const [ticket, setTicket] = useState(""),
+  const scope=JSON.stringify([project.id,session.user.id]);
+  const [issued, setIssued] = useState({scope:"",token:""}), ticket=issued.scope===scope?issued.token:"",
     [error, setError] = useState(""),
     [shareOpen, setShareOpen] = useState(false);
   useEffect(() => {
@@ -1324,7 +1325,7 @@ function ProjectWorkspace({
           { method: "POST" },
         );
         if (!active) return;
-        setTicket(result.token);
+        setIssued({scope,token:result.token});
         setError("");
         const delay = Math.max(
           30_000,
@@ -1332,10 +1333,11 @@ function ProjectWorkspace({
         );
         timer = window.setTimeout(issue, delay);
       } catch (error) {
-        if (active)
-          setError(
-            error instanceof Error ? error.message : "Could not open project.",
-          );
+        if(active){
+          if([401,403,404].includes(Number((error as {status?:number}).status)))setIssued({scope:"",token:""});
+          setError(error instanceof Error?error.message:"Could not open project.");
+          timer=window.setTimeout(issue,5000);
+        }
       }
     };
     void issue();
@@ -1343,8 +1345,8 @@ function ProjectWorkspace({
       active = false;
       clearTimeout(timer);
     };
-  }, [project.id, session]);
-  if (error)
+  }, [project.id, session, scope]);
+  if (error && !ticket)
     return (
       <main className="project-loading">
         <p className="form-error">{error}</p>
@@ -1359,6 +1361,7 @@ function ProjectWorkspace({
         fallback={<main className="project-loading">Loading workspace…</main>}
       >
         <Workspace
+          key={scope}
           id={project.id}
           tokenOverride={ticket}
           projectTitle={project.title}

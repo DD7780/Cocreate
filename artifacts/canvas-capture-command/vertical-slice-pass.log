@@ -1,0 +1,45 @@
+TAP version 13
+# (node:22508) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"ccd72688-6c70-4f55-911b-9ad9ce7d31d0","requestId":"first","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"41da50a7-efdf-4246-969b-da83baf5e160","requestId":"bob-first","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# Subtest: capture returns before interpretation, binds permanent identity and freezes each author cutoff
+ok 1 - capture returns before interpretation, binds permanent identity and freezes each author cutoff
+  ---
+  duration_ms: 1668.0447
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"ed242c26-4959-412c-8b6a-d55c3845d106","requestId":"blocked","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":34}
+# Subtest: canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+ok 2 - canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+  ---
+  duration_ms: 193.2364
+  type: 'test'
+  ...
+# Subtest: lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+ok 3 - lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+  ---
+  duration_ms: 128.88
+  type: 'test'
+  ...
+# Subtest: local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+ok 4 - local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+  ---
+  duration_ms: 17.9958
+  type: 'test'
+  ...
+# Subtest: unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+ok 5 - unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+  ---
+  duration_ms: 4.148
+  type: 'test'
+  ...
+1..5
+# tests 5
+# suites 0
+# pass 5
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 2640.9732

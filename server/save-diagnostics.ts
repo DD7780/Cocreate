@@ -1,4 +1,3 @@
-import {DOCUMENT_FLUSH_WAIT_MS} from '../shared/save-timing.js';
 
 type Stage = 'ingress-queue' | 'ingress-membership' | 'ingress-coordinator' | 'save-wait' | 'canonical-queue' | 'snapshot-prepare' | 'artifact-prepare' | 'remote-commit' | 'delivery' | 'delivery-authority';
 type Timing = {stage:Stage; startedMs:number; durationMs?:number; code?:string; status?:number};
@@ -10,13 +9,11 @@ export class SaveTrace {
   private stages=new Map<Stage,Timing>();
   private snapshots:SaveTrace[]=[];
   private observers:SaveTrace[]=[];
-  private timer?:ReturnType<typeof setTimeout>;
   private emissions=0;
   finished=false;
   constructor(private context:{requestId?:string;connectionId?:string;revision?:number}={}){
     if(context.requestId!==undefined){
       this.start('ingress-queue');this.emit('received');
-      this.timer=setTimeout(()=>this.finish('unknown'),DOCUMENT_FLUSH_WAIT_MS);this.timer.unref?.();
     }
   }
   start(stage:Stage){this.stages.set(stage,{stage,startedMs:Math.round(performance.now()-this.started)})}
@@ -36,10 +33,10 @@ export class SaveTrace {
   private snapshot(){return {revision:this.context.revision,elapsedMs:Math.max(0,Math.round(performance.now()-this.started)),stages:[...this.stages.values()]}}
   emit(outcome:'received'|'acknowledged'|'unknown'|'failed'|'closed'|'late_commit'|'late_reply'){
     if(this.emissions++>=4)return;
-    console.info(JSON.stringify({event:'document.flush',requestId:safeId(this.context.requestId),connectionId:safeId(this.context.connectionId),outcome,...this.snapshot(),snapshots:this.snapshots.map(snapshot=>snapshot.snapshot())}));
+    console.info(JSON.stringify({event:this.context.requestId?'command.capture':'document.save',requestId:safeId(this.context.requestId),connectionId:safeId(this.context.connectionId),outcome,...this.snapshot(),snapshots:this.snapshots.map(snapshot=>snapshot.snapshot())}));
   }
   finish(outcome:'acknowledged'|'unknown'|'failed'|'closed'){
     if(this.finished){if(outcome==='acknowledged')this.emit('late_reply');return}
-    this.finished=true;clearTimeout(this.timer);this.emit(outcome);
+    this.finished=true;this.emit(outcome);
   }
 }

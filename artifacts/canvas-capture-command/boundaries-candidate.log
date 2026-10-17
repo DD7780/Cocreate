@@ -1,0 +1,7 @@
+
+> 2guys1canvas@1.0.0 check:boundaries C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice
+> tsx scripts/codebase-audit.ts --check
+
+Audited 178 files; 2 static candidates; 0 boundary violations.
+Jev: 0 physical requests, 0 input tokens with known usage, known-usage estimate $0.000000; unknown requests retain their reservation.
+Report: artifacts/codebase-audit/report.json

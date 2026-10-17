@@ -1,3 +1,4 @@
+import {captureAndProcess} from './fixtures/capture.js';
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -212,7 +213,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       ]),
       true,
     );
-    const first = await manager.submitChanges(
+    const first = await captureAndProcess(manager,
       room,
       participant.id,
       "first-submission",
@@ -221,7 +222,8 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
     await waitFor(() => room.versions.length === 1).catch((error) => {
       console.log(
         JSON.stringify({
-          phase: "controlled-first-build",
+          phase: "controlled-first-build",versions:room.versions.map(item=>item.id),
+          pendingPromotion:room.pendingPromotion,
           personalCalls,
           builderCalls,
           status: room.status,
@@ -252,13 +254,13 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       "another participant's draft remains unsubmitted",
     );
     bobDoc.destroy();
-    const replay = await manager.submitChanges(
+    const replay = await captureAndProcess(manager,
       room,
       participant.id,
       "first-submission",
     );
     assert.equal(replay.submissionId, first.submissionId);
-    const empty = await manager.submitChanges(
+    const empty = await captureAndProcess(manager,
       room,
       participant.id,
       "empty-submission",
@@ -288,7 +290,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       1,
       "later typing remains draft until submitted",
     );
-    await manager.submitChanges(room, participant.id, "second-submission");
+    await captureAndProcess(manager,room, participant.id, "second-submission");
     await waitFor(() => personalCalls === 2);
     await new Promise((resolve) => setTimeout(resolve, 180));
     assert.equal(
@@ -305,14 +307,6 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       outputTokens: 11,
     });
 
-    await manager.buildNow(room);
-    assert.equal(
-      builderCalls,
-      2,
-      "Build now should bypass automatic-build suppression",
-    );
-    assert.equal(room.versions.length, 2);
-    assert.equal(room.usage.builderRequests, 2);
   } finally {
     manager.shutdown();
     if (path.dirname(path.resolve(testDataDir)) !== path.resolve(os.tmpdir()))

@@ -4,7 +4,7 @@ import { BrandMark } from "./BrandMark";
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
 import { api } from "./api";
-import { submitDraftChanges } from "./submit-changes";
+import { CaptureCommandController, captureTransport } from "./capture-command";
 import { AgentPanel } from "./workspace/AgentPanel";
 import {
   draftKey,
@@ -396,7 +396,11 @@ function Product({ state, token }: { state: RoomView; token: string }) {
   );
 }
 
-export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameProject, inviteBusy = false }: {
+export function Workspace(props: Parameters<typeof WorkspaceScope>[0]) {
+    const token=props.tokenOverride||readBrowserStorage(localStorage, `2guys1canvas-session-${props.id}`)||'';
+    return <WorkspaceScope key={JSON.stringify([props.id,tokenParticipant(token)])} {...props}/>;
+}
+function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenameProject, inviteBusy = false }: {
     id: string;
     tokenOverride?: string;
     projectTitle?: string;
@@ -408,11 +412,14 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     const [state, setState] = useState<RoomView | null>(null), [sessionNeeded, setSessionNeeded] = useState(!tokenOverride && (forceJoin || !token)), [connection, setConnection] = useState<ConnectionStatus>({
         state: 'connecting', message: 'Connecting to live collaboration…'
     }), [saveState, setSaveState] = useState<'saving' | 'saved' | 'unsynced'>('unsynced'), [savedAt, setSavedAt] = useState<string>(), [tab, setTab] = useState<'workflow' | 'document' | 'product'>('document'), [split, setSplit] = useState(false), [copied, setCopied] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [submitting, setSubmitting] = useState(false), shortcut = defaultBuildShortcut(isMac), [settings, setSettings] = useState(false);
-    const [localDraft, setLocalDraft] = useState<LocalDraftStatus>('loading');
-    const doc = useMemo(() => new Y.Doc(), [id]), [provider, setProvider] = useState<TwoGuysOneCanvasProvider>(), submittingRef = useRef(false), apiButtonRef = useRef<HTMLButtonElement>(null), submissionRequest = useRef<string | undefined>(undefined), retryRequest = useRef<string | undefined>(undefined);
+    const [localDraft, setLocalDraft] = useState<LocalDraftStatus>('loading'),[accessDenied,setAccessDenied]=useState('');
+    const credentials=useRef(token);credentials.current=token;
+    const commandRef=useRef<CaptureCommandController|undefined>(undefined), scopeActive=useRef(true);
+    const doc = useMemo(() => new Y.Doc(), [id]), [provider, setProvider] = useState<TwoGuysOneCanvasProvider>(), submittingRef = useRef(false), apiButtonRef = useRef<HTMLButtonElement>(null), retryRequest = useRef<string | undefined>(undefined);
     useEffect(() => {
         if (!token)
             return;
+        scopeActive.current=true;
         let cancelled = false, p: TwoGuysOneCanvasProvider | undefined, stopDraft: (() => void) | undefined;
         const receiveState = (next: RoomView) => {
             setState(next);
@@ -422,35 +429,49 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         void (async () => {
             // Validate membership before reading private cached content into the editor.
             try {
-                await api('/api/rooms/' + id + '/state', token);
+                await api('/api/rooms/' + id + '/state', credentials.current);
                 if (cancelled)
                     return;
-                const key = draftKey(id, tokenParticipant(token));
+                const key = draftKey(id, tokenParticipant(credentials.current));
                 await restoreDraft(doc, key);
                 if (cancelled)
                     return;
+                const commands=new CaptureCommandController(key+':commands');
+                await commands.restore();
+                if(cancelled){commands.dispose();return;}
+                commandRef.current=commands;
                 setLocalDraft('saved');
                 stopDraft = persistDraft(doc, key, setLocalDraft);
             }
             catch {
                 if (!cancelled)
                     setLocalDraft('unavailable');
+                return;
             }
             if (cancelled)
                 return;
-            p = new TwoGuysOneCanvasProvider(doc, id, token, receiveState, setConnection, (status, at) => {
+            p = new TwoGuysOneCanvasProvider(doc, id, credentials.current, receiveState, status=>{
+                if(cancelled)return;
+                setConnection(status);
+                if(status.state==='error'&&['forbidden','invalid-session','missing-room'].includes(status.reason)){
+                    setAccessDenied(status.message);scopeActive.current=false;p?.destroy();commandRef.current?.dispose();
+                }
+            }, (status, at) => {
                 setSaveState(status);
                 if (at)
                     setSavedAt(at);
-            });
+            }, {}, commandRef.current);
             setProvider(p);
         })();
         return () => {
-            cancelled = true;
+            cancelled = true;scopeActive.current=false;
+            commandRef.current?.dispose();commandRef.current=undefined;
             stopDraft?.();
             p?.destroy();
+            queueMicrotask(()=>{if(!scopeActive.current)doc.destroy();});
         };
-    }, [doc, id, token]);
+    }, [doc, id]);
+    useEffect(()=>{provider?.updateCredentials(token);},[provider,token]);
     const myId = tokenParticipant(token), me = state?.participants.find(p => p.id === myId), isOwner = !!state && state.ownerId === myId;
     const action = useCallback(async (path: string, body?: unknown) => {
         setError('');
@@ -482,7 +503,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     const submitChanges = useCallback(async () => {
         if (submittingRef.current)
             return;
-        const activeEditor = editor, activeProvider = provider, unavailable = connection.state !== 'connected' ? connection.message : !state || state.ai.status === 'disconnected' ? 'Connect an AI model before submitting changes.' : !activeProvider || !activeEditor ? 'The shared document is still opening.' : null;
+        const activeEditor = editor, activeProvider = provider, unavailable = connection.state === 'error' && ['forbidden','invalid-session','missing-room'].includes(connection.reason) ? connection.message : !state || state.ai.status === 'disconnected' ? 'Connect an AI model before submitting changes.' : !activeProvider || !activeEditor ? 'The shared document is still opening.' : null;
         if (unavailable || !activeEditor || !activeProvider) {
             setNotice(unavailable || 'The shared document is still opening.');
             return;
@@ -491,13 +512,18 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setSubmitting(true);
         const keepFocus = activeEditor.isFocused;
         try {
-            await submitDraftChanges({
-                requestId: submissionRequest,
-                flush: () => activeProvider.flush(),
-                submit: requestId => action(`/api/rooms/${id}/submit`, { requestId }),
-                onNotice: setNotice,
-                onError: setError
+            setError('');
+            const commands=commandRef.current;
+            if(!commands)throw new Error('Device command backup is unavailable. Reopen the workspace after checking local storage.');
+            const result=await commands.capture(doc,me?.draftSourceIds||[],captureTransport(id,()=>credentials.current),stage=>{
+                if(scopeActive.current)setNotice(stage==='preparing'?'Preparing your changes…':stage==='sending'?'Capturing your changes…':stage==='unknown'?'Recovering the previous capture…':`Changes ${stage.replaceAll('_',' ')}.`);
             });
+            if(scopeActive.current){
+                if(result.state==='failed'||result.state==='interrupted')setError(result.message||'The earlier command stopped. Your edits are retained; use Build my changes again to retry explicitly.');
+                else setNotice(result.message||'Changes captured durably. Follow progress in Workflow.');
+            }
+        }catch(error){
+            if(scopeActive.current){setNotice('');setError(error instanceof Error?error.message:'Capture is unconfirmed. Use Build my changes to recover the same command.');}
         }
         finally {
             submittingRef.current = false;
@@ -505,7 +531,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
             if (keepFocus && !activeEditor.isDestroyed)
                 requestAnimationFrame(() => activeEditor.commands.focus());
         }
-    }, [action, connection, editor, id, provider, state]);
+    }, [connection, doc, editor, id, provider, state, me]);
     const retryFailedBuild = useCallback(async () => {
         if (submittingRef.current)
             return;
@@ -610,6 +636,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
                 location.href = '/';
         }}>{rejoin ? 'Rejoin room' : 'Return home'}</button></main>;
     }
+    if(accessDenied)return <main className="loading"><p>{accessDenied}</p><button onClick={()=>location.href=projectTitle?'/projects':'/'}>Return home</button></main>;
     if (!state)
         return <main className="loading"><LoaderCircle className="spin"/><p>{connection.message}</p></main>;
     const initialSetup = false;

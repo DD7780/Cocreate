@@ -1,3 +1,4 @@
+import {captureAndProcess} from './capture.js';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
@@ -63,10 +64,12 @@ export async function createProgressFixture(options: {hold?: boolean;personalDel
   };
   const fixture = {
     get manager(){return manager;},get room(){return room;},dataDir,builders,personal,gates,edit,
-    async submit(actor:string,text:string,key:string){edit(actor,text);return manager.submitChanges(room,actor,key);},
+    async submit(actor:string,text:string,key:string){edit(actor,text);return captureAndProcess(manager,room,actor,key);},
     release(index:number){assert.ok(gates.has(index));gates.get(index)!();gates.delete(index);},
     async reopen(){const id=room.id,active=room.buildTask;manager.shutdown();stopped=true;await active;manager=new RoomManager(config);room=manager.get(id)!;stopped=false;return room;},
     async close(){
+      for(const release of gates.values())release();
+      await manager.drain();
       if(!stopped){const active=room.buildTask;manager.shutdown();stopped=true;await active;}
       for(const release of gates.values())release();
       server.closeAllConnections();await new Promise<void>(resolve=>server.close(()=>resolve()));

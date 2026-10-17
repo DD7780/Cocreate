@@ -1,0 +1,189 @@
+TAP version 13
+# (node:11340) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"a7e010ae-8c44-4ad8-92bf-8e4391d4e72f","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":16}
+# {"event":"command.captured","commandId":"93410f42-fee3-4cf9-80e8-b4f3d7b0b411","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":11}
+# Subtest: capture returns before interpretation, binds permanent identity and freezes each author cutoff
+ok 1 - capture returns before interpretation, binds permanent identity and freezes each author cutoff
+  ---
+  duration_ms: 1937.6079
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"8592e8e2-d2dd-4ae7-9a58-789a7a9d6ab7","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":41}
+# Subtest: canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+ok 2 - canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+  ---
+  duration_ms: 373.4043
+  type: 'test'
+  ...
+# Subtest: lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+ok 3 - lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+  ---
+  duration_ms: 325.1217
+  type: 'test'
+  ...
+# Subtest: local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+ok 4 - local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+  ---
+  duration_ms: 23.3505
+  type: 'test'
+  ...
+# Subtest: unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+ok 5 - unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+  ---
+  duration_ms: 6.4901
+  type: 'test'
+  ...
+# (node:6672) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"ee7b9807-be1c-4727-b07d-190aa7f3b778","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":22}
+# Subtest: real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+ok 6 - real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+  ---
+  duration_ms: 761.7869
+  type: 'test'
+  ...
+# (node:31480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"1c9872b2-a014-4213-aece-2bd7026696da","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":14}
+# {"event":"command.captured","commandId":"698a5eb7-5310-49d9-8195-65afc38ea81e","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":12}
+# {"event":"command.captured","commandId":"61d5087d-baa8-4e87-97ca-7a9daa1a15d9","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":9}
+# {"event":"command.captured","commandId":"4a9ecdf6-6296-48f2-b2d1-2f4dba84aa4f","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":10}
+# {"event":"command.captured","commandId":"d3fb718b-d2e8-481e-a33d-568314d7f505","epoch":1,"sourceRevision":5,"cursor":5,"durationMs":10}
+# {"event":"command.captured","commandId":"6bdbcd7b-614b-4827-94da-aca5cfbebca1","epoch":1,"sourceRevision":3,"cursor":1,"durationMs":13}
+# Subtest: serial acceptance and deferred capture order survive SQLite restart without replay spending
+ok 7 - serial acceptance and deferred capture order survive SQLite restart without replay spending
+  ---
+  duration_ms: 1253.9019
+  type: 'test'
+  ...
+# Subtest: a failed authority check does not poison capture order or spend the later caller allowance twice
+ok 8 - a failed authority check does not poison capture order or spend the later caller allowance twice
+  ---
+  duration_ms: 400.1596
+  type: 'test'
+  ...
+# Subtest: ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+ok 9 - ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+  ---
+  duration_ms: 30.7075
+  type: 'test'
+  ...
+# Subtest: a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+ok 10 - a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+  ---
+  duration_ms: 62.4399
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 11 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 4.5712
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 12 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.669
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 13 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 2.1332
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 14 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 13.422
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 15 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 22.7703
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 16 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 8.6524
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 17 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 5.1674
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 18 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 14.5824
+  type: 'test'
+  ...
+# Subtest: flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+ok 19 - flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+  ---
+  duration_ms: 5.0619
+  type: 'test'
+  ...
+# Subtest: untrusted IDs and error codes cannot become diagnostic content
+ok 20 - untrusted IDs and error codes cannot become diagnostic content
+  ---
+  duration_ms: 0.6471
+  type: 'test'
+  ...
+# (node:23880) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 21 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1474.5265
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 22 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 7615.0964
+  type: 'test'
+  ...
+# (node:11244) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"ca449714-e160-4dfd-a462-46930e4dd186","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":14}
+# {"event":"command.captured","commandId":"9eb00e52-bd56-46b6-a06b-f5de0d23ced5","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":14}
+# Subtest: HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+ok 23 - HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+  ---
+  duration_ms: 421.4117
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"ebf3a159-7270-49c5-8681-9c77bbb3bc3f","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":8}
+# Subtest: a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+ok 24 - a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+  ---
+  duration_ms: 399.2716
+  type: 'test'
+  ...
+# Subtest: membership revocation before canonical admission creates no command and preserves drafts
+ok 25 - membership revocation before canonical admission creates no command and preserves drafts
+  ---
+  duration_ms: 199.2729
+  type: 'test'
+  ...
+# Subtest: unsupported old submission messages require upgrade without saving or inference
+ok 26 - unsupported old submission messages require upgrade without saving or inference
+  ---
+  duration_ms: 250.1871
+  type: 'test'
+  ...
+1..26
+# tests 26
+# suites 0
+# pass 26
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23420.5622
