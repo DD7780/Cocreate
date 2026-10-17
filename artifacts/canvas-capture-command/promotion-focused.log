@@ -1,0 +1,237 @@
+TAP version 13
+# (node:21656) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:21656) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# {"event":"command.captured","commandId":"f72f4f19-01d5-4cc4-979e-f74fe261408f","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":15}
+# {"event":"command.captured","commandId":"812cd560-1eb4-486b-bd7d-35aa934e0f0f","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":9}
+# Subtest: an expired HTTP wait reports an unknown outcome with recovery action and never retries itself
+ok 1 - an expired HTTP wait reports an unknown outcome with recovery action and never retries itself
+  ---
+  duration_ms: 7.8586
+  type: 'test'
+  ...
+# Subtest: capture returns before interpretation, binds permanent identity and freezes each author cutoff
+ok 2 - capture returns before interpretation, binds permanent identity and freezes each author cutoff
+  ---
+  duration_ms: 436.1308
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"e3607b5b-fd04-4938-b453-806b08977ed1","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":26}
+# Subtest: canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+ok 3 - canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+  ---
+  duration_ms: 273.8844
+  type: 'test'
+  ...
+# Subtest: lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+ok 4 - lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+  ---
+  duration_ms: 265.8859
+  type: 'test'
+  ...
+# Subtest: local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+ok 5 - local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+  ---
+  duration_ms: 14.518
+  type: 'test'
+  ...
+# Subtest: unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+ok 6 - unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+  ---
+  duration_ms: 4.2495
+  type: 'test'
+  ...
+# Subtest: a command backup restores unsent source bytes even if the ordinary document backup was lost
+ok 7 - a command backup restores unsent source bytes even if the ordinary document backup was lost
+  ---
+  duration_ms: 8.2956
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"889f6b56-6fb6-475b-b3c2-49a5380884e6","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":13}
+# Subtest: closing a scope during delivery does not turn a confirmed capture into a new request on reload
+ok 8 - closing a scope during delivery does not turn a confirmed capture into a new request on reload
+  ---
+  duration_ms: 7.9476
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"b3d78da3-0060-4d84-a127-74df55c5bd36","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":15}
+# Subtest: a canonical/checkpoint disagreement is quarantined and a stale local lease cannot append a command
+ok 9 - a canonical/checkpoint disagreement is quarantined and a stale local lease cannot append a command
+  ---
+  duration_ms: 261.0923
+  type: 'test'
+  ...
+# Subtest: receipt projection hides an uncommitted product and binds the command result to its own promoted version
+ok 10 - receipt projection hides an uncommitted product and binds the command result to its own promoted version
+  ---
+  duration_ms: 247.7761
+  type: 'test'
+  ...
+# (node:19156) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"88e8538f-a591-474e-bcf5-2c54ea903919","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":20}
+# {"event":"command.captured","commandId":"80b21b3a-1dce-4dc6-9d68-23e9c682bcd1","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":12}
+# Subtest: real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+ok 11 - real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+  ---
+  duration_ms: 627.7963
+  type: 'test'
+  ...
+# (node:30664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"109019dd-ba2d-49d4-96da-2a8d32fdf6f8","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":17}
+# {"event":"command.captured","commandId":"33eae822-45f0-4f77-bd6b-d7d246fe2d95","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":11}
+# {"event":"command.captured","commandId":"26fe9fa6-4664-4cd1-a8e2-1d73bb39d504","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":13}
+# {"event":"command.captured","commandId":"43ce8503-fc9d-4992-83bb-3a901dc1566e","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":12}
+# {"event":"command.captured","commandId":"00fc76d5-643d-4f12-936e-912a6524ccc3","epoch":1,"sourceRevision":5,"cursor":5,"durationMs":11}
+# {"event":"command.captured","commandId":"a847957d-4bfa-4fa2-8408-de42a23b8845","epoch":1,"sourceRevision":3,"cursor":1,"durationMs":15}
+# Subtest: serial acceptance and deferred capture order survive SQLite restart without replay spending
+ok 12 - serial acceptance and deferred capture order survive SQLite restart without replay spending
+  ---
+  duration_ms: 1485.1452
+  type: 'test'
+  ...
+# Subtest: a failed authority check does not poison capture order or spend the later caller allowance twice
+ok 13 - a failed authority check does not poison capture order or spend the later caller allowance twice
+  ---
+  duration_ms: 446.3682
+  type: 'test'
+  ...
+# Subtest: tagged source bursts retain identities while sharing one coalesced transport frame
+ok 14 - tagged source bursts retain identities while sharing one coalesced transport frame
+  ---
+  duration_ms: 12.7873
+  type: 'test'
+  ...
+# Subtest: ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+ok 15 - ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners
+  ---
+  duration_ms: 6.953
+  type: 'test'
+  ...
+# Subtest: a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+ok 16 - a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+  ---
+  duration_ms: 33.1795
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 17 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 2.9994
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 18 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.2341
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 19 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 1.6118
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 20 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 7.9549
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 21 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 9.043
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 22 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 18.5376
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 23 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 1.9785
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 24 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 20.6354
+  type: 'test'
+  ...
+# Subtest: flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+ok 25 - flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+  ---
+  duration_ms: 4.9431
+  type: 'test'
+  ...
+# Subtest: untrusted IDs and error codes cannot become diagnostic content
+ok 26 - untrusted IDs and error codes cannot become diagnostic content
+  ---
+  duration_ms: 0.5322
+  type: 'test'
+  ...
+# (node:15736) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 27 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1511.0279
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 28 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 7828.468
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"eb0ecd44-a894-4cf2-b566-640d4bb19b6e","correlationId":"2db427a9-09b2-4ce9-8db0-f7b11517f818"}
+# {"event":"collaboration.disconnected","connectionId":"eb0ecd44-a894-4cf2-b566-640d4bb19b6e","code":4403}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+ok 29 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 1054.2132
+  type: 'test'
+  ...
+# (node:21844) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"ecb23d14-f8fc-4133-b7a1-b4c122159198","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":17}
+# {"event":"command.captured","commandId":"a748a0e5-4ba4-45ca-a552-ec834887b8b5","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":13}
+# Subtest: HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+ok 30 - HTTP-first unsent sources and subsequent WebSocket delivery have one authenticated batch
+  ---
+  duration_ms: 373.1904
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"43733b36-5af5-4954-9648-f7f4812aad74","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":9}
+# Subtest: a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+ok 31 - a deletion-only command uses deletion coverage and does not withdraw accepted intent during capture
+  ---
+  duration_ms: 408.9437
+  type: 'test'
+  ...
+# Subtest: membership revocation before canonical admission creates no command and preserves drafts
+ok 32 - membership revocation before canonical admission creates no command and preserves drafts
+  ---
+  duration_ms: 237.2194
+  type: 'test'
+  ...
+# Subtest: unsupported old submission messages require upgrade without saving or inference
+ok 33 - unsupported old submission messages require upgrade without saving or inference
+  ---
+  duration_ms: 268.3952
+  type: 'test'
+  ...
+1..33
+# tests 33
+# suites 0
+# pass 33
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 23998.3882

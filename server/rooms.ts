@@ -651,7 +651,7 @@ export class RoomManager {
     room.commandReceipts ||= {};
     for (const item of room.submissions)
         room.commandReceipts[JSON.stringify([item.participantId, item.requestId])] = {
-            id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status,payloadHash:item.payloadHash,interrupted:item.interrupted,outcome:item.outcome,error:item.error
+            id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status,payloadHash:item.payloadHash,interrupted:item.interrupted,outcome:item.outcome,productVersion:item.productVersion,error:item.error
         };
     room.requirementRevisions ||= [];
     if (room.requirementRevisions.at(-1)?.revision !== room.specificationRevision)
@@ -2083,13 +2083,15 @@ export class RoomManager {
     const stored=record.submission,submission=room.submissions.find(item=>item.id===stored.id);
     const remembered=room.commandReceipts?.[JSON.stringify([stored.participantId,stored.requestId])];
     const status=submission?.status||remembered?.status||stored.status;
+    const productVersion=submission?.productVersion??remembered?.productVersion;
+    const promoting=productVersion!==undefined&&productVersion===room.pendingPromotion;
     const execution=this.eventStore.runsForWorkspace(room.id).at(-1)?.state;
     const state:CaptureReceipt['state']=submission?.interrupted||remembered?.interrupted?'interrupted':
-      status==='failed'?'failed':(submission?.outcome||remembered?.outcome)==='no_build_needed'?'no_build_needed':status==='interpreting'?'interpreting':status==='built'?(room.versions.length?'available':'no_build_needed'):
+      status==='failed'?'failed':(submission?.outcome||remembered?.outcome)==='no_build_needed'?'no_build_needed':status==='interpreting'?'interpreting':status==='built'?(promoting?'verifying':productVersion!==undefined?'available':'no_build_needed'):
       status==='queued'?(hasOpenContradictions(room.conflictGroups)?'awaiting_decision':room.buildTask?(execution==='verifying'?'verifying':'building'):'queued'):'captured';
     return {durable:true,commandId:stored.id,requestId:stored.requestId,actorId:stored.participantId,cursor:record.cursor,
       sourceRevision:stored.documentRevision,acceptedRevision:room.specificationRevision,state,
-      productVersion:room.versions.filter(item=>item.id!==room.pendingPromotion).at(-1)?.id??null,message:submission?.error||remembered?.error};
+      productVersion:promoting?null:productVersion??null,message:submission?.error||remembered?.error};
   }
   private installCapture(room:Room,record:CaptureRecord,interrupted=false){
     const submission=structuredClone(record.submission),key=JSON.stringify([submission.participantId,submission.requestId]);
@@ -2585,8 +2587,9 @@ export class RoomManager {
             room.pendingBuildSince = undefined;
             room.status = 'Updated';
             room.budgetWindow = undefined;
-            for (const submission of queuedSubmissions)
-                submission.status = 'built';
+            for (const submission of queuedSubmissions){
+                submission.status = 'built';submission.productVersion=version.id;
+            }
             let committed = false, promotionError: unknown;
             try {
                 committed = await this.save(room, 'product.promoted', 'builder', 'builder') !== false;
@@ -2605,8 +2608,9 @@ export class RoomManager {
                 room.lastBuiltRequirements = priorPromotion.requirements;
                 room.recoveryCheckpoint = priorPromotion.recoveryCheckpoint;
                 room.budgetWindow = priorPromotion.budgetWindow;
-                for (const submission of queuedSubmissions)
-                    submission.status = 'queued';
+                for (const submission of queuedSubmissions){
+                    submission.status = 'queued';delete submission.productVersion;
+                }
                 const oldFiles = room.versions.at(-1)?.files;
                 let owned = true;
                 try {

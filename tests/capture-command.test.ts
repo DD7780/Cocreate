@@ -124,3 +124,17 @@ test('a canonical/checkpoint disagreement is quarantined and a stale local lease
     await assert.rejects(()=>f.manager.captureReceipt(f.room,'alice','consistent'),/disagrees/);
   }finally{await f.close();}
 });
+
+test('receipt projection hides an uncommitted product and binds the command result to its own promoted version',async()=>{
+  const f=await createProgressFixture(options);
+  try{
+    f.edit('alice','Build a dashboard');await f.manager.captureChanges(f.room,'alice',captureEnvelope(f.room,'alice','promotion'));
+    const submission=f.room.submissions[0];submission.status='built';submission.productVersion=1;f.room.pendingPromotion=1;
+    const pending=await f.manager.captureReceipt(f.room,'alice','promotion');assert.equal(pending?.state,'verifying');assert.equal(pending?.productVersion,null);
+    f.room.pendingPromotion=undefined;
+    const committed=await f.manager.captureReceipt(f.room,'alice','promotion');assert.equal(committed?.state,'available');assert.equal(committed?.productVersion,1);
+    f.room.pendingPromotion=2;
+    const later=await f.manager.captureReceipt(f.room,'alice','promotion');assert.equal(later?.state,'available');assert.equal(later?.productVersion,1,'another candidate cannot relabel this command result');
+    f.room.pendingPromotion=undefined;
+  }finally{await f.close();}
+});

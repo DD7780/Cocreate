@@ -112,6 +112,7 @@ export type StoredSubmission = {
   captureCursor?:number;
   interrupted?:boolean;
   outcome?:'no_build_needed';
+  productVersion?:number;
   intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
   id: string;
@@ -221,6 +222,7 @@ export type Room = {
       payloadHash?:string;
       interrupted?:boolean;
       outcome?:'no_build_needed';
+      productVersion?:number;
       error?:string;
     }
   >;

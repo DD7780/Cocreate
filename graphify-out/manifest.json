@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "server/rooms.ts": {
-    "mtime": 1792247614.3182254,
-    "seen": 1792248067.7725883,
-    "ast_hash": "8290db9e954010c63be6f433f7c4f6ea",
+    "mtime": 1792248460.0082724,
+    "seen": 1792248595.4381137,
+    "ast_hash": "abd414b8a6b654f088cc377c2370bcaa",
     "semantic_hash": ""
   },
   "server/supabase-platform.ts": {
@@ -522,9 +522,9 @@
     "semantic_hash": ""
   },
   "api.md": {
-    "mtime": 1792247413.2094784,
-    "seen": 1792248067.8121088,
-    "ast_hash": "a4ecc520851a1f582808623ccc6f62ed",
+    "mtime": 1792248570.2020407,
+    "seen": 1792248595.4765046,
+    "ast_hash": "fb4f268be415f0431c86c8993ac67bdc",
     "semantic_hash": ""
   },
   "context.md": {
@@ -714,9 +714,9 @@
     "semantic_hash": ""
   },
   "server/room-state.ts": {
-    "mtime": 1792246936.402643,
-    "seen": 1792248067.7725883,
-    "ast_hash": "fe2aafe886052494217eb6451bbf9e26",
+    "mtime": 1792248460.0007231,
+    "seen": 1792248595.4381137,
+    "ast_hash": "d4aab7b085bc656c5f6c7499d8b64573",
     "semantic_hash": ""
   },
   "server/steering-text.ts": {
@@ -1290,8 +1290,8 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1792248151.1744752,
-    "seen": 1792248299.1183393,
+    "mtime": 1792248587.1286476,
+    "seen": 1792248595.40633,
     "ast_hash": "40f31b5fb3a7c750704e83091d3ac67a",
     "semantic_hash": ""
   },
@@ -1494,9 +1494,9 @@
     "semantic_hash": ""
   },
   "docs/harness/product-name-compatibility.json": {
-    "mtime": 1792248049.876866,
-    "seen": 1792248067.7655013,
-    "ast_hash": "97d3d990eb34a57cc9a54ec00b950b84",
+    "mtime": 1792248347.0426152,
+    "seen": 1792248595.40633,
+    "ast_hash": "0ff27cbc043cd304bd061709ab296fef",
     "semantic_hash": ""
   },
   "scripts/check-product-naming.mjs": {
@@ -1596,9 +1596,9 @@
     "semantic_hash": ""
   },
   "tests/capture-command.test.ts": {
-    "mtime": 1792248238.765647,
-    "seen": 1792248299.168135,
-    "ast_hash": "af0f02bdfc2ec3314d361e584145cb89",
+    "mtime": 1792248460.1391764,
+    "seen": 1792248595.458279,
+    "ast_hash": "c670af8981a9fded2ed52257528e0154",
     "semantic_hash": ""
   },
   "tests/capture-sql.test.ts": {
@@ -1614,9 +1614,9 @@
     "semantic_hash": ""
   },
   "docs/harness/canvas-capture-command.md": {
-    "mtime": 1792248049.878301,
-    "seen": 1792248067.8161077,
-    "ast_hash": "9330a3852944c48053068bd0be206485",
+    "mtime": 1792248570.203543,
+    "seen": 1792248595.479692,
+    "ast_hash": "eec34d87fefa53467cefec6da8b1ed21",
     "semantic_hash": ""
   },
   "tests/capture-http.test.ts": {
