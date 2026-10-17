@@ -386,6 +386,8 @@
         "supabase/migrations/20261006204612_prelaunch_beta_access.sql",
         "artifacts/product-name-cleanup/full-tests.log",
         "artifacts/save-provider-repair/full-windows.log",
+        "artifacts/save-provider-repair/full-windows-candidate.log",
+        "artifacts/save-provider-repair/ci-candidate.log",
         "artifacts/product-name-cleanup/scan.log",
         "artifacts/product-name-cleanup/guards.log",
         "artifacts/product-name-cleanup/ci-attempt1.log",

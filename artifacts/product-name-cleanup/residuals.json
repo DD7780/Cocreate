@@ -4,15 +4,15 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 913,
-  "matchedFiles": 245,
-  "matches": 3885,
+  "textFiles": 916,
+  "matchedFiles": 247,
+  "matches": 3912,
   "classificationCounts": {
     "hosted-resources": 14,
     "protected-local-ignores": 3,
     "environment-bridge": 18,
     "documented-contracts": 16,
-    "immutable-evidence": 3736,
+    "immutable-evidence": 3763,
     "historical-decisions": 4,
     "regression-fixtures": 62,
     "stable-import": 1,
@@ -20345,6 +20345,195 @@
       "file": "artifacts/role-compatible-models/verification.json",
       "line": 99,
       "column": 104,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 145,
+      "column": 51,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 160,
+      "column": 57,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 162,
+      "column": 70,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 162,
+      "column": 79,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 168,
+      "column": 107,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 168,
+      "column": 116,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 169,
+      "column": 74,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 169,
+      "column": 83,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 171,
+      "column": 75,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 171,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 185,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 185,
+      "column": 93,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 186,
+      "column": 96,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 202,
+      "column": 61,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 266,
+      "column": 152,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 266,
+      "column": 161,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 326,
+      "column": 86,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 326,
+      "column": 95,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 339,
+      "column": 75,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 339,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 1634,
+      "column": 125,
+      "spelling": "COCREATE",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 3030,
+      "column": 72,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 3031,
+      "column": 70,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 3815,
+      "column": 107,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/ci-candidate.log",
+      "line": 3815,
+      "column": 116,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/full-windows-candidate.log",
+      "line": 1526,
+      "column": 43,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/save-provider-repair/full-windows-candidate.log",
+      "line": 1527,
+      "column": 41,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },

@@ -5,7 +5,7 @@
 - [x] Reproduce permanent HTTP 400 making three calls and a covering flush unnecessarily queuing a second remote commit; preserve failed evidence.
 - [x] Honor retry eligibility, record sanitized metadata, preserve full selected-route schema/reasoning, reuse only confirmed covering saves and correlate stages without cancelling writes.
 - [x] Connected regressions and controlled two-participant browser scenarios pass, including late/failed saves, deletion, replay, authority loss and inference-free reconnect.
-- [ ] Complete release-candidate production-image/native gates and record exact source/fingerprint.
+- [x] Source 0526cae passes production-image PostgreSQL 2/2, compiler 10/10, browser/resource 15/15 and full 303/303, zero skips, CI 39018603723 attempt 1. Fingerprint ee2e582c…; Windows failures remain retained and distinct.
 - [ ] Obtain designated account/project and explicit live-inference budget; identify the actual rejected argument and intermittent hosted save stage, then verify selected-route save/capture/interpret/accept/build/functional verification/promote/reopen. Do not claim end-to-end repair yet. [Evidence and handoff](save-provider-repair.md).
 
 ## Canonical product naming — 2026-10-17
