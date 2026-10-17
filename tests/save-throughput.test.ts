@@ -91,6 +91,21 @@ test("flush acknowledges its canonical snapshot even while the separate recovery
   } finally { journal.release(); canonical.release(); f.close(); }
 });
 
+test("a delayed journal failure cannot mark a successfully committed document unsynced", async () => {
+  const journal = gate(), messages: any[] = [];
+  const f = setup({ saveSnapshot: async () => {}, appendDocumentUpdate: async () => { await journal.promise; throw new Error("Journal unavailable"); } });
+  try {
+    const room = f.manager.create("late-journal"); f.manager.join(room, "alice", "Alice"); await room.persistQueue;
+    const socket = { participantId: "alice", readyState: 1, send: (raw: string) => messages.push(JSON.parse(raw)), close() {} } as unknown as ClientSocket;
+    edit(f.manager, room, "Saved draft", socket);
+    f.manager.handleMessage(room, socket, Buffer.from(JSON.stringify({ type: "flush", requestId: "saved" })), false);
+    await until(() => messages.some(item => item.type === "flushed"), "canonical snapshot committed");
+    journal.release(); await room.documentQueue?.catch(() => {}); await pause();
+    assert.ok(!messages.some(item => item.type === "save-error"));
+    assert.equal(room.pending.get("alice")?.length, 1);
+  } finally { journal.release(); f.close(); }
+});
+
 test("flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them", async () => {
   const journal = gate(), messages: any[] = [];
   let failSave = false, captured: any;

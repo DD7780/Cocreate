@@ -653,7 +653,7 @@ export class RoomManager {
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
-    const revision = room.persistRevision, savedAt = room.savedAt, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
+    const revision = room.persistRevision, savedAt = room.savedAt, documentSequence = room.documentSequence || 0, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
     this.eventStore.saveWorkspaceSnapshot(room.id, payload, eventType, actorId, actorType);
     if (this.config.durableStore) {
         const snapshot = structuredClone({
@@ -661,6 +661,7 @@ export class RoomManager {
         }), prior = room.persistQueue || Promise.resolve();
         const saving = prior.catch(() => {
         }).then(() => this.config.durableStore!.saveSnapshot(room.id, revision, snapshot)).then(result => {
+            room.persistedDocumentSequence = documentSequence;
             room.artifactHistory = captured.artifactHistory;
             const manifest = (result as {
                 artifactManifest?: ArtifactReference[];
@@ -841,7 +842,8 @@ export class RoomManager {
             payload,
           ),
         );
-      void room.documentQueue.catch((error) =>
+      void room.documentQueue.catch((error) => {
+        if ((room.persistedDocumentSequence || 0) >= record.seq) return;
         this.sendJson(ws, {
           type: "save-error",
           revision: room.persistRevision,
@@ -849,8 +851,8 @@ export class RoomManager {
             error instanceof Error
               ? error.message
               : "Remote update persistence failed.",
-        }),
-      );
+        });
+      });
     }
     if (record.before || record.after) this.queueEdit(room, p, record);
   }

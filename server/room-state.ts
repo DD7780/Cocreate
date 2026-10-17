@@ -226,6 +226,7 @@ export type Room = {
   persistQueue?: Promise<unknown>;
   documentQueue?: Promise<unknown>;
   documentSequence?: number;
+  persistedDocumentSequence?: number;
   documentSaveTask?: Promise<void>;
   documentSaveRequested?: boolean;
   submissions: StoredSubmission[];
