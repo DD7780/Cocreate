@@ -1,4 +1,5 @@
 import { productEnvironment } from '../shared/product-environment.js';
+import {SaveTrace} from './save-diagnostics.js';
 import { assertIsolationAvailable } from "./isolation.js";
 import {assertVerificationBrowserAvailable} from './isolation/browser.js';
 import fs from 'node:fs';
@@ -772,30 +773,39 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
                 manager.connect(room, ws, session.participantId, session.role || 'editor', expiresAt);
                 const expiryTimer = expiresAt ? setTimeout(() => ws.close(4401, 'Project ticket expired'), Math.max(1, expiresAt - Date.now())) : undefined;
                 let messages = Promise.resolve();
-                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean }> | undefined;
+                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean; trace?:SaveTrace }> | undefined;
                 ws.on('message', (data, isBinary) => {
                     const packet = Buffer.from(data as any);
+                    let trace:SaveTrace|undefined;
+                    if(!isBinary&&packet.length<=2048){
+                        try{const message=JSON.parse(packet.toString());if(message.type==='flush'&&typeof message.requestId==='string')trace=new SaveTrace({requestId:message.requestId,connectionId})}catch{}
+                    }
                     if (pendingBatch && pendingBatch.length < collaborationBatchSize) {
-                        pendingBatch.push({ packet, isBinary });
+                        pendingBatch.push({ packet, isBinary, trace });
                         return;
                     }
-                    const batch = [{ packet, isBinary }];
+                    const batch = [{ packet, isBinary, trace }];
                     pendingBatch = batch;
                     messages = messages.then(async () => {
                         if (pendingBatch === batch) pendingBatch = undefined;
-                        if (ws.readyState !== 1) return;
+                        const traces=batch.flatMap(item=>item.trace?[item.trace]:[]);
+                        for(const trace of traces)trace.end('ingress-queue');
+                        if (ws.readyState !== 1) {for(const trace of traces)trace.finish('closed');return}
                         if (platformState.platform) {
+                            for(const trace of traces)trace.start('ingress-membership');
                             const role = await platformState.platform.requireMembership(roomId, session.accountId!);
+                            for(const trace of traces){trace.end('ingress-membership');trace.start('ingress-coordinator')}
                             (ws as WebSocket & {
                                 role?: string;
                             }).role = role;
                             await platformState.platform.assertCoordinator(roomId);
+                            for(const trace of traces)trace.end('ingress-coordinator');
                         }
                         for (const item of batch) {
                             if (ws.readyState !== 1) return;
-                            manager.handleMessage(room, ws, item.packet, item.isBinary);
+                            manager.handleMessage(room, ws, item.packet, item.isBinary,item.trace);
                         }
-                    }).catch(error => ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed'));
+                    }).catch(error => {for(const item of batch)item.trace?.finish('failed');ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed')});
                 });
                 ws.on('close', code => {
                     if (expiryTimer)

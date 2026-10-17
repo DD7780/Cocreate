@@ -1,4 +1,5 @@
 import type {WorkflowBudget} from "./workflow-budget.js";
+import type {SaveTrace} from './save-diagnostics.js';
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import type { WebSocket } from "ws";
@@ -46,6 +47,7 @@ export type DurableStore = {
     projectId: string,
     revision: number,
     payload: Record<string, unknown>,
+    progress?: SaveTrace,
   ) => Promise<unknown>;
   appendDocumentUpdate: (
     projectId: string,
@@ -74,7 +76,7 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
-  deliveryBatch?: Array<string | Buffer>;
+  deliveryBatch?: Array<{data:string | Buffer;trace?:SaveTrace}>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;
@@ -224,6 +226,8 @@ export type Room = {
   pending: Map<string, EditRecord[]>;
   steeringQueue?: Promise<unknown>;
   persistQueue?: Promise<unknown>;
+  snapshotWrite?: {progress:SaveTrace;pending:boolean;promise:Promise<boolean>};
+  committedDocument?: {revision:number;savedAt:string;vector:Uint8Array;deletions:string;documentSequence:number};
   documentQueue?: Promise<unknown>;
   documentSequence?: number;
   persistedDocumentSequence?: number;

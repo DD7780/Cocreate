@@ -64,12 +64,12 @@ test('OpenRouter schema rejection cannot fall back to unstructured paid generati
   } finally { globalThis.fetch = originalFetch; }
 });
 
-test('credit errors preserve provider details and suggest a free choice without retrying', async () => {
+test('credit errors retain safe diagnostics and suggest a free choice without echoing upstream text or retrying', async () => {
   const originalFetch = globalThis.fetch;
   let calls = 0;
   globalThis.fetch = async () => { calls++; return Response.json({ error: { message: 'Requested 8000 tokens, but can only afford 1000.' } }, { status: 402 }); };
   try {
-    await assert.rejects(() => generateStructured({ provider: 'openrouter', baseUrl: 'https://openrouter.ai/api/v1', apiKey: 'fixture' }, { model: 'fixture', input: '{}', instructions: 'Return JSON.', schema }), error => error instanceof ProviderError && error.kind === 'balance' && /FREE model/.test(error.message) && /can only afford 1000/.test(error.message));
+    await assert.rejects(() => generateStructured({ provider: 'openrouter', baseUrl: 'https://openrouter.ai/api/v1', apiKey: 'fixture' }, { model: 'fixture', input: '{}', instructions: 'Return JSON.', schema }), error => error instanceof ProviderError && error.kind === 'balance' && /FREE model/.test(error.message) && !/can only afford 1000/.test(error.message) && error.diagnostics?.httpStatus===402);
     assert.equal(calls, 1);
   } finally { globalThis.fetch = originalFetch; }
 });

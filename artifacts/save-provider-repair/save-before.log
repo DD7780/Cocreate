@@ -1,0 +1,40 @@
+TAP version 13
+# (node:27212) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: flush joins a covering in-flight commit instead of adding a second slow canonical HTTP operation
+not ok 1 - flush joins a covering in-flight commit instead of adding a second slow canonical HTTP operation
+  ---
+  duration_ms: 200.952
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\save-throughput.test.ts:253:1'
+  failureType: 'testCodeFailure'
+  error: |-
+    the same document must not start a second serialized remote operation
+
+    2 !== 1
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 1
+  actual: 2
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\save-throughput.test.ts:264:12)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+# Subtest: a confirmed insertion receipt cannot satisfy a later deletion-only flush
+ok 2 - a confirmed insertion receipt cannot satisfy a later deletion-only flush
+  ---
+  duration_ms: 184.3264
+  type: 'test'
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 1
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 3937.8331

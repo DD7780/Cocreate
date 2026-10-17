@@ -1,5 +1,13 @@
 # Harness status and outstanding work
 
+## Save/provider reliability follow-up — 2026-10-17
+
+- [x] Reproduce permanent HTTP 400 making three calls and a covering flush unnecessarily queuing a second remote commit; preserve failed evidence.
+- [x] Honor retry eligibility, record sanitized metadata, preserve full selected-route schema/reasoning, reuse only confirmed covering saves and correlate stages without cancelling writes.
+- [x] Connected regressions and controlled two-participant browser scenarios pass, including late/failed saves, deletion, replay, authority loss and inference-free reconnect.
+- [ ] Complete release-candidate production-image/native gates and record exact source/fingerprint.
+- [ ] Obtain designated account/project and explicit live-inference budget; identify the actual rejected argument and intermittent hosted save stage, then verify selected-route save/capture/interpret/accept/build/functional verification/promote/reopen. Do not claim end-to-end repair yet. [Evidence and handoff](save-provider-repair.md).
+
 ## Canonical product naming — 2026-10-17
 
 - [x] Isolated from current main `ae3653b`, preserving save/replay work and the unrelated desktop checkout. Safe source/schema/tool/default/export/environment identifiers use the canonical convention.

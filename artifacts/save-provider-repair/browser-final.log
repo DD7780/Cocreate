@@ -1,0 +1,44 @@
+(node:8648) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1759 modules transformed.
+rendering chunks...
+computing gzip size...
+.runtime/build-save-ui/index.html                             0.50 kB │ gzip:   0.33 kB
+.runtime/build-save-ui/assets/App-Bx-odlxU.css               11.19 kB │ gzip:   2.68 kB
+.runtime/build-save-ui/assets/LandingPage-Bc2vY_-Y.css       43.20 kB │ gzip:   7.85 kB
+.runtime/build-save-ui/assets/index-D7cCB_ys.css             74.07 kB │ gzip:  14.30 kB
+.runtime/build-save-ui/assets/createLucideIcon-BKaKCuFB.js    1.04 kB │ gzip:   0.63 kB
+.runtime/build-save-ui/assets/x-BemjFsF8.js                   1.71 kB │ gzip:   0.87 kB
+.runtime/build-save-ui/assets/ProjectApp-DIpI-llG.js         35.89 kB │ gzip:  10.50 kB
+.runtime/build-save-ui/assets/LandingPage-zf5pM-7G.js        39.40 kB │ gzip:  10.17 kB
+.runtime/build-save-ui/assets/index-Db3W42WF.js             422.19 kB │ gzip: 121.37 kB
+.runtime/build-save-ui/assets/App-DSFBN-UW.js               593.06 kB │ gzip: 189.29 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 31.93s
+{"event":"collaboration.connected","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","correlationId":"eadc7390-fa48-415c-82c9-0b66fbb7253a"}
+{"event":"collaboration.connected","connectionId":"ca96561c-a72e-45bd-b4b8-cfecf2b288f5","correlationId":"23dc3f0d-33e1-4c26-9669-1d5ad795dba0"}
+Workspace ready
+{"event":"document.flush","requestId":"76da7a05-7441-41e2-9e7e-e0cecb3a2f8f","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"received","elapsedMs":1,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"76da7a05-7441-41e2-9e7e-e0cecb3a2f8f","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"acknowledged","elapsedMs":4107,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":1},{"stage":"save-wait","startedMs":4097,"durationMs":9},{"stage":"delivery","startedMs":4106,"durationMs":1}],"snapshots":[]}
+Delayed save and repeated activation passed
+{"event":"document.flush","requestId":"b720ff67-81cb-4799-9e9d-3df21ad38259","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+First-build failure passed
+{"event":"document.flush","requestId":"e096737b-a853-4724-af86-24b817f8df7b","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"e096737b-a853-4724-af86-24b817f8df7b","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"acknowledged","elapsedMs":246,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":0},{"stage":"save-wait","startedMs":239,"durationMs":7},{"stage":"delivery","startedMs":246,"durationMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"4ad7e2b4-c610-44cf-b44f-cdb7c92afaed","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"4ad7e2b4-c610-44cf-b44f-cdb7c92afaed","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"acknowledged","elapsedMs":9,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":0},{"stage":"save-wait","startedMs":3,"durationMs":6},{"stage":"delivery","startedMs":9,"durationMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"41bae485-7a34-488b-8fac-0c6f47ae609f","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"41bae485-7a34-488b-8fac-0c6f47ae609f","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","outcome":"acknowledged","elapsedMs":26,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":0},{"stage":"save-wait","startedMs":2,"durationMs":24},{"stage":"delivery","startedMs":26,"durationMs":0}],"snapshots":[{"revision":8,"elapsedMs":19,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":10}]}]}
+{"event":"collaboration.disconnected","connectionId":"41f2bd84-a1d9-4c5a-b724-e8ef687bd1e2","code":1001}
+{"event":"collaboration.connected","connectionId":"e555b9b4-d3d8-4c84-82a5-033bdd54e644","correlationId":"4c16c984-c8c4-49f9-a581-0ddc3d2b125d"}
+{"event":"document.flush","requestId":"dc0a347f-6ae7-4132-9132-a02e30c337bb","connectionId":"e555b9b4-d3d8-4c84-82a5-033bdd54e644","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"dc0a347f-6ae7-4132-9132-a02e30c337bb","connectionId":"e555b9b4-d3d8-4c84-82a5-033bdd54e644","outcome":"acknowledged","elapsedMs":24,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":0},{"stage":"save-wait","startedMs":3,"durationMs":20},{"stage":"delivery","startedMs":23,"durationMs":1}],"snapshots":[{"revision":11,"elapsedMs":15,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":9}]}]}
+{"twoParticipantsCallerOnly":true,"delayedSuccessAndRepeatedActivation":true,"editableDuringWait":true,"firstBuildError":true,"existingProductError":true,"timeoutAndLateReply":true,"uncertainSubmissionKeepsRequestId":true,"reconnectWithoutInference":true,"deletionOnlySave":true,"physicalCalls":0}
+{"event":"collaboration.disconnected","connectionId":"ca96561c-a72e-45bd-b4b8-cfecf2b288f5","code":1006}
+{"event":"collaboration.disconnected","connectionId":"e555b9b4-d3d8-4c84-82a5-033bdd54e644","code":1006}

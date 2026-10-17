@@ -155,10 +155,11 @@ test("flush persists deletions and attributed edits, and a failed canonical save
       assert.equal(captured.pending[0][1].length, 2);
     } finally { restored.destroy(); }
     failSave = true;
+    edit(f.manager,room,'Retain this newer unsaved draft',socket);
     f.manager.handleMessage(room, socket, Buffer.from(JSON.stringify({ type: "flush", requestId: "failed" })), false);
     await until(() => messages.some(item => item.type === "flush-error" && item.requestId === "failed"), "failed canonical commit rejects flush");
     assert.ok(!messages.some(item => item.type === "flushed" && item.requestId === "failed"));
-    assert.equal(room.pending.get("alice")?.length, 2);
+    assert.equal(room.pending.get("alice")?.length, 3);
     assert.equal(room.submissions.length, 0);
   } finally { journal.release(); f.close(); }
 });
@@ -184,7 +185,7 @@ for (const revoke of [false, true, "later"] as const) test(`outbound receipt bur
       await until(() => messages.some(item => item.type === "flushed"), "flush acknowledgement delivered");
       assert.ok(checks <= 4, `expected bounded batching, got ${checks} individual lookups`);
       const revisions = messages.filter(item => item.type === "saved").map(item => item.revision);
-      assert.equal(revisions.length, 71);
+      assert.equal(revisions.length, 71, "resend the confirmed receipt without a duplicate snapshot");
       assert.deepEqual(revisions, [...revisions].sort((a, b) => a - b));
       assert.equal(messages.at(-1).type, "flushed");
     }
@@ -248,4 +249,101 @@ test("hosted restore allocates above the remote journal high water and fails clo
     fixture.controls.failDocumentSequence = true;
     await assert.rejects(platform.loadSnapshot(project), /sequence/i);
   } finally { first.close(); second.close(); await fixture.close(); }
+});
+
+test('flush joins a covering in-flight commit instead of adding a second slow canonical HTTP operation',async t=>{
+  const held=[gate(),gate()];let hold=false,writes=0;const messages:any[]=[];
+  const f=setup({saveSnapshot:async()=>{if(hold){const index=writes++;await held[Math.min(index,1)].promise}},appendDocumentUpdate:async()=>{}});
+  let room:Room|undefined;
+  try{
+    room=f.manager.create('covering-inflight');f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,send(raw:unknown){if(typeof raw==='string')messages.push(JSON.parse(raw))},close(){}} as ClientSocket;
+    room.clients.add(client);edit(f.manager,room,'Only this caller draft',client);clearTimeout(room.saveTimer);hold=true;
+    const saving=f.manager.save(room);await until(()=>writes===1,'first remote write');
+    t.mock.timers.enable({apis:['setTimeout']});
+    f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'covering-request'})),false);
+    t.mock.timers.tick(15000);
+    held[0].release();await saving;await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(writes,1,'the same document must not start a second serialized remote operation');
+    assert.ok(messages.some(item=>item.type==='flushed'&&item.requestId==='covering-request'));
+    assert.equal(room.submissions.length,0);assert.equal(room.providerCalls.length,0);
+  }finally{t.mock.timers.reset();held.forEach(item=>item.release());await room?.persistQueue;f.close()}
+});
+
+test('a confirmed insertion receipt cannot satisfy a later deletion-only flush',async()=>{
+  let writes=0,hold=false;const pending=gate(),messages:any[]=[];
+  const f=setup({saveSnapshot:async()=>{writes++;if(hold)await pending.promise},appendDocumentUpdate:async()=>{}});
+  let room:Room|undefined;
+  try{
+    room=f.manager.create('deletion-receipt');f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,send(raw:unknown){if(typeof raw==='string')messages.push(JSON.parse(raw))},close(){}} as ClientSocket;
+    room.clients.add(client);edit(f.manager,room,'Original paragraph',client);clearTimeout(room.saveTimer);await f.manager.save(room);
+    const copy=new Y.Doc();Y.applyUpdate(copy,Y.encodeStateAsUpdate(room.doc));const vector=Y.encodeStateVector(copy);copy.getXmlFragment('default').delete(0,1);
+    f.manager.handleMessage(room,client,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(copy,vector))]),true);copy.destroy();clearTimeout(room.saveTimer);
+    const before=writes;hold=true;f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'deleted-request'})),false);
+    await until(()=>writes>before,'deletion must be durably written');assert.ok(!messages.some(item=>item.type==='flushed'&&item.requestId==='deleted-request'));
+    pending.release();await room.persistQueue;await new Promise(resolve=>setImmediate(resolve));assert.ok(messages.some(item=>item.type==='flushed'&&item.requestId==='deleted-request'));
+  }finally{pending.release();await room?.persistQueue;f.close()}
+});
+
+test('a covering confirmed receipt needs no further write, but fresh outbound authority still applies',async()=>{
+  let writes=0,checks=0;const messages:any[]=[];
+  const f=setup({saveSnapshot:async()=>{writes++},appendDocumentUpdate:async()=>{}});
+  try{
+    const room=f.manager.create('confirmed-receipt');f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,authorizeRead:async()=>{checks++;throw new Error('Revoked')},send:(raw:string)=>messages.push(JSON.parse(raw)),close(){(this as {readyState:number}).readyState=3}} as unknown as ClientSocket;
+    const before=writes;f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'cached-receipt'})),false);
+    await until(()=>client.readyState===3,'fresh authority rejects cached receipt');
+    assert.equal(writes,before);assert.equal(checks,1);assert.equal(messages.length,0);
+  }finally{f.close()}
+});
+
+test('an expired flush awaiting an older snapshot never queues its own write after the late commit',async t=>{
+  let hold=false,writes=0;const pending=gate(),messages:any[]=[];
+  const f=setup({saveSnapshot:async()=>{if(hold){writes++;await pending.promise}},appendDocumentUpdate:async()=>{}});
+  let room:Room|undefined;
+  try{
+    room=f.manager.create('expired-older');f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,send:(raw:string)=>messages.push(JSON.parse(raw)),close(){}} as unknown as ClientSocket;
+    hold=true;const older=f.manager.save(room);await until(()=>writes===1,'older snapshot pending');
+    edit(f.manager,room,'A newer caller draft',client);clearTimeout(room.saveTimer);
+    t.mock.timers.enable({apis:['setTimeout']});
+    f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'expired-older'})),false);
+    await new Promise(resolve=>setImmediate(resolve));t.mock.timers.tick(20000);await new Promise(resolve=>setImmediate(resolve));
+    assert.ok(messages.some(item=>item.type==='flush-error'));pending.release();await older;await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(writes,1);assert.ok(!messages.some(item=>item.type==='flushed'));assert.equal(room.pending.get('alice')?.length,1);assert.equal(room.providerCalls.length,0);
+  }finally{t.mock.timers.reset();pending.release();await room?.persistQueue;f.close()}
+});
+
+test('ownership loss during a joined save prevents the confirmed receipt from acknowledging the old coordinator',async()=>{
+  let hold=false,lose!:(id:string)=>void;const pending=gate(),messages:any[]=[];
+  const f=setup({saveSnapshot:async()=>{if(hold)await pending.promise},appendDocumentUpdate:async()=>{},onCoordinatorLost:listener=>{lose=listener;return()=>{}}});
+  let room:Room|undefined;
+  try{
+    room=f.manager.create('joined-ownership');f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,send:(raw:string)=>messages.push(JSON.parse(raw)),close(){(this as {readyState:number}).readyState=3}} as unknown as ClientSocket;
+    room.clients.add(client);edit(f.manager,room,'Retain on lost ownership',client);clearTimeout(room.saveTimer);hold=true;
+    const saving=f.manager.save(room);f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'lost-owner'})),false);
+    lose(room.id);pending.release();await saving;await new Promise(resolve=>setImmediate(resolve));
+    assert.equal(client.readyState,3);assert.ok(!messages.some(item=>item.type==='flushed'));assert.equal(room.submissions.length,0);
+  }finally{pending.release();await room?.persistQueue;f.close()}
+});
+
+test('real SDK snapshot diagnostics distinguish artifact preparation and remote commit with safe HTTP/SQL metadata',async t=>{
+  const logs:string[]=[];t.mock.method(console,'info',(value:string)=>logs.push(value));
+  const fixture=await createArtifactFixture(),platform=fixture.platform(),project=randomUUID(),f=setup(platform);
+  try{
+    await platform.claimCoordinator(project);
+    const room=f.manager.create(project);f.manager.join(room,'alice','Alice');await room.persistQueue;
+    const client={participantId:'alice',readyState:1,send(){},close(){}} as unknown as ClientSocket;
+    edit(f.manager,room,'Synthetic private draft',client);clearTimeout(room.saveTimer);fixture.controls.failCommit=true;
+    f.manager.handleMessage(room,client,Buffer.from(JSON.stringify({type:'flush',requestId:'sdk-safe-stages'})),false);
+    await until(()=>logs.some(line=>JSON.parse(line).outcome==='failed'),'failed SDK flush traced',5000);
+    const failure=logs.map(line=>JSON.parse(line)).find(line=>line.outcome==='failed');
+    const stages=failure.snapshots[0].stages;
+    assert.ok(stages.find((item:any)=>item.stage==='artifact-prepare'&&typeof item.durationMs==='number'));
+    assert.ok(stages.find((item:any)=>item.stage==='remote-commit'&&item.status===500&&item.code==='XX000'));
+    assert.doesNotMatch(logs.join(''),/Synthetic private draft|synthetic-service-key|Controlled commit interruption/);
+    assert.equal(room.providerCalls.length,0);assert.equal(room.pending.get('alice')?.length,1);
+  }finally{f.close();await fixture.close()}
 });

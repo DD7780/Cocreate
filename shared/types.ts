@@ -302,6 +302,13 @@ export type ProviderRequestPurpose =
   | "compilation_repair"
   | "provider_format_fallback"
   | "model_discovery";
+export type ProviderDiagnostics = {
+    httpStatus: number;
+    code?: string;
+    type?: string;
+    requestId?: string;
+    parameterPaths?: string[];
+};
 export type ProviderRequestRecord = {
     budgetScopeId?: string;
     budgetScopeKind?: 'workflow' | 'setup';
@@ -330,6 +337,7 @@ export type ProviderRequestRecord = {
     providerCostUsd?: number;
     chargeIncomplete?: boolean;
     errorKind?: string;
+    diagnostics?: ProviderDiagnostics;
 };
 export type AIRunCall = {
   phase: "interpretation" | "builder" | "repair";

@@ -1,0 +1,53 @@
+(node:14524) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+vite v7.3.6 building client environment for production...
+transforming...
+✓ 1759 modules transformed.
+rendering chunks...
+computing gzip size...
+.runtime/build-save-ui/index.html                             0.50 kB │ gzip:   0.33 kB
+.runtime/build-save-ui/assets/App-Bx-odlxU.css               11.19 kB │ gzip:   2.68 kB
+.runtime/build-save-ui/assets/LandingPage-Bc2vY_-Y.css       43.20 kB │ gzip:   7.85 kB
+.runtime/build-save-ui/assets/index-D7cCB_ys.css             74.07 kB │ gzip:  14.30 kB
+.runtime/build-save-ui/assets/createLucideIcon-BKaKCuFB.js    1.04 kB │ gzip:   0.63 kB
+.runtime/build-save-ui/assets/x-BemjFsF8.js                   1.71 kB │ gzip:   0.87 kB
+.runtime/build-save-ui/assets/ProjectApp-DIpI-llG.js         35.89 kB │ gzip:  10.50 kB
+.runtime/build-save-ui/assets/LandingPage-zf5pM-7G.js        39.40 kB │ gzip:  10.17 kB
+.runtime/build-save-ui/assets/index-Db3W42WF.js             422.19 kB │ gzip: 121.37 kB
+.runtime/build-save-ui/assets/App-DSFBN-UW.js               593.06 kB │ gzip: 189.29 kB
+
+(!) Some chunks are larger than 500 kB after minification. Consider:
+- Using dynamic import() to code-split the application
+- Use build.rollupOptions.output.manualChunks to improve chunking: https://rollupjs.org/configuration-options/#output-manualchunks
+- Adjust chunk size limit for this warning via build.chunkSizeWarningLimit.
+✓ built in 13.96s
+{"event":"collaboration.connected","connectionId":"4f9b1efc-ffbb-41af-98ba-374c9a7f384c","correlationId":"5ab26957-57b2-4716-84c9-53039229688b"}
+{"event":"collaboration.connected","connectionId":"23a0dfc1-abb5-4df1-b556-f81bef54ed6c","correlationId":"ff0e0e91-a430-426d-a6e9-e819f270864d"}
+{"event":"collaboration.disconnected","connectionId":"4f9b1efc-ffbb-41af-98ba-374c9a7f384c","code":1005}
+{"event":"collaboration.connected","connectionId":"8b907e04-c023-4f37-a217-965f79c96456","correlationId":"53c140bd-0f65-42de-8c31-b5cf7d38d2be"}
+Workspace ready
+{"event":"document.flush","requestId":"34c1bca8-04c7-4066-95b7-adea08f85539","connectionId":"8b907e04-c023-4f37-a217-965f79c96456","outcome":"received","elapsedMs":1,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"34c1bca8-04c7-4066-95b7-adea08f85539","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+{"event":"document.flush","requestId":"34c1bca8-04c7-4066-95b7-adea08f85539","outcome":"acknowledged","elapsedMs":8,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":7},{"stage":"delivery","startedMs":7,"durationMs":1}],"snapshots":[]}
+{"event":"collaboration.disconnected","connectionId":"8b907e04-c023-4f37-a217-965f79c96456","code":1006}
+{"event":"collaboration.disconnected","connectionId":"23a0dfc1-abb5-4df1-b556-f81bef54ed6c","code":1006}
+node:internal/modules/run_main:123
+    triggerUncaughtException(
+    ^
+
+AssertionError [ERR_ASSERTION]: Expected values to be strictly equal:
++ actual - expected
+
++ '_9p3ha7-IcpeHg'
+- '3C9dW0vT7b8I9Q'
+
+    at <anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-save-timeout.mjs:80:118) {
+  generatedMessage: true,
+  code: 'ERR_ASSERTION',
+  actual: '_9p3ha7-IcpeHg',
+  expected: '3C9dW0vT7b8I9Q',
+  operator: 'strictEqual',
+  diff: 'simple'
+}
+
+Node.js v22.23.2

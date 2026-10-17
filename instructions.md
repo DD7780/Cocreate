@@ -72,6 +72,8 @@ Generated operations remain room-scoped and deny traversal/cross-room access. Co
 
 ## Validation and documentation maintenance
 
+Save/provider repairs must honor the explicit retryable flag on every transport path. Retain only bounded safe HTTP/error/request-ID/parameter-path metadata; never persist upstream bodies or echo private provider text. Reuse a document receipt only after canonical confirmation and insertion/deletion/sequence coverage, with fresh ownership and authorized delivery. Observational timing must never abort an uncertain mutation, release its queue or revive an expired attempt. Do not guess an incompatible provider parameter without rejected-field evidence. [2026-10-17 packet](docs/harness/save-provider-repair.md).
+
 After every completed multi-user roadmap step, commit its code, canonical documentation, handoff and verification evidence and push to GitHub. Preserve unrelated working-tree changes. Use the current branch unless the user specifies another destination, and report the pushed branch and commit. This standing instruction authorizes the per-step push; it does not authorize starting the next step or running migrations/deployments.
 
 For behavior changes, run focused meaningful checks and relevant regressions, then the required test/build checks when feasible. Visible interaction claims require browser evidence. Compilation is not functional acceptance. Separate controlled-provider, live-provider, SQL and hosted-account evidence; do not spend credentials for unrelated UI/docs work or change tests to conceal failures.

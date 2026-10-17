@@ -1,0 +1,11 @@
+(node:17364) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+(Use `node --trace-warnings ...` to show where the warning was created)
+C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-save-timeout.mjs:56
+  const wait=async(check,label)=>{for(let i=0;i<100;i++){if(await check())return;await sleep(100)}throw Error('Timed out: '+label)};
+                                                                                                        ^
+
+Error: Timed out: workspace
+    at wait (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-save-timeout.mjs:56:105)
+    at async <anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\scripts\verify-save-timeout.mjs:60:3)
+
+Node.js v22.23.2

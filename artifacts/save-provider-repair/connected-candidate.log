@@ -1,0 +1,407 @@
+TAP version 13
+# Subtest: calculates uncached, cached, and cache-write charges without assuming cache hits
+ok 1 - calculates uncached, cached, and cache-write charges without assuming cache hits
+  ---
+  duration_ms: 2.44
+  type: 'test'
+  ...
+# Subtest: reasoning usage is informational and never billed twice
+ok 2 - reasoning usage is informational and never billed twice
+  ---
+  duration_ms: 0.4558
+  type: 'test'
+  ...
+# Subtest: aggregates multiple interpreters and one shared builder exactly once
+ok 3 - aggregates multiple interpreters and one shared builder exactly once
+  ---
+  duration_ms: 1.0437
+  type: 'test'
+  ...
+# Subtest: repairs and failures remain in totals while missing usage remains unknown
+ok 4 - repairs and failures remain in totals while missing usage remains unknown
+  ---
+  duration_ms: 0.5284
+  type: 'test'
+  ...
+# Subtest: applies long-context tiers and preserves pricing-version changes per call
+ok 5 - applies long-context tiers and preserves pricing-version changes per call
+  ---
+  duration_ms: 2.0607
+  type: 'test'
+  ...
+# Subtest: estimates stay distinct from the user spending limit
+ok 6 - estimates stay distinct from the user spending limit
+  ---
+  duration_ms: 1.9075
+  type: 'test'
+  ...
+# Subtest: effectiveness requires comparable samples and includes failed repairs in cost
+ok 7 - effectiveness requires comparable samples and includes failed repairs in cost
+  ---
+  duration_ms: 4.3908
+  type: 'test'
+  ...
+# (node:21076) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: saved Kimi/Muse policies reach interpretation, generation and bounded file recovery
+ok 8 - saved Kimi/Muse policies reach interpretation, generation and bounded file recovery
+  ---
+  duration_ms: 153.1546
+  type: 'test'
+  ...
+# Subtest: OpenRouter schema rejection cannot fall back to unstructured paid generation
+ok 9 - OpenRouter schema rejection cannot fall back to unstructured paid generation
+  ---
+  duration_ms: 2.7926
+  type: 'test'
+  ...
+# Subtest: credit errors retain safe diagnostics and suggest a free choice without echoing upstream text or retrying
+ok 10 - credit errors retain safe diagnostics and suggest a free choice without echoing upstream text or retrying
+  ---
+  duration_ms: 1.0478
+  type: 'test'
+  ...
+# (node:16156) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+ok 11 - remote claims and renewals coalesce; timeout permanently fences a delayed renewal
+  ---
+  duration_ms: 33.8757
+  type: 'test'
+  ...
+# Subtest: closing during a claim releases the late epoch without reviving ownership
+ok 12 - closing during a claim releases the late epoch without reviving ownership
+  ---
+  duration_ms: 2.5772
+  type: 'test'
+  ...
+# Subtest: closing during renewal cannot validate an old worker; malformed epochs fail closed
+ok 13 - closing during renewal cannot validate an old worker; malformed epochs fail closed
+  ---
+  duration_ms: 3.833
+  type: 'test'
+  ...
+# Subtest: loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+ok 14 - loss during durable dispatch intent prevents physical provider HTTP and subsequent mutations
+  ---
+  duration_ms: 146.7279
+  type: 'test'
+  ...
+# Subtest: hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+ok 15 - hosted dispatch and document writes carry fences; stale SQL results invalidate the owner
+  ---
+  duration_ms: 12.9287
+  type: 'test'
+  ...
+# Subtest: generic HTTP 400 makes one physical attempt and one final accounting record
+ok 16 - generic HTTP 400 makes one physical attempt and one final accounting record
+  ---
+  duration_ms: 182.2088
+  type: 'test'
+  ...
+# Subtest: the selected OpenRouter interpretation route retains its full strict schema and reasoning configuration on rejection
+ok 17 - the selected OpenRouter interpretation route retains its full strict schema and reasoning configuration on rejection
+  ---
+  duration_ms: 39.9958
+  type: 'test'
+  ...
+# Subtest: typed context rejection is permanent and does not trust private provider wording
+ok 18 - typed context rejection is permanent and does not trust private provider wording
+  ---
+  duration_ms: 15.7128
+  type: 'test'
+  ...
+# Subtest: genuine transient HTTP errors retain three separately accounted bounded attempts
+ok 19 - genuine transient HTTP errors retain three separately accounted bounded attempts
+  ---
+  duration_ms: 104.2752
+  type: 'test'
+  ...
+# Subtest: HTTP 200 API rejection records only bounded safe diagnostics and never repairs model output
+ok 20 - HTTP 200 API rejection records only bounded safe diagnostics and never repairs model output
+  ---
+  duration_ms: 37.4069
+  type: 'test'
+  ...
+# Subtest: HTTP 400 API rejection records only bounded safe diagnostics and never repairs model output
+ok 21 - HTTP 400 API rejection records only bounded safe diagnostics and never repairs model output
+  ---
+  duration_ms: 10.8531
+  type: 'test'
+  ...
+# Subtest: a pre-cancelled request dispatches no paid attempt
+ok 22 - a pre-cancelled request dispatches no paid attempt
+  ---
+  duration_ms: 3.7914
+  type: 'test'
+  ...
+# Subtest: a terminal accounting failure never becomes another physical provider call
+ok 23 - a terminal accounting failure never becomes another physical provider call
+  ---
+  duration_ms: 41.5827
+  type: 'test'
+  ...
+# Subtest: all provider adapters discover and generate through their native shapes
+ok 24 - all provider adapters discover and generate through their native shapes
+  ---
+  duration_ms: 424.0397
+  type: 'test'
+  ...
+# Subtest: classified failures, validation, truncation, retry and cancellation are explicit
+ok 25 - classified failures, validation, truncation, retry and cancellation are explicit
+  ---
+  duration_ms: 188.4425
+  type: 'test'
+  ...
+# Subtest: structured truncation uses one budgeted compact retry and preserves both usage records
+ok 26 - structured truncation uses one budgeted compact retry and preserves both usage records
+  ---
+  duration_ms: 242.7987
+  type: 'test'
+  ...
+# Subtest: adapter metadata does not require fake Ollama credentials
+ok 27 - adapter metadata does not require fake Ollama credentials
+  ---
+  duration_ms: 0.4507
+  type: 'test'
+  ...
+# Subtest: nested OpenRouter provider errors expose the actionable upstream message
+ok 28 - nested OpenRouter provider errors expose the actionable upstream message
+  ---
+  duration_ms: 16.8852
+  type: 'test'
+  ...
+# Subtest: provider usage normalizes cached and included reasoning tokens without double counting
+ok 29 - provider usage normalizes cached and included reasoning tokens without double counting
+  ---
+  duration_ms: 38.2903
+  type: 'test'
+  ...
+# Subtest: structured parsing locally repairs raw string newlines and trailing commas
+ok 30 - structured parsing locally repairs raw string newlines and trailing commas
+  ---
+  duration_ms: 12.0915
+  type: 'test'
+  ...
+# Subtest: an incomplete JSON envelope is treated as truncation and gets the bounded compact retry
+ok 31 - an incomplete JSON envelope is treated as truncation and gets the bounded compact retry
+  ---
+  duration_ms: 15.8948
+  type: 'test'
+  ...
+# Subtest: physical request ledger records transport and structured repair calls separately
+ok 32 - physical request ledger records transport and structured repair calls separately
+  ---
+  duration_ms: 50.6342
+  type: 'test'
+  ...
+# Subtest: flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+ok 33 - flush diagnostics bound metadata, retain stage correlation, and observe a late commit without authorizing work
+  ---
+  duration_ms: 8.3946
+  type: 'test'
+  ...
+# Subtest: untrusted IDs and error codes cannot become diagnostic content
+ok 34 - untrusted IDs and error codes cannot become diagnostic content
+  ---
+  duration_ms: 0.9307
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"deadline","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# (node:19160) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:19160) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# {"event":"document.flush","requestId":"deadline","outcome":"unknown","elapsedMs":28,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":2,"durationMs":25},{"stage":"delivery","startedMs":27}],"snapshots":[{"revision":3,"elapsedMs":21,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":5},{"stage":"canonical-queue","startedMs":5,"durationMs":1}]}]}
+# {"event":"document.flush","requestId":"deadline","outcome":"late_commit","elapsedMs":29,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":2,"durationMs":25},{"stage":"delivery","startedMs":27,"durationMs":1}],"snapshots":[{"revision":3,"elapsedMs":23,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":5},{"stage":"canonical-queue","startedMs":5,"durationMs":1}]}]}
+# Subtest: an indefinitely queued canonical commit ends the flush wait without releasing the write queue or acknowledging late
+ok 35 - an indefinitely queued canonical commit ends the flush wait without releasing the write queue or acknowledging late
+  ---
+  duration_ms: 121.4003
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"build-save","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 36 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1276.7013
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"build-save","outcome":"acknowledged","elapsedMs":25,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":25},{"stage":"delivery","startedMs":25,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":21,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":3},{"stage":"canonical-queue","startedMs":3,"durationMs":0}]}]}
+# {"event":"document.flush","requestId":"saved","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"saved","outcome":"acknowledged","elapsedMs":10,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":10},{"stage":"delivery","startedMs":10,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":6,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":4},{"stage":"canonical-queue","startedMs":4,"durationMs":0}]}]}
+# Subtest: flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+ok 37 - flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+  ---
+  duration_ms: 107.2337
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"deleted","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"deleted","outcome":"acknowledged","elapsedMs":10,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":10},{"stage":"delivery","startedMs":10,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":5,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":3},{"stage":"canonical-queue","startedMs":3,"durationMs":1}]}]}
+# Subtest: a delayed journal failure cannot mark a successfully committed document unsynced
+ok 38 - a delayed journal failure cannot mark a successfully committed document unsynced
+  ---
+  duration_ms: 101.1518
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"failed","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"failed","outcome":"failed","elapsedMs":9,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":9},{"stage":"delivery","startedMs":9,"durationMs":0}],"snapshots":[{"revision":4,"elapsedMs":4,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":4},{"stage":"canonical-queue","startedMs":4,"durationMs":0}]}]}
+# {"event":"document.flush","requestId":"after-burst","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# Subtest: flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+ok 39 - flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+  ---
+  duration_ms: 127.9136
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"after-burst","outcome":"acknowledged","elapsedMs":7,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":5},{"stage":"delivery","startedMs":5,"durationMs":2},{"stage":"delivery-authority","startedMs":6,"durationMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"after-burst","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=false
+ok 40 - outbound receipt bursts use bounded fresh authorization batches; revoked=false
+  ---
+  duration_ms: 520.264
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"after-burst","outcome":"closed","elapsedMs":7,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":6},{"stage":"delivery","startedMs":6,"durationMs":1}],"snapshots":[]}
+# {"event":"document.flush","requestId":"after-burst","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=true
+ok 41 - outbound receipt bursts use bounded fresh authorization batches; revoked=true
+  ---
+  duration_ms: 602.5301
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"after-burst","outcome":"closed","elapsedMs":28,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":26},{"stage":"delivery","startedMs":26,"durationMs":2}],"snapshots":[]}
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=later
+ok 42 - outbound receipt bursts use bounded fresh authorization batches; revoked=later
+  ---
+  duration_ms: 1088.065
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"8788b54a-7a08-4a0a-8863-cbd30ddd5cb3","correlationId":"30169a84-9b74-4ad5-8d3b-f971358ef363"}
+# {"event":"document.flush","requestId":"burst","connectionId":"8788b54a-7a08-4a0a-8863-cbd30ddd5cb3","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"burst","connectionId":"8788b54a-7a08-4a0a-8863-cbd30ddd5cb3","outcome":"acknowledged","elapsedMs":656,"stages":[{"stage":"ingress-queue","startedMs":0,"durationMs":562},{"stage":"ingress-membership","startedMs":562,"durationMs":0},{"stage":"ingress-coordinator","startedMs":562,"durationMs":0},{"stage":"save-wait","startedMs":627,"durationMs":28},{"stage":"delivery","startedMs":655,"durationMs":1},{"stage":"delivery-authority","startedMs":655,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":17,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":12},{"stage":"canonical-queue","startedMs":12,"durationMs":1}]}]}
+# {"event":"collaboration.disconnected","connectionId":"8788b54a-7a08-4a0a-8863-cbd30ddd5cb3","code":4403}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+ok 43 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 923.9269
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 44 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 7517.9973
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"covering-request","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"covering-request","outcome":"acknowledged","elapsedMs":15,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":15},{"stage":"delivery","startedMs":15,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":74,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":4},{"stage":"canonical-queue","startedMs":4,"durationMs":1}]}]}
+# {"event":"document.flush","requestId":"deleted-request","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# Subtest: flush joins a covering in-flight commit instead of adding a second slow canonical HTTP operation
+ok 45 - flush joins a covering in-flight commit instead of adding a second slow canonical HTTP operation
+  ---
+  duration_ms: 214.471
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"deleted-request","outcome":"acknowledged","elapsedMs":42,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":42},{"stage":"delivery","startedMs":42,"durationMs":0}],"snapshots":[{"revision":4,"elapsedMs":31,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":5},{"stage":"canonical-queue","startedMs":5,"durationMs":0}]}]}
+# {"event":"document.flush","requestId":"cached-receipt","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"cached-receipt","outcome":"closed","elapsedMs":11,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":11},{"stage":"delivery","startedMs":11,"durationMs":0}],"snapshots":[]}
+# Subtest: a confirmed insertion receipt cannot satisfy a later deletion-only flush
+ok 46 - a confirmed insertion receipt cannot satisfy a later deletion-only flush
+  ---
+  duration_ms: 199.6342
+  type: 'test'
+  ...
+# Subtest: a covering confirmed receipt needs no further write, but fresh outbound authority still applies
+ok 47 - a covering confirmed receipt needs no further write, but fresh outbound authority still applies
+  ---
+  duration_ms: 156.7192
+  type: 'test'
+  ...
+# {"event":"document.flush","requestId":"expired-older","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"expired-older","outcome":"unknown","elapsedMs":8,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":8},{"stage":"delivery","startedMs":8}],"snapshots":[{"revision":3,"elapsedMs":38,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":5},{"stage":"canonical-queue","startedMs":5,"durationMs":0}]}]}
+# {"event":"document.flush","requestId":"expired-older","outcome":"late_commit","elapsedMs":8,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":8},{"stage":"delivery","startedMs":8,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":38,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":5},{"stage":"canonical-queue","startedMs":5,"durationMs":0}]}]}
+# {"event":"document.flush","requestId":"lost-owner","outcome":"received","elapsedMs":0,"stages":[{"stage":"ingress-queue","startedMs":0}],"snapshots":[]}
+# {"event":"document.flush","requestId":"lost-owner","outcome":"failed","elapsedMs":8,"stages":[{"stage":"ingress-queue","startedMs":0},{"stage":"save-wait","startedMs":0,"durationMs":8},{"stage":"delivery","startedMs":8,"durationMs":0}],"snapshots":[{"revision":3,"elapsedMs":19,"stages":[{"stage":"snapshot-prepare","startedMs":0,"durationMs":7},{"stage":"canonical-queue","startedMs":7,"durationMs":11}]}]}
+# Subtest: an expired flush awaiting an older snapshot never queues its own write after the late commit
+ok 48 - an expired flush awaiting an older snapshot never queues its own write after the late commit
+  ---
+  duration_ms: 170.0596
+  type: 'test'
+  ...
+# Subtest: ownership loss during a joined save prevents the confirmed receipt from acknowledging the old coordinator
+ok 49 - ownership loss during a joined save prevents the confirmed receipt from acknowledging the old coordinator
+  ---
+  duration_ms: 165.3703
+  type: 'test'
+  ...
+# Subtest: real SDK snapshot diagnostics distinguish artifact preparation and remote commit with safe HTTP/SQL metadata
+ok 50 - real SDK snapshot diagnostics distinguish artifact preparation and remote commit with safe HTTP/SQL metadata
+  ---
+  duration_ms: 247.087
+  type: 'test'
+  ...
+# (node:20560) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: save rejection is reported, keeps an uncertain request ID, and never submits
+ok 51 - save rejection is reported, keeps an uncertain request ID, and never submits
+  ---
+  duration_ms: 1.6747
+  type: 'test'
+  ...
+# Subtest: owner retries a confirmed failure on the next click and captures only their own edits
+ok 52 - owner retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 451.8545
+  type: 'test'
+  ...
+# Subtest: invited editor retries a confirmed failure on the next click and captures only their own edits
+ok 53 - invited editor retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 313.7094
+  type: 'test'
+  ...
+# Subtest: a lost successful reply replays the original receipt without inference or consuming newer edits
+ok 54 - a lost successful reply replays the original receipt without inference or consuming newer edits
+  ---
+  duration_ms: 171.7512
+  type: 'test'
+  ...
+# Subtest: recovery stops after one fresh attempt and retains its identity on another uncertain failure
+ok 55 - recovery stops after one fresh attempt and retains its identity on another uncertain failure
+  ---
+  duration_ms: 0.6901
+  type: 'test'
+  ...
+# Subtest: a failed response is shown as failure and does not automatically submit again
+ok 56 - a failed response is shown as failure and does not automatically submit again
+  ---
+  duration_ms: 0.4115
+  type: 'test'
+  ...
+# (node:3168) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+ok 57 - physical usage deduplicates dispatch/reconcile and keeps setup and unknown calls visible
+  ---
+  duration_ms: 1.2384
+  type: 'test'
+  ...
+# Subtest: SQLite accounting restores more than the recent 500 calls without double counting
+ok 58 - SQLite accounting restores more than the recent 500 calls without double counting
+  ---
+  duration_ms: 2020.0445
+  type: 'test'
+  ...
+# Subtest: optional token fields remain optional and replay cannot replace a newer final usage record
+ok 59 - optional token fields remain optional and replay cannot replace a newer final usage record
+  ---
+  duration_ms: 51.5644
+  type: 'test'
+  ...
+1..59
+# tests 59
+# suites 0
+# pass 59
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 29069.5151

@@ -1,4 +1,5 @@
 import { productEnvironment } from '../shared/product-environment.js';
+import type {SaveTrace} from './save-diagnostics.js';
 import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -158,11 +159,18 @@ export class SupabasePlatform {
     const {data,error}=await this.admin.from('projects').select('title').eq('id',projectId).single();fail('Project lookup failed',error);return String(data!.title);
   }
 
-  async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>) {
+  async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>,progress?:SaveTrace) {
     const update=typeof payload.update==='string'?payload.update:'';
-    const harness=await this.publishSnapshotArtifacts(projectId,payload);delete harness.update;
+    progress?.start('artifact-prepare');
+    let harness:Awaited<ReturnType<SupabasePlatform['publishSnapshotArtifacts']>>;
+    try{harness=await this.publishSnapshotArtifacts(projectId,payload);progress?.end('artifact-prepare')}
+    catch(error){progress?.end('artifact-prepare',error);throw error}
+    delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
-    const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
+    progress?.start('remote-commit');
+    const result=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});
+    const {data,error}=result;progress?.end('remote-commit',error,result.status);
+    this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
     // Project timestamp is committed in the same fenced transaction.
     return {contentHash,artifactManifest:harness.artifactManifest};
   }

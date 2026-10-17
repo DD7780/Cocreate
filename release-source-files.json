@@ -47,6 +47,7 @@
   "server/requirements.ts",
   "server/room-state.ts",
   "server/rooms.ts",
+  "server/save-diagnostics.ts",
   "server/steering-edits.ts",
   "server/steering-text.ts",
   "server/supabase-platform.ts",

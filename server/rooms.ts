@@ -1,4 +1,5 @@
 import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
+import {SaveTrace} from './save-diagnostics.js';
 import {buildProgressFor} from "./build-progress.js";
 import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
 import {assertVerificationBrowserAvailable} from "./isolation/browser.js";
@@ -623,19 +624,20 @@ export class RoomManager {
     this.eventStore.recoverWorkflow(id);
     return room;
 }
-  save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system'): boolean | Promise<boolean> {
+  save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system', trace?:SaveTrace): boolean | Promise<boolean> {
     this.assertOwned(room);
     if (room.intentCommit && eventType !== 'intent.command_recorded')
         return room.intentCommit.done.then(() => {
             try {
-                return this.save(room, eventType, actorId, actorType);
+                return this.save(room, eventType, actorId, actorType, trace);
             }
             catch {
                 return false;
             }
         });
     if (room.pendingPromotion && eventType !== 'product.promoted')
-        return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType));
+        return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType, trace));
+    const progress=new SaveTrace({revision:room.persistRevision+1});trace?.attach(progress);progress.start('snapshot-prepare');
     room.commandReceipts ||= {};
     for (const item of room.submissions)
         room.commandReceipts[JSON.stringify([item.participantId, item.requestId])] = {
@@ -656,13 +658,18 @@ export class RoomManager {
     };
     const revision = room.persistRevision, savedAt = room.savedAt, documentSequence = room.documentSequence || 0, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
     this.eventStore.saveWorkspaceSnapshot(room.id, payload, eventType, actorId, actorType);
+    const committedDocument={revision,savedAt,documentSequence,vector:Buffer.from(vector,'base64'),deletions};
     if (this.config.durableStore) {
         const snapshot = structuredClone({
             ...payload, artifactBodies: captured.artifactBodies, harnessProjection: this.eventStore.exportHarness(room.id)
         }), prior = room.persistQueue || Promise.resolve();
+        progress.end('snapshot-prepare');progress.start('canonical-queue');
+        let write:NonNullable<Room['snapshotWrite']>;
         const saving = prior.catch(() => {
-        }).then(() => this.config.durableStore!.saveSnapshot(room.id, revision, snapshot)).then(result => {
+        }).then(() => {progress.end('canonical-queue');return this.config.durableStore!.saveSnapshot(room.id, revision, snapshot, progress)}).then(result => {
             room.persistedDocumentSequence = documentSequence;
+            room.committedDocument=committedDocument;
+            progress.committed();
             room.artifactHistory = captured.artifactHistory;
             const manifest = (result as {
                 artifactManifest?: ArtifactReference[];
@@ -680,7 +687,8 @@ export class RoomManager {
                     type: 'save-error', revision, message: error instanceof Error ? error.message : 'Remote persistence failed.'
                 });
             return false;
-        });
+        }).finally(()=>{write.pending=false});
+        write={progress,pending:true,promise:saving};room.snapshotWrite=write;
         room.persistQueue = saving;
         return saving;
     }
@@ -704,6 +712,7 @@ export class RoomManager {
         fs.copyFileSync(temp, target);
         fs.unlinkSync(temp);
     }
+    progress.end('snapshot-prepare');room.committedDocument=committedDocument;
     for (const client of room.clients)
         this.sendJson(client, {
             type: 'saved', revision, savedAt, vector, deletions
@@ -769,7 +778,7 @@ export class RoomManager {
     this.save(room);
     this.broadcastState(room);
   }
-  handleMessage(room: Room, ws: ClientSocket, data: Buffer, isBinary: boolean) {
+  handleMessage(room: Room, ws: ClientSocket, data: Buffer, isBinary: boolean, trace?:SaveTrace) {
     try {
       this.assertOwned(room);
     } catch {
@@ -789,7 +798,7 @@ export class RoomManager {
         if (msg.type === "awareness-client" && Number.isInteger(msg.clientId))
           ws.awarenessClientId = msg.clientId;
         if (msg.type === "flush" && typeof msg.requestId === "string")
-          void this.flushDocument(room, ws, msg.requestId);
+          void this.flushDocument(room, ws, msg.requestId, trace);
       } catch {}
       return;
     }
@@ -857,54 +866,88 @@ export class RoomManager {
     }
     if (record.before || record.after) this.queueEdit(room, p, record);
   }
-  private async flushDocument(room: Room, ws: ClientSocket, requestId: string) {
+  private async flushDocument(room: Room, ws: ClientSocket, requestId: string, trace=new SaveTrace({requestId})) {
     let timer: ReturnType<typeof setTimeout> | undefined;
+    let expired=false;
     try {
       clearTimeout(room.saveTimer);
       room.documentSaveRequested = false;
-      // This full snapshot commits the document and attributed edits; the recovery journal is independent.
+      trace.start('save-wait');
+      const target={vector:Y.decodeStateVector(Y.encodeStateVector(room.doc)),deletions:deletionSignature(room.doc),sequence:room.documentSequence||0};
+      const persist=async()=>{
+        this.assertOwned(room);
+        if(room.intentCommit)await room.intentCommit.done;
+        if(room.pendingPromotion)await room.persistQueue;
+        this.assertOwned(room);
+        if(expired)return false;
+        const pending=room.snapshotWrite;
+        if(pending?.pending){
+          trace.attach(pending.progress);
+          if(!await pending.promise)return false;
+          this.assertOwned(room);
+        }
+        if(expired)return false;
+        const receipt=room.committedDocument;
+        if(receipt&&receipt.documentSequence>=target.sequence&&receipt.deletions===target.deletions){
+          const saved=Y.decodeStateVector(receipt.vector);
+          if([...target.vector].every(([id,clock])=>(saved.get(id)||0)>=clock)){
+            this.sendJson(ws,{type:'saved',revision:receipt.revision,savedAt:receipt.savedAt,vector:Buffer.from(receipt.vector).toString('base64'),deletions:receipt.deletions});
+            return true;
+          }
+        }
+        return this.save(room,'workspace.snapshot_recorded','system','system',trace);
+      };
+      // Reuse only a confirmed covering receipt; the recovery journal is independent.
       const confirmed = await Promise.race([
-        this.save(room),
+        persist(),
         new Promise<never>((_, reject) => {
-          timer = setTimeout(() => reject(new Error("Save acknowledgement timed out; the remote save outcome is unknown. No build was started. Your edits remain on this page; check the connection and try again.")), DOCUMENT_SAVE_TIMEOUT_MS);
+          timer = setTimeout(() => {expired=true;reject(new Error("Save acknowledgement timed out; the remote save outcome is unknown. No build was started. Your edits remain on this page; check the connection and try again."))}, DOCUMENT_SAVE_TIMEOUT_MS);
         }),
       ]);
       if (confirmed === false)
         throw new Error("The document save was not confirmed. No build was started. Your edits remain on this page; check the connection and try again.");
-      this.sendJson(ws, { type: "flushed", requestId });
+      this.assertOwned(room);
+      trace.end('save-wait');trace.start('delivery');
+      await this.sendJson(ws, { type: "flushed", requestId },trace);
+      trace.end('delivery');trace.finish(ws.readyState===1?'acknowledged':'closed');
     } catch (error) {
-      this.sendJson(ws, {
+      trace.end('save-wait');trace.start('delivery');
+      if(expired)trace.finish('unknown');
+      await this.sendJson(ws, {
         type: "flush-error",
         requestId,
         message:
           error instanceof Error
             ? error.message
             : "Document persistence failed. No build started.",
-      });
+      },trace);
+      trace.end('delivery');trace.finish(expired?'unknown':'failed');
     } finally {
       clearTimeout(timer);
     }
   }
-  private sendPacket(ws: ClientSocket, data: string | Buffer) {
+  private sendPacket(ws: ClientSocket, data: string | Buffer, trace?:SaveTrace) {
     if (ws.readyState !== 1) return;
     if (!ws.authorizeRead) {
       ws.send(data);
       return;
     }
     if (ws.deliveryBatch && ws.deliveryBatch.length < collaborationBatchSize) {
-      ws.deliveryBatch.push(data);
-      return;
+      ws.deliveryBatch.push({data,trace});
+      return ws.deliveryQueue;
     }
-    const batch = [data];
+    const batch = [{data,trace}];
     ws.deliveryBatch = batch;
     ws.deliveryQueue = (ws.deliveryQueue || Promise.resolve())
       .then(async () => {
         if (ws.deliveryBatch === batch) ws.deliveryBatch = undefined;
         if (ws.readyState !== 1) return;
-        await ws.authorizeRead!();
+        const traces=[...new Set(batch.flatMap(packet=>packet.trace?[packet.trace]:[]))];
+        for(const trace of traces)trace.start('delivery-authority');
+        try{await ws.authorizeRead!()}finally{for(const trace of traces)trace.end('delivery-authority')}
         for (const packet of batch) {
           if (ws.readyState !== 1) return;
-          ws.send(packet);
+          ws.send(packet.data);
         }
       })
       .catch((error) => {
@@ -915,6 +958,7 @@ export class RoomManager {
             : "Project access changed",
         );
       });
+    return ws.deliveryQueue;
   }
   private sendSync(ws: ClientSocket, room: Room) {
     this.sendPacket(
@@ -945,8 +989,8 @@ export class RoomManager {
     for (const c of room.clients)
       if (c !== except && c.readyState === 1) this.sendPacket(c, data);
   }
-  private sendJson(ws: ClientSocket, data: unknown) {
-    this.sendPacket(ws, JSON.stringify(data));
+  private sendJson(ws: ClientSocket, data: unknown, trace?:SaveTrace) {
+    return this.sendPacket(ws, JSON.stringify(data),trace);
   }
   private broadcastState(room: Room) {
     const state = this.view(room);
