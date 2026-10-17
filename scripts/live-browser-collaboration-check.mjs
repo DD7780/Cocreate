@@ -3,15 +3,15 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const origin=(process.env.COCREATE_LIVE_ORIGIN||'').replace(/\/$/,'');
-if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');
+const origin=((process.env.TWOGUYS1CANVAS_LIVE_ORIGIN ?? process.env.COCREATE_LIVE_ORIGIN)||'').replace(/\/$/,'');
+if(!origin)throw new Error('Set TWOGUYS1CANVAS_LIVE_ORIGIN to the deployed 2guys1canvas origin.');
 const chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const json=async(pathname,body)=>{const response=await fetch(`${origin}${pathname}`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(body)});const value=await response.json();if(!response.ok)throw new Error(`${pathname} returned ${response.status}`);return value};
 const created=await json('/api/rooms',{}),roomId=created.roomId;
 const ram=await json('/api/session',{roomId,name:'Live Browser Ram'}),sham=await json('/api/session',{roomId,name:'Live Browser Sham'});
 
 async function browser(label,token,port){
-  const profile=path.join(os.tmpdir(),`cocreate-live-${label}-${process.pid}-${Date.now()}`);fs.mkdirSync(profile,{recursive:true});
+  const profile=path.join(os.tmpdir(),`2guys1canvas-live-${label}-${process.pid}-${Date.now()}`);fs.mkdirSync(profile,{recursive:true});
   const processHandle=spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu','--disable-gpu-sandbox','--disable-gpu-compositing','--disable-software-rasterizer','--disable-features=Vulkan','--no-first-run','--no-default-browser-check',`--remote-debugging-port=${port}`,`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
   try{
   let target;
@@ -22,9 +22,9 @@ async function browser(label,token,port){
   const call=(method,params={})=>new Promise((resolve,reject)=>{const callId=++id,timer=setTimeout(()=>{pending.delete(callId);reject(new Error(`${label} ${method} timed out.`))},45_000);pending.set(callId,{resolve:value=>{clearTimeout(timer);resolve(value)},reject});socket.send(JSON.stringify({id:callId,method,params}))});
   const evaluate=async expression=>(await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
   await call('Page.enable');await call('Runtime.enable');await call('Network.enable');
-  await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__cocreateTestSockets=[];globalThis.__blockCocreateTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockCocreateTestSocket?'ws://127.0.0.1:9':args[0],args[1]);globalThis.__cocreateTestSockets.push(socket);return socket}})}`});
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__twoGuysOneCanvasTestSockets=[];globalThis.__blockTwoGuysOneCanvasTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockTwoGuysOneCanvasTestSocket?'ws://127.0.0.1:9':args[0],args[1]);globalThis.__twoGuysOneCanvasTestSockets.push(socket);return socket}})}`});
   await call('Page.navigate',{url:origin});await new Promise(resolve=>setTimeout(resolve,350));
-  await evaluate(`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(token)});localStorage.setItem('cocreate-name',${JSON.stringify(label)})`);await call('Page.navigate',{url:`${origin}/r/${roomId}`});
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${roomId}',${JSON.stringify(token)});localStorage.setItem('2guys1canvas-name',${JSON.stringify(label)})`);await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   return{processHandle,socket,call,evaluate,close(){socket.close();processHandle.kill()}};
   }catch(error){processHandle.kill();throw error}
 }
@@ -38,13 +38,13 @@ try{
   await type(first,'Ram live edit. ');await waitFor('Ram to Sham sync',async()=>String(await second.evaluate(`document.querySelector('.document-editor')?.innerText||''`)).includes('Ram live edit.'));
   await type(second,'Sham live edit. ');await waitFor('Sham to Ram sync',async()=>String(await first.evaluate(`document.querySelector('.document-editor')?.innerText||''`)).includes('Sham live edit.'));
   const usageBefore=(await fetch(`${origin}/api/rooms/${roomId}/state`,{headers:{Authorization:`Bearer ${ram.token}`}}).then(response=>response.json())).usage.requests;
-  const tracked=await first.evaluate(`({count:globalThis.__cocreateTestSockets?.length||0,states:(globalThis.__cocreateTestSockets||[]).map(socket=>socket.readyState)})`);
+  const tracked=await first.evaluate(`({count:globalThis.__twoGuysOneCanvasTestSockets?.length||0,states:(globalThis.__twoGuysOneCanvasTestSockets||[]).map(socket=>socket.readyState)})`);
   if(!tracked.count||!tracked.states.includes(1))throw new Error(`Test harness did not capture the active WebSocket: ${JSON.stringify(tracked)}`);
-  await first.evaluate(`globalThis.__blockCocreateTestSocket=true;globalThis.__cocreateTestSockets.findLast(socket=>socket.readyState===1)?.close()`);
+  await first.evaluate(`globalThis.__blockTwoGuysOneCanvasTestSocket=true;globalThis.__twoGuysOneCanvasTestSockets.findLast(socket=>socket.readyState===1)?.close()`);
   await waitFor('disconnect state',async()=>String(await first.evaluate(`document.body.innerText`)).includes('Live collaboration disconnected'));
   await type(first,'Ram offline edit. ');await first.evaluate(`(()=>{const editor=document.querySelector('.document-editor');return editor.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   await waitFor('disconnected build block',async()=>String(await first.evaluate(`document.body.innerText`)).includes('Your in-memory edits are retained'));
-  await first.evaluate(`globalThis.__blockCocreateTestSocket=false`);
+  await first.evaluate(`globalThis.__blockTwoGuysOneCanvasTestSocket=false`);
   await waitFor('Ram reconnect',async()=>!(await first.evaluate(`!!document.querySelector('.connection-banner')`)),30_000);
   await waitFor('offline edit recovery',async()=>String(await second.evaluate(`document.querySelector('.document-editor')?.innerText||''`)).includes('Ram offline edit.'),30_000);
   const usageAfter=(await fetch(`${origin}/api/rooms/${roomId}/state`,{headers:{Authorization:`Bearer ${ram.token}`}}).then(response=>response.json())).usage.requests;

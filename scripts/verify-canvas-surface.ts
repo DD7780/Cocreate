@@ -7,15 +7,15 @@ import WebSocket from 'ws';
 // Local, controlled-mode browser checks for the Canvas writing surface. AI stays disconnected,
 // so any submission attempt is refused client-side and no provider call can occur.
 process.env.NODE_ENV = 'production';
-process.env.COCREATE_AUTH_MODE = 'local';
-const { createCoCreateServer } = await import('../server/index.js');
+process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
 const output = path.resolve('artifacts/canvas-writing-surface');
 const runtime = path.resolve(`output/canvas-surface-${process.pid}`);
 fs.mkdirSync(output, { recursive: true });
 fs.mkdirSync(runtime, { recursive: true });
 const secret = 'local-canvas-surface-fixture';
-const service = await createCoCreateServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });
+const service = await createTwoGuysOneCanvasServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });
 const room = service.manager.create('canvas-surface-fixture');
 for (const [id, name] of [['alice', 'Alice'], ['bob', 'Bob']]) service.manager.join(room, id, name);
 await service.manager.save(room);
@@ -92,7 +92,7 @@ try {
     await resize(1440);
     await client.call('Page.navigate', { url });
     await until(async () => await evaluate('location.origin') === url, 'origin');
-    await evaluate(`localStorage.setItem('cocreate-session-${room.id}', ${JSON.stringify(createSession(secret, { roomId: room.id, participantId, name: participantId, role: participantId === 'alice' ? 'owner' : 'editor' }))})`);
+    await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}', ${JSON.stringify(createSession(secret, { roomId: room.id, participantId, name: participantId, role: participantId === 'alice' ? 'owner' : 'editor' }))})`);
     await client.call('Page.navigate', { url: `${url}/r/${room.id}` });
     try { await until(async () => await evaluate(`!!document.querySelector('.document-editor > p') && !document.querySelector('.connection-banner')`), `${participantId} canvas mount`); }
     catch (error) { throw new Error(`${String(error)}: ${await evaluate(`location.href + ' | ' + document.body.innerText.slice(0, 600) + ' | ' + (document.querySelector('.document-editor')?.outerHTML.slice(0, 300) ?? 'no editor')`)}`); }

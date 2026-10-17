@@ -6,9 +6,9 @@ const spawn = childProcess.spawn;
 Object.defineProperty(childProcess, 'spawn', {value: (file: string, input: readonly string[] | SpawnOptions = [], options?: SpawnOptions) => {
   const args: readonly string[] = Array.isArray(input) ? input : [];
   const settings = Array.isArray(input) ? options : input as SpawnOptions;
-  const child = spawn(file, file === '/usr/local/bin/cocreate-job-launcher' ? ['/usr/bin/strace', '-f', '-qq', '-yy',
+  const child = spawn(file, file === '/usr/local/bin/twoguysonecanvas-job-launcher' ? ['/usr/bin/strace', '-f', '-qq', '-yy',
     '-e', 'trace=ftruncate,truncate', '-e', 'signal=SIGXFSZ', ...args] : args, settings ?? {});
-  if (file === '/usr/local/bin/cocreate-job-launcher') {
+  if (file === '/usr/local/bin/twoguysonecanvas-job-launcher') {
     let bytes = 0;
     child.stderr?.on('data', chunk => {
       bytes += Buffer.byteLength(chunk);

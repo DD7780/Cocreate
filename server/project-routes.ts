@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import { artifactResponse } from './artifacts.js';
 import type express from 'express';
 import { coordinatorResponse } from './coordinator-response.js';
@@ -11,7 +12,7 @@ const bearer=(req:express.Request)=>req.headers.authorization?.replace(/^Bearer\
 const message=(error:unknown)=>error instanceof Error?error.message:String(error);
 const status=(error:unknown)=>Number((error as {status?:number})?.status)||400;
 const displayName=(user:{email?:string;user_metadata?:Record<string,unknown>})=>String(user.user_metadata?.full_name||user.user_metadata?.name||user.email?.split('@')[0]||'Collaborator').slice(0,40);
-const appOrigin=()=>String(process.env.COCREATE_PUBLIC_ORIGIN||process.env.COCREATE_APP_ORIGINS||'http://localhost:5173').split(',').map(value=>value.trim()).find(Boolean)||'http://localhost:5173';
+const appOrigin=()=>String(productEnvironment(process.env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN')||productEnvironment(process.env, 'TWOGUYS1CANVAS_APP_ORIGINS')||'http://localhost:5173').split(',').map(value=>value.trim()).find(Boolean)||'http://localhost:5173';
 const requestKey=(value:unknown)=>{const key=value===undefined?randomUUID():String(value);if(key.length<8||key.length>100||!/^[A-Za-z0-9_-]+$/.test(key))throw Object.assign(new Error('A valid invitation request ID is required.'),{status:400});return key};
 const recipientKey=(key:string,email:string)=>createHash('sha256').update(`${key}\0${email}`).digest('hex');
 

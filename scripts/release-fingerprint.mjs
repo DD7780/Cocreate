@@ -15,7 +15,7 @@ if (process.argv.includes('--write-config')) {
 const files = JSON.parse(fs.readFileSync(manifest, 'utf8'));
 if (!Array.isArray(files) || files.some(file => typeof file !== 'string' || path.isAbsolute(file) || file.includes('..') || file.includes('\\') || (!/^(server|src|shared|worker|public)\//.test(file) && !buildFiles.includes(file)))) throw new Error('Invalid release input manifest.');
 const config = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8'));
-const {COCREATE_RELEASE_FINGERPRINT: _ignored, ...vars} = config.vars;
+const {TWOGUYS1CANVAS_RELEASE_FINGERPRINT: _ignored, COCREATE_RELEASE_FINGERPRINT: _legacyIgnored, ...vars} = config.vars;
 const hash = createHash('sha256');
 for (const file of files.sort()) {
   const name = file.replaceAll('\\', '/');
@@ -27,15 +27,15 @@ for (const file of files.sort()) {
 hash.update(JSON.stringify({vars, image_vars: config.containers[0].image_vars}));
 const fingerprint = hash.digest('hex');
 if (process.argv.includes('--write-config')) {
-  config.vars.COCREATE_RELEASE_FINGERPRINT = fingerprint;
+  config.vars.TWOGUYS1CANVAS_RELEASE_FINGERPRINT = fingerprint;
   fs.writeFileSync('wrangler.jsonc', JSON.stringify(config, null, 2) + '\n');
-} else if (config.vars.COCREATE_RELEASE_FINGERPRINT !== fingerprint) {
+} else if ((config.vars.TWOGUYS1CANVAS_RELEASE_FINGERPRINT ?? config.vars.COCREATE_RELEASE_FINGERPRINT) !== fingerprint) {
   throw new Error('Release source fingerprint is stale; prepare it before publishing.');
 }
 if (process.argv.includes('--write-image')) {
   for (const [name, expected] of Object.entries(config.containers[0].image_vars)) {
-    if (process.env[name] !== expected) throw new Error(`Public image build variable differs from the prepared release: ${name}`);
+    if ((process.env[name] ?? process.env[name.replace('TWOGUYS1CANVAS_','COCREATE_')]) !== expected) throw new Error(`Public image build variable differs from the prepared release: ${name}`);
   }
-  fs.writeFileSync('/usr/local/share/cocreate-release.json', JSON.stringify({fingerprint}), {mode: 0o444});
+  fs.writeFileSync('/usr/local/share/2guys1canvas-release.json', JSON.stringify({fingerprint}), {mode: 0o444});
 }
 console.log(JSON.stringify({fingerprint, sourceFiles: files.length, scope: 'Source/build input attestation only; not runtime acceptance'}));

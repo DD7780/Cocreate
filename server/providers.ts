@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import { AsyncLocalStorage } from "node:async_hooks";
 import { randomUUID } from "node:crypto";
 import type {
@@ -129,7 +130,7 @@ const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
 export function validateProviderUrl(
   value: string,
   provider: AIProvider,
-  hosted = process.env.COCREATE_HOSTED === "true",
+  hosted = productEnvironment(process.env, 'TWOGUYS1CANVAS_HOSTED') === "true",
 ) {
   let url: URL;
   try {
@@ -565,7 +566,7 @@ const openAICompatible = (
         body.text = {
           format: {
             type: "json_schema",
-            name: "cocreate_output",
+            name: "two_guys_one_canvas_output",
             strict: true,
             schema: req.schema,
           },
@@ -608,7 +609,7 @@ const openAICompatible = (
       body.response_format = {
         type: "json_schema",
         json_schema: {
-          name: "cocreate_output",
+          name: "two_guys_one_canvas_output",
           strict: true,
           schema: req.schema,
         },

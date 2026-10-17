@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 export type InvitationEmail = {
   invitationId: string;
   recipientEmail: string;
@@ -71,7 +72,7 @@ export function transactionalEmailSenderFromEnv(
   request: typeof fetch = fetch,
 ): TransactionalEmailSender {
   const apiKey = env.RESEND_API_KEY?.trim(),
-    from = env.COCREATE_EMAIL_FROM || "";
+    from = productEnvironment(env, 'TWOGUYS1CANVAS_EMAIL_FROM') || "";
   return {
     configured: !!apiKey && validSender(from),
     from,
@@ -80,7 +81,7 @@ export function transactionalEmailSenderFromEnv(
         return {
           state: "configuration_required",
           error:
-            "Configure RESEND_API_KEY and a Resend-verified COCREATE_EMAIL_FROM.",
+            "Configure RESEND_API_KEY and a Resend-verified TWOGUYS1CANVAS_EMAIL_FROM.",
         };
       try {
         const response = await request("https://api.resend.com/emails", {
@@ -127,7 +128,7 @@ export function invitationEmailSenderFromEnv(
         return {
           state: "configuration_required",
           error:
-            "Invitation email is unavailable. Configure RESEND_API_KEY and COCREATE_EMAIL_FROM with an authorized sender on a domain verified in Resend.",
+            "Invitation email is unavailable. Configure RESEND_API_KEY and TWOGUYS1CANVAS_EMAIL_FROM with an authorized sender on a domain verified in Resend.",
         };
       },
     };

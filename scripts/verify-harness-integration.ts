@@ -11,10 +11,10 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
-process.env.COCREATE_AUTH_MODE = 'local';
-const { createCoCreateServer } = await import('../server/index.js');
+process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
-const output = path.resolve(process.env.COCREATE_INTEGRATION_OUTPUT || 'artifacts/multiuser-step10/browser');
+const output = path.resolve((process.env.TWOGUYS1CANVAS_INTEGRATION_OUTPUT ?? process.env.COCREATE_INTEGRATION_OUTPUT) || 'artifacts/multiuser-step10/browser');
 fs.mkdirSync(output, { recursive: true });
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 async function until(check: () => Promise<boolean>, label: string) {
@@ -46,7 +46,7 @@ const fake = http.createServer(async (request, response) => {
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const address = fake.address(); assert.ok(address && typeof address !== 'string');
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(),'step10-browser-'));
-let service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+let service = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
 let room = service.manager.create(`progress-${crypto.randomUUID()}`);
 for (const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']]) service.manager.join(room,id,name);
 const connection = await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${address.port}`,apiFormat:'responses',apiKey:'synthetic'});
@@ -87,7 +87,7 @@ async function open(id:string,index:number): Promise<Browser> {
   await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__sockets=[];const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){super(...args);window.__sockets.push(this)}};window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/submit'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin}); await wait(200);
-  await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(session(id))})`);
   await call('Page.navigate',{url:`${origin}/r/${room.id}`});
   await until(()=>evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')"),'workspace connection');
   return browser;
@@ -110,7 +110,7 @@ const request = async (id:string, route:string, body:unknown) => {
   return {status:response.status, body:await response.json()};
 };
 const connected = (browser:Browser) => browser.evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')");
-const states = () => Promise.all(browsers.map(browser => browser.evaluate(`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,budget:state.workflowBudget,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`)));
+const states = () => Promise.all(browsers.map(browser => browser.evaluate(`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,budget:state.workflowBudget,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`)));
 const checkpoints: Array<Record<string,unknown>> = [];
 const replacementDirs:string[]=[];
 let artifactFixture:Awaited<ReturnType<typeof createArtifactFixture>>|undefined;
@@ -201,7 +201,7 @@ try {
   try{previousLease=leaseReader.prepare('SELECT owner_id,epoch FROM coordinator_leases WHERE workspace_id=?').get(room.id) as typeof previousLease;}finally{leaseReader.close();}
   const roomId=room.id;
   await service.stop();
-  service=await createCoCreateServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+  service=await createTwoGuysOneCanvasServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
   room=service.manager.get(roomId)!;assert.ok(room);await service.start();
   assert.ok(room.coordinatorEpoch>previousLease.epoch);
   const stale=new EventStore(dataDir);
@@ -219,7 +219,7 @@ try {
   try{assert.throws(()=>competing.claimCoordinator(room.id,'step10-competitor'),/Another coordinator/);}finally{competing.close();}
   await service.stop();
   const replacementDir=fs.mkdtempSync(path.join(os.tmpdir(),'step10-replacement-'));replacementDirs.push(replacementDir);
-  service=await createCoCreateServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir:replacementDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+  service=await createTwoGuysOneCanvasServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir:replacementDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
   assert.equal(service.manager.eventStore.hasWorkspace(room.id),false);
   room=service.manager.hydrate(room.id,await platform.loadSnapshot(room.id));await service.start();
   assert.equal(room.recoveryCheckpoint?.fingerprint,'step10-restoration');
@@ -227,7 +227,7 @@ try {
   await Promise.all(browsers.map(browser=>browser.call('Page.reload')));
   for(const browser of browsers)await until(()=>connected(browser),'replacement reconnect');
   const restored=await states();for(const state of restored)assert.deepEqual(state,beforeRestore[0]);
-  const downloaded=await a.evaluate(`fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`);
+  const downloaded=await a.evaluate(`fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`);
   assert.equal(downloaded.status,200);assert.deepEqual(downloaded.bytes,[80,75]);
   assert.equal((await request('alice','intent-commands',correction)).status,200);
   assert.equal((await request('bob','submit',replay)).status,200);

@@ -1,0 +1,2936 @@
+[
+  {
+    "file": ".env.example",
+    "line": 8,
+    "match": "COCREATE",
+    "context": "COCREATE_AUTH_MODE=supabase"
+  },
+  {
+    "file": ".env.example",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "COCREATE_MANAGED_OPENROUTER_KEY=replace-with-server-side-founder-key"
+  },
+  {
+    "file": ".env.example",
+    "line": 16,
+    "match": "cocreate",
+    "context": "SUPABASE_ARTIFACT_BUCKET=cocreate-artifacts"
+  },
+  {
+    "file": ".env.example",
+    "line": 24,
+    "match": "COCREATE",
+    "context": "COCREATE_APP_ORIGINS=http://localhost:5173,https://cocreate.susan981314271.workers.dev"
+  },
+  {
+    "file": ".env.example",
+    "line": 24,
+    "match": "cocreate",
+    "context": "COCREATE_APP_ORIGINS=http://localhost:5173,https://cocreate.susan981314271.workers.dev"
+  },
+  {
+    "file": ".env.example",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "COCREATE_PUBLIC_ORIGIN=https://cocreate.susan981314271.workers.dev"
+  },
+  {
+    "file": ".env.example",
+    "line": 26,
+    "match": "cocreate",
+    "context": "COCREATE_PUBLIC_ORIGIN=https://cocreate.susan981314271.workers.dev"
+  },
+  {
+    "file": ".env.example",
+    "line": 30,
+    "match": "COCREATE",
+    "context": "# COCREATE_EMAIL_FROM=2guys1canvas <beta@2guys1canvas.com>"
+  },
+  {
+    "file": ".env.example",
+    "line": 31,
+    "match": "COCREATE",
+    "context": "COCREATE_EMAIL_FROM="
+  },
+  {
+    "file": ".env.example",
+    "line": 32,
+    "match": "COCREATE",
+    "context": "VITE_COCREATE_AUTH_MODE=supabase"
+  },
+  {
+    "file": ".env.example",
+    "line": 34,
+    "match": "COCREATE",
+    "context": "VITE_COCREATE_APP_ORIGIN=http://localhost:5173"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 17,
+    "match": "cocreate",
+    "context": "POSTGRES_DB: cocreate_beta_test"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 21,
+    "match": "cocreate",
+    "context": "--health-cmd \"pg_isready -U postgres -d cocreate_beta_test\""
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 37,
+    "match": "COCREATE",
+    "context": "COCREATE_BETA_TEST_DATABASE_URL: postgresql://postgres:beta_test_only@127.0.0.1:5432/cocreate_beta_test"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 37,
+    "match": "cocreate",
+    "context": "COCREATE_BETA_TEST_DATABASE_URL: postgresql://postgres:beta_test_only@127.0.0.1:5432/cocreate_beta_test"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 46,
+    "match": "COCREATE",
+    "context": "const names = ['VITE_COCREATE_AUTH_MODE', 'VITE_COCREATE_APP_ORIGIN', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 46,
+    "match": "COCREATE",
+    "context": "const names = ['VITE_COCREATE_AUTH_MODE', 'VITE_COCREATE_APP_ORIGIN', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 47,
+    "match": "cocreate",
+    "context": "const args = ['build', '--tag', 'cocreate-check'];"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 59,
+    "match": "cocreate",
+    "context": "root=\"/sys/fs/cgroup/cocreate-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}\""
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 61,
+    "match": "COCREATE",
+    "context": "echo \"COCREATE_CI_CGROUP_ROOT=$root\" >> \"$GITHUB_ENV\""
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 79,
+    "match": "cocreate",
+    "context": "docker build --tag cocreate-file-diagnose - <<'DOCKER'"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 80,
+    "match": "cocreate",
+    "context": "FROM cocreate-check"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 83,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 83,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 83,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 84,
+    "match": "cocreate",
+    "context": "sh /tmp/cocreate-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 103,
+    "match": "cocreate",
+    "context": "docker build --tag cocreate-file-diagnose - <<'DOCKER'"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 104,
+    "match": "cocreate",
+    "context": "FROM cocreate-check"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 107,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 107,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 107,
+    "match": "cocreate",
+    "context": "sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 108,
+    "match": "cocreate",
+    "context": "sh /tmp/cocreate-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts --output"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 110,
+    "match": "COCREATE",
+    "context": "if: ${{ always() && env.COCREATE_CI_CGROUP_ROOT != '' }}"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 112,
+    "match": "COCREATE",
+    "context": "case \"$COCREATE_CI_CGROUP_ROOT\" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 112,
+    "match": "cocreate",
+    "context": "case \"$COCREATE_CI_CGROUP_ROOT\" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac"
+  },
+  {
+    "file": ".github/workflows/code-checks.yml",
+    "line": 113,
+    "match": "COCREATE",
+    "context": "sudo find \"$COCREATE_CI_CGROUP_ROOT\" -depth -type d -exec rmdir {} \\;"
+  },
+  {
+    "file": "AGENTS.md",
+    "line": 1,
+    "match": "CoCreate",
+    "context": "## CoCreate steering entrypoint"
+  },
+  {
+    "file": "AGENTS.md",
+    "line": 3,
+    "match": "CoCreate",
+    "context": "Before CoCreate work, read [context.md](context.md), [product.md](product.md), and [instructions.md](instructions.md). Use [docs/harness/architecture.md](docs/harness/architecture.md) for design, [docs/harness/checklist.md](docs/harness/checklist.md) for progress, [docs/harness/decisions.md](docs/ha"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 11,
+    "match": "cocreate",
+    "context": "RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && gcc -O2 -Wall -Wextra -Werror server/isolation/linux-job-launcher.c -o /usr/local/bin/cocreate-job-launcher && apt-get purge -y gcc libc6-dev && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 12,
+    "match": "COCREATE",
+    "context": "ARG VITE_COCREATE_AUTH_MODE"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "ARG VITE_COCREATE_APP_ORIGIN"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 16,
+    "match": "COCREATE",
+    "context": "ENV VITE_COCREATE_AUTH_MODE=$VITE_COCREATE_AUTH_MODE"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 16,
+    "match": "COCREATE",
+    "context": "ENV VITE_COCREATE_AUTH_MODE=$VITE_COCREATE_AUTH_MODE"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "ENV VITE_COCREATE_APP_ORIGIN=$VITE_COCREATE_APP_ORIGIN"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "ENV VITE_COCREATE_APP_ORIGIN=$VITE_COCREATE_APP_ORIGIN"
+  },
+  {
+    "file": "Dockerfile",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "ENV COCREATE_HOSTED=true"
+  },
+  {
+    "file": "README.md",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "Requires Node.js 22.13+ and pnpm. Generated compilation requires Windows AppContainer plus the trusted .NET Framework C# compiler, or Linux Bubblewrap and util-linux/prlimit with usable user namespaces. Unsupported or unavailable isolation fails closed. After install, run `pnpm exec tsx scripts/prep"
+  },
+  {
+    "file": "README.md",
+    "line": 36,
+    "match": "COCREATE",
+    "context": "Use `wrangler.jsonc` as the existing deployment configuration. Public Supabase URL/key/app origin reach the Vite build through container image variables; local builds use matching `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_COCREATE_APP_ORIGIN`. Keep `SUPABASE_SECRET_KEY`, session"
+  },
+  {
+    "file": "README.md",
+    "line": 36,
+    "match": "COCREATE",
+    "context": "Use `wrangler.jsonc` as the existing deployment configuration. Public Supabase URL/key/app origin reach the Vite build through container image variables; local builds use matching `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_COCREATE_APP_ORIGIN`. Keep `SUPABASE_SECRET_KEY`, session"
+  },
+  {
+    "file": "README.md",
+    "line": 36,
+    "match": "COCREATE",
+    "context": "Use `wrangler.jsonc` as the existing deployment configuration. Public Supabase URL/key/app origin reach the Vite build through container image variables; local builds use matching `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` and `VITE_COCREATE_APP_ORIGIN`. Keep `SUPABASE_SECRET_KEY`, session"
+  },
+  {
+    "file": "README.md",
+    "line": 38,
+    "match": "cocreate",
+    "context": "The production app origin is `https://2guys1canvas.com`; its callback is `/api/auth/callback`. The former workers.dev origin redirects to the canonical domain. Google returns to the configured Supabase project's `/auth/v1/callback`, then Supabase returns to the separately allow-listed app callback. "
+  },
+  {
+    "file": "README.md",
+    "line": 40,
+    "match": "COCREATE",
+    "context": "Keep confirmed email/password and Google authentication, confirmation/recovery SMTP and safe return paths. Project invitations and beta notifications share the existing Resend transport: server-only `RESEND_API_KEY` plus `COCREATE_EMAIL_FROM` on the exact verified sending domain. Production sender i"
+  },
+  {
+    "file": "README.md",
+    "line": 44,
+    "match": "cocreate",
+    "context": "Artifact recovery requires the existing **private** `cocreate-artifacts` bucket (or server `SUPABASE_ARTIFACT_BUCKET` with equivalent project-scoped policies). Server-only credentials upload/read immutable `<projectId>/bodies/<sha256>` objects; project members receive bytes through authenticated app"
+  },
+  {
+    "file": "README.md",
+    "line": 48,
+    "match": "cocreate",
+    "context": "The existing Cloudflare path uses a Worker, native container HTTP/WebSocket proxy and application readiness endpoints `/__cocreate/health` and `/__cocreate/app-health`. Encrypted `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` are required runtime secrets. Build/deploy scripts are in `package.js"
+  },
+  {
+    "file": "README.md",
+    "line": 48,
+    "match": "cocreate",
+    "context": "The existing Cloudflare path uses a Worker, native container HTTP/WebSocket proxy and application readiness endpoints `/__cocreate/health` and `/__cocreate/app-health`. Encrypted `SESSION_SECRET` and `CREDENTIAL_ENCRYPTION_SECRET` are required runtime secrets. Build/deploy scripts are in `package.js"
+  },
+  {
+    "file": "README.md",
+    "line": 70,
+    "match": "CoCreate",
+    "context": "Old managed-default, Recommended/Advanced wizard, three-mode activation and presentation guidance is preserved in the [historical archive](docs/harness/archive/2026-10-01-pre-consolidation/README.md), not current setup instructions. CoCreate-prefixed keys, paths and deployed origins remain compatibi"
+  },
+  {
+    "file": "README.md",
+    "line": 93,
+    "match": "COCREATE",
+    "context": "For the controlled three-profile browser reliability check, first build with `VITE_COCREATE_AUTH_MODE=local`, then run `pnpm exec tsx scripts/verify-reliability.ts`. Set `COCREATE_VERIFICATION_OUTPUT` to an isolated evidence directory. This check uses synthetic provider responses; it does not verify"
+  },
+  {
+    "file": "README.md",
+    "line": 93,
+    "match": "COCREATE",
+    "context": "For the controlled three-profile browser reliability check, first build with `VITE_COCREATE_AUTH_MODE=local`, then run `pnpm exec tsx scripts/verify-reliability.ts`. Set `COCREATE_VERIFICATION_OUTPUT` to an isolated evidence directory. This check uses synthetic provider responses; it does not verify"
+  },
+  {
+    "file": "api.md",
+    "line": 7,
+    "match": "cocreate",
+    "context": "Image-backed `/__cocreate/app-health` adds an optional `release_fingerprint` containing the non-secret SHA-256 of prepared source/build inputs. It comes from immutable root-owned image metadata, not request data or Worker environment. The candidate Worker requires equality with its trusted configure"
+  },
+  {
+    "file": "api.md",
+    "line": 66,
+    "match": "COCREATE",
+    "context": "Server email uses `RESEND_API_KEY` and a syntactically valid verified-domain `COCREATE_EMAIL_FROM`. Missing/invalid config returns `configuration_required` and actionable delivery error per address. Only a successful provider response with ID means `sent`; this is acceptance, not inbox delivery. Rep"
+  },
+  {
+    "file": "api.md",
+    "line": 148,
+    "match": "COCREATE",
+    "context": "Connect `/ws?room=<roomId>&token=<ticket>` over ws/wss matching the page. Hosted origin must pass configured `COCREATE_APP_ORIGINS` and current membership/coordinator checks. Upgrade and every ordered inbound/outbound batch (at most 32 frames) recheck authority immediately before synchronous apply/d"
+  },
+  {
+    "file": "docs/harness/architecture.md",
+    "line": 5,
+    "match": "CoCreate",
+    "context": "Build submission recovery (2026-10-16): `src/submit-changes.ts` owns client save/submission progress, error reporting and bounded failed-receipt recovery. `Workspace` retains the shared button/shortcut gesture guard and focus restoration. `CoCreateProvider.flush` waits up to 15 seconds for canonical"
+  },
+  {
+    "file": "package.json",
+    "line": 2,
+    "match": "cocreate",
+    "context": "\"name\": \"cocreate\","
+  },
+  {
+    "file": "package.json",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "\"test\": \"cross-env COCREATE_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts\","
+  },
+  {
+    "file": "scripts/capture-auth-ui.mjs",
+    "line": 6,
+    "match": "cocreate",
+    "context": "const origin='http://localhost:5173',output=path.resolve('artifacts/supabase-projects/login.png'),chrome='C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe',port=9900+(process.pid%80),profile=path.join(os.tmpdir(),`cocreate-auth-capture-${process.pid}`),wait=ms=>new Promise(resolve=>setTime"
+  },
+  {
+    "file": "scripts/capture-overhaul.mjs",
+    "line": 22,
+    "match": "cocreate",
+    "context": "const profile = path.join(os.tmpdir(), `cocreate-capture-${process.pid}-${Date.now()}`);"
+  },
+  {
+    "file": "scripts/capture-overhaul.mjs",
+    "line": 71,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);"
+  },
+  {
+    "file": "scripts/capture-overhaul.mjs",
+    "line": 71,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);"
+  },
+  {
+    "file": "scripts/capture-overhaul.mjs",
+    "line": 130,
+    "match": "cocreate",
+    "context": "const localRecords=await evaluate(`new Promise((resolve,reject)=>{const r=indexedDB.open('cocreate-drafts-v1');r.onsuccess=()=>{const db=r.result;const tx=db.transaction('documents');const count=tx.objectStore('documents').count();tx.oncomplete=()=>{resolve(count.result);db.close()};tx.onerror=()=>r"
+  },
+  {
+    "file": "scripts/capture-ui.mjs",
+    "line": 22,
+    "match": "cocreate",
+    "context": "const profile = path.join(os.tmpdir(), `cocreate-capture-${process.pid}-${Date.now()}`);"
+  },
+  {
+    "file": "scripts/capture-ui.mjs",
+    "line": 71,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);"
+  },
+  {
+    "file": "scripts/capture-ui.mjs",
+    "line": 71,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);"
+  },
+  {
+    "file": "scripts/diagnose-browser-file-limit.ts",
+    "line": 9,
+    "match": "cocreate",
+    "context": "const child = spawn(file, file === '/usr/local/bin/cocreate-job-launcher' ? ['/usr/bin/strace', '-f', '-qq', '-yy',"
+  },
+  {
+    "file": "scripts/diagnose-browser-file-limit.ts",
+    "line": 11,
+    "match": "cocreate",
+    "context": "if (file === '/usr/local/bin/cocreate-job-launcher') {"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "const origin=(process.env.COCREATE_LIVE_ORIGIN||'').replace(/\\/$/,'');"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 7,
+    "match": "COCREATE",
+    "context": "if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 7,
+    "match": "CoCreate",
+    "context": "if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 14,
+    "match": "cocreate",
+    "context": "const profile=path.join(os.tmpdir(),`cocreate-live-${label}-${process.pid}-${Date.now()}`);fs.mkdirSync(profile,{recursive:true});"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 25,
+    "match": "cocreate",
+    "context": "await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__cocreateTestSockets=[];globalThis.__blockCocreateTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockCocr"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 25,
+    "match": "Cocreate",
+    "context": "await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__cocreateTestSockets=[];globalThis.__blockCocreateTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockCocr"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 25,
+    "match": "Cocreate",
+    "context": "await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__cocreateTestSockets=[];globalThis.__blockCocreateTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockCocr"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 25,
+    "match": "cocreate",
+    "context": "await call('Page.addScriptToEvaluateOnNewDocument',{source:`{const NativeWebSocket=globalThis.WebSocket;globalThis.__cocreateTestSockets=[];globalThis.__blockCocreateTestSocket=false;globalThis.WebSocket=new Proxy(NativeWebSocket,{construct(target,args){const socket=new target(globalThis.__blockCocr"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 27,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(token)});localStorage.setItem('cocreate-name',${JSON.stringify(label)})`);await call('Page.navigate',{url:`${origin}/r/${roomId}`});"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 27,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(token)});localStorage.setItem('cocreate-name',${JSON.stringify(label)})`);await call('Page.navigate',{url:`${origin}/r/${roomId}`});"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 41,
+    "match": "cocreate",
+    "context": "const tracked=await first.evaluate(`({count:globalThis.__cocreateTestSockets?.length||0,states:(globalThis.__cocreateTestSockets||[]).map(socket=>socket.readyState)})`);"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 41,
+    "match": "cocreate",
+    "context": "const tracked=await first.evaluate(`({count:globalThis.__cocreateTestSockets?.length||0,states:(globalThis.__cocreateTestSockets||[]).map(socket=>socket.readyState)})`);"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 43,
+    "match": "Cocreate",
+    "context": "await first.evaluate(`globalThis.__blockCocreateTestSocket=true;globalThis.__cocreateTestSockets.findLast(socket=>socket.readyState===1)?.close()`);"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 43,
+    "match": "cocreate",
+    "context": "await first.evaluate(`globalThis.__blockCocreateTestSocket=true;globalThis.__cocreateTestSockets.findLast(socket=>socket.readyState===1)?.close()`);"
+  },
+  {
+    "file": "scripts/live-browser-collaboration-check.mjs",
+    "line": 47,
+    "match": "Cocreate",
+    "context": "await first.evaluate(`globalThis.__blockCocreateTestSocket=false`);"
+  },
+  {
+    "file": "scripts/live-collaboration-check.mjs",
+    "line": 3,
+    "match": "COCREATE",
+    "context": "const origin=(process.env.COCREATE_LIVE_ORIGIN||'').replace(/\\/$/,'');"
+  },
+  {
+    "file": "scripts/live-collaboration-check.mjs",
+    "line": 4,
+    "match": "COCREATE",
+    "context": "if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');"
+  },
+  {
+    "file": "scripts/live-collaboration-check.mjs",
+    "line": 4,
+    "match": "CoCreate",
+    "context": "if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');"
+  },
+  {
+    "file": "scripts/live-collaboration-check.mjs",
+    "line": 64,
+    "match": "cocreate",
+    "context": "json('/__cocreate/health'),"
+  },
+  {
+    "file": "scripts/live-collaboration-check.mjs",
+    "line": 65,
+    "match": "cocreate",
+    "context": "json('/__cocreate/app-health'),"
+  },
+  {
+    "file": "scripts/measure-responsiveness.ts",
+    "line": 7,
+    "match": "CoCreate",
+    "context": "import {createCoCreateServer} from '../server/index.js';"
+  },
+  {
+    "file": "scripts/measure-responsiveness.ts",
+    "line": 16,
+    "match": "cocreate",
+    "context": "const dataDir=await mkdtemp(path.join(os.tmpdir(),'cocreate-responsive-'));"
+  },
+  {
+    "file": "scripts/measure-responsiveness.ts",
+    "line": 17,
+    "match": "CoCreate",
+    "context": "const app=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'benchmark-session',encryptionSecret:'benchmark-encryption'}),info=await app.start();"
+  },
+  {
+    "file": "scripts/migrate-legacy-to-supabase.ts",
+    "line": 9,
+    "match": "cocreate",
+    "context": "const projectIdFor=(legacyId:string)=>{const hex=createHash('sha256').update(`cocreate:${legacyId}`).digest('hex').slice(0,32).split('');hex[12]='5';hex[16]=((parseInt(hex[16],16)&3)|8).toString(16);return`${hex.slice(0,8).join('')}-${hex.slice(8,12).join('')}-${hex.slice(12,16).join('')}-${hex.slic"
+  },
+  {
+    "file": "scripts/multiuser-baseline.ts",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/prepare-ci-cgroup.sh",
+    "line": 5,
+    "match": "cocreate",
+    "context": "case \"$root\" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac"
+  },
+  {
+    "file": "scripts/release-fingerprint.mjs",
+    "line": 18,
+    "match": "COCREATE",
+    "context": "const {COCREATE_RELEASE_FINGERPRINT: _ignored, ...vars} = config.vars;"
+  },
+  {
+    "file": "scripts/release-fingerprint.mjs",
+    "line": 30,
+    "match": "COCREATE",
+    "context": "config.vars.COCREATE_RELEASE_FINGERPRINT = fingerprint;"
+  },
+  {
+    "file": "scripts/release-fingerprint.mjs",
+    "line": 32,
+    "match": "COCREATE",
+    "context": "} else if (config.vars.COCREATE_RELEASE_FINGERPRINT !== fingerprint) {"
+  },
+  {
+    "file": "scripts/release-fingerprint.mjs",
+    "line": 39,
+    "match": "cocreate",
+    "context": "fs.writeFileSync('/usr/local/share/cocreate-release.json', JSON.stringify({fingerprint}), {mode: 0o444});"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 4,
+    "match": "COCREATE",
+    "context": "root=${COCREATE_CI_CGROUP_ROOT:?CI cgroup root required}"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 5,
+    "match": "cocreate",
+    "context": "case \"$root\" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 13,
+    "match": "cocreate",
+    "context": "--volume \"$root:/run/cocreate-cgroup:rw\" --env COCREATE_CGROUP_MOUNT=/run/cocreate-cgroup \\"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "--volume \"$root:/run/cocreate-cgroup:rw\" --env COCREATE_CGROUP_MOUNT=/run/cocreate-cgroup \\"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 13,
+    "match": "cocreate",
+    "context": "--volume \"$root:/run/cocreate-cgroup:rw\" --env COCREATE_CGROUP_MOUNT=/run/cocreate-cgroup \\"
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "--env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local cocreate-check \"$@\""
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "--env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local cocreate-check \"$@\""
+  },
+  {
+    "file": "scripts/run-linux-check.sh",
+    "line": 14,
+    "match": "cocreate",
+    "context": "--env COCREATE_HOSTED=false --env COCREATE_AUTH_MODE=local cocreate-check \"$@\""
+  },
+  {
+    "file": "scripts/safe-git-sync-loop.ps1",
+    "line": 9,
+    "match": "CoCreate",
+    "context": "$mutex = [System.Threading.Mutex]::new($false, \"Local\\CoCreateGitSafeSyncLoop\")"
+  },
+  {
+    "file": "scripts/safe-git-sync.ps1",
+    "line": 7,
+    "match": "CoCreate",
+    "context": "$mutex = [System.Threading.Mutex]::new($false, \"Local\\CoCreateGitSafeSync\")"
+  },
+  {
+    "file": "scripts/start-container.sh",
+    "line": 4,
+    "match": "COCREATE",
+    "context": "mount_root=${COCREATE_CGROUP_MOUNT:-/sys/fs/cgroup}"
+  },
+  {
+    "file": "scripts/start-container.sh",
+    "line": 6,
+    "match": "cocreate",
+    "context": "case \"$mount_root\" in /sys/fs/cgroup|/run/cocreate-cgroup) ;; *) exit 126 ;; esac"
+  },
+  {
+    "file": "scripts/start-container.sh",
+    "line": 8,
+    "match": "cocreate",
+    "context": "root=\"$mount_root/cocreate\""
+  },
+  {
+    "file": "scripts/start-container.sh",
+    "line": 29,
+    "match": "COCREATE",
+    "context": "export COCREATE_LINUX_CGROUP_ROOT=\"$root\""
+  },
+  {
+    "file": "scripts/verify-build-progress.ts",
+    "line": 9,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-build-progress.ts",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-build-progress.ts",
+    "line": 44,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});"
+  },
+  {
+    "file": "scripts/verify-build-progress.ts",
+    "line": 83,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);"
+  },
+  {
+    "file": "scripts/verify-candidate-evidence.ts",
+    "line": 11,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-candidate-evidence.ts",
+    "line": 12,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-candidate-evidence.ts",
+    "line": 46,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});"
+  },
+  {
+    "file": "scripts/verify-candidate-evidence.ts",
+    "line": 87,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);"
+  },
+  {
+    "file": "scripts/verify-canvas-surface.ts",
+    "line": 10,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-canvas-surface.ts",
+    "line": 11,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-canvas-surface.ts",
+    "line": 18,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });"
+  },
+  {
+    "file": "scripts/verify-canvas-surface.ts",
+    "line": 95,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}', ${JSON.stringify(createSession(secret, { roomId: room.id, participantId, name: participantId, role: participantId === 'alice' ? 'owner' : 'editor' }))})`);"
+  },
+  {
+    "file": "scripts/verify-conflict-ui.ts",
+    "line": 2,
+    "match": "CoCreate",
+    "context": "import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';"
+  },
+  {
+    "file": "scripts/verify-conflict-ui.ts",
+    "line": 5,
+    "match": "cocreate",
+    "context": "const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflict-ui-')),secret='conflict-ui-test';"
+  },
+  {
+    "file": "scripts/verify-conflict-ui.ts",
+    "line": 6,
+    "match": "CoCreate",
+    "context": "const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:secret});"
+  },
+  {
+    "file": "scripts/verify-conflict-ui.ts",
+    "line": 10,
+    "match": "cocreate",
+    "context": "const{url}=await service.start(),token=createSession(secret,{roomId:room.id,participantId:'alice',name:'Alice',role:'editor'}),chrome='C:\\\\Program Files\\\\Google\\\\Chrome\\\\Application\\\\chrome.exe',port=9800+process.pid%150,profile=path.join(os.tmpdir(),`cocreate-conflict-browser-${process.pid}`);"
+  },
+  {
+    "file": "scripts/verify-conflict-ui.ts",
+    "line": 22,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`);await call('Page.navigate',{url:`${url}/r/${room.id}`});"
+  },
+  {
+    "file": "scripts/verify-coordinator-postgres.ts",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "const connectionString = process.env.COCREATE_COORDINATOR_TEST_DATABASE_URL;"
+  },
+  {
+    "file": "scripts/verify-coordinator-postgres.ts",
+    "line": 7,
+    "match": "COCREATE",
+    "context": "const owner = process.env.COCREATE_COORDINATOR_TEST_OWNER_ID;"
+  },
+  {
+    "file": "scripts/verify-coordinator-postgres.ts",
+    "line": 9,
+    "match": "COCREATE",
+    "context": "throw new Error('Set COCREATE_COORDINATOR_TEST_DATABASE_URL and COCREATE_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.');"
+  },
+  {
+    "file": "scripts/verify-coordinator-postgres.ts",
+    "line": 9,
+    "match": "COCREATE",
+    "context": "throw new Error('Set COCREATE_COORDINATOR_TEST_DATABASE_URL and COCREATE_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.');"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 15,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "const output = path.resolve(process.env.COCREATE_INTEGRATION_OUTPUT || 'artifacts/multiuser-step10/browser');"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 49,
+    "match": "CoCreate",
+    "context": "let service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 90,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 113,
+    "match": "cocreate",
+    "context": "const states = () => Promise.all(browsers.map(browser => browser.evaluate(`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.la"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 204,
+    "match": "CoCreate",
+    "context": "service=await createCoCreateServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 222,
+    "match": "CoCreate",
+    "context": "service=await createCoCreateServer({port:Number(new URL(origin).port),host:'127.0.0.1',serveClient:true,dataDir:replacementDir,sessionSecret:'step10-browser',encryptionSecret:'step10-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address"
+  },
+  {
+    "file": "scripts/verify-harness-integration.ts",
+    "line": 230,
+    "match": "cocreate",
+    "context": "const downloaded=await a.evaluate(`fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`);"
+  },
+  {
+    "file": "scripts/verify-intent-ui.ts",
+    "line": 9,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE='local';"
+  },
+  {
+    "file": "scripts/verify-intent-ui.ts",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer }=await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-intent-ui.ts",
+    "line": 28,
+    "match": "CoCreate",
+    "context": "let service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${providerAddress.port}`});"
+  },
+  {
+    "file": "scripts/verify-intent-ui.ts",
+    "line": 50,
+    "match": "cocreate",
+    "context": "const token=createSession('browser-fixture',{roomId:room.id,participantId:id,name:id,role:id==='cara'?'viewer':id==='alice'?'owner':'editor'});await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`);"
+  },
+  {
+    "file": "scripts/verify-intent-ui.ts",
+    "line": 86,
+    "match": "cocreate",
+    "context": "await click(a,'Cancel edit');await escape(a);await review(a);await click(a,'Correct my support');await typeCorrection(a,'Add searchable catalog history.');await a.evaluate(\"window.__nativeStorageSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key.startsWith('cocreate-i"
+  },
+  {
+    "file": "scripts/verify-interpretation-topology.ts",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 12,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import(\"../server/index.js\");"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 15,
+    "match": "cocreate",
+    "context": "const directory = fs.mkdtempSync(path.join(os.tmpdir(), \"cocreate-beta-ui-\"));"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 39,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 271,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-fixture','old-ticket');localStorage.setItem('cocreate-product-storage-fixture','old-cache');const originalFetch=window.fetch;window.fetch=(...args)=>String(args[0]).startsWith(${JSON.stringify(publicUrl + '/auth/v1/logout')})?Promise.resolve(new"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 271,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-fixture','old-ticket');localStorage.setItem('cocreate-product-storage-fixture','old-cache');const originalFetch=window.fetch;window.fetch=(...args)=>String(args[0]).startsWith(${JSON.stringify(publicUrl + '/auth/v1/logout')})?Promise.resolve(new"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 276,
+    "match": "cocreate",
+    "context": "checks.accountSwitch=await evaluate(\"({returnTo:new URLSearchParams(location.search).get('returnTo'),cacheCleared:!localStorage.getItem('cocreate-session-fixture')&&!localStorage.getItem('cocreate-product-storage-fixture')})\");"
+  },
+  {
+    "file": "scripts/verify-prelaunch-beta.ts",
+    "line": 276,
+    "match": "cocreate",
+    "context": "checks.accountSwitch=await evaluate(\"({returnTo:new URLSearchParams(location.search).get('returnTo'),cacheCleared:!localStorage.getItem('cocreate-session-fixture')&&!localStorage.getItem('cocreate-product-storage-fixture')})\");"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 10,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = \"local\";"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 11,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import(\"../server/index.js\");"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_RELIABILITY_OUTPUT || process.env.COCREATE_VERIFICATION_OUTPUT || \"artifacts/reliability\","
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_RELIABILITY_OUTPUT || process.env.COCREATE_VERIFICATION_OUTPUT || \"artifacts/reliability\","
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 95,
+    "match": "CoCreate",
+    "context": "let service = await createCoCreateServer({"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 245,
+    "match": "cocreate",
+    "context": "`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`,"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 401,
+    "match": "cocreate",
+    "context": "`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(i"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 501,
+    "match": "COCREATE",
+    "context": "if (process.env.COCREATE_ARTIFACT_BROWSER_RESTORE === \"true\") {"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 535,
+    "match": "CoCreate",
+    "context": "service = await createCoCreateServer({"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 575,
+    "match": "cocreate",
+    "context": "`fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,accepted:state.requirements.filter(item=>item.status==='accept"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 585,
+    "match": "cocreate",
+    "context": "`fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`,"
+  },
+  {
+    "file": "scripts/verify-reliability.ts",
+    "line": 627,
+    "match": "COCREATE",
+    "context": "if (process.env.COCREATE_COORDINATOR_BROWSER_RETRY === \"true\") {"
+  },
+  {
+    "file": "scripts/verify-save-timeout.mjs",
+    "line": 8,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE='local';"
+  },
+  {
+    "file": "scripts/verify-save-timeout.mjs",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "const {createCoCreateServer}=await import('../server/index.ts');"
+  },
+  {
+    "file": "scripts/verify-save-timeout.mjs",
+    "line": 11,
+    "match": "cocreate",
+    "context": "const dir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-save-ui-'));"
+  },
+  {
+    "file": "scripts/verify-save-timeout.mjs",
+    "line": 12,
+    "match": "CoCreate",
+    "context": "const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir:dir,sessionSecret:'synthetic',encryptionSecret:'synthetic'});"
+  },
+  {
+    "file": "scripts/verify-save-timeout.mjs",
+    "line": 50,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)})`);"
+  },
+  {
+    "file": "scripts/verify-workflow-overview.ts",
+    "line": 9,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_AUTH_MODE = 'local';"
+  },
+  {
+    "file": "scripts/verify-workflow-overview.ts",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "const { createCoCreateServer } = await import('../server/index.js');"
+  },
+  {
+    "file": "scripts/verify-workflow-overview.ts",
+    "line": 17,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });"
+  },
+  {
+    "file": "scripts/verify-workflow-overview.ts",
+    "line": 84,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.id}', ${JSON.stringify(token)})`);"
+  },
+  {
+    "file": "scripts/verify-workspace-ui.mjs",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173';"
+  },
+  {
+    "file": "scripts/verify-workspace-ui.mjs",
+    "line": 34,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)})`);"
+  },
+  {
+    "file": "server/artifacts.ts",
+    "line": 166,
+    "match": "cocreate",
+    "context": "version.artifactRef = store.writeArtifact(bytes, 'application/vnd.cocreate.product+json').ref;"
+  },
+  {
+    "file": "server/artifacts.ts",
+    "line": 175,
+    "match": "cocreate",
+    "context": "room.recoveryCheckpoint.artifactRef = store.writeArtifact(bytes, 'application/vnd.cocreate.checkpoint+json').ref;"
+  },
+  {
+    "file": "server/beta-requests.ts",
+    "line": 278,
+    "match": "cocreate",
+    "context": "`cocreate-beta-${delivery.id}`,"
+  },
+  {
+    "file": "server/beta-requests.ts",
+    "line": 308,
+    "match": "COCREATE",
+    "context": "env.COCREATE_PUBLIC_ORIGIN || \"https://2guys1canvas.com\","
+  },
+  {
+    "file": "server/beta-requests.ts",
+    "line": 342,
+    "match": "COCREATE",
+    "context": "env.COCREATE_PUBLIC_ORIGIN,"
+  },
+  {
+    "file": "server/beta-requests.ts",
+    "line": 343,
+    "match": "COCREATE",
+    "context": "...(env.COCREATE_APP_ORIGINS || \"\").split(\",\"),"
+  },
+  {
+    "file": "server/beta.ts",
+    "line": 48,
+    "match": "cocreate",
+    "context": "const proof = String(req.headers[\"x-cocreate-waitlist-proof\"] || \"\");"
+  },
+  {
+    "file": "server/beta.ts",
+    "line": 49,
+    "match": "cocreate",
+    "context": "const key = String(req.headers[\"x-cocreate-waitlist-key\"] || \"\");"
+  },
+  {
+    "file": "server/beta.ts",
+    "line": 125,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_PUBLIC_ORIGIN,"
+  },
+  {
+    "file": "server/beta.ts",
+    "line": 126,
+    "match": "COCREATE",
+    "context": "...(process.env.COCREATE_APP_ORIGINS || \"\").split(\",\"),"
+  },
+  {
+    "file": "server/event-store.ts",
+    "line": 67,
+    "match": "cocreate",
+    "context": "this.file=path.join(dataDir,'cocreate.sqlite');"
+  },
+  {
+    "file": "server/event-store.ts",
+    "line": 158,
+    "match": "cocreate",
+    "context": "const rows = this.db.prepare(\"SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type<>'application/vnd.cocreate.workspace+json'\").all(workspaceId) as {"
+  },
+  {
+    "file": "server/event-store.ts",
+    "line": 196,
+    "match": "cocreate",
+    "context": "const artifact=this.insertArtifact(stateJson,'application/vnd.cocreate.workspace+json');"
+  },
+  {
+    "file": "server/event-store.ts",
+    "line": 202,
+    "match": "cocreate",
+    "context": "readWorkspaceSnapshot<T=unknown>(workspaceId:string){const row=this.db.prepare('SELECT state_json AS stateJson FROM workspace_state WHERE workspace_id=?').get(workspaceId) as {stateJson:string}|undefined;if(row)return JSON.parse(row.stateJson) as T;const artifact=this.db.prepare(`SELECT a.content FR"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 66,
+    "match": "CoCreate",
+    "context": "export async function createCoCreateServer(options: Options = {}) {"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 69,
+    "match": "cocreate",
+    "context": "}), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 83,
+    "match": "cocreate",
+    "context": "const releaseFile = '/usr/local/share/cocreate-release.json';"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 86,
+    "match": "cocreate",
+    "context": "app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 87,
+    "match": "cocreate",
+    "context": "status: 'configuration-error', service: 'cocreate-app', error: platformState.error"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 89,
+    "match": "cocreate",
+    "context": "status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 680,
+    "match": "cocreate",
+    "context": "res.setHeader('Content-Disposition', `attachment; filename=\"cocreate-${auth.room.id}-v${v.id}.zip\"`);"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 731,
+    "match": "COCREATE",
+    "context": "const origin = String(req.headers.origin || ''), configuredOrigins = String(process.env.COCREATE_APP_ORIGINS || '').split(',').map(item => item.trim()).filter(Boolean);"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 865,
+    "match": "COCREATE",
+    "context": "if (process.platform === 'linux' && process.env.COCREATE_HOSTED === 'true') await assertVerificationBrowserAvailable();"
+  },
+  {
+    "file": "server/index.ts",
+    "line": 866,
+    "match": "CoCreate",
+    "context": "const instance = await createCoCreateServer();"
+  },
+  {
+    "file": "server/invitation-email.ts",
+    "line": 74,
+    "match": "COCREATE",
+    "context": "from = env.COCREATE_EMAIL_FROM || \"\";"
+  },
+  {
+    "file": "server/invitation-email.ts",
+    "line": 83,
+    "match": "COCREATE",
+    "context": "\"Configure RESEND_API_KEY and a Resend-verified COCREATE_EMAIL_FROM.\","
+  },
+  {
+    "file": "server/invitation-email.ts",
+    "line": 130,
+    "match": "COCREATE",
+    "context": "\"Invitation email is unavailable. Configure RESEND_API_KEY and COCREATE_EMAIL_FROM with an authorized sender on a domain verified in Resend.\","
+  },
+  {
+    "file": "server/invitation-email.ts",
+    "line": 141,
+    "match": "cocreate",
+    "context": "`cocreate-project-invite-${message.invitationId}`,"
+  },
+  {
+    "file": "server/isolation.ts",
+    "line": 95,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();"
+  },
+  {
+    "file": "server/isolation.ts",
+    "line": 95,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();"
+  },
+  {
+    "file": "server/isolation.ts",
+    "line": 100,
+    "match": "cocreate",
+    "context": "const profile='cocreate.isolation.'+path.basename(workspace).replaceAll('-','');"
+  },
+  {
+    "file": "server/isolation.ts",
+    "line": 173,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();"
+  },
+  {
+    "file": "server/isolation.ts",
+    "line": 173,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 16,
+    "match": "COCREATE",
+    "context": "export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFICATION_BROWSER ||"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 22,
+    "match": "COCREATE",
+    "context": "if (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os') throw unavailable();"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 22,
+    "match": "COCREATE",
+    "context": "if (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os') throw unavailable();"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 26,
+    "match": "cocreate",
+    "context": "const profile = 'cocreate.isolation.' + path.basename(workspace).replaceAll('-', '');"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 195,
+    "match": "COCREATE",
+    "context": "if (!fs.existsSync(browserExecutable()) || (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os')) throw unavailable();"
+  },
+  {
+    "file": "server/isolation/browser.ts",
+    "line": 195,
+    "match": "COCREATE",
+    "context": "if (!fs.existsSync(browserExecutable()) || (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os')) throw unavailable();"
+  },
+  {
+    "file": "server/isolation/linux-cgroup.ts",
+    "line": 8,
+    "match": "cocreate",
+    "context": "export const linuxJobLauncher = '/usr/local/bin/cocreate-job-launcher';"
+  },
+  {
+    "file": "server/isolation/linux-cgroup.ts",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "const configured = process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate';"
+  },
+  {
+    "file": "server/isolation/linux-cgroup.ts",
+    "line": 17,
+    "match": "cocreate",
+    "context": "const configured = process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate';"
+  },
+  {
+    "file": "server/isolation/windows-runner.cs",
+    "line": 49,
+    "match": "cocreate",
+    "context": "if(args.Length==2&&args[0]==\"cleanup\"&&args[1].StartsWith(\"cocreate.isolation.\",StringComparison.Ordinal)) { DeleteAppContainerProfile(args[1]);return 0; }"
+  },
+  {
+    "file": "server/isolation/windows-runner.cs",
+    "line": 57,
+    "match": "cocreate",
+    "context": "if(!profile.StartsWith(\"cocreate.isolation.\",StringComparison.Ordinal)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException(\"Invalid isolation bounds.\");"
+  },
+  {
+    "file": "server/isolation/windows-runner.cs",
+    "line": 59,
+    "match": "CoCreate",
+    "context": "int hr=CreateAppContainerProfile(profile,profile,\"Disposable CoCreate compiler\",IntPtr.Zero,0,out sid);"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/preview.ts",
+    "line": 4,
+    "match": "cocreate",
+    "context": "return `<!doctype html><html><head><meta charset=\"utf-8\"><meta name=\"viewport\" content=\"width=device-width,initial-scale=1\"><meta http-equiv=\"Content-Security-Policy\" content=\"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; img-src data:; font-src data:; connect-src 'none'"
+  },
+  {
+    "file": "server/project-routes.ts",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "const appOrigin=()=>String(process.env.COCREATE_PUBLIC_ORIGIN||process.env.COCREATE_APP_ORIGINS||'http://localhost:5173').split(',').map(value=>value.trim()).find(Boolean)||'http://localhost:5173';"
+  },
+  {
+    "file": "server/project-routes.ts",
+    "line": 14,
+    "match": "COCREATE",
+    "context": "const appOrigin=()=>String(process.env.COCREATE_PUBLIC_ORIGIN||process.env.COCREATE_APP_ORIGINS||'http://localhost:5173').split(',').map(value=>value.trim()).find(Boolean)||'http://localhost:5173';"
+  },
+  {
+    "file": "server/project.ts",
+    "line": 21,
+    "match": "cocreate",
+    "context": "{path:'package.json',content:JSON.stringify({name:'cocreate-generated-app',private:true,version:'1.0.0',type:'module',scripts:{dev:'vite',build:'vite build',preview:'vite preview'},dependencies:{'@vitejs/plugin-react':'^5.0.4',vite:'^7.1.12',typescript:'^5.9.3',react:'^19.2.0','react-dom':'^19.2.0'}"
+  },
+  {
+    "file": "server/providers.ts",
+    "line": 132,
+    "match": "COCREATE",
+    "context": "hosted = process.env.COCREATE_HOSTED === \"true\","
+  },
+  {
+    "file": "server/providers.ts",
+    "line": 568,
+    "match": "cocreate",
+    "context": "name: \"cocreate_output\","
+  },
+  {
+    "file": "server/providers.ts",
+    "line": 611,
+    "match": "cocreate",
+    "context": "name: \"cocreate_output\","
+  },
+  {
+    "file": "server/rooms.ts",
+    "line": 2341,
+    "match": "cocreate",
+    "context": "const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.cocreate.recovery+json');"
+  },
+  {
+    "file": "server/rooms.ts",
+    "line": 2467,
+    "match": "cocreate",
+    "context": "}), 'application/vnd.cocreate.product+json');"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 40,
+    "match": "cocreate",
+    "context": "this.bucket = config.artifactBucket || 'cocreate-artifacts';"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 51,
+    "match": "cocreate",
+    "context": "const request=new Request('http://cocreate.internal/auth',{headers:{Authorization:`Bearer ${accessToken}`}}),issuer=`${this.config.url.replace(/\\/$/,'')}/auth/v1`;"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 340,
+    "match": "cocreate",
+    "context": "const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.cocreate.product+json');"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 348,
+    "match": "cocreate",
+    "context": "const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.cocreate.checkpoint+json');"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 420,
+    "match": "COCREATE",
+    "context": "const hosted=env.COCREATE_HOSTED==='true',mode=env.COCREATE_AUTH_MODE||(hosted?'supabase':'local');"
+  },
+  {
+    "file": "server/supabase-platform.ts",
+    "line": 420,
+    "match": "COCREATE",
+    "context": "const hosted=env.COCREATE_HOSTED==='true',mode=env.COCREATE_AUTH_MODE||(hosted?'supabase':'local');"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 47,
+    "match": "CoCreate",
+    "context": "import { CoCreateProvider, type ConnectionStatus } from \"./provider\";"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 75,
+    "match": "cocreate",
+    "context": "const [name, setName] = useState(localStorage.getItem(\"cocreate-name\") || \"\"),"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 86,
+    "match": "cocreate",
+    "context": "key = `cocreate-session-${rid}`,"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 96,
+    "match": "cocreate",
+    "context": "localStorage.setItem(\"cocreate-name\", name);"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 278,
+    "match": "cocreate",
+    "context": "storageKey = `cocreate-product-storage-${state.roomId}`,"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 298,
+    "match": "cocreate",
+    "context": "if (data.type === \"cocreate-storage-ready\")"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 300,
+    "match": "cocreate",
+    "context": "{ type: \"cocreate-storage-init\", values: readStorage() },"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 303,
+    "match": "cocreate",
+    "context": "if (data.type === \"cocreate-storage-set\") {"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 308,
+    "match": "cocreate",
+    "context": "if (data.type === \"cocreate-storage-remove\") {"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 313,
+    "match": "cocreate",
+    "context": "if (data.type === \"cocreate-storage-clear\") writeStorage({});"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 314,
+    "match": "cocreate",
+    "context": "if (data.type === \"cocreate-preview-error\") {"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 405,
+    "match": "cocreate",
+    "context": "const forceJoin = !tokenOverride && new URLSearchParams(location.search).has('join'), token = tokenOverride || localStorage.getItem(`cocreate-session-${id}`) || '', isMac = /Mac|iPhone|iPad|iPod/.test(navigator.platform || navigator.userAgent);"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 410,
+    "match": "CoCreate",
+    "context": "const doc = useMemo(() => new Y.Doc(), [id]), [provider, setProvider] = useState<CoCreateProvider>(), submittingRef = useRef(false), apiButtonRef = useRef<HTMLButtonElement>(null), submissionRequest = useRef<string | undefined>(undefined), retryRequest = useRef<string | undefined>(undefined);"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 414,
+    "match": "CoCreate",
+    "context": "let cancelled = false, p: CoCreateProvider | undefined, stopDraft: (() => void) | undefined;"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 439,
+    "match": "CoCreate",
+    "context": "p = new CoCreateProvider(doc, id, token, receiveState, setConnection, (status, at) => {"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 573,
+    "match": "cocreate",
+    "context": "name: 'cocreate_add_idea', title: 'Add idea', description: 'Append an idea to the visible shared product document.', inputSchema: {"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 604,
+    "match": "cocreate",
+    "context": "localStorage.removeItem(`cocreate-session-${id}`);"
+  },
+  {
+    "file": "src/App.tsx",
+    "line": 642,
+    "match": "cocreate",
+    "context": "localStorage.removeItem(`cocreate-session-${id}`);"
+  },
+  {
+    "file": "src/IntentReview.tsx",
+    "line": 8,
+    "match": "cocreate",
+    "context": "const dialog=useRef<HTMLDialogElement>(null),key=`cocreate-intent-command-${state.roomId}-${participantId}`;"
+  },
+  {
+    "file": "src/ProjectApp.tsx",
+    "line": 148,
+    "match": "cocreate",
+    "context": "key.startsWith(\"cocreate-session-\") ||"
+  },
+  {
+    "file": "src/ProjectApp.tsx",
+    "line": 149,
+    "match": "cocreate",
+    "context": "key.startsWith(\"cocreate-product-storage-\"),"
+  },
+  {
+    "file": "src/auth-config.ts",
+    "line": 4,
+    "match": "COCREATE",
+    "context": "const required=['VITE_SUPABASE_URL','VITE_SUPABASE_PUBLISHABLE_KEY','VITE_COCREATE_APP_ORIGIN'] as const;"
+  },
+  {
+    "file": "src/auth-config.ts",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "const rawUrl=env.VITE_SUPABASE_URL!.trim(),rawOrigin=env.VITE_COCREATE_APP_ORIGIN!.trim(),publishableKey=env.VITE_SUPABASE_PUBLISHABLE_KEY!.trim();"
+  },
+  {
+    "file": "src/auth-config.ts",
+    "line": 27,
+    "match": "COCREATE",
+    "context": "const urlError=parseOrigin('VITE_SUPABASE_URL',rawUrl),originError=parseOrigin('VITE_COCREATE_APP_ORIGIN',rawOrigin,true);"
+  },
+  {
+    "file": "src/build-shortcut.ts",
+    "line": 3,
+    "match": "cocreate",
+    "context": "export const BUILD_SHORTCUT_STORAGE_KEY='cocreate-build-shortcut';"
+  },
+  {
+    "file": "src/local-drafts.ts",
+    "line": 9,
+    "match": "cocreate",
+    "context": "const databaseName = 'cocreate-drafts-v1';"
+  },
+  {
+    "file": "src/provider.ts",
+    "line": 22,
+    "match": "CoCreate",
+    "context": "export class CoCreateProvider {"
+  },
+  {
+    "file": "src/supabase.ts",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "export const clientAuthMode=(import.meta.env.VITE_COCREATE_AUTH_MODE as string|undefined)||(import.meta.env.DEV?'local':'supabase');"
+  },
+  {
+    "file": "src/supabase.ts",
+    "line": 21,
+    "match": "cocreate",
+    "context": "export const authReturnKey='cocreate-auth-return';"
+  },
+  {
+    "file": "tests/ai-presets.test.ts",
+    "line": 109,
+    "match": "cocreate",
+    "context": "const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-mode-migration-')),roomId=`mode-migration-${crypto.randomUUID()}`,manager=new RoomManager({debounceMs:500,encryptionSecret:'migration-test-secret',dataDir}),room=manager.create(roomId);"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "import { createCoCreateServer } from '../server/index.js';"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 138,
+    "match": "cocreate",
+    "context": "const body = bodyFromBytes(versionArtifactBytes(project, version(1)), 'application/vnd.cocreate.product+json');"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 145,
+    "match": "cocreate",
+    "context": "const denied = await fetch(`${fixture.origin}/storage/v1/object/cocreate-artifacts/${artifactPath(project, body)}`);"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 163,
+    "match": "CoCreate",
+    "context": "let service: Awaited<ReturnType<typeof createCoCreateServer>> | undefined;"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 171,
+    "match": "CoCreate",
+    "context": "service = await createCoCreateServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic' });"
+  },
+  {
+    "file": "tests/artifact-restoration.test.ts",
+    "line": 282,
+    "match": "cocreate",
+    "context": "context.platform.publishArtifactBodies = async (project, bodies) => { const result = await publish(project, bodies); if (bodies.some(body => body.mimeType === 'application/vnd.cocreate.product+json' && JSON.parse(Buffer.from(body.base64, 'base64').toString()).version.id === 2)) {"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 9,
+    "match": "CoCreate",
+    "context": "import { createCoCreateServer } from \"../server/index.js\";"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 22,
+    "match": "cocreate",
+    "context": "const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), \"cocreate-beta-\"));"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 30,
+    "match": "CoCreate",
+    "context": "let service = await createCoCreateServer({"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 78,
+    "match": "CoCreate",
+    "context": "service = await createCoCreateServer({"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 147,
+    "match": "cocreate",
+    "context": "\"x-cocreate-waitlist-key\": \"a\".repeat(64),"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 155,
+    "match": "cocreate",
+    "context": "req.headers[\"x-cocreate-waitlist-proof\"] = createHmac(\"sha256\", \"secret\")"
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 161,
+    "match": "COCREATE",
+    "context": "COCREATE_HOSTED: \"true\","
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 162,
+    "match": "COCREATE",
+    "context": "COCREATE_AUTH_MODE: \"local\","
+  },
+  {
+    "file": "tests/beta-access.test.ts",
+    "line": 296,
+    "match": "CoCreate",
+    "context": "service = await createCoCreateServer({"
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 251,
+    "match": "COCREATE",
+    "context": "COCREATE_EMAIL_FROM: \"2guys1canvas <beta@verified.test>\","
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 377,
+    "match": "CoCreate",
+    "context": ".replace(\"export class CoCreateContainer\", \"class CoCreateContainer\")"
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 377,
+    "match": "CoCreate",
+    "context": ".replace(\"export class CoCreateContainer\", \"class CoCreateContainer\")"
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 399,
+    "match": "COCREATE",
+    "context": "COCREATE_EMAIL_FROM: \"beta@verified.test\","
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 402,
+    "match": "COCREATE",
+    "context": "COCREATE_RELEASE_FINGERPRINT: fingerprint,"
+  },
+  {
+    "file": "tests/beta-requests.test.ts",
+    "line": 415,
+    "match": "COCREATE",
+    "context": "{ ...env, COCREATE_RELEASE_FINGERPRINT: \"b\".repeat(64) },"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 6,
+    "match": "COCREATE",
+    "context": "const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173';"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 7,
+    "match": "cocreate",
+    "context": "const profile=path.join(os.tmpdir(),`cocreate-browser-smoke-${process.pid}-${Date.now()}`);"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 40,
+    "match": "cocreate",
+    "context": "await call('Runtime.evaluate',{expression:`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Browser QA');localStorage.removeItem('cocreate-build-shortcut')`});"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 40,
+    "match": "cocreate",
+    "context": "await call('Runtime.evaluate',{expression:`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Browser QA');localStorage.removeItem('cocreate-build-shortcut')`});"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 40,
+    "match": "cocreate",
+    "context": "await call('Runtime.evaluate',{expression:`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Browser QA');localStorage.removeItem('cocreate-build-shortcut')`});"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 46,
+    "match": "cocreate",
+    "context": "const diagnostic=await evaluate(`Promise.race([fetch('/api/rooms/${roomId}/state?token=${encodeURIComponent(session.token)}').then(async response=>({status:response.status,body:await response.text(),stored:localStorage.getItem('cocreate-session-${roomId}'),path:location.pathname})).catch(error=>({er"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 54,
+    "match": "CoCreate",
+    "context": "const setupSemantics=await evaluate(`({modes:[...document.querySelectorAll('[aria-label=\"CoCreate mode\"] [role=\"radio\"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked')})),modalHasEffort:!!document.querySelector('[role=\"dialog\"] [aria-label*=\"AI effort\"]'),limitLabel:d"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 56,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_RECOMMENDED_SCREENSHOT){"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 58,
+    "match": "COCREATE",
+    "context": "fs.writeFileSync(process.env.COCREATE_RECOMMENDED_SCREENSHOT,Buffer.from(capture.data,'base64'));"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 67,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_SCREENSHOT){"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 69,
+    "match": "COCREATE",
+    "context": "fs.writeFileSync(process.env.COCREATE_SCREENSHOT,Buffer.from(capture.data,'base64'));"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 78,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_WORKSPACE_SCREENSHOT){"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 80,
+    "match": "COCREATE",
+    "context": "fs.writeFileSync(process.env.COCREATE_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 95,
+    "match": "COCREATE",
+    "context": "if(process.env.COCREATE_PRODUCT_SCREENSHOT){"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 97,
+    "match": "COCREATE",
+    "context": "fs.writeFileSync(process.env.COCREATE_PRODUCT_SCREENSHOT,Buffer.from(capture.data,'base64'));"
+  },
+  {
+    "file": "tests/browser-smoke.mjs",
+    "line": 103,
+    "match": "cocreate",
+    "context": "await evaluate(`localStorage.setItem('cocreate-session-${roomId}','invalid-session')`);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 8,
+    "match": "CoCreate",
+    "context": "import {createCoCreateServer} from '../server/index.js';"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 16,
+    "match": "COCREATE",
+    "context": "assert.equal(config.vars.COCREATE_PUBLIC_ORIGIN,origin);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 17,
+    "match": "COCREATE",
+    "context": "assert.equal(config.vars.COCREATE_APP_ORIGINS,origin);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 19,
+    "match": "COCREATE",
+    "context": "assert.equal(config.vars.COCREATE_LEGACY_ORIGIN,'https://cocreate.susan981314271.workers.dev');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 19,
+    "match": "cocreate",
+    "context": "assert.equal(config.vars.COCREATE_LEGACY_ORIGIN,'https://cocreate.susan981314271.workers.dev');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 22,
+    "match": "COCREATE",
+    "context": "assert.equal(config.vars.COCREATE_WWW_ORIGIN,'https://www.2guys1canvas.com');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 25,
+    "match": "COCREATE",
+    "context": "assert.equal(image.VITE_COCREATE_APP_ORIGIN,origin);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "assert.equal(image.VITE_COCREATE_AUTH_MODE,'supabase');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 33,
+    "match": "cocreate",
+    "context": "const canonical='https://2guys1canvas.com',legacy='https://cocreate.susan981314271.workers.dev';"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 62,
+    "match": "CoCreate",
+    "context": "const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 65,
+    "match": "cocreate",
+    "context": "const response=await fetch(`${info.url}/__cocreate/app-health`);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 68,
+    "match": "cocreate",
+    "context": "assert.deepEqual(health,{status:'ok',service:'cocreate-app'});"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 76,
+    "match": "CoCreate",
+    "context": "const instance = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 103,
+    "match": "CoCreate",
+    "context": "const classBody=worker.slice(worker.indexOf('export class CoCreateContainer'),worker.indexOf('export default'));"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 106,
+    "match": "COCREATE",
+    "context": "assert.match(worker,/getContainer\\(env\\.COCREATE_CONTAINER,\\s*'primary'\\)/);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 108,
+    "match": "cocreate",
+    "context": "assert.match(worker,/pingEndpoint\\s*=\\s*\"localhost\\/__cocreate\\/app-health\"/);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 117,
+    "match": "CoCreate",
+    "context": "const source = fs.readFileSync(path.join(root,'worker/container.js'),'utf8').replace(/^import .*;\\r?$/gm,'').replace('export class CoCreateContainer','class CoCreateContainer').replace('export default','globalThis.worker =');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 117,
+    "match": "CoCreate",
+    "context": "const source = fs.readFileSync(path.join(root,'worker/container.js'),'utf8').replace(/^import .*;\\r?$/gm,'').replace('export class CoCreateContainer','class CoCreateContainer').replace('export default','globalThis.worker =');"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 120,
+    "match": "cocreate",
+    "context": "return new URL(request.url).pathname==='/__cocreate/app-health' ? Response.json({status:'ok',release_fingerprint:running}) : Response.json({forwarded:true});"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 124,
+    "match": "COCREATE",
+    "context": "const config={COCREATE_RELEASE_FINGERPRINT:fingerprint,COCREATE_PUBLIC_ORIGIN:'https://2guys1canvas.com'};"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 124,
+    "match": "COCREATE",
+    "context": "const config={COCREATE_RELEASE_FINGERPRINT:fingerprint,COCREATE_PUBLIC_ORIGIN:'https://2guys1canvas.com'};"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 134,
+    "match": "COCREATE",
+    "context": "assert.equal((await worker.fetch(new Request('https://2guys1canvas.com/api/projects'),{...config,COCREATE_RELEASE_FINGERPRINT:''})).status,503);"
+  },
+  {
+    "file": "tests/cloudflare-container.test.ts",
+    "line": 140,
+    "match": "COCREATE",
+    "context": "const result=spawnSync(process.execPath,['--import','tsx','server/index.ts'],{cwd:root,env:{...process.env,COCREATE_ISOLATION_MODE:'unavailable',PORT:'0'},encoding:'utf8',timeout:15_000,windowsHide:true});"
+  },
+  {
+    "file": "tests/cocreate.test.ts",
+    "line": 9,
+    "match": "cocreate",
+    "context": "test('multi-file project compiles to an isolated React preview',async()=>{const files=applyOperations(undefined,[{type:'write',path:'src/App.tsx',content:\"import{useState}from'react';export default function App(){const[x]=useState('working');localStorage.setItem('state',x);return <main>{x}</main>}\"}"
+  },
+  {
+    "file": "tests/collaboration-handshake.test.ts",
+    "line": 4,
+    "match": "CoCreate",
+    "context": "import {createCoCreateServer} from '../server/index.js';"
+  },
+  {
+    "file": "tests/collaboration-handshake.test.ts",
+    "line": 10,
+    "match": "CoCreate",
+    "context": "const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'handshake-session',encryptionSecret:'handshake-encryption'}),info=await instance.start();"
+  },
+  {
+    "file": "tests/conflict-route.test.ts",
+    "line": 2,
+    "match": "CoCreate",
+    "context": "import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';"
+  },
+  {
+    "file": "tests/conflict-route.test.ts",
+    "line": 6,
+    "match": "cocreate",
+    "context": "const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflicts-')),secret='test-conflict-secret';"
+  },
+  {
+    "file": "tests/conflict-route.test.ts",
+    "line": 7,
+    "match": "CoCreate",
+    "context": "const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:secret});"
+  },
+  {
+    "file": "tests/connection.test.ts",
+    "line": 1,
+    "match": "CoCreate",
+    "context": "import test from'node:test';import assert from'node:assert/strict';import http from'node:http';import{createCoCreateServer}from'../server/index.js';"
+  },
+  {
+    "file": "tests/connection.test.ts",
+    "line": 2,
+    "match": "CoCreate",
+    "context": "test('workspace owner discovers account models and activates the shared connection',async()=>{const provider=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const authorized=req.headers.authorization==='Bearer live-key';if(!authorized){res.writeHead(401,{'Conten"
+  },
+  {
+    "file": "tests/connection.test.ts",
+    "line": 4,
+    "match": "CoCreate",
+    "context": "test('collaborators receive redacted connection status and cannot manage owner credentials',async()=>{const app=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'connection-permission-session',encryptionSecret:'connection-permission-encryption'}),info=await app.sta"
+  },
+  {
+    "file": "tests/connection.test.ts",
+    "line": 6,
+    "match": "CoCreate",
+    "context": "test('AI effort endpoint is owner-only and validates the requested level',async()=>{const app=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'effort-permission-session',encryptionSecret:'effort-permission-encryption'}),info=await app.start(),post=async(path:strin"
+  },
+  {
+    "file": "tests/connection.test.ts",
+    "line": 8,
+    "match": "CoCreate",
+    "context": "test('owner effort mutation updates a connected Custom room without a provider call',async()=>{const app=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'effort-route-session',encryptionSecret:'effort-route-encryption'}),info=await app.start(),post=async(path:stri"
+  },
+  {
+    "file": "tests/connections-ui-smoke.mjs",
+    "line": 2,
+    "match": "COCREATE",
+    "context": "const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173',profile=path.join(os.tmpdir(),`cocreate-connections-smoke-${process.pid}-${Date.now()}`),debugPort=9400+(process.pid%200);"
+  },
+  {
+    "file": "tests/connections-ui-smoke.mjs",
+    "line": 2,
+    "match": "cocreate",
+    "context": "const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173',profile=path.join(os.tmpdir(),`cocreate-connections-smoke-${process.pid}-${Date.now()}`),debugPort=9400+(process.pid%200);"
+  },
+  {
+    "file": "tests/connections-ui-smoke.mjs",
+    "line": 21,
+    "match": "cocreate",
+    "context": "await call('Runtime.evaluate',{expression:\"localStorage.setItem('cocreate-session-\"+roomId+\"',\"+JSON.stringify(session.token)+\")\"});"
+  },
+  {
+    "file": "tests/event-store.test.ts",
+    "line": 17,
+    "match": "cocreate",
+    "context": "const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));"
+  },
+  {
+    "file": "tests/event-store.test.ts",
+    "line": 72,
+    "match": "cocreate",
+    "context": "const dataDir=temporaryData(),workspaceId='workspace-rebuild',file=path.join(dataDir,'cocreate.sqlite');"
+  },
+  {
+    "file": "tests/fixtures/artifact-storage.ts",
+    "line": 23,
+    "match": "cocreate",
+    "context": "if (url.pathname === '/storage/v1/bucket/cocreate-artifacts')"
+  },
+  {
+    "file": "tests/fixtures/artifact-storage.ts",
+    "line": 24,
+    "match": "cocreate",
+    "context": "return respond(200, { id: 'cocreate-artifacts', name: 'cocreate-artifacts', public: controls.publicBucket });"
+  },
+  {
+    "file": "tests/fixtures/artifact-storage.ts",
+    "line": 24,
+    "match": "cocreate",
+    "context": "return respond(200, { id: 'cocreate-artifacts', name: 'cocreate-artifacts', public: controls.publicBucket });"
+  },
+  {
+    "file": "tests/fixtures/artifact-storage.ts",
+    "line": 25,
+    "match": "cocreate",
+    "context": "const objectMatch = /^\\/storage\\/v1\\/object\\/(?:authenticated\\/)?cocreate-artifacts\\/(.+)$/.exec(url.pathname);"
+  },
+  {
+    "file": "tests/fixtures/artifact-storage.ts",
+    "line": 41,
+    "match": "cocreate",
+    "context": "return respond(200, { Key: `cocreate-artifacts/${key}`, Id: randomUUID() });"
+  },
+  {
+    "file": "tests/fixtures/beta-database.ts",
+    "line": 28,
+    "match": "COCREATE",
+    "context": "const connection = process.env.COCREATE_BETA_TEST_DATABASE_URL;"
+  },
+  {
+    "file": "tests/fixtures/beta-database.ts",
+    "line": 34,
+    "match": "cocreate",
+    "context": "url.pathname !== \"/cocreate_beta_test\""
+  },
+  {
+    "file": "tests/fixtures/beta-database.ts",
+    "line": 37,
+    "match": "cocreate",
+    "context": "\"Beta SQL tests require a disposable local cocreate_beta_test database.\","
+  },
+  {
+    "file": "tests/fixtures/beta-database.ts",
+    "line": 40,
+    "match": "cocreate",
+    "context": "const databaseName = `cocreate_beta_test_${randomUUID().replaceAll(\"-\", \"\")}`;"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 28,
+    "match": "COCREATE",
+    "context": "const prior=process.env.COCREATE_SYNTHETIC_SECRET;process.env.COCREATE_SYNTHETIC_SECRET='synthetic-only';"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 28,
+    "match": "COCREATE",
+    "context": "const prior=process.env.COCREATE_SYNTHETIC_SECRET;process.env.COCREATE_SYNTHETIC_SECRET='synthetic-only';"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 32,
+    "match": "COCREATE",
+    "context": "assert.equal(result.network.allowed,false);assert.equal(connects,0);assert.equal(result.environment.includes('COCREATE_SYNTHETIC_SECRET'),false);"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 34,
+    "match": "COCREATE",
+    "context": "}finally{prior===undefined?delete process.env.COCREATE_SYNTHETIC_SECRET:process.env.COCREATE_SYNTHETIC_SECRET=prior;await new Promise<void>(resolve=>server.close(()=>resolve()));assert.equal(path.dirname(path.resolve(outside)),path.resolve(os.tmpdir()));fs.rmSync(outside,{recursive:true,force:true})"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 34,
+    "match": "COCREATE",
+    "context": "}finally{prior===undefined?delete process.env.COCREATE_SYNTHETIC_SECRET:process.env.COCREATE_SYNTHETIC_SECRET=prior;await new Promise<void>(resolve=>server.close(()=>resolve()));assert.equal(path.dirname(path.resolve(outside)),path.resolve(os.tmpdir()));fs.rmSync(outside,{recursive:true,force:true})"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 39,
+    "match": "COCREATE",
+    "context": "const keys=['NODE_OPTIONS','SUPABASE_SECRET_KEY','OPENAI_API_KEY','SESSION_SECRET','COCREATE_SYNTHETIC_SECRET'];const prior=keys.map(key=>process.env[key]);"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 75,
+    "match": "COCREATE",
+    "context": "const prior=process.env.COCREATE_ISOLATION_MODE;process.env.COCREATE_ISOLATION_MODE='unavailable';"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 75,
+    "match": "COCREATE",
+    "context": "const prior=process.env.COCREATE_ISOLATION_MODE;process.env.COCREATE_ISOLATION_MODE='unavailable';"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 77,
+    "match": "COCREATE",
+    "context": "finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior}"
+  },
+  {
+    "file": "tests/generated-isolation.test.ts",
+    "line": 77,
+    "match": "COCREATE",
+    "context": "finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior}"
+  },
+  {
+    "file": "tests/hosted-reliability.test.ts",
+    "line": 8,
+    "match": "CoCreate",
+    "context": "import { createCoCreateServer } from '../server/index.js';"
+  },
+  {
+    "file": "tests/hosted-reliability.test.ts",
+    "line": 14,
+    "match": "CoCreate",
+    "context": "const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hosted-auth-')),secret='synthetic',service=await createCoCreateServer({platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:secret});"
+  },
+  {
+    "file": "tests/hosted-reliability.test.ts",
+    "line": 37,
+    "match": "CoCreate",
+    "context": "const service=await createCoCreateServer({platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:'synthetic'});return{service,...await service.start()};"
+  },
+  {
+    "file": "tests/integration.test.ts",
+    "line": 2,
+    "match": "CoCreate",
+    "context": "import test from'node:test';import assert from'node:assert/strict';import http from'node:http';import{WebSocket}from'ws';import*as Y from'yjs';import{createCoCreateServer}from'../server/index.js';"
+  },
+  {
+    "file": "tests/integration.test.ts",
+    "line": 8,
+    "match": "CoCreate",
+    "context": "test('three collaborators create and maintain a runnable recipe app',async()=>{let builderCalls=0,builderActive=0,maxBuilderActive=0,chatCalls=0;const fake=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const body=JSON.parse(raw||'{}');if(req.url?.endsWith('/ch"
+  },
+  {
+    "file": "tests/integration.test.ts",
+    "line": 20,
+    "match": "CoCreate",
+    "context": "const goodVersion=state.latestVersion;add(docs[1],'FAIL_BUILD');assert.equal((await request(`/api/rooms/${roomId}/submit`,bob.token,{requestId:'bob-failed-build'})).status,200);await waitFor(async()=>{const next=(await request(`/api/rooms/${roomId}/state`,bob.token)).body;return next.status==='Error"
+  },
+  {
+    "file": "tests/intent-classification.test.ts",
+    "line": 67,
+    "match": "cocreate",
+    "context": "const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-reinterpret-')),"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "const jobs = () => path.join(process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate', 'jobs');"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 13,
+    "match": "cocreate",
+    "context": "const jobs = () => path.join(process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate', 'jobs');"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 110,
+    "match": "cocreate",
+    "context": "assert.ok(output.trim().endsWith('/cocreate/jobs/' + path.basename(group.directory)));"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 155,
+    "match": "COCREATE",
+    "context": "const before = process.env.COCREATE_LINUX_CGROUP_ROOT;"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 157,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_LINUX_CGROUP_ROOT = '/app';"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 160,
+    "match": "COCREATE",
+    "context": "} finally {before === undefined ? delete process.env.COCREATE_LINUX_CGROUP_ROOT : process.env.COCREATE_LINUX_CGROUP_ROOT = before;}"
+  },
+  {
+    "file": "tests/linux-cgroup-isolation.test.ts",
+    "line": 160,
+    "match": "COCREATE",
+    "context": "} finally {before === undefined ? delete process.env.COCREATE_LINUX_CGROUP_ROOT : process.env.COCREATE_LINUX_CGROUP_ROOT = before;}"
+  },
+  {
+    "file": "tests/managed-ai.test.ts",
+    "line": 31,
+    "match": "cocreate",
+    "context": "const dataDir=mkdtempSync(join(tmpdir(),'cocreate-managed-disabled-'));"
+  },
+  {
+    "file": "tests/managed-ai.test.ts",
+    "line": 47,
+    "match": "cocreate",
+    "context": "const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-'));"
+  },
+  {
+    "file": "tests/managed-ai.test.ts",
+    "line": 86,
+    "match": "cocreate",
+    "context": "const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-dispatch-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});"
+  },
+  {
+    "file": "tests/managed-ai.test.ts",
+    "line": 109,
+    "match": "cocreate",
+    "context": "const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-retry-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});"
+  },
+  {
+    "file": "tests/managed-ai.test.ts",
+    "line": 126,
+    "match": "cocreate",
+    "context": "const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-usage-'));"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 13,
+    "match": "COCREATE",
+    "context": "VITE_COCREATE_APP_ORIGIN:'https://2guys1canvas.com',"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 27,
+    "match": "COCREATE",
+    "context": "const result=supabasePlatformFromEnv({COCREATE_HOSTED:'true',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'} as NodeJS.ProcessEnv);"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 32,
+    "match": "COCREATE",
+    "context": "const mismatch=`x.${Buffer.from(JSON.stringify({ref:'another-project'})).toString('base64url')}.x`,base={COCREATE_HOSTED:'true',SUPABASE_URL:'https://dnsapasubeoxxsgkiotw.supabase.co',SUPABASE_SECRET_KEY:'sb_secret_synthetic'};"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 42,
+    "match": "COCREATE",
+    "context": "appOrigin:deployedPublicEnv.VITE_COCREATE_APP_ORIGIN,"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 49,
+    "match": "COCREATE",
+    "context": "assert.match(resolveSupabaseAuthConfig({...deployedPublicEnv,VITE_COCREATE_APP_ORIGIN:'https://example.com/path'}).error||'',/without a path/);"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 57,
+    "match": "COCREATE",
+    "context": "assert.equal(image.VITE_COCREATE_APP_ORIGIN,wrangler.vars.COCREATE_APP_ORIGINS);"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 57,
+    "match": "COCREATE",
+    "context": "assert.equal(image.VITE_COCREATE_APP_ORIGIN,wrangler.vars.COCREATE_APP_ORIGINS);"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 58,
+    "match": "COCREATE",
+    "context": "assert.equal(image.VITE_COCREATE_APP_ORIGIN,'https://2guys1canvas.com');"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 70,
+    "match": "cocreate",
+    "context": "assert.equal(safeLocalDestination('/projects/123?tab=canvas','/projects','https://cocreate.example'),'/projects/123?tab=canvas');"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 71,
+    "match": "cocreate",
+    "context": "assert.equal(safeLocalDestination('https://evil.example/steal','/projects','https://cocreate.example'),'/projects');"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 72,
+    "match": "cocreate",
+    "context": "assert.equal(safeLocalDestination('//evil.example/steal','/projects','https://cocreate.example'),'/projects');"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 96,
+    "match": "cocreate",
+    "context": "assert.doesNotMatch(source,/provider:\\s*[\"']twitch[\"']|cocreate\\.pages\\.dev|amygxtdgjlphxaetqzkk/);"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 112,
+    "match": "COCREATE",
+    "context": "const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@verified.test>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 116,
+    "match": "cocreate",
+    "context": "assert.equal((request?.init.headers as Record<string,string>)['Idempotency-Key'],'cocreate-project-invite-i2');"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 120,
+    "match": "COCREATE",
+    "context": "const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 122,
+    "match": "COCREATE",
+    "context": "const malformed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'\"2guys1canvas <invites@verified.test>\"'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 124,
+    "match": "COCREATE",
+    "context": "const placeholder=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@example.com>'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 126,
+    "match": "COCREATE",
+    "context": "const unconfirmed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response('{}',{status:200,headers:{'Content-Type':'application/json'}}));"
+  },
+  {
+    "file": "tests/project-auth.test.ts",
+    "line": 154,
+    "match": "cocreate",
+    "context": "assert.match(sql,/bucket_id = 'cocreate-artifacts'/);"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 6,
+    "match": "CoCreate",
+    "context": "import {CoCreateProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 25,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 45,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 61,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 73,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}'),setTimer:run=>{callbacks.push(run);return callbacks.length},clearTimer:()=>{}});"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 94,
+    "match": "CoCreate",
+    "context": "const provider = new CoCreateProvider(doc, 'room', 'token', () => {}, () => {}, () => {}, {"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 136,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',state=>states.push(state.persistRevision),()=>{},state=>saved.push(state),"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 154,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saved.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 164,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(new Y.Doc(),'room','bad',()=>{},state=>states.push(state),()=>{},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 173,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(new Y.Doc(),'room','token',()=>{},state=>states.push(state),()=>{},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 182,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 192,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(new Y.Doc(),'room','token',state=>states.push(state.persistRevision!),()=>{},()=>{},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 203,
+    "match": "CoCreate",
+    "context": "const doc=new Y.Doc(),provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{saves++},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 210,
+    "match": "CoCreate",
+    "context": "const doc=new Y.Doc(),provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{},"
+  },
+  {
+    "file": "tests/provider-reconnect.test.ts",
+    "line": 224,
+    "match": "CoCreate",
+    "context": "const provider=new CoCreateProvider(doc,'room','token',()=>{},status=>states.push(status),()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',maxRetries:2,random:()=>0.5,fetchImpl:async(_url,options)=>{diagnoses++;assert.equal(options?.method,undefined);return new Response('{}',{"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 69,
+    "match": "COCREATE",
+    "context": "const previous=process.env.COCREATE_VERIFICATION_BROWSER;"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 75,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_VERIFICATION_BROWSER=path.join(dir,'missing-browser.exe');"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 84,
+    "match": "COCREATE",
+    "context": "previous===undefined?delete process.env.COCREATE_VERIFICATION_BROWSER:process.env.COCREATE_VERIFICATION_BROWSER=previous;"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 84,
+    "match": "COCREATE",
+    "context": "previous===undefined?delete process.env.COCREATE_VERIFICATION_BROWSER:process.env.COCREATE_VERIFICATION_BROWSER=previous;"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 239,
+    "match": "COCREATE",
+    "context": "const prior=process.env.COCREATE_ISOLATION_MODE;"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 244,
+    "match": "COCREATE",
+    "context": "process.env.COCREATE_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await manager.submitChanges(room,'alice','two');"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 250,
+    "match": "COCREATE",
+    "context": "}finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}"
+  },
+  {
+    "file": "tests/reliability.test.ts",
+    "line": 250,
+    "match": "COCREATE",
+    "context": "}finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}"
+  },
+  {
+    "file": "tests/save-throughput.test.ts",
+    "line": 11,
+    "match": "CoCreate",
+    "context": "import { createCoCreateServer } from \"../server/index.js\";"
+  },
+  {
+    "file": "tests/save-throughput.test.ts",
+    "line": 201,
+    "match": "CoCreate",
+    "context": "const service = await createCoCreateServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: \"127.0.0.1\", sessionSecret: \"synthetic\" });"
+  },
+  {
+    "file": "tests/server-shutdown.test.ts",
+    "line": 6,
+    "match": "CoCreate",
+    "context": "import { createCoCreateServer } from '../server/index.js';"
+  },
+  {
+    "file": "tests/server-shutdown.test.ts",
+    "line": 11,
+    "match": "CoCreate",
+    "context": "const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'shutdown-test'});"
+  },
+  {
+    "file": "tests/usage-ledger.test.ts",
+    "line": 13,
+    "match": "cocreate",
+    "context": "const dir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-usage-'));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 7,
+    "match": "COCREATE",
+    "context": "COCREATE_HOSTED: \"true\","
+  },
+  {
+    "file": "worker/container.js",
+    "line": 11,
+    "match": "CoCreate",
+    "context": "export class CoCreateContainer extends Container {"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 15,
+    "match": "cocreate",
+    "context": "pingEndpoint = \"localhost/__cocreate/app-health\";"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 20,
+    "match": "COCREATE",
+    "context": "COCREATE_AUTH_MODE: \"supabase\","
+  },
+  {
+    "file": "worker/container.js",
+    "line": 25,
+    "match": "cocreate",
+    "context": "SUPABASE_ARTIFACT_BUCKET: env.SUPABASE_ARTIFACT_BUCKET || \"cocreate-artifacts\","
+  },
+  {
+    "file": "worker/container.js",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "COCREATE_APP_ORIGINS: env.COCREATE_APP_ORIGINS,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 26,
+    "match": "COCREATE",
+    "context": "COCREATE_APP_ORIGINS: env.COCREATE_APP_ORIGINS,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 27,
+    "match": "COCREATE",
+    "context": "COCREATE_PUBLIC_ORIGIN: env.COCREATE_PUBLIC_ORIGIN,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 27,
+    "match": "COCREATE",
+    "context": "COCREATE_PUBLIC_ORIGIN: env.COCREATE_PUBLIC_ORIGIN,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 29,
+    "match": "COCREATE",
+    "context": "COCREATE_EMAIL_FROM: env.COCREATE_EMAIL_FROM,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 29,
+    "match": "COCREATE",
+    "context": "COCREATE_EMAIL_FROM: env.COCREATE_EMAIL_FROM,"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 33,
+    "match": "CoCreate",
+    "context": "console.log(JSON.stringify({ message: \"CoCreate container started\" }));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 39,
+    "match": "CoCreate",
+    "context": "message: \"CoCreate container lifecycle error\","
+  },
+  {
+    "file": "worker/container.js",
+    "line": 46,
+    "match": "CoCreate",
+    "context": "console.log(JSON.stringify({ message: \"CoCreate container stopped\" }));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 52,
+    "match": "COCREATE",
+    "context": "if(!env.RESEND_API_KEY || !env.COCREATE_EMAIL_FROM || !env.SUPABASE_SECRET_KEY || !env.SUPABASE_URL)return;"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 60,
+    "match": "COCREATE",
+    "context": "const container=getContainer(env.COCREATE_CONTAINER,'primary');"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 61,
+    "match": "cocreate",
+    "context": "const readiness=await container.fetch(new Request('http://localhost/__cocreate/app-health'));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 63,
+    "match": "COCREATE",
+    "context": "if(health?.release_fingerprint!==env.COCREATE_RELEASE_FINGERPRINT)throw new Error('Beta email release is still updating.');"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 66,
+    "match": "COCREATE",
+    "context": "const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN, env.COCREATE_WWW_ORIGIN);"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 66,
+    "match": "COCREATE",
+    "context": "const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN, env.COCREATE_WWW_ORIGIN);"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 66,
+    "match": "COCREATE",
+    "context": "const redirect = legacyOriginResponse(request, env.COCREATE_PUBLIC_ORIGIN, env.COCREATE_LEGACY_ORIGIN, env.COCREATE_WWW_ORIGIN);"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 69,
+    "match": "cocreate",
+    "context": "if (url.pathname === \"/__cocreate/health\") {"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 70,
+    "match": "cocreate",
+    "context": "return Response.json({ status: \"ok\", service: \"cocreate-worker\" });"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 75,
+    "match": "COCREATE",
+    "context": "if (!/^[a-f0-9]{64}$/.test(env.COCREATE_RELEASE_FINGERPRINT || '')) return Response.json({error:'Release verification unavailable.'}, {status:503});"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 76,
+    "match": "COCREATE",
+    "context": "const container = getContainer(env.COCREATE_CONTAINER, 'primary');"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 77,
+    "match": "cocreate",
+    "context": "const readiness = await container.fetch(new Request('http://localhost/__cocreate/app-health'));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 79,
+    "match": "COCREATE",
+    "context": "if (health?.release_fingerprint !== env.COCREATE_RELEASE_FINGERPRINT) return Response.json({error:'Application release is updating. Retry shortly.'}, {status:503,headers:{'Cache-Control':'no-store'}});"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 84,
+    "match": "cocreate",
+    "context": "headers.set('x-cocreate-waitlist-key', await sign(`waitlist-ip:${request.headers.get('CF-Connecting-IP') || 'unknown'}`));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 85,
+    "match": "cocreate",
+    "context": "headers.set('x-cocreate-waitlist-proof', await sign('waitlist-proxy-v1'));"
+  },
+  {
+    "file": "worker/container.js",
+    "line": 95,
+    "match": "CoCreate",
+    "context": "message: \"CoCreate Worker routing failed\","
+  },
+  {
+    "file": "worker/container.js",
+    "line": 102,
+    "match": "CoCreate",
+    "context": "error: \"CoCreate could not start.\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 3,
+    "match": "cocreate",
+    "context": "\"name\": \"cocreate\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 32,
+    "match": "COCREATE",
+    "context": "\"COCREATE_APP_ORIGINS\": \"https://2guys1canvas.com\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 33,
+    "match": "COCREATE",
+    "context": "\"COCREATE_PUBLIC_ORIGIN\": \"https://2guys1canvas.com\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 34,
+    "match": "COCREATE",
+    "context": "\"COCREATE_EMAIL_FROM\": \"2guys1canvas <beta@2guys1canvas.com>\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 35,
+    "match": "COCREATE",
+    "context": "\"COCREATE_LEGACY_ORIGIN\": \"https://cocreate.susan981314271.workers.dev\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 35,
+    "match": "cocreate",
+    "context": "\"COCREATE_LEGACY_ORIGIN\": \"https://cocreate.susan981314271.workers.dev\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 36,
+    "match": "COCREATE",
+    "context": "\"COCREATE_WWW_ORIGIN\": \"https://www.2guys1canvas.com\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 37,
+    "match": "cocreate",
+    "context": "\"SUPABASE_ARTIFACT_BUCKET\": \"cocreate-artifacts\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 41,
+    "match": "COCREATE",
+    "context": "\"COCREATE_RELEASE_FINGERPRINT\": \"6c63bcd11ba42c1da1c633dcda405debffa597745d34f4a5c1a0c7ab75d3cb4f\""
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 45,
+    "match": "CoCreate",
+    "context": "\"class_name\": \"CoCreateContainer\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 48,
+    "match": "COCREATE",
+    "context": "\"VITE_COCREATE_APP_ORIGIN\": \"https://2guys1canvas.com\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 49,
+    "match": "COCREATE",
+    "context": "\"VITE_COCREATE_AUTH_MODE\": \"supabase\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 60,
+    "match": "COCREATE",
+    "context": "\"name\": \"COCREATE_CONTAINER\","
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 61,
+    "match": "CoCreate",
+    "context": "\"class_name\": \"CoCreateContainer\""
+  },
+  {
+    "file": "wrangler.jsonc",
+    "line": 69,
+    "match": "CoCreate",
+    "context": "\"CoCreateContainer\""
+  }
+]

@@ -1,3 +1,4 @@
+import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage, clearProjectSessionCache as clearOwnedCaches } from './browser-storage';
 import { BrandMark } from "./BrandMark";
 import {
   lazy,
@@ -140,16 +141,6 @@ const authMessage = (
       ? "Unable to sign in. Check your credentials or use password recovery."
       : "";
 
-function clearProjectSessionCache() {
-  sessionStorage.clear();
-  Object.keys(localStorage)
-    .filter(
-      (key) =>
-        key.startsWith("cocreate-session-") ||
-        key.startsWith("cocreate-product-storage-"),
-    )
-    .forEach((key) => localStorage.removeItem(key));
-}
 
 function ConfigurationError() {
   return (
@@ -249,7 +240,7 @@ function Login() {
     [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     returnTo = intendedDestination();
-  const remember = () => sessionStorage.setItem(authReturnKey, returnTo);
+  const remember = () => writeBrowserStorage(sessionStorage, authReturnKey, returnTo);
   const signInGoogle = async () => {
     if (!supabase) return;
     setBusy(true);
@@ -345,7 +336,7 @@ function Signup() {
     if (!supabase) return;
     setBusy(true);
     setError("");
-    sessionStorage.setItem(authReturnKey, returnTo);
+    writeBrowserStorage(sessionStorage, authReturnKey, returnTo);
     const result = await supabase.auth.signUp({
       email: email.trim(),
       password,
@@ -557,7 +548,7 @@ function Callback() {
         const search = location.search,
           query = new URLSearchParams(search),
           destination = safeLocalDestination(
-            query.get("next") || sessionStorage.getItem(authReturnKey),
+            query.get("next") || readBrowserStorage(sessionStorage, authReturnKey),
           ),
           existing = (await client.auth.getSession()).data.session;
         history.replaceState({}, "", location.pathname);
@@ -569,7 +560,7 @@ function Callback() {
         );
         if (!active) return;
         if (result.status === "success") {
-          sessionStorage.removeItem(authReturnKey);
+          removeBrowserStorage(sessionStorage, authReturnKey);
           location.replace(result.destination);
           return;
         }
@@ -1471,7 +1462,7 @@ function Projects({ session }: { session: Session }) {
     }
   };
   const signOut = async () => {
-    clearProjectSessionCache();
+    clearOwnedCaches(localStorage, sessionStorage);
     await supabase?.auth.signOut();
     location.replace("/login");
   };
@@ -1650,8 +1641,8 @@ function BetaAccess({ session }: { session: Session }) {
     return () => clearInterval(timer);
   }, [check]);
   const switchAccount = async () => {
-    clearProjectSessionCache();
-    sessionStorage.setItem(
+    clearOwnedCaches(localStorage, sessionStorage);
+    writeBrowserStorage(sessionStorage,
       authReturnKey,
       safeLocalDestination(`${location.pathname}${location.search}`, "/app"),
     );

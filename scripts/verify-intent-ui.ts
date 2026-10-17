@@ -6,8 +6,8 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV='production';
-process.env.COCREATE_AUTH_MODE='local';
-const { createCoCreateServer }=await import('../server/index.js');
+process.env.TWOGUYS1CANVAS_AUTH_MODE='local';
+const { createTwoGuysOneCanvasServer }=await import('../server/index.js');
 const { createSession }=await import('../server/auth.js');
 const output=path.resolve('artifacts/multiuser-step05/browser');fs.mkdirSync(output,{recursive:true});
 const wait=(ms:number)=>new Promise(resolve=>setTimeout(resolve,ms));
@@ -25,7 +25,7 @@ await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const providerAddress=fake.address();
 if(!providerAddress||typeof providerAddress==='string')throw new Error('Controlled provider did not bind a TCP port.');
 const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'reliability-browser-'));
-let service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${providerAddress.port}`});
+let service=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'browser-fixture',encryptionSecret:'browser-fixture',debounceMs:20,buildDebounceMs:80,buildCooldownMs:0,baseUrl:`http://127.0.0.1:${providerAddress.port}`});
 let room=service.manager.create(`browser-${crypto.randomUUID()}`);
 for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])service.manager.join(room,id,name);
 const connection=(await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${providerAddress.port}`,apiFormat:'responses',apiKey:'synthetic'})).id;
@@ -47,7 +47,7 @@ async function open(id:string,index:number){
   await call('Page.enable');await call('Network.enable');await call('Runtime.enable');
   await call('Page.addScriptToEvaluateOnNewDocument',{source:`window.__sockets=[];window.__ownerRetryDiagnoses=0;const NativeWebSocket=window.WebSocket;window.WebSocket=class extends NativeWebSocket{constructor(...args){if(window.__ownerRetryFixture){const url=new URL(args[0]);url.pathname='/fixture-unavailable-ws';args[0]=url.href}super(...args);window.__sockets.push(this)}};window.__intentRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).includes('/intent-commands'))window.__intentRequests.push(JSON.parse(args[1].body));if(window.__ownerRetryFixture&&String(args[0]).includes('/state')){window.__ownerRetryDiagnoses++;return Promise.resolve(new Response('{}',{status:503,headers:{'Retry-After':'2'}}))}return nativeFetch(...args)};`});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});await call('Page.navigate',{url:origin});await wait(200);
-  const token=createSession('browser-fixture',{roomId:room.id,participantId:id,name:id,role:id==='cara'?'viewer':id==='alice'?'owner':'editor'});await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`);
+  const token=createSession('browser-fixture',{roomId:room.id,participantId:id,name:id,role:id==='cara'?'viewer':id==='alice'?'owner':'editor'});await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(token)})`);
   await call('Page.navigate',{url:`${origin}/r/${room.id}`});await until(()=>evaluate("!!document.querySelector('.document-editor') && !document.querySelector('.connection-banner')"),'workspace connection');return instance;
 }
 const write=async(browser:Browser,text:string)=>{await browser.evaluate("document.querySelector('.document-editor').focus()");await browser.call('Input.insertText',{text});};
@@ -83,7 +83,7 @@ try{
   assert.equal(builderCalls,1);assert.equal(interpreterCalls,2);
   await enterSave(a);await until(()=>a.evaluate("document.querySelector('[role=alert]')?.innerText.includes('specification changed')"),'stale form rejected');
   assert.equal(room.specificationRevision,3);await snapshot(a,'stale-correction.png');
-  await click(a,'Cancel edit');await escape(a);await review(a);await click(a,'Correct my support');await typeCorrection(a,'Add searchable catalog history.');await a.evaluate("window.__nativeStorageSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key.startsWith('cocreate-intent-command-'))throw new DOMException('Controlled recovery quota failure','QuotaExceededError');return window.__nativeStorageSet.call(this,key,value)}");await enterSave(a);
+  await click(a,'Cancel edit');await escape(a);await review(a);await click(a,'Correct my support');await typeCorrection(a,'Add searchable catalog history.');await a.evaluate("window.__nativeStorageSet=Storage.prototype.setItem;Storage.prototype.setItem=function(key,value){if(key.startsWith('2guys1canvas-intent-command-'))throw new DOMException('Controlled recovery quota failure','QuotaExceededError');return window.__nativeStorageSet.call(this,key,value)}");await enterSave(a);
   await until(async()=>room.specificationRevision===4,'Alice correction saved');
   assert.ok(await a.evaluate("document.querySelector('dialog').innerText.includes('Device recovery copy is unavailable')"));await a.evaluate("Storage.prototype.setItem=window.__nativeStorageSet");
   const literal=await a.evaluate('window.__intentRequests.at(-1)');const replay=await request('alice','intent-commands',literal);assert.equal(replay.status,200);assert.equal(replay.body.specificationRevision,4);assert.equal(room.intentCorrections!.length,2);

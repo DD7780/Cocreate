@@ -45,8 +45,9 @@ public static class IsolationRunner {
   access.AddAccessRule(new FileSystemAccessRule(sid,rights,InheritanceFlags.ContainerInherit|InheritanceFlags.ObjectInherit,PropagationFlags.None,AccessControlType.Allow));
   Directory.SetAccessControl(directory,access);
  }
+ static bool OwnProfile(string profile) { return profile.StartsWith("twoguysonecanvas.isolation.",StringComparison.Ordinal)||profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal); }
  public static int Main(string[] args) {
-  if(args.Length==2&&args[0]=="cleanup"&&args[1].StartsWith("cocreate.isolation.",StringComparison.Ordinal)) { DeleteAppContainerProfile(args[1]);return 0; }
+  if(args.Length==2&&args[0]=="cleanup"&&OwnProfile(args[1])) { DeleteAppContainerProfile(args[1]);return 0; }
   IntPtr sid=IntPtr.Zero,job=IntPtr.Zero,attributes=IntPtr.Zero,capsPtr=IntPtr.Zero,handlesPtr=IntPtr.Zero,env=IntPtr.Zero;
   PROCESS_INFORMATION process=new PROCESS_INFORMATION(); string profile=null;bool created=false;
   try {
@@ -54,9 +55,9 @@ public static class IsolationRunner {
    if(args.Length!=6&&!browser)throw new ArgumentException("Invalid launcher request.");
    string runtime=Path.GetFullPath(args[0]),workspace=Path.GetFullPath(args[1]);
    profile=args[2];int parentId=int.Parse(args[3]),timeout=int.Parse(args[4]);bool permission=args[5]=="restricted";
-   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
+   if(!OwnProfile(profile)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
    var parent=Process.GetProcessById(parentId);DateTime parentStarted=parent.StartTime;
-   int hr=CreateAppContainerProfile(profile,profile,"Disposable CoCreate compiler",IntPtr.Zero,0,out sid);
+   int hr=CreateAppContainerProfile(profile,profile,"Disposable 2guys1canvas compiler",IntPtr.Zero,0,out sid);
    if(hr!=0)Marshal.ThrowExceptionForHR(hr);created=true;
    Grant(runtime,new SecurityIdentifier("S-1-15-2-1"),FileSystemRights.ReadAndExecute);
    Grant(workspace,new SecurityIdentifier(sid),FileSystemRights.ReadAndExecute);

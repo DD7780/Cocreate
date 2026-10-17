@@ -1,13 +1,13 @@
 import{spawn}from'node:child_process';import fs from'node:fs';import os from'node:os';import path from'node:path';
-import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';
+import{createTwoGuysOneCanvasServer}from'../server/index.js';import{createSession}from'../server/auth.js';
 import type{ConflictGroup}from'../shared/types.js';
 
-const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflict-ui-')),secret='conflict-ui-test';
-const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:secret});
+const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-conflict-ui-')),secret='conflict-ui-test';
+const service=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:secret});
 const room=service.manager.create('conflict-ui-room');service.manager.join(room,'alice','Alice');service.manager.join(room,'bob','Bob');
 const group:ConflictGroup={id:'conflict-header',revision:1,round:1,subject:'header',scope:'global',requirementIds:[],alternatives:[{id:'red',label:'Red header',requirementIds:[],requirementRevisions:[],sources:[]},{id:'green',label:'Green header',requirementIds:[],requirementRevisions:[],sources:[]}],requiredResolverIds:['alice','bob'],selections:[],state:'awaiting_choices',detectionStatus:'confirmed',explanation:'Choose one header color.',affectedBuildScopes:[],history:[],createdAt:'2026-09-01T00:00:00Z',updatedAt:'2026-09-01T00:00:00Z'};
 room.conflictGroups=[group];service.manager.save(room);
-const{url}=await service.start(),token=createSession(secret,{roomId:room.id,participantId:'alice',name:'Alice',role:'editor'}),chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',port=9800+process.pid%150,profile=path.join(os.tmpdir(),`cocreate-conflict-browser-${process.pid}`);
+const{url}=await service.start(),token=createSession(secret,{roomId:room.id,participantId:'alice',name:'Alice',role:'editor'}),chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',port=9800+process.pid%150,profile=path.join(os.tmpdir(),`2guys1canvas-conflict-browser-${process.pid}`);
 fs.mkdirSync(profile,{recursive:true});const browser=spawn(chrome,['--headless=new','--no-sandbox','--disable-gpu','--no-first-run',`--remote-debugging-port=${port}`,`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
 let socket:WebSocket|undefined;
 try{
@@ -19,7 +19,7 @@ try{
   const call=(method:string,params:Record<string,unknown>={})=>new Promise<any>((resolve,reject)=>{const next=++id;pending.set(next,{resolve,reject});socket!.send(JSON.stringify({id:next,method,params}))});
   const evaluate=async(expression:string)=>{const result=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});return result.result.value};
   await call('Page.enable');await call('Runtime.enable');await call('Page.navigate',{url});await new Promise(resolve=>setTimeout(resolve,250));
-  await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`);await call('Page.navigate',{url:`${url}/r/${room.id}`});
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(token)})`);await call('Page.navigate',{url:`${url}/r/${room.id}`});
   for(let i=0;i<80;i++){if(await evaluate("document.body.innerText.includes('Build my changes')"))break;await new Promise(resolve=>setTimeout(resolve,100))}
   await evaluate(`[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Review items'))?.click()`);
   const form=await evaluate(`({radioCount:document.querySelectorAll('.conflict-choice input[type=radio]').length,legend:document.querySelector('.conflict-choice legend')?.textContent,button:document.querySelector('.conflict-choice button[type=submit]')?.textContent})`);

@@ -1,0 +1,131 @@
+TAP version 13
+# (node:27712) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: canonical env values take precedence, including explicit empty values; old deployment inputs still work
+ok 1 - canonical env values take precedence, including explicit empty values; old deployment inputs still work
+  ---
+  duration_ms: 2.3186
+  type: 'test'
+  ...
+# Subtest: legacy browser sessions, preview data and uncertain intent identities survive mixed-version reads/writes
+ok 2 - legacy browser sessions, preview data and uncertain intent identities survive mixed-version reads/writes
+  ---
+  duration_ms: 1.5115
+  type: 'test'
+  ...
+# Subtest: sign-out clears both project/session namespaces while preserving unrelated user data
+ok 3 - sign-out clears both project/session namespaces while preserving unrelated user data
+  ---
+  duration_ms: 1.9192
+  type: 'test'
+  ...
+# Subtest: fresh SQLite uses the canonical name; existing legacy events, MIME receipts and authored content reopen unchanged
+ok 4 - fresh SQLite uses the canonical name; existing legacy events, MIME receipts and authored content reopen unchanged
+  ---
+  duration_ms: 109.7583
+  type: 'test'
+  ...
+# Subtest: new preview interoperates with 2guys1canvas parent without changing authored content or accepting outsider initialization
+ok 5 - new preview interoperates with 2guys1canvas parent without changing authored content or accepting outsider initialization
+  ---
+  duration_ms: 2.2535
+  type: 'test'
+  ...
+# Subtest: new preview interoperates with cocreate parent without changing authored content or accepting outsider initialization
+ok 6 - new preview interoperates with cocreate parent without changing authored content or accepting outsider initialization
+  ---
+  duration_ms: 1.1772
+  type: 'test'
+  ...
+# Subtest: generated/exported identity is canonical while user source bytes and download authorization stay intact
+ok 7 - generated/exported identity is canonical while user source bytes and download authorization stay intact
+  ---
+  duration_ms: 216.5372
+  type: 'test'
+  ...
+# Subtest: model schema identity is canonical and user requests remain verbatim
+ok 8 - model schema identity is canonical and user requests remain verbatim
+  ---
+  duration_ms: 35.1095
+  type: 'test'
+  ...
+# Subtest: rendered email branding is canonical and provider idempotency remains compatible without sending email
+ok 9 - rendered email branding is canonical and provider idempotency remains compatible without sending email
+  ---
+  duration_ms: 4.8838
+  type: 'test'
+  ...
+# (node:12156) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:12156) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# Subtest: an indefinitely queued canonical commit ends the flush wait without releasing the write queue or acknowledging late
+ok 10 - an indefinitely queued canonical commit ends the flush wait without releasing the write queue or acknowledging late
+  ---
+  duration_ms: 167.6978
+  type: 'test'
+  ...
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 11 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1327.6475
+  type: 'test'
+  ...
+# Subtest: flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+ok 12 - flush acknowledges its canonical snapshot even while the separate recovery journal is delayed
+  ---
+  duration_ms: 128.1754
+  type: 'test'
+  ...
+# Subtest: a delayed journal failure cannot mark a successfully committed document unsynced
+ok 13 - a delayed journal failure cannot mark a successfully committed document unsynced
+  ---
+  duration_ms: 128.4992
+  type: 'test'
+  ...
+# Subtest: flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+ok 14 - flush persists deletions and attributed edits, and a failed canonical save never acknowledges or consumes them
+  ---
+  duration_ms: 184.932
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=false
+ok 15 - outbound receipt bursts use bounded fresh authorization batches; revoked=false
+  ---
+  duration_ms: 867.5351
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=true
+ok 16 - outbound receipt bursts use bounded fresh authorization batches; revoked=true
+  ---
+  duration_ms: 633.8797
+  type: 'test'
+  ...
+# Subtest: outbound receipt bursts use bounded fresh authorization batches; revoked=later
+ok 17 - outbound receipt bursts use bounded fresh authorization batches; revoked=later
+  ---
+  duration_ms: 670.9055
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"c34d1242-a3ec-40d0-9b79-a6731f7b7668","correlationId":"edb5ad56-e74c-4fc3-b99b-123cd2a580c0"}
+# {"event":"collaboration.disconnected","connectionId":"c34d1242-a3ec-40d0-9b79-a6731f7b7668","code":4403}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+ok 18 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 581.4028
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 19 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 7564.7033
+  type: 'test'
+  ...
+1..19
+# tests 19
+# suites 0
+# pass 19
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 19661.7755

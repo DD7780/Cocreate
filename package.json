@@ -1,5 +1,5 @@
 {
-  "name": "cocreate",
+  "name": "2guys1canvas",
   "version": "1.0.0",
   "private": true,
   "type": "module",
@@ -10,7 +10,7 @@
     "dev": "tsx server/index.ts",
     "build": "tsc --noEmit && vite build --configLoader runner",
     "start": "cross-env NODE_ENV=production tsx server/index.ts",
-    "test": "cross-env COCREATE_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts",
+    "test": "cross-env TWOGUYS1CANVAS_AUTH_MODE=local tsx --test --test-concurrency=1 tests/*.test.ts",
     "deploy:cloudflare": "wrangler deploy",
     "migrate:legacy": "tsx scripts/migrate-legacy-to-supabase.ts",
     "audit:code": "tsx scripts/codebase-audit.ts",

@@ -4,7 +4,7 @@ import path from 'node:path';
 import {mkdtemp,rm} from 'node:fs/promises';
 import {WebSocket} from 'ws';
 import * as Y from 'yjs';
-import {createCoCreateServer} from '../server/index.js';
+import {createTwoGuysOneCanvasServer} from '../server/index.js';
 
 type Sample={openMs:number;propagationMs:number;flushMs:number;catchUpMs:number;messages:number;bytes:number;stateMessages:number;subscriptions:number};
 const wait=(predicate:()=>boolean,timeout=5_000)=>new Promise<void>((resolve,reject)=>{const started=performance.now(),timer=setInterval(()=>{if(predicate()){clearInterval(timer);resolve()}else if(performance.now()-started>timeout){clearInterval(timer);reject(new Error('Benchmark timed out'))}},2)});
@@ -13,8 +13,8 @@ const median=(values:number[])=>{const sorted=[...values].sort((a,b)=>a-b);retur
 async function run(size:number,samples:number){
   const results:Sample[]=[];
   for(let sample=0;sample<samples;sample++){
-    const dataDir=await mkdtemp(path.join(os.tmpdir(),'cocreate-responsive-'));
-    const app=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'benchmark-session',encryptionSecret:'benchmark-encryption'}),info=await app.start();
+    const dataDir=await mkdtemp(path.join(os.tmpdir(),'2guys1canvas-responsive-'));
+    const app=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'benchmark-session',encryptionSecret:'benchmark-encryption'}),info=await app.start();
     try{
       const post=async(url:string,body:unknown,token?:string)=>fetch(`${info.url}${url}`,{method:'POST',headers:{'Content-Type':'application/json',...(token?{Authorization:`Bearer ${token}`}:{})},body:JSON.stringify(body)}).then(response=>response.json());
       const roomId=(await post('/api/rooms',{})).roomId,alice=await post('/api/session',{roomId,name:'Alice'}),bob=await post('/api/session',{roomId,name:'Bob'});

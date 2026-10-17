@@ -1,0 +1,9 @@
+{
+  "checks": {
+    "scope": "Built local UI; synthetic authenticated room/account and real browser storage. No hosted service, live email or provider calls.",
+    "landing": true,
+    "canvas": true,
+    "legacyAuthenticatedReopen": true
+  },
+  "error": "Error: {\"exceptionId\":1,\"text\":\"Uncaught (in promise) Error: Deletion lost\",\"lineNumber\":10,\"columnNumber\":145,\"scriptId\":\"15\",\"stackTrace\":{\"callFrames\":[{\"functionName\":\"\",\"scriptId\":\"15\",\"url\":\"\",\"lineNumber\":9,\"columnNumber\":144}]},\"exception\":{\"type\":\"object\",\"subtype\":\"error\",\"className\":\"Error\",\"description\":\"Error: Deletion lost\\n    at <anonymous>:10:145\",\"objectId\":\"8639547105105288093.3.1\"}}"
+}

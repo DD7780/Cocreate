@@ -6,8 +6,8 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
-process.env.COCREATE_AUTH_MODE = 'local';
-const { createCoCreateServer } = await import('../server/index.js');
+process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
 const output = path.resolve('artifacts/multiuser-step06/browser');
 fs.mkdirSync(output, { recursive: true });
@@ -41,7 +41,7 @@ const fake = http.createServer(async (request, response) => {
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const address = fake.address(); assert.ok(address && typeof address !== 'string');
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(),'progress-browser-'));
-const service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+const service = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
 const room = service.manager.create(`progress-${crypto.randomUUID()}`);
 for (const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']]) service.manager.join(room,id,name);
 const connection = await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${address.port}`,apiFormat:'responses',apiKey:'synthetic'});
@@ -80,7 +80,7 @@ async function open(id:string,index:number): Promise<Browser> {
   await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/submit'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin}); await wait(200);
-  await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(session(id))})`);
   await call('Page.navigate',{url:`${origin}/r/${room.id}`});
   await until(()=>evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')"),'workspace connection');
   return browser;

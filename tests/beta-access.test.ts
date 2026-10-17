@@ -6,7 +6,7 @@ import path from "node:path";
 import { createHmac } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import { WebSocket } from "ws";
-import { createCoCreateServer } from "../server/index.js";
+import { createTwoGuysOneCanvasServer } from "../server/index.js";
 import { createSession } from "../server/auth.js";
 import {
   LocalWaitlist,
@@ -19,7 +19,7 @@ import {
   supabasePlatformFromEnv,
 } from "../server/supabase-platform.js";
 
-const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), "cocreate-beta-"));
+const temp = () => fs.mkdtempSync(path.join(os.tmpdir(), "2guys1canvas-beta-"));
 const cleanup = (dir: string) => {
   assert.ok(path.resolve(dir).startsWith(path.resolve(os.tmpdir()) + path.sep));
   fs.rmSync(dir, { recursive: true, force: true });
@@ -27,7 +27,7 @@ const cleanup = (dir: string) => {
 
 test("anonymous registration commits before success, retries dedupe, and restart preserves consent and limits", async () => {
   const dir = temp();
-  let service = await createCoCreateServer({
+  let service = await createTwoGuysOneCanvasServer({
     dataDir: dir,
     serveClient: false,
     port: 0,
@@ -75,7 +75,7 @@ test("anonymous registration commits before success, retries dedupe, and restart
     db.close();
     assert.equal((await fetch(url + "/api/beta/waitlist")).status, 404);
     await service.stop();
-    service = await createCoCreateServer({
+    service = await createTwoGuysOneCanvasServer({
       dataDir: dir,
       serveClient: false,
       port: 0,
@@ -144,7 +144,7 @@ test("registration requires valid email and explicit consent, and forwarded rate
   const req = {
     headers: {
       "x-forwarded-for": "1.2.3.4",
-      "x-cocreate-waitlist-key": "a".repeat(64),
+      "x-2guys1canvas-waitlist-key": "a".repeat(64),
     },
     socket: { remoteAddress: "127.0.0.1" },
   } as any;
@@ -152,14 +152,14 @@ test("registration requires valid email and explicit consent, and forwarded rate
   req.headers["x-forwarded-for"] = "8.8.8.8";
   assert.equal(waitlistClientKey(req, "secret"), first);
   assert.notEqual(first, "a".repeat(64));
-  req.headers["x-cocreate-waitlist-proof"] = createHmac("sha256", "secret")
+  req.headers["x-2guys1canvas-waitlist-proof"] = createHmac("sha256", "secret")
     .update("waitlist-proxy-v1")
     .digest("hex");
   assert.equal(waitlistClientKey(req, "secret"), "a".repeat(64));
   assert.equal(
     supabasePlatformFromEnv({
-      COCREATE_HOSTED: "true",
-      COCREATE_AUTH_MODE: "local",
+      TWOGUYS1CANVAS_HOSTED: "true",
+      TWOGUYS1CANVAS_AUTH_MODE: "local",
     }).mode,
     "supabase",
   );
@@ -293,7 +293,7 @@ test("unapproved accounts cannot read APIs, previews, downloads, socket upgrades
   const dir = temp(),
     fixture = hostedFixture(),
     secret = "synthetic-beta",
-    service = await createCoCreateServer({
+    service = await createTwoGuysOneCanvasServer({
       platform: fixture.platform,
       dataDir: dir,
       serveClient: false,

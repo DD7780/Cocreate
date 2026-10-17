@@ -3,10 +3,10 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { Client } from 'pg';
-const connectionString = process.env.COCREATE_COORDINATOR_TEST_DATABASE_URL;
-const owner = process.env.COCREATE_COORDINATOR_TEST_OWNER_ID;
+const connectionString = (process.env.TWOGUYS1CANVAS_COORDINATOR_TEST_DATABASE_URL ?? process.env.COCREATE_COORDINATOR_TEST_DATABASE_URL);
+const owner = (process.env.TWOGUYS1CANVAS_COORDINATOR_TEST_OWNER_ID ?? process.env.COCREATE_COORDINATOR_TEST_OWNER_ID);
 if (!connectionString || !owner)
-    throw new Error('Set COCREATE_COORDINATOR_TEST_DATABASE_URL and COCREATE_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.');
+    throw new Error('Set TWOGUYS1CANVAS_COORDINATOR_TEST_DATABASE_URL and TWOGUYS1CANVAS_COORDINATOR_TEST_OWNER_ID for a disposable migrated local Supabase database. No SQL executed.');
 const target = new URL(connectionString);
 if (!['localhost', '127.0.0.1', '[::1]'].includes(target.hostname) || !target.pathname.endsWith('/coordinator_step02_test'))
     throw new Error('Only loopback database coordinator_step02_test is allowed. No SQL executed.');

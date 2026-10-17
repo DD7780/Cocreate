@@ -1,0 +1,198 @@
+TAP version 13
+# Subtest: server-signed attribution cannot be changed by the client
+ok 1 - server-signed attribution cannot be changed by the client
+  ---
+  duration_ms: 4.2578
+  type: 'test'
+  ...
+# Subtest: independent concurrent Yjs edits merge without lost text
+ok 2 - independent concurrent Yjs edits merge without lost text
+  ---
+  duration_ms: 11.2629
+  type: 'test'
+  ...
+# Subtest: only the newest orchestration revision can be promoted
+ok 3 - only the newest orchestration revision can be promoted
+  ---
+  duration_ms: 0.2631
+  type: 'test'
+  ...
+# Subtest: generation errors retain the last success and block unsafe code
+ok 4 - generation errors retain the last success and block unsafe code
+  ---
+  duration_ms: 1.1524
+  type: 'test'
+  ...
+# Subtest: custom provider URLs require HTTPS except for local testing
+ok 5 - custom provider URLs require HTTPS except for local testing
+  ---
+  duration_ms: 0.8504
+  type: 'test'
+  ...
+# Subtest: provider model discovery returns exact account model IDs
+ok 6 - provider model discovery returns exact account model IDs
+  ---
+  duration_ms: 47.1573
+  type: 'test'
+  ...
+# Subtest: multi-file project compiles to an isolated React preview
+ok 7 - multi-file project compiles to an isolated React preview
+  ---
+  duration_ms: 6153.4058
+  type: 'test'
+  ...
+# Subtest: save wait supports a five-second acknowledgement while typing, then submits once
+ok 8 - save wait supports a five-second acknowledgement while typing, then submits once
+  ---
+  duration_ms: 11.612
+  type: 'test'
+  ...
+# Subtest: missing acknowledgement ends unsynced, and a late reply cannot start a build
+ok 9 - missing acknowledgement ends unsynced, and a late reply cannot start a build
+  ---
+  duration_ms: 2.8941
+  type: 'test'
+  ...
+# Subtest: explicit flush failure ends pending save status and dispatches nothing
+ok 10 - explicit flush failure ends pending save status and dispatches nothing
+  ---
+  duration_ms: 1.0706
+  type: 'test'
+  ...
+# Subtest: a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+ok 11 - a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt
+  ---
+  duration_ms: 41.6632
+  type: 'test'
+  ...
+# Subtest: Build my changes slow-save keeps progress or reports failure before any submission
+ok 12 - Build my changes slow-save keeps progress or reports failure before any submission
+  ---
+  duration_ms: 9.7396
+  type: 'test'
+  ...
+# Subtest: Build my changes timeout keeps progress or reports failure before any submission
+ok 13 - Build my changes timeout keeps progress or reports failure before any submission
+  ---
+  duration_ms: 2.8172
+  type: 'test'
+  ...
+# Subtest: Build my changes rejected-save keeps progress or reports failure before any submission
+ok 14 - Build my changes rejected-save keeps progress or reports failure before any submission
+  ---
+  duration_ms: 6.3783
+  type: 'test'
+  ...
+# Subtest: Build my changes disconnect keeps progress or reports failure before any submission
+ok 15 - Build my changes disconnect keeps progress or reports failure before any submission
+  ---
+  duration_ms: 2.2308
+  type: 'test'
+  ...
+# Subtest: delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+ok 16 - delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored
+  ---
+  duration_ms: 3.9019
+  type: 'test'
+  ...
+# Subtest: retry delay is capped exponential backoff with bounded jitter
+ok 17 - retry delay is capped exponential backoff with bounded jitter
+  ---
+  duration_ms: 0.6208
+  type: 'test'
+  ...
+# Subtest: a receipt predating a deletion cannot mark the deleted draft saved
+ok 18 - a receipt predating a deletion cannot mark the deleted draft saved
+  ---
+  duration_ms: 1.5972
+  type: 'test'
+  ...
+# Subtest: invalid sessions become actionable terminal errors without retrying
+ok 19 - invalid sessions become actionable terminal errors without retrying
+  ---
+  duration_ms: 2.6684
+  type: 'test'
+  ...
+# Subtest: transient failures use one timer, stop after the cap, and never duplicate sockets
+ok 20 - transient failures use one timer, stop after the cap, and never duplicate sockets
+  ---
+  duration_ms: 27.5224
+  type: 'test'
+  ...
+# Subtest: an edit made while disconnected is offered to the server after reconnect state-vector sync
+ok 21 - an edit made while disconnected is offered to the server after reconnect state-vector sync
+  ---
+  duration_ms: 2.1128
+  type: 'test'
+  ...
+# Subtest: a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+ok 22 - a new connection can recover a lower authoritative cursor after uncommitted server events disappear
+  ---
+  duration_ms: 1.7216
+  type: 'test'
+  ...
+# Subtest: disconnect rejects an in-flight flush and destroy removes document listeners
+ok 23 - disconnect rejects an in-flight flush and destroy removes document listeners
+  ---
+  duration_ms: 2.0851
+  type: 'test'
+  ...
+# Subtest: burst edits share one transport update and explicit flush drains before acknowledgement
+ok 24 - burst edits share one transport update and explicit flush drains before acknowledgement
+  ---
+  duration_ms: 1.5692
+  type: 'test'
+  ...
+# Subtest: owner unavailability honors bounded retry hints, retains edits, and ends without inference
+ok 25 - owner unavailability honors bounded retry hints, retains edits, and ends without inference
+  ---
+  duration_ms: 22.5812
+  type: 'test'
+  ...
+# (node:11224) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: save rejection is reported, keeps an uncertain request ID, and never submits
+ok 26 - save rejection is reported, keeps an uncertain request ID, and never submits
+  ---
+  duration_ms: 1.5649
+  type: 'test'
+  ...
+# Subtest: owner retries a confirmed failure on the next click and captures only their own edits
+ok 27 - owner retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 294.1183
+  type: 'test'
+  ...
+# Subtest: invited editor retries a confirmed failure on the next click and captures only their own edits
+ok 28 - invited editor retries a confirmed failure on the next click and captures only their own edits
+  ---
+  duration_ms: 198.9722
+  type: 'test'
+  ...
+# Subtest: a lost successful reply replays the original receipt without inference or consuming newer edits
+ok 29 - a lost successful reply replays the original receipt without inference or consuming newer edits
+  ---
+  duration_ms: 168.3531
+  type: 'test'
+  ...
+# Subtest: recovery stops after one fresh attempt and retains its identity on another uncertain failure
+ok 30 - recovery stops after one fresh attempt and retains its identity on another uncertain failure
+  ---
+  duration_ms: 1.5055
+  type: 'test'
+  ...
+# Subtest: a failed response is shown as failure and does not automatically submit again
+ok 31 - a failed response is shown as failure and does not automatically submit again
+  ---
+  duration_ms: 0.8456
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 9067.0665

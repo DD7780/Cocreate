@@ -19,7 +19,7 @@ const session = await fetch(`${origin}/api/session`, {
 }).then(response => response.json());
 
 const port = 9750 + (process.pid % 150);
-const profile = path.join(os.tmpdir(), `cocreate-capture-${process.pid}-${Date.now()}`);
+const profile = path.join(os.tmpdir(), `2guys1canvas-capture-${process.pid}-${Date.now()}`);
 fs.mkdirSync(profile, { recursive: true });
 const browser = spawn(chrome, [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-gpu-sandbox',
@@ -68,7 +68,7 @@ try {
   await call('Runtime.enable');
   await call('Page.navigate', { url: origin });
   await wait(500);
-  await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('2guys1canvas-name','Alex Morgan')`);
   await call('Page.navigate', { url: `${origin}/r/${room.roomId}` });
   for (let attempt = 0; attempt < 60 && !await evaluate(`!!document.querySelector('.document-editor')`); attempt += 1) await wait(100);
   await evaluate(`document.querySelector('[aria-label="Close API connections"], [aria-label="Close AI setup"]')?.click();document.querySelector('.document-editor')?.focus()`);
@@ -127,7 +127,7 @@ try {
   if(!workflow || !await evaluate(`!!document.querySelector('.agent-panel')`))throw new Error('Workflow view or Shared Intent panel failed.');
   const workflowShot=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:false});
   fs.writeFileSync(path.join(outputDir,label+'-workflow.png'),Buffer.from(workflowShot.data,'base64'));
-  const localRecords=await evaluate(`new Promise((resolve,reject)=>{const r=indexedDB.open('cocreate-drafts-v1');r.onsuccess=()=>{const db=r.result;const tx=db.transaction('documents');const count=tx.objectStore('documents').count();tx.oncomplete=()=>{resolve(count.result);db.close()};tx.onerror=()=>reject(tx.error)};r.onerror=()=>reject(r.error)})`);
+  const localRecords=await evaluate(`new Promise((resolve,reject)=>{const r=indexedDB.open('2guys1canvas-drafts-v1');r.onsuccess=()=>{const db=r.result;const tx=db.transaction('documents');const count=tx.objectStore('documents').count();tx.oncomplete=()=>{resolve(count.result);db.close()};tx.onerror=()=>reject(tx.error)};r.onerror=()=>reject(r.error)})`);
   if(!localRecords)throw new Error('No IndexedDB draft was persisted.');
   fs.writeFileSync(path.join(outputDir,label+'-checks.json'),JSON.stringify({label,metrics,split,longDocument,dialog,focusReturned,workflow,localRecords},null,2));
   console.log(JSON.stringify({ label, metrics, split, longDocument, dialog, focusReturned, workflow,localRecords }));

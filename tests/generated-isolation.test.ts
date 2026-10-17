@@ -25,18 +25,18 @@ test('OS boundary without Node permissions denies an existing private host file,
   fs.writeFileSync(secret,'synthetic private sentinel');let connects=0;
   const server=net.createServer(socket=>{connects++;socket.destroy()});server.listen(0,'127.0.0.1');await once(server,'listening');
   const address=server.address();assert.ok(address&&typeof address!=='string');
-  const prior=process.env.COCREATE_SYNTHETIC_SECRET;process.env.COCREATE_SYNTHETIC_SECRET='synthetic-only';
+  const prior=process.env.TWOGUYS1CANVAS_SYNTHETIC_SECRET;process.env.TWOGUYS1CANVAS_SYNTHETIC_SECRET='synthetic-only';
   try{
     let pid=0;const result=await runIsolated({operation:'probe',outside:secret,port:address.port},{osProbe:true,onStarted:value=>pid=value}) as any;
     assert.equal(result.readOutside.allowed,false);assert.equal(result.writeOutside.allowed,false);
-    assert.equal(result.network.allowed,false);assert.equal(connects,0);assert.equal(result.environment.includes('COCREATE_SYNTHETIC_SECRET'),false);
+    assert.equal(result.network.allowed,false);assert.equal(connects,0);assert.equal(result.environment.includes('TWOGUYS1CANVAS_SYNTHETIC_SECRET'),false);
     assert.equal(fs.readFileSync(secret,'utf8'),'synthetic private sentinel');assert.ok(pid);noChild(pid);noJobs();
-  }finally{prior===undefined?delete process.env.COCREATE_SYNTHETIC_SECRET:process.env.COCREATE_SYNTHETIC_SECRET=prior;await new Promise<void>(resolve=>server.close(()=>resolve()));assert.equal(path.dirname(path.resolve(outside)),path.resolve(os.tmpdir()));fs.rmSync(outside,{recursive:true,force:true})}
+  }finally{prior===undefined?delete process.env.TWOGUYS1CANVAS_SYNTHETIC_SECRET:process.env.TWOGUYS1CANVAS_SYNTHETIC_SECRET=prior;await new Promise<void>(resolve=>server.close(()=>resolve()));assert.equal(path.dirname(path.resolve(outside)),path.resolve(os.tmpdir()));fs.rmSync(outside,{recursive:true,force:true})}
 });
 
 test('restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads',async()=>{
   const server=net.createServer(socket=>socket.destroy());server.listen(0,'127.0.0.1');await once(server,'listening');const address=server.address();assert.ok(address&&typeof address!=='string');
-  const keys=['NODE_OPTIONS','SUPABASE_SECRET_KEY','OPENAI_API_KEY','SESSION_SECRET','COCREATE_SYNTHETIC_SECRET'];const prior=keys.map(key=>process.env[key]);
+  const keys=['NODE_OPTIONS','SUPABASE_SECRET_KEY','OPENAI_API_KEY','SESSION_SECRET','TWOGUYS1CANVAS_SYNTHETIC_SECRET'];const prior=keys.map(key=>process.env[key]);
   for(const key of keys)process.env[key]='synthetic injection or secret';
   try{
     let pid=0;const result=await runIsolated({operation:'probe',outside:path.resolve('context.md'),port:address.port},{onStarted:value=>pid=value}) as any;
@@ -72,9 +72,9 @@ test('memory exhaustion cannot escape the OS bound and leaves no child work',asy
 });
 
 test('unavailable isolation fails explicitly and cannot fall back to host compilation',async()=>{
-  const prior=process.env.COCREATE_ISOLATION_MODE;process.env.COCREATE_ISOLATION_MODE='unavailable';
+  const prior=process.env.TWOGUYS1CANVAS_ISOLATION_MODE;process.env.TWOGUYS1CANVAS_ISOLATION_MODE='unavailable';
   try{await assert.rejects(bundleProject(files),(error:IsolationError)=>error.code==='isolation_unavailable'&&error.message.includes('no host execution fallback'));noJobs()}
-  finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior}
+  finally{prior===undefined?delete process.env.TWOGUYS1CANVAS_ISOLATION_MODE:process.env.TWOGUYS1CANVAS_ISOLATION_MODE=prior}
 });
 
 

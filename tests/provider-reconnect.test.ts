@@ -3,7 +3,7 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import * as Y from 'yjs';
 import { deletionSignature } from '../shared/document-state.js';
-import {CoCreateProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
+import {TwoGuysOneCanvasProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
 import {submitDraftChanges} from '../src/submit-changes.js';
 
 class FakeWebSocket {
@@ -22,7 +22,7 @@ const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteO
 
 test('save wait supports a five-second acknowledgement while typing, then submits once',async()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[],timers=new Map<number,{at:number,run:()=>void}>();let now=0,id=0,submits=0;
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
     WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',
     setTimer:(run,delay)=>{timers.set(++id,{at:now+delay,run});return id},clearTimer:id=>{timers.delete(id)}
   });
@@ -42,7 +42,7 @@ test('save wait supports a five-second acknowledgement while typing, then submit
 
 test('missing acknowledgement ends unsynced, and a late reply cannot start a build',async()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[],timers=new Map<number,()=>void>();let id=0,submits=0;
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{
     WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:run=>{timers.set(++id,run);return id},clearTimer:id=>{timers.delete(id)}
   });
   try{
@@ -58,7 +58,7 @@ test('missing acknowledgement ends unsynced, and a late reply cannot start a bui
 
 test('explicit flush failure ends pending save status and dispatches nothing',async()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saves:string[]=[];
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
   try{
     const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'kept');const waiting=provider.flush();
     const request=JSON.parse(socket.sent.at(-1) as string);socket.message(JSON.stringify({type:'flush-error',requestId:request.requestId,message:'Snapshot was not confirmed.'}));
@@ -70,7 +70,7 @@ test('a deletion-only disconnected edit restores on reconnect and needs its own 
   FakeWebSocket.instances=[];const doc=new Y.Doc(),remote=new Y.Doc(),callbacks:(()=>void)[]=[],saves:string[]=[];
   doc.getText('draft').insert(0,'Remove this');Y.applyUpdate(remote,Y.encodeStateAsUpdate(doc));
   const oldDeletions=deletionSignature(doc),vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}'),setTimer:run=>{callbacks.push(run);return callbacks.length},clearTimer:()=>{}});
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}'),setTimer:run=>{callbacks.push(run);return callbacks.length},clearTimer:()=>{}});
   try{
     FakeWebSocket.instances[0].open();FakeWebSocket.instances[0].close();await tick();doc.getText('draft').delete(0,11);callbacks.shift()!();
     const socket=FakeWebSocket.instances[1];socket.open();const remoteVector=Y.encodeStateVector(remote),packet=new Uint8Array(remoteVector.length+1);packet[0]=2;packet.set(remoteVector,1);socket.message(binary(packet));
@@ -91,7 +91,7 @@ for (const outcome of ['slow-save', 'timeout', 'rejected-save', 'disconnect'] as
       for (const [id, timer] of timers) if (timer.at <= clock) { timers.delete(id); timer.callback(); }
     };
     const doc = new Y.Doc(), notices: string[] = [], errors: string[] = [];
-    const provider = new CoCreateProvider(doc, 'room', 'token', () => {}, () => {}, () => {}, {
+    const provider = new TwoGuysOneCanvasProvider(doc, 'room', 'token', () => {}, () => {}, () => {}, {
       WebSocketImpl: FakeWebSocket as any, origin: 'http://example.test',
       fetchImpl: async () => new Response('{}'),
       setTimer: (callback, delay) => { timers.set(++timerId, { at: clock + delay, callback }); return timerId; },
@@ -133,7 +133,7 @@ for (const outcome of ['slow-save', 'timeout', 'rejected-save', 'disconnect'] as
 
 test('delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored',()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saved:string[]=[],states:number[]=[];
-  const provider=new CoCreateProvider(doc,'room','token',state=>states.push(state.persistRevision),()=>{},state=>saved.push(state),
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',state=>states.push(state.persistRevision),()=>{},state=>saved.push(state),
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>0,clearTimer:()=>{}});
   const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'A');const oldVector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');doc.getText('draft').insert(1,'B');
   socket.message(JSON.stringify({type:'saved',revision:1,vector:oldVector,savedAt:'2026-10-01T00:00:00Z'}));assert.notEqual(saved.at(-1),'saved');
@@ -151,7 +151,7 @@ test('retry delay is capped exponential backoff with bounded jitter',()=>{
 
 test('a receipt predating a deletion cannot mark the deleted draft saved',()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),saved:string[]=[];
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},state=>saved.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saved.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}});
   const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'Remove me');
   const vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64'),deletions=deletionSignature(doc);
   doc.getText('draft').delete(0,9);socket.message(JSON.stringify({type:'saved',revision:1,vector,deletions}));assert.equal(saved.at(-1),'saving');
@@ -161,7 +161,7 @@ test('a receipt predating a deletion cannot mark the deleted draft saved',()=>{
 
 test('invalid sessions become actionable terminal errors without retrying',async()=>{
   FakeWebSocket.instances=[];const states:ConnectionStatus[]=[],timers:(()=>void)[]=[];
-  const provider=new CoCreateProvider(new Y.Doc(),'room','bad',()=>{},state=>states.push(state),()=>{},
+  const provider=new TwoGuysOneCanvasProvider(new Y.Doc(),'room','bad',()=>{},state=>states.push(state),()=>{},
     {WebSocketImpl:FakeWebSocket as any,origin:'https://example.test',fetchImpl:async()=>new Response('{}',{status:401}),setTimer:callback=>{timers.push(callback);return timers.length},clearTimer:()=>{}});
   FakeWebSocket.instances[0].close();await tick();
   const last=states.at(-1);assert.equal(last?.state,'error');assert.equal(last?.state==='error'&&last.reason,'invalid-session');assert.equal(timers.length,0);
@@ -170,7 +170,7 @@ test('invalid sessions become actionable terminal errors without retrying',async
 
 test('transient failures use one timer, stop after the cap, and never duplicate sockets',async()=>{
   FakeWebSocket.instances=[];const states:ConnectionStatus[]=[],timers=new Map<number,()=>void>();let timerId=0;
-  const provider=new CoCreateProvider(new Y.Doc(),'room','token',()=>{},state=>states.push(state),()=>{},
+  const provider=new TwoGuysOneCanvasProvider(new Y.Doc(),'room','token',()=>{},state=>states.push(state),()=>{},
     {WebSocketImpl:FakeWebSocket as any,origin:'https://example.test',fetchImpl:async()=>new Response('{}',{status:200}),maxRetries:2,random:()=>0.5,setTimer:callback=>{timers.set(++timerId,callback);return timerId},clearTimer:id=>{timers.delete(id)}});
   for(let attempt=0;attempt<3;attempt++){FakeWebSocket.instances.at(-1)!.close();await tick();const timer=[...timers.entries()].at(-1);if(timer){timers.delete(timer[0]);timer[1]()}}
   const last=states.at(-1);assert.equal(FakeWebSocket.instances.length,3);assert.equal(last?.state,'error');assert.equal(last?.state==='error'&&last.reason,'unavailable');assert.equal(timers.size,0);
@@ -179,7 +179,7 @@ test('transient failures use one timer, stop after the cap, and never duplicate 
 
 test('an edit made while disconnected is offered to the server after reconnect state-vector sync',async()=>{
   FakeWebSocket.instances=[];const callbacks:(()=>void)[]=[];const doc=new Y.Doc();
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{},
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},()=>{},
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),random:()=>0.5,setTimer:callback=>{callbacks.push(callback);return callbacks.length},clearTimer:()=>{}});
   FakeWebSocket.instances[0].close();await tick();doc.getText('draft').insert(0,'kept offline');callbacks.shift()?.();
   const restored=FakeWebSocket.instances[1];restored.open();const remote=new Y.Doc(),vector=Y.encodeStateVector(remote),packet=new Uint8Array(vector.length+1);packet[0]=2;packet.set(vector,1);restored.message(binary(packet));
@@ -189,7 +189,7 @@ test('an edit made while disconnected is offered to the server after reconnect s
 
 test('a new connection can recover a lower authoritative cursor after uncommitted server events disappear',async()=>{
   FakeWebSocket.instances=[];const callbacks:(()=>void)[]=[],states:number[]=[];
-  const provider=new CoCreateProvider(new Y.Doc(),'room','token',state=>states.push(state.persistRevision!),()=>{},()=>{},
+  const provider=new TwoGuysOneCanvasProvider(new Y.Doc(),'room','token',state=>states.push(state.persistRevision!),()=>{},()=>{},
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),setTimer:callback=>{callbacks.push(callback);return callbacks.length},clearTimer:()=>{}});
   FakeWebSocket.instances[0].message(JSON.stringify({type:'room-state',state:{persistRevision:20,workflow:{activityCursor:30}}}));
   FakeWebSocket.instances[0].close();await tick();callbacks.shift()?.();
@@ -200,14 +200,14 @@ test('a new connection can recover a lower authoritative cursor after uncommitte
 
 test('disconnect rejects an in-flight flush and destroy removes document listeners',async()=>{
   FakeWebSocket.instances=[];const timers=new Map<number,()=>void>();let timerId=0,saves=0;
-  const doc=new Y.Doc(),provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{saves++},
+  const doc=new Y.Doc(),provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},()=>{saves++},
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),setTimer:callback=>{timers.set(++timerId,callback);return timerId},clearTimer:id=>{timers.delete(id)}});
   const socket=FakeWebSocket.instances[0];socket.open();const flushing=provider.flush();socket.close();await assert.rejects(flushing,/No build was started/);provider.destroy();const before=saves;doc.getText('draft').insert(0,'after destroy');assert.equal(saves,before);
 });
 
 test('burst edits share one transport update and explicit flush drains before acknowledgement',async()=>{
   FakeWebSocket.instances=[];const callbacks=new Map<number,()=>void>();let timerId=0;
-  const doc=new Y.Doc(),provider=new CoCreateProvider(doc,'room','token',()=>{},()=>{},()=>{},
+  const doc=new Y.Doc(),provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},()=>{},
     {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:callback=>{callbacks.set(++timerId,callback);return timerId},clearTimer:id=>{callbacks.delete(id)}});
   const socket=FakeWebSocket.instances[0];socket.open();
   doc.getText('draft').insert(0,'A');doc.getText('draft').insert(1,'B');
@@ -221,7 +221,7 @@ test('burst edits share one transport update and explicit flush drains before ac
 
 test('owner unavailability honors bounded retry hints, retains edits, and ends without inference',async()=>{
   FakeWebSocket.instances=[];const doc=new Y.Doc(),states:ConnectionStatus[]=[],callbacks:(()=>void)[]=[],delays:number[]=[];let diagnoses=0;
-  const provider=new CoCreateProvider(doc,'room','token',()=>{},status=>states.push(status),()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',maxRetries:2,random:()=>0.5,fetchImpl:async(_url,options)=>{diagnoses++;assert.equal(options?.method,undefined);return new Response('{}',{status:503,headers:{'Retry-After':'9999'}})},setTimer:(callback,delay)=>{callbacks.push(callback);delays.push(delay);return callbacks.length},clearTimer:()=>{}});
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},status=>states.push(status),()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',maxRetries:2,random:()=>0.5,fetchImpl:async(_url,options)=>{diagnoses++;assert.equal(options?.method,undefined);return new Response('{}',{status:503,headers:{'Retry-After':'9999'}})},setTimer:(callback,delay)=>{callbacks.push(callback);delays.push(delay);return callbacks.length},clearTimer:()=>{}});
   try{
     FakeWebSocket.instances[0].close();await tick();doc.getText('draft').insert(0,'retained steering');
     assert.equal(delays[0],10000);callbacks.shift()?.();FakeWebSocket.instances[1].close();await tick();assert.equal(delays[1],10000);

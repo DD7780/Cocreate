@@ -8,7 +8,7 @@ import * as Y from "yjs";
 import { WebSocket } from "ws";
 import { RoomManager, type Room } from "../server/rooms.js";
 import type { ClientSocket, DurableStore } from "../server/room-state.js";
-import { createCoCreateServer } from "../server/index.js";
+import { createTwoGuysOneCanvasServer } from "../server/index.js";
 import { createSession } from "../server/auth.js";
 import { createArtifactFixture } from "./fixtures/artifact-storage.js";
 
@@ -198,7 +198,7 @@ test("hosted incoming edit bursts retain order, caller attribution and fresh rev
     saveSnapshot: async () => {}, appendDocumentUpdate: async () => {}, assertCoordinator: async () => {}, coordinator: { close: async () => {} },
     requireMembership: async () => { checks++; if (hold) await permission.promise; if (!allowed) throw new Error("Revoked"); return "editor"; },
   };
-  const service = await createCoCreateServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: "127.0.0.1", sessionSecret: "synthetic" });
+  const service = await createTwoGuysOneCanvasServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: "127.0.0.1", sessionSecret: "synthetic" });
   let socket: WebSocket | undefined;
   const doc = new Y.Doc();
   try {

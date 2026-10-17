@@ -2338,7 +2338,7 @@ export class RoomManager {
                 room.recoveryCheckpoint = {
                     fingerprint, revision: specificationRevision, files: checkpoint.files, task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
                 };
-                const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.cocreate.recovery+json');
+                const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.2guys1canvas.recovery+json');
                 this.eventStore.append({
                     workspaceId: room.id, runId, actorId: 'builder', actorType: 'builder', eventType: 'build.task_checkpointed', inputRevision: specificationRevision, artifactRef: artifact.ref, payload: {
                         task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
@@ -2464,7 +2464,7 @@ export class RoomManager {
             };
             const preparedArtifact = bodyFromBytes(versionArtifactBytes(room.id, {
                 id: Math.max(0, ...room.versions.map(version => version.id), ...(room.artifactHistory || []).map(version => version.id)) + 1, files: working, bundle: compiled.javascript, css: compiled.css
-            }), 'application/vnd.cocreate.product+json');
+            }), 'application/vnd.2guys1canvas.product+json');
             await this.config.durableStore?.publishArtifactBodies?.(room.id, [preparedArtifact]);
             this.assertOwned(room);
             await this.config.durableStore?.assertCoordinator?.(room.id);

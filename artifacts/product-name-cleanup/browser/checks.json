@@ -1,0 +1,29 @@
+{
+  "scope": "Built local UI; synthetic authenticated room/account and real browser storage. No hosted service, live email or provider calls.",
+  "landing": true,
+  "canvas": true,
+  "legacyAuthenticatedReopen": true,
+  "indexedDB": {
+    "restoredBoth": true,
+    "deletionOnly": true,
+    "concurrentMerge": true,
+    "actorScoped": true,
+    "corruptionRetained": true,
+    "oversizeRejected": true,
+    "quotaOriginalRetained": true,
+    "signOutBothNamespaces": true
+  },
+  "workflow": true,
+  "artifacts": true,
+  "previewMatrix": [
+    "legacy parent / legacy frame",
+    "legacy parent / current frame",
+    "current parent / legacy frame",
+    "current parent / current frame"
+  ],
+  "builder": true,
+  "auth": true,
+  "projects": true,
+  "project-dialog": true,
+  "physicalProviderCalls": 0
+}

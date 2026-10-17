@@ -1,7 +1,8 @@
+import { productEnvironment, canonicalProductEnvironment } from '../shared/product-environment';
 export type SupabaseAuthConfig={url:string;publishableKey:string;appOrigin:string;redirectTo:string};
 export type SupabaseAuthResolution={config:SupabaseAuthConfig|null;error:string|null};
 
-const required=['VITE_SUPABASE_URL','VITE_SUPABASE_PUBLISHABLE_KEY','VITE_COCREATE_APP_ORIGIN'] as const;
+const required=['VITE_SUPABASE_URL','VITE_SUPABASE_PUBLISHABLE_KEY','VITE_TWOGUYS1CANVAS_APP_ORIGIN'] as const;
 
 function parseOrigin(label:string,value:string,allowLocalHttp=false){
   try{
@@ -21,10 +22,11 @@ function legacyKeyProjectRef(key:string){
 }
 
 export function resolveSupabaseAuthConfig(env:Record<string,string|undefined>):SupabaseAuthResolution{
+  env=canonicalProductEnvironment(env);
   const missing=required.filter(name=>!env[name]?.trim());
   if(missing.length)return{config:null,error:`Hosted authentication is not configured. Missing build variables: ${missing.join(', ')}.`};
-  const rawUrl=env.VITE_SUPABASE_URL!.trim(),rawOrigin=env.VITE_COCREATE_APP_ORIGIN!.trim(),publishableKey=env.VITE_SUPABASE_PUBLISHABLE_KEY!.trim();
-  const urlError=parseOrigin('VITE_SUPABASE_URL',rawUrl),originError=parseOrigin('VITE_COCREATE_APP_ORIGIN',rawOrigin,true);
+  const rawUrl=env.VITE_SUPABASE_URL!.trim(),rawOrigin=productEnvironment(env, 'VITE_TWOGUYS1CANVAS_APP_ORIGIN')!.trim(),publishableKey=env.VITE_SUPABASE_PUBLISHABLE_KEY!.trim();
+  const urlError=parseOrigin('VITE_SUPABASE_URL',rawUrl),originError=parseOrigin('VITE_TWOGUYS1CANVAS_APP_ORIGIN',rawOrigin,true);
   if(urlError)return{config:null,error:urlError};
   if(originError)return{config:null,error:originError};
   const url=new URL(rawUrl),projectRef=url.hostname.endsWith('.supabase.co')?url.hostname.slice(0,-'.supabase.co'.length):'';

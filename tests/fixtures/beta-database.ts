@@ -1,3 +1,4 @@
+import {productEnvironment} from '../../shared/product-environment.js';
 import { createRequire } from "node:module";
 import fs from "node:fs";
 import pg from "pg";
@@ -25,19 +26,19 @@ export const betaAccounts = {
 };
 
 export async function betaDatabase(): Promise<BetaDatabase> {
-  const connection = process.env.COCREATE_BETA_TEST_DATABASE_URL;
+  const connection = productEnvironment(process.env,'TWOGUYS1CANVAS_BETA_TEST_DATABASE_URL');
   let db: BetaDatabase;
   if (connection) {
     const url = new URL(connection);
     if (
       !["localhost", "127.0.0.1"].includes(url.hostname) ||
-      url.pathname !== "/cocreate_beta_test"
+      !["/twoguysonecanvas_beta_test", "/cocreate_beta_test"].includes(url.pathname)
     )
       throw new Error(
-        "Beta SQL tests require a disposable local cocreate_beta_test database.",
+        "Beta SQL tests require a disposable local twoguysonecanvas_beta_test database.",
       );
     // Create a fresh database; never reset schemas or delete data in the supplied database.
-    const databaseName = `cocreate_beta_test_${randomUUID().replaceAll("-", "")}`;
+    const databaseName = `twoguysonecanvas_beta_test_${randomUUID().replaceAll("-", "")}`;
     const administrator = new pg.Client({ connectionString: connection });
     await administrator.connect();
     try {

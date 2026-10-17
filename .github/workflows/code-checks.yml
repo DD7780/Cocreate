@@ -14,11 +14,11 @@ jobs:
         env:
           POSTGRES_USER: postgres
           POSTGRES_PASSWORD: beta_test_only
-          POSTGRES_DB: cocreate_beta_test
+          POSTGRES_DB: twoguysonecanvas_beta_test
         ports:
           - 5432:5432
         options: >-
-          --health-cmd "pg_isready -U postgres -d cocreate_beta_test"
+          --health-cmd "pg_isready -U postgres -d twoguysonecanvas_beta_test"
           --health-interval 5s --health-timeout 5s --health-retries 10
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
@@ -34,7 +34,7 @@ jobs:
       - run: pnpm build
       - name: Beta request transactions on native PostgreSQL
         env:
-          COCREATE_BETA_TEST_DATABASE_URL: postgresql://postgres:beta_test_only@127.0.0.1:5432/cocreate_beta_test
+          TWOGUYS1CANVAS_BETA_TEST_DATABASE_URL: postgresql://postgres:beta_test_only@127.0.0.1:5432/twoguysonecanvas_beta_test
         run: node --import tsx --test --test-concurrency=1 tests/beta-request-sql.test.ts
       - name: Build the production Dockerfile
         id: image
@@ -43,8 +43,8 @@ jobs:
           import fs from 'node:fs';
           import {spawnSync} from 'node:child_process';
           const {image_vars} = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8')).containers[0];
-          const names = ['VITE_COCREATE_AUTH_MODE', 'VITE_COCREATE_APP_ORIGIN', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];
-          const args = ['build', '--tag', 'cocreate-check'];
+          const names = ['VITE_TWOGUYS1CANVAS_AUTH_MODE', 'VITE_TWOGUYS1CANVAS_APP_ORIGIN', 'VITE_SUPABASE_URL', 'VITE_SUPABASE_PUBLISHABLE_KEY'];
+          const args = ['build', '--tag', '2guys1canvas-check'];
           for (const name of names) {
             if (typeof image_vars[name] !== 'string') throw new Error(`Missing public build variable: ${name}`);
             args.push('--build-arg', `${name}=${image_vars[name]}`);
@@ -56,9 +56,9 @@ jobs:
       - name: Prepare bounded disposable cgroup delegation
         if: ${{ !cancelled() && steps.image.outcome == 'success' }}
         run: |
-          root="/sys/fs/cgroup/cocreate-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
+          root="/sys/fs/cgroup/2guys1canvas-ci-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}"
           sudo sh scripts/prepare-ci-cgroup.sh "$root"
-          echo "COCREATE_CI_CGROUP_ROOT=$root" >> "$GITHUB_ENV"
+          echo "TWOGUYS1CANVAS_CI_CGROUP_ROOT=$root" >> "$GITHUB_ENV"
       - name: Preflight actual compiler boundary
         id: compiler
         run: >-
@@ -76,12 +76,12 @@ jobs:
       - name: Diagnose browser file-limit metadata in disposable image
         if: ${{ !cancelled() && steps.image.outcome == 'success' && steps.browser.outcome == 'failure' }}
         run: |
-          docker build --tag cocreate-file-diagnose - <<'DOCKER'
-          FROM cocreate-check
+          docker build --tag 2guys1canvas-file-diagnose - <<'DOCKER'
+          FROM 2guys1canvas-check
           RUN apt-get update && apt-get install -y --no-install-recommends strace && rm -rf /var/lib/apt/lists/*
           DOCKER
-          sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh
-          sh /tmp/cocreate-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts
+          sed 's/2guys1canvas-check/2guys1canvas-file-diagnose/g' scripts/run-linux-check.sh > /tmp/2guys1canvas-file-diagnose.sh
+          sh /tmp/2guys1canvas-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts
       - name: Actual compiler and resource adversity checks
         if: ${{ !cancelled() && steps.compiler.outcome == 'success' }}
         run: >-
@@ -100,14 +100,14 @@ jobs:
       - name: Diagnose oversized browser IPC file metadata
         if: ${{ !cancelled() && steps.browser_adversity.outcome == 'failure' }}
         run: |
-          docker build --tag cocreate-file-diagnose - <<'DOCKER'
-          FROM cocreate-check
+          docker build --tag 2guys1canvas-file-diagnose - <<'DOCKER'
+          FROM 2guys1canvas-check
           RUN apt-get update && apt-get install -y --no-install-recommends strace && rm -rf /var/lib/apt/lists/*
           DOCKER
-          sed 's/cocreate-check/cocreate-file-diagnose/g' scripts/run-linux-check.sh > /tmp/cocreate-file-diagnose.sh
-          sh /tmp/cocreate-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts --output
+          sed 's/2guys1canvas-check/2guys1canvas-file-diagnose/g' scripts/run-linux-check.sh > /tmp/2guys1canvas-file-diagnose.sh
+          sh /tmp/2guys1canvas-file-diagnose.sh timeout 30s node --import tsx scripts/diagnose-browser-file-limit.ts --output
       - name: Remove empty disposable cgroups
-        if: ${{ always() && env.COCREATE_CI_CGROUP_ROOT != '' }}
+        if: ${{ always() && env.TWOGUYS1CANVAS_CI_CGROUP_ROOT != '' }}
         run: |
-          case "$COCREATE_CI_CGROUP_ROOT" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac
-          sudo find "$COCREATE_CI_CGROUP_ROOT" -depth -type d -exec rmdir {} \;
+          case "$TWOGUYS1CANVAS_CI_CGROUP_ROOT" in /sys/fs/cgroup/2guys1canvas-ci-*) ;; *) exit 126 ;; esac
+          sudo find "$TWOGUYS1CANVAS_CI_CGROUP_ROOT" -depth -type d -exec rmdir {} \;

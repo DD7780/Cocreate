@@ -1,7 +1,7 @@
 import * as Y from 'yjs';
 
-const origin=(process.env.COCREATE_LIVE_ORIGIN||'').replace(/\/$/,'');
-if(!origin)throw new Error('Set COCREATE_LIVE_ORIGIN to the deployed CoCreate origin.');
+const origin=((process.env.TWOGUYS1CANVAS_LIVE_ORIGIN ?? process.env.COCREATE_LIVE_ORIGIN)||'').replace(/\/$/,'');
+if(!origin)throw new Error('Set TWOGUYS1CANVAS_LIVE_ORIGIN to the deployed 2guys1canvas origin.');
 const wsOrigin=origin.replace(/^http/,'ws');
 const timeout=(label,ms=15_000)=>new Promise((_,reject)=>setTimeout(()=>reject(new Error(`${label} timed out after ${ms}ms`)),ms));
 const waitFor=async(label,check,ms=15_000)=>{
@@ -61,8 +61,8 @@ function rejectedConnection(roomId,token){
 }
 
 const health=await Promise.all([
-  json('/__cocreate/health'),
-  json('/__cocreate/app-health'),
+  json('/__2guys1canvas/health'),
+  json('/__2guys1canvas/app-health'),
 ]);
 const {roomId}=await json('/api/rooms',{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'});
 const createSession=name=>json('/api/session',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomId,name})});

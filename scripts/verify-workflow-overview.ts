@@ -6,15 +6,15 @@ import WebSocket from 'ws';
 import type { ConflictGroup, ProviderRequestRecord } from '../shared/types';
 
 process.env.NODE_ENV = 'production';
-process.env.COCREATE_AUTH_MODE = 'local';
-const { createCoCreateServer } = await import('../server/index.js');
+process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
 const output = path.resolve('artifacts/workflow-overview');
 const runtime = path.resolve(`.runtime/workflow-ui-${process.pid}`);
 fs.mkdirSync(output, { recursive: true });
 fs.mkdirSync(runtime, { recursive: true });
 const secret = 'local-workflow-ui-fixture';
-const service = await createCoCreateServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });
+const service = await createTwoGuysOneCanvasServer({ port: 0, host: '127.0.0.1', serveClient: true, dataDir: path.join(runtime, 'data'), sessionSecret: secret });
 const room = service.manager.create('workflow-overview-fixture');
 for (const [id, name] of [['alice', 'Alice'], ['bob', 'Bob'], ['viewer', 'Casey']]) service.manager.join(room, id, name);
 const stamp = new Date().toISOString();
@@ -81,7 +81,7 @@ try {
     await client.call('Page.navigate', { url });
     await until(async () => await evaluate('location.origin') === url, 'origin');
     const token = createSession(secret, { roomId: room.id, participantId, name: participantId, role });
-    await evaluate(`localStorage.setItem('cocreate-session-${room.id}', ${JSON.stringify(token)})`);
+    await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}', ${JSON.stringify(token)})`);
     await client.call('Page.navigate', { url: `${url}/r/${room.id}` });
     try { await until(async () => await evaluate(`!!document.querySelector('.tabs')`), 'workspace mount'); }
     catch (error) { throw new Error(`${String(error)}: ${await evaluate('document.body.innerText.slice(0, 800)')}`); }

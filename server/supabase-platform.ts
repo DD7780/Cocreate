@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -48,7 +49,7 @@ export class SupabasePlatform {
   }
 
   async verifyUser(accessToken:string):Promise<AuthenticatedUser> {
-    const request=new Request('http://cocreate.internal/auth',{headers:{Authorization:`Bearer ${accessToken}`}}),issuer=`${this.config.url.replace(/\/$/,'')}/auth/v1`;
+    const request=new Request('http://2guys1canvas.internal/auth',{headers:{Authorization:`Bearer ${accessToken}`}}),issuer=`${this.config.url.replace(/\/$/,'')}/auth/v1`;
     const {data,error}=await verifyAuth(request,{auth:'user',audience:'authenticated',issuer,env:{url:this.config.url,publishableKeys:{default:this.config.publishableKey},secretKeys:{default:this.config.secretKey},jwks:new URL(this.config.jwksUrl||`${issuer}/.well-known/jwks.json`)}});
     if(error||!data.userClaims)throw Object.assign(new Error(error?.message||'Authentication failed.'),{status:error?.status||401});
     return{id:data.userClaims.id,email:data.userClaims.email,user_metadata:data.userClaims.userMetadata||{}};
@@ -337,7 +338,7 @@ export class SupabasePlatform {
         if (version.artifactRef)
             return version;
         // Compatibility: explicitly imported legacy inline versions use the same publication gate.
-        const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.cocreate.product+json');
+        const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.2guys1canvas.product+json');
         bodies.push(body);
         return { ...version, artifactRef: body.ref };
     });
@@ -345,7 +346,7 @@ export class SupabasePlatform {
         throw new ArtifactUnavailableError('corrupt'); return [version.id, version]; }));
     let checkpoint = payload.recoveryCheckpoint as RecoveryCheckpoint | undefined;
     if (checkpoint && !checkpoint.artifactRef) {
-        const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.cocreate.checkpoint+json');
+        const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.2guys1canvas.checkpoint+json');
         bodies.push(body);
         checkpoint = { ...checkpoint, artifactRef: body.ref };
     }
@@ -417,7 +418,7 @@ export class SupabasePlatform {
 }
 
 export function supabasePlatformFromEnv(env=process.env) {
-  const hosted=env.COCREATE_HOSTED==='true',mode=env.COCREATE_AUTH_MODE||(hosted?'supabase':'local');
+  const hosted=productEnvironment(env, 'TWOGUYS1CANVAS_HOSTED')==='true',mode=productEnvironment(env, 'TWOGUYS1CANVAS_AUTH_MODE')||(hosted?'supabase':'local');
   if(hosted&&mode==='local')return {mode:'supabase' as const,platform:null,error:'Hosted application access requires Supabase authentication and beta approval.'};
   if(mode==='local')return {mode:'local' as const,platform:null,error:null};
   const url=env.SUPABASE_URL,publishableKey=env.SUPABASE_PUBLISHABLE_KEY,secretKey=env.SUPABASE_SECRET_KEY;

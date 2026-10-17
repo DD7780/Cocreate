@@ -1,3 +1,4 @@
+import {productEnvironment} from '../shared/product-environment.js';
 import test from "node:test";
 import assert from "node:assert/strict";
 import express from "express";
@@ -248,7 +249,7 @@ test("reviewer and requester emails are durable, escaped and retried with an ide
   const sender = transactionalEmailSenderFromEnv(
     {
       RESEND_API_KEY: "re_synthetic",
-      COCREATE_EMAIL_FROM: "2guys1canvas <beta@verified.test>",
+      TWOGUYS1CANVAS_EMAIL_FROM: "2guys1canvas <beta@verified.test>",
     },
     async (_input, init) => {
       const key = new Headers(init?.headers).get("Idempotency-Key")!,
@@ -374,9 +375,10 @@ test("the durable scheduler wakes only due email work and exposes no public deli
   const source = fs
     .readFileSync(new URL("../worker/container.js", import.meta.url), "utf8")
     .replace(/^import .*;\r?$/gm, "")
-    .replace("export class CoCreateContainer", "class CoCreateContainer")
+    .replace(/^export \{.*;\r?$/gm, "")
+    .replace("export class TwoGuysOneCanvasContainer", "class TwoGuysOneCanvasContainer")
     .replace("export default", "globalThis.worker=");
-  const context = vm.createContext({
+  const context = vm.createContext({productEnvironment,
     Container: class {},
     env: {},
     Request,
@@ -396,10 +398,10 @@ test("the durable scheduler wakes only due email work and exposes no public deli
   vm.runInContext(source, context);
   const env = {
     RESEND_API_KEY: "re_synthetic",
-    COCREATE_EMAIL_FROM: "beta@verified.test",
+    TWOGUYS1CANVAS_EMAIL_FROM: "beta@verified.test",
     SUPABASE_SECRET_KEY: "sb_secret_synthetic",
     SUPABASE_URL: "https://synthetic.supabase.co",
-    COCREATE_RELEASE_FINGERPRINT: fingerprint,
+    TWOGUYS1CANVAS_RELEASE_FINGERPRINT: fingerprint,
   };
   await context.worker.scheduled({}, {});
   assert.equal(lookups, 0);
@@ -412,7 +414,7 @@ test("the durable scheduler wakes only due email work and exposes no public deli
   await assert.rejects(
     context.worker.scheduled(
       {},
-      { ...env, COCREATE_RELEASE_FINGERPRINT: "b".repeat(64) },
+      { ...env, TWOGUYS1CANVAS_RELEASE_FINGERPRINT: "b".repeat(64) },
     ),
     /still updating/,
   );

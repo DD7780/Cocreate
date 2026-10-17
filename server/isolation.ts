@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import os from 'node:os';
@@ -92,12 +93,12 @@ function linuxCommand(runtime:string,workspace:string,osProbe:boolean){
 }
 /** Internal trusted primitive. No HTTP/model output can choose operations, commands or runtime flags. */
 export async function runIsolated(request:IsolatedRequest,options:IsolationOptions={}) : Promise<unknown> {
-  if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();
+  if(productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')&&productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')!=='os')throw unavailable();
   if(options.signal?.aborted)throw cancelled();
   if(options.osProbe&&request.operation==='compile')throw unavailable();
   const runtime=await prepareIsolation();if(options.signal?.aborted)throw cancelled();
   const workspace=path.join(runtimeDirectory,'jobs',randomUUID());
-  const profile='cocreate.isolation.'+path.basename(workspace).replaceAll('-','');
+  const profile='twoguysonecanvas.isolation.'+path.basename(workspace).replaceAll('-','');
   const payload=request.operation==='compile'?{...request,...trustedDependencies()}:{...request,osOnly:options.osProbe===true};
   const serialized=JSON.stringify(payload);if(Buffer.byteLength(serialized)>maxOutput)throw new IsolationError('isolation_resource_limit','Compiler input exceeded its bound.');
   fs.mkdirSync(workspace,{recursive:true});
@@ -170,7 +171,7 @@ export async function compileIsolated(files:ProjectFile[],signal?:AbortSignal){
 let readiness:Promise<unknown>|undefined;
 /** Inference-free preflight of the actual kernel boundary before generation dispatch. */
 export async function assertIsolationAvailable(signal?:AbortSignal){
-  if(process.env.COCREATE_ISOLATION_MODE&&process.env.COCREATE_ISOLATION_MODE!=='os')throw unavailable();
+  if(productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')&&productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')!=='os')throw unavailable();
   if(signal?.aborted)throw cancelled();
   readiness??=runIsolated({operation:'ready'}).catch(error=>{readiness=undefined;throw error});
   await readiness;if(signal?.aborted)throw cancelled();

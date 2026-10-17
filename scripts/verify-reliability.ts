@@ -7,11 +7,11 @@ import http from "node:http";
 import assert from "node:assert/strict";
 
 process.env.NODE_ENV = "production";
-process.env.COCREATE_AUTH_MODE = "local";
-const { createCoCreateServer } = await import("../server/index.js");
+process.env.TWOGUYS1CANVAS_AUTH_MODE = "local";
+const { createTwoGuysOneCanvasServer } = await import("../server/index.js");
 const { createSession } = await import("../server/auth.js");
 const output = path.resolve(
-  process.env.COCREATE_RELIABILITY_OUTPUT || process.env.COCREATE_VERIFICATION_OUTPUT || "artifacts/reliability",
+  (process.env.TWOGUYS1CANVAS_RELIABILITY_OUTPUT ?? process.env.COCREATE_RELIABILITY_OUTPUT) || (process.env.TWOGUYS1CANVAS_VERIFICATION_OUTPUT ?? process.env.COCREATE_VERIFICATION_OUTPUT) || "artifacts/reliability",
 );
 fs.mkdirSync(output, { recursive: true });
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -92,7 +92,7 @@ const providerAddress = fake.address();
 if (!providerAddress || typeof providerAddress === "string")
   throw new Error("Controlled provider did not bind a TCP port.");
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "reliability-browser-"));
-let service = await createCoCreateServer({
+let service = await createTwoGuysOneCanvasServer({
   port: 0,
   host: "127.0.0.1",
   serveClient: true,
@@ -242,7 +242,7 @@ async function open(id: string, index: number) {
     name: id,
   });
   await evaluate(
-    `localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`,
+    `localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(token)})`,
   );
   await call("Page.navigate", { url: `${origin}/r/${room.id}` });
   await until(
@@ -398,7 +398,7 @@ try {
   const states = await Promise.all(
     browsers.map((browser) =>
       browser.evaluate(
-        `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
+        `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
       ),
     ),
   );
@@ -498,7 +498,7 @@ try {
     }
   }
   let artifactRestoration: Record<string, unknown> | undefined;
-  if (process.env.COCREATE_ARTIFACT_BROWSER_RESTORE === "true") {
+  if (process.env.TWOGUYS1CANVAS_ARTIFACT_BROWSER_RESTORE === "true") {
     const beforeCalls = { interpreterCalls, builderCalls };
     room.recoveryCheckpoint = {
       fingerprint: "controlled-restoration",
@@ -532,7 +532,7 @@ try {
     const replacementDir = fs.mkdtempSync(
       path.join(os.tmpdir(), "reliability-replacement-"),
     );
-    service = await createCoCreateServer({
+    service = await createTwoGuysOneCanvasServer({
       port: Number(new URL(origin).port),
       host: "127.0.0.1",
       serveClient: true,
@@ -572,7 +572,7 @@ try {
     const restoredStates = await Promise.all(
       browsers.map((browser) =>
         browser.evaluate(
-          `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
+          `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
         ),
       ),
     );
@@ -582,7 +582,7 @@ try {
       assert.deepEqual(state.accepted, states[0].accepted);
     }
     const downloaded = await a.evaluate(
-      `fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`,
+      `fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`,
     );
     assert.equal(downloaded.status, 200);
     assert.deepEqual(downloaded.bytes, [80, 75]);
@@ -624,7 +624,7 @@ try {
     };
   }
   let ownerRetry: Record<string, unknown> | undefined;
-  if (process.env.COCREATE_COORDINATOR_BROWSER_RETRY === "true") {
+  if (process.env.TWOGUYS1CANVAS_COORDINATOR_BROWSER_RETRY === "true") {
     // Controlled browser transport failure; hosted authorization/SQL are separate fixtures.
     const beforeCalls = { interpreterCalls, builderCalls };
     await a.call("Emulation.setDeviceMetricsOverride", {

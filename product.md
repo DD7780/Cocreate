@@ -1,5 +1,7 @@
 # 2guys1canvas product brief
 
+Canonical identity (2026-10-17): the current product name is exactly **2guys1canvas**. Product-owned prompts, templates, errors and exports follow it; user-authored names/content and historical artifacts are preserved. Machine aliases are permitted only with an explicit owner, reason, removal condition and evidence in the [naming ledger](docs/harness/product-name-cleanup.md#residual-ledger-and-cutover).
+
 Founder contacts (2026-10-15, icon styling approved 2026-10-16): Meet the founders lives in the expanded public footer below the logo/description/Sign in row. Susan Bhatta and Aaryan Bastakoti each have a Co-founder label and vertically stacked Email/LinkedIn rows, with filled grey envelope/LinkedIn icons and readable muted serif labels matching the supplied reference. Profiles stack on phones. The introduction has no generic team sign-off. [Packet](docs/harness/founder-contacts.md).
 
 Canvas writing surface (2026-10-15): Canvas is a full-width, Docs-like writing surface with no sidebar. Text starts at the top-left with a subtle inline placeholder; blank surface clicks focus the editor; the page grows and scrolls with content. Shared context remains a reusable view beside Artifacts, and recorded usage stays in Workflow. Storage, history and authority are unchanged. [Scope and evidence](docs/harness/canvas-writing-surface.md).

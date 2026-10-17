@@ -3,12 +3,12 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
-import { createCoCreateServer } from '../server/index.js';
+import { createTwoGuysOneCanvasServer } from '../server/index.js';
 import { createSession, verifySession } from '../server/auth.js';
 
 test('server shutdown drains authenticated HTTP before closing durable state', async () => {
   const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'shutdown-integration-'));
-  const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'shutdown-test'});
+  const service=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:'shutdown-test'});
   const room=service.manager.create('shutdown-project');
   service.manager.join(room,'alice','Alice');
   let entered!:()=>void, release!:()=>void;

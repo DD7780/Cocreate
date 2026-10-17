@@ -163,7 +163,7 @@ export function captureArtifacts(room: {
     const refs: string[] = [];
     for (const version of room.versions) {
         const bytes = versionArtifactBytes(room.id, version);
-        version.artifactRef = store.writeArtifact(bytes, 'application/vnd.cocreate.product+json').ref;
+        version.artifactRef = store.writeArtifact(bytes, 'application/vnd.2guys1canvas.product+json').ref;
         refs.push(version.artifactRef);
         const prior = history.get(version.id);
         if (prior && prior.artifactRef !== version.artifactRef)
@@ -172,7 +172,7 @@ export function captureArtifacts(room: {
     }
     if (room.recoveryCheckpoint) {
         const bytes = checkpointArtifactBytes(room.id, room.recoveryCheckpoint);
-        room.recoveryCheckpoint.artifactRef = store.writeArtifact(bytes, 'application/vnd.cocreate.checkpoint+json').ref;
+        room.recoveryCheckpoint.artifactRef = store.writeArtifact(bytes, 'application/vnd.2guys1canvas.checkpoint+json').ref;
         refs.push(room.recoveryCheckpoint.artifactRef);
     }
     return { artifactHistory: [...history.values()].sort((a, b) => a.id - b.id), artifactBodies: store.artifactBodiesForWorkspace(room.id, refs) };

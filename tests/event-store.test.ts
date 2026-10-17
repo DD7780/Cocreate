@@ -14,7 +14,7 @@ import type { Requirement } from "../shared/types.js";
 import { applyOperations, bundleProject } from "../server/project.js";
 import { verifyCandidate } from "../server/verification.js";
 
-const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-events-'));
+const temporaryData=()=>fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-events-'));
 
 test('promotion API rejects missing, changed and cancelled coordinator evidence before workspace writes',async()=>{
   const dataDir=temporaryData(),store=new EventStore(dataDir),tools=new ToolRegistry(store),workspaceId=`evidence-${randomUUID()}`;
@@ -69,7 +69,7 @@ test('tool policy denies personal agents and unknown tools before execution',asy
 });
 
 test('append-only snapshot artifacts reconstruct a missing derived workspace view',()=>{
-  const dataDir=temporaryData(),workspaceId='workspace-rebuild',file=path.join(dataDir,'cocreate.sqlite');
+  const dataDir=temporaryData(),workspaceId='workspace-rebuild',file=path.join(dataDir,'2guys1canvas.sqlite');
   const first=new EventStore(dataDir);
   first.saveWorkspaceSnapshot(workspaceId,{document:'durable',requirements:['addition'],latestVersion:3},'workspace.created');
   first.close();

@@ -3,7 +3,7 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173';
+const origin=(process.env.TWOGUYS1CANVAS_ORIGIN ?? process.env.COCREATE_ORIGIN)||'http://localhost:5173';
 const chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 const room=await fetch(`${origin}/api/rooms`,{method:'POST',headers:{'Content-Type':'application/json'},body:'{}'}).then(response=>response.json());
 const session=await fetch(`${origin}/api/session`,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({roomId:room.roomId,name:'UI QA'})}).then(response=>response.json());
@@ -31,7 +31,7 @@ try{
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin});
   await new Promise(resolve=>setTimeout(resolve,300));
-  await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)})`);
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.roomId}',${JSON.stringify(session.token)})`);
   await call('Page.navigate',{url:`${origin}/r/${room.roomId}`});
   for(let i=0;i<50;i++){if(await evaluate("document.body.innerText.includes('Build my changes')"))break;await new Promise(resolve=>setTimeout(resolve,100))}
   const canvas=await evaluate(`({text:document.body.innerText,shortcut:!!document.querySelector('[aria-label="Build shortcut"]'),card:document.querySelector('.project-token-card')?.innerText,buildHint:document.querySelector('.build-shortcut-hint')?.innerText,width:document.documentElement.scrollWidth,viewport:innerWidth})`);

@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import { assertIsolationAvailable } from "./isolation.js";
 import {assertVerificationBrowserAvailable} from './isolation/browser.js';
 import fs from 'node:fs';
@@ -63,7 +64,7 @@ const duration = (
     safe = Number.isFinite(parsed) ? parsed : fallback;
   return Math.max(min, Math.min(max, safe));
 };
-export async function createCoCreateServer(options: Options = {}) {
+export async function createTwoGuysOneCanvasServer(options: Options = {}) {
     const app = express(), server = http.createServer(app), wss = new WebSocketServer({
         noServer: true
     }), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {
@@ -80,13 +81,13 @@ export async function createCoCreateServer(options: Options = {}) {
     }));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
     const closeBetaRequests = platformState.platform ? registerBetaRequestRoutes(app,platformState.platform) : null;
-    const releaseFile = '/usr/local/share/cocreate-release.json';
+    const releaseFile = fs.existsSync('/usr/local/share/2guys1canvas-release.json') ? '/usr/local/share/2guys1canvas-release.json' : '/usr/local/share/cocreate-release.json';
     const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
     if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
-    app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
-        status: 'configuration-error', service: 'cocreate-app', error: platformState.error
+    app.get(['/__2guys1canvas/app-health', '/__cocreate/app-health'], (_req, res) => platformState.error ? res.status(503).json({
+        status: 'configuration-error', service: '2guys1canvas-app', error: platformState.error
     }) : res.json({
-        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint
+        status: 'ok', service: '2guys1canvas-app', release_fingerprint: releaseFingerprint
     }));
     app.get('/api/auth/config', (_req, res) => res.status(platformState.error ? 503 : 200).json({
         mode: platformState.mode, configured: !platformState.error, error: platformState.error || undefined
@@ -677,7 +678,7 @@ export async function createCoCreateServer(options: Options = {}) {
                 await platformState.platform.assertCoordinator(auth.room.id);
             }
             res.setHeader('Content-Type', 'application/zip');
-            res.setHeader('Content-Disposition', `attachment; filename="cocreate-${auth.room.id}-v${v.id}.zip"`);
+            res.setHeader('Content-Disposition', `attachment; filename="2guys1canvas-${auth.room.id}-v${v.id}.zip"`);
             res.send(createZip(downloadableFiles(v.files)));
         }
         catch (error) {
@@ -728,7 +729,7 @@ export async function createCoCreateServer(options: Options = {}) {
             const url = new URL(req.url || '', 'http://localhost');
             if (url.pathname !== '/ws')
                 return rejectUpgrade(socket, 404, 'unknown_path', correlationId);
-            const origin = String(req.headers.origin || ''), configuredOrigins = String(process.env.COCREATE_APP_ORIGINS || '').split(',').map(item => item.trim()).filter(Boolean);
+            const origin = String(req.headers.origin || ''), configuredOrigins = String(productEnvironment(process.env, 'TWOGUYS1CANVAS_APP_ORIGINS') || '').split(',').map(item => item.trim()).filter(Boolean);
             if (platformState.mode === 'supabase' && (!origin || (configuredOrigins.length && !configuredOrigins.includes(origin))))
                 return rejectUpgrade(socket, 403, 'invalid_origin', correlationId);
             const roomId = url.searchParams.get('room') || '', session = verifySession(secret, url.searchParams.get('token') || '');
@@ -862,8 +863,8 @@ const main =
     path.resolve(fileURLToPath(import.meta.url));
 if (main) {
   await assertIsolationAvailable();
-  if (process.platform === 'linux' && process.env.COCREATE_HOSTED === 'true') await assertVerificationBrowserAvailable();
-  const instance = await createCoCreateServer();
+  if (process.platform === 'linux' && productEnvironment(process.env, 'TWOGUYS1CANVAS_HOSTED') === 'true') await assertVerificationBrowserAvailable();
+  const instance = await createTwoGuysOneCanvasServer();
   const info = await instance.start();
   console.log(`2guys1canvas ready at ${info.url}`);
 }

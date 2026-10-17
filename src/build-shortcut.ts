@@ -1,6 +1,6 @@
 export type BuildShortcutPreference='disabled'|'alt+x'|'alt+s'|'alt+y';
 
-export const BUILD_SHORTCUT_STORAGE_KEY='cocreate-build-shortcut';
+export const BUILD_SHORTCUT_STORAGE_KEY='2guys1canvas-build-shortcut';
 
 export function defaultBuildShortcut(isMac:boolean):BuildShortcutPreference{
   return isMac?'disabled':'alt+x';

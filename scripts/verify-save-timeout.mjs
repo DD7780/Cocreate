@@ -5,11 +5,11 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 import express from 'express';
-process.env.COCREATE_AUTH_MODE='local';
+process.env.TWOGUYS1CANVAS_AUTH_MODE='local';
 process.env.NODE_ENV='production';
-const {createCoCreateServer}=await import('../server/index.ts');
-const dir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-save-ui-'));
-const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir:dir,sessionSecret:'synthetic',encryptionSecret:'synthetic'});
+const {createTwoGuysOneCanvasServer}=await import('../server/index.ts');
+const dir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-save-ui-'));
+const instance=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,dataDir:dir,sessionSecret:'synthetic',encryptionSecret:'synthetic'});
 // Managed worktrees live below .codex; allow that ancestor only in this local harness.
 instance.app.use(express.static(path.resolve('.runtime/build-save-ui'),{dotfiles:'allow'}));
 instance.app.get('*path',(_req,res)=>res.sendFile(path.resolve('.runtime/build-save-ui/index.html'),{dotfiles:'allow'}));
@@ -47,7 +47,7 @@ try{
   const evaluate=async expression=>{const value=await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true});if(value.exceptionDetails)throw Error(JSON.stringify(value.exceptionDetails));return value.result.value};
   const wait=async(check,label)=>{for(let i=0;i<100;i++){if(await check())return;await sleep(100)}throw Error('Timed out: '+label)};
   await call('Page.enable');await call('Runtime.enable');await call('Page.navigate',{url:origin});await sleep(300);
-  await evaluate(`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)})`);
+  await evaluate(`localStorage.setItem('2guys1canvas-session-${roomId}',${JSON.stringify(session.token)})`);
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   await wait(()=>evaluate(`!!document.querySelector('.document-editor')&&!![...document.querySelectorAll('button')].find(b=>b.textContent.includes('Build my changes'))`),'workspace');
   await wait(()=>room.clients.size>0,'collaboration connection');await sleep(200);

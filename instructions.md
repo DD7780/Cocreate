@@ -1,5 +1,7 @@
 # 2guys1canvas contributor instructions
 
+Canonical naming (2026-10-17): use exactly **2guys1canvas** in visible/platform-owned copy, `TwoGuysOneCanvas` in symbols, and `TWOGUYS1CANVAS_` / `VITE_TWOGUYS1CANVAS_` for new environment inputs. Read the [compatibility ledger](docs/harness/product-name-cleanup.md#residual-ledger-and-cutover) before removing any alias. Never rewrite user text, immutable history or SQL migrations; never delete legacy storage to force the rename. Run `node scripts/check-product-naming.mjs` after naming edits.
+
 Save acknowledgement bounds (2026-10-17): keep the server/client 20/30-second budgets in `shared/save-timing.ts`. Expiry ends the attempt, never cancels or releases an underlying canonical write and never revives inference on a late reply. Preserve coalesced autosaves, independent recovery journal, fresh authorization batches, high-water sequence restore and uncertain-submit replay. [Publication scope](docs/harness/build-save-timeout-publication.md).
 
 Beta registration visibility (2026-10-16): preserve reviewer-only waitlist inspection on `/beta/review`, separate from confirmed-account access requests. Never convert a waitlist email into an authenticated request, approval or notification during a read. Current source checks and rollout limits are in [the fix packet](docs/harness/beta-registration-visibility.md).

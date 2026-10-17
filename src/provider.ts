@@ -19,7 +19,7 @@ const retryDelay = (attempt: number, random = Math.random) => {
   return Math.round(base * (0.8 + random() * 0.4));
 };
 
-export class CoCreateProvider {
+export class TwoGuysOneCanvasProvider {
   awareness: Awareness; ws?: WebSocket;
   private stopped = false; private retry?: number; private generation = 0; private failedAttempts = 0;
   private flushes = new Map<string, { resolve: () => void; reject: (error: Error) => void; timer: number }>();

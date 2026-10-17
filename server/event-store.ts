@@ -64,7 +64,9 @@ export class EventStore{
   private db:DatabaseSync;
   constructor(readonly dataDir=path.join(process.cwd(),'data')){
     fs.mkdirSync(dataDir,{recursive:true});
-    this.file=path.join(dataDir,'cocreate.sqlite');
+    const canonical=path.join(dataDir,'2guys1canvas.sqlite'),legacy=path.join(dataDir,'cocreate.sqlite');
+    if(fs.existsSync(canonical)&&fs.existsSync(legacy))throw new Error('Two local workflow databases exist. Preserve both and verify an offline recovery before reopening.');
+    this.file=fs.existsSync(legacy)?legacy:canonical;
     this.db=new DatabaseSync(this.file);
     this.db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
     this.migrate();
@@ -155,7 +157,7 @@ export class EventStore{
   readArtifact(ref:string){const contentHash=ref.replace(/^sha256:/,'');const row=this.db.prepare('SELECT content FROM artifacts WHERE content_hash=?').get(contentHash) as {content:Uint8Array}|undefined;if(!row)return null;const bytes=Buffer.from(row.content);if(artifactHash(bytes)!==contentHash)throw new ArtifactUnavailableError('corrupt');return bytes}
   artifactBodiesForWorkspace(workspaceId: string, extraRefs: string[] = []): ArtifactBody[] {
     // Canonical workspace snapshots are stored separately in Postgres, not recursively archived.
-    const rows = this.db.prepare("SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type<>'application/vnd.cocreate.workspace+json'").all(workspaceId) as {
+    const rows = this.db.prepare("SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type NOT IN ('application/vnd.2guys1canvas.workspace+json','application/vnd.cocreate.workspace+json')").all(workspaceId) as {
         content: Uint8Array;
         mime_type: string;
         content_hash: string;
@@ -193,13 +195,13 @@ export class EventStore{
   saveWorkspaceSnapshot(workspaceId:string,state:unknown,eventType='workspace.snapshot_recorded',actorId='system',actorType:ActorType='system'){
     const stateJson=JSON.stringify(state),stateHash=hash(stateJson),updatedAt=new Date().toISOString();
     this.db.exec('BEGIN IMMEDIATE');try{
-      const artifact=this.insertArtifact(stateJson,'application/vnd.cocreate.workspace+json');
+      const artifact=this.insertArtifact(stateJson,'application/vnd.2guys1canvas.workspace+json');
       const event=this.insert({eventType,workspaceId,actorId,actorType,contentHash:stateHash,artifactRef:artifact.ref,payload:{stateHash,byteLength:artifact.byteLength}});
       this.db.prepare(`INSERT INTO workspace_state(workspace_id,state_json,state_hash,source_event_id,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(workspace_id) DO UPDATE SET state_json=excluded.state_json,state_hash=excluded.state_hash,source_event_id=excluded.source_event_id,updated_at=excluded.updated_at`).run(workspaceId,stateJson,stateHash,event.eventId,updatedAt);
       this.db.exec('COMMIT');return event;
     }catch(error){this.db.exec('ROLLBACK');throw error}
   }
-  readWorkspaceSnapshot<T=unknown>(workspaceId:string){const row=this.db.prepare('SELECT state_json AS stateJson FROM workspace_state WHERE workspace_id=?').get(workspaceId) as {stateJson:string}|undefined;if(row)return JSON.parse(row.stateJson) as T;const artifact=this.db.prepare(`SELECT a.content FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND e.artifact_ref LIKE 'sha256:%' AND a.mime_type='application/vnd.cocreate.workspace+json' ORDER BY e.workspace_seq DESC LIMIT 1`).get(workspaceId) as {content:Uint8Array}|undefined;return artifact?JSON.parse(Buffer.from(artifact.content).toString('utf8')) as T:null}
+  readWorkspaceSnapshot<T=unknown>(workspaceId:string){const row=this.db.prepare('SELECT state_json AS stateJson FROM workspace_state WHERE workspace_id=?').get(workspaceId) as {stateJson:string}|undefined;if(row)return JSON.parse(row.stateJson) as T;const artifact=this.db.prepare(`SELECT a.content FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND e.artifact_ref LIKE 'sha256:%' AND a.mime_type IN ('application/vnd.2guys1canvas.workspace+json','application/vnd.cocreate.workspace+json') ORDER BY e.workspace_seq DESC LIMIT 1`).get(workspaceId) as {content:Uint8Array}|undefined;return artifact?JSON.parse(Buffer.from(artifact.content).toString('utf8')) as T:null}
   importLegacyWorkspace(workspaceId:string,legacyFile:string){
     if(this.hasWorkspace(workspaceId))return false;
     const raw=fs.readFileSync(legacyFile,'utf8'),backupDir=path.join(this.dataDir,'backups','pre-event-store'),backup=path.join(backupDir,path.basename(legacyFile));

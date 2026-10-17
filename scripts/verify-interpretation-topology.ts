@@ -14,7 +14,7 @@ import { createProgressFixture, pause } from '../tests/fixtures/build-progress.j
 import { runScenario } from '../tests/fixtures/multiuser-baseline.js';
 
 // Offline evaluation only. No production route, credentials, writer or concurrency switch.
-process.env.COCREATE_AUTH_MODE = 'local';
+process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
 const output = path.resolve('artifacts/multiuser-step09');
 fs.mkdirSync(output, { recursive: true });
 type Job = { id: string; actor: string; text: string; delayMs: number; category?: string; invented?: boolean };

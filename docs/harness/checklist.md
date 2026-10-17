@@ -1,5 +1,14 @@
 # Harness status and outstanding work
 
+## Canonical product naming — 2026-10-17
+
+- [x] Isolated from current main `ae3653b`, preserving save/replay work and the unrelated desktop checkout. Safe source/schema/tool/default/export/environment identifiers use the canonical convention.
+- [x] Legacy browser/durable/preview/config aliases retain sessions, actor-scoped drafts, immutable artifacts, permissions and deployed resources. Every residual is itemized with owner, reason, removal condition and evidence. [Packet and cutover plan](product-name-cleanup.md#residual-ledger-and-cutover).
+- [x] Naming 9/9 plus transport/save/core regressions 41/41 and corrected Worker/mail/private-storage fixtures 5/5; built-browser storage/adversity, eight UI surfaces, four preview pairs and six save/replay scenarios pass without inference.
+- [x] Boundaries, production build, source fingerprint, diff checks, tracked-text scan and AST graph refresh pass. Worker-only dry-run passes; local full image build lacks Docker.
+- [ ] Full Windows attempt: 272 passed, 7 failed, 8 skipped of 287. One stale preview assertion is corrected and reruns pass; preserve remaining publication/resource/timing and dot-path SPA failures. Linux production-image CI and hosted acceptance are separate release gates, not inferred from focused passes.
+- [ ] Separately authorized Worker/DO, private bucket, host-root and original-storage retirement/cutover; originals and SQL history remain intact.
+
 ## Save acknowledgement publication — 2026-10-17
 
 - [x] Integrate onto `8515724` while preserving the newer queue/sequence fixes, current UI and submit replay helper.

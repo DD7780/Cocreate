@@ -10,7 +10,7 @@ test('physical usage deduplicates dispatch/reconcile and keeps setup and unknown
   assert.equal(result.coverage,'partial');
 });
 test('SQLite accounting restores more than the recent 500 calls without double counting',()=>{
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-usage-'));
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-usage-'));
   try{
     let store=new EventStore(dir);
     for(let index=0;index<520;index++){

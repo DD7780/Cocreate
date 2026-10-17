@@ -1,3 +1,4 @@
+import { productEnvironment } from '../shared/product-environment.js';
 import { randomUUID } from "node:crypto";
 import type express from "express";
 import {
@@ -305,7 +306,7 @@ export function registerBetaRequestRoutes(
   const service = new BetaRequestService(
     platform,
     transactionalEmailSenderFromEnv(env),
-    env.COCREATE_PUBLIC_ORIGIN || "https://2guys1canvas.com",
+    productEnvironment(env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN') || "https://2guys1canvas.com",
   );
   let stopped = false,
     running: Promise<void> | null = null;
@@ -339,8 +340,8 @@ export function registerBetaRequestRoutes(
       try {
         if (mutation) {
           const origins = [
-            env.COCREATE_PUBLIC_ORIGIN,
-            ...(env.COCREATE_APP_ORIGINS || "").split(","),
+            productEnvironment(env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN'),
+            ...(productEnvironment(env, 'TWOGUYS1CANVAS_APP_ORIGINS') || "").split(","),
             `${req.protocol}://${req.get("host")}`,
           ];
           if (

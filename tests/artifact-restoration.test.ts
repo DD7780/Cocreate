@@ -7,7 +7,7 @@ import path from 'node:path';
 import { randomUUID } from 'node:crypto';
 import * as Y from 'yjs';
 import { RoomManager } from '../server/rooms.js';
-import { createCoCreateServer } from '../server/index.js';
+import { createTwoGuysOneCanvasServer } from '../server/index.js';
 import { createSession } from '../server/auth.js';
 import { ArtifactUnavailableError, artifactPath, bodyFromBytes, canonicalJson, versionArtifactBytes } from '../server/artifacts.js';
 import { applyOperations, bundleProject } from '../server/project.js';
@@ -160,7 +160,7 @@ test('authenticated lazy historical reads reject revoked users, including revoca
     const initial = manager(platform), room = initial.value.create(project);
     room.versions = Array.from({ length: 8 }, (_, i) => version(i + 1));
     let role: 'viewer' | undefined = 'viewer';
-    let service: Awaited<ReturnType<typeof createCoCreateServer>> | undefined;
+    let service: Awaited<ReturnType<typeof createTwoGuysOneCanvasServer>> | undefined;
     const coldDir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-'));
     try {
         await initial.value.save(room);
@@ -168,7 +168,7 @@ test('authenticated lazy historical reads reject revoked users, including revoca
         await cold.claimCoordinator(project);
         cold.requireMembership = async () => { if (!role)
             throw Object.assign(new Error('Project access denied.'), { status: 403 }); return role; };
-        service = await createCoCreateServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic' });
+        service = await createTwoGuysOneCanvasServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic' });
         const meta = await cold.loadSnapshot(project);
         const hydrated = service.manager.hydrate(project, meta);
         service.manager.join(hydrated, 'alice', 'Alice');
@@ -279,7 +279,7 @@ test('an interrupted canonical promotion stays hidden; concurrent saves retain e
 test('lease loss after private body upload cannot promote or start another physical attempt', async () => {
     const context = await buildFixture(), entered = deferred(), release = deferred();
     const publish = context.platform.publishArtifactBodies.bind(context.platform);
-    context.platform.publishArtifactBodies = async (project, bodies) => { const result = await publish(project, bodies); if (bodies.some(body => body.mimeType === 'application/vnd.cocreate.product+json' && JSON.parse(Buffer.from(body.base64, 'base64').toString()).version.id === 2)) {
+    context.platform.publishArtifactBodies = async (project, bodies) => { const result = await publish(project, bodies); if (bodies.some(body => body.mimeType === 'application/vnd.2guys1canvas.product+json' && JSON.parse(Buffer.from(body.base64, 'base64').toString()).version.id === 2)) {
         entered.resolve();
         await release.promise;
     } return result; };

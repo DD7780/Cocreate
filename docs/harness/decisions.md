@@ -114,7 +114,7 @@ Status: accepted 2026-09-24; refined by D-0042. Hosted saved follows confirmed c
 
 ## D-0024 — Keep bearer-token SPA auth instead of adding inactive Next.js middleware
 
-Accepted 2026-09-24. CoCreate remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.
+Accepted 2026-09-24. 2guys1canvas remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.
 
 ## D-0025 — Prisma is not a second migration authority
 
@@ -122,11 +122,11 @@ Accepted 2026-09-24. Prisma 7.10 is pinned as an optional typed Postgres access 
 
 ## D-0026 — OAuth callbacks follow the verified Worker origin
 
-Accepted 2026-09-24. The canonical CoCreate production origin is `https://cocreate.susan981314271.workers.dev`. Google returns to the selected Supabase project at `/auth/v1/callback`; Supabase then returns to CoCreate at the separately allow-listed `/api/auth/callback`. Production callback selection is derived from an explicit build-time app origin rather than a hardcoded third-party Pages deployment or browser location. Hosted sign-in fails closed when the URL, key, JWKS, or project references disagree. Localhost remains a separately configured development callback, and callback codes are exchanged at most once.
+Historical origin decision, superseded by the canonical domain release and D-0079 below. Accepted 2026-09-24: the then-canonical CoCreate production origin is `https://cocreate.susan981314271.workers.dev`. Google returns to the selected Supabase project at `/auth/v1/callback`; Supabase then returns to CoCreate at the separately allow-listed `/api/auth/callback`. Production callback selection is derived from an explicit build-time app origin rather than a hardcoded third-party Pages deployment or browser location. Hosted sign-in fails closed when the URL, key, JWKS, or project references disagree. Localhost remains a separately configured development callback, and callback codes are exchanged at most once.
 
 ## D-0027 — Email-bound project invitations remain separate from account invitations
 
-Accepted 2026-09-25. Supabase Auth owns Google and email/password account identity, confirmation, and recovery. CoCreate owns project invitations and membership. Each invitation is project-scoped, recipient-email-bound, role-bounded, expiring, revocable, rate-limited, and stored by token hash; acceptance requires a matching confirmed Supabase account and is transactional/idempotent. Owners and members with explicit sharing permission may manage invitations and non-owner roles, while only owners grant sharing permission. Transactional email is server-side and provider acceptance is recorded as sent without claiming confirmed delivery.
+Accepted 2026-09-25. Supabase Auth owns Google and email/password account identity, confirmation, and recovery. 2guys1canvas owns project invitations and membership. Each invitation is project-scoped, recipient-email-bound, role-bounded, expiring, revocable, rate-limited, and stored by token hash; acceptance requires a matching confirmed Supabase account and is transactional/idempotent. Owners and members with explicit sharing permission may manage invitations and non-owner roles, while only owners grant sharing permission. Transactional email is server-side and provider acceptance is recorded as sent without claiming confirmed delivery.
 
 ## D-0028 — Low is a presentation label for the existing light effort value
 
@@ -140,7 +140,7 @@ Accepted 2026-09-26. Editor, transport, snapshot, and update history use Yjs V1.
 
 ## D-0030 — Callback failure does not erase or silently use a valid session
 
-Accepted 2026-09-26. OAuth callback processing first resolves persisted session state, exchanges each PKCE code once, and removes sensitive query parameters. Cancellation, missing codes, and rejected/reused codes are distinct from initialization. When a prior valid session survives, CoCreate identifies that account and requires an explicit continue or switch-account action; dismissing an error never authorizes a workspace. Backend membership remains authoritative.
+Accepted 2026-09-26. OAuth callback processing first resolves persisted session state, exchanges each PKCE code once, and removes sensitive query parameters. Cancellation, missing codes, and rejected/reused codes are distinct from initialization. When a prior valid session survives, 2guys1canvas identifies that account and requires an explicit continue or switch-account action; dismissing an error never authorizes a workspace. Backend membership remains authoritative.
 
 ## D-0031 — Count physical provider requests at the HTTP boundary
 
@@ -188,7 +188,7 @@ Accepted 2026-09-30. Only a current owner/editor who is an affected contributor 
 
 ## D-0040 — Visible rename and fixed shortcut
 
-Accepted 2026-09-30. User-facing identity is 2guys1canvas; CoCreate technical identifiers remain for compatibility. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
+Accepted 2026-09-30. User-facing identity is 2guys1canvas. The former blanket technical-compatibility exemption is superseded by the per-identifier ledger in D-0079. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
 
 ## D-0041 — Usage and Shared Intent display
 
@@ -360,3 +360,8 @@ Accepted 2026-10-15: place Susan Bhatta and Aaryan Bastakoti beneath the footer 
 ## D-0078 - Role-compatible model choices and explicit free pricing
 
 Accepted 2026-10-16 from the user's request following a Kimi K3 / "open muse" build failure. Show only models whose published capabilities fit the selected role; enforce selection on the server. Make FREE unmistakable and show PAID rates. Keep setup inference-free, disclose/freeze the response allowance and supported reasoning policy, and never substitute models or funding. Implementation thresholds and checks live in the [packet](role-compatible-models.md); catalog compatibility is not live quality proof. The exact error remains unknown (the user recalls either bigger or smaller model), so do not present a specific provider outcome as confirmed.
+
+
+## D-0079 — Canonical product identity and explicit compatibility bridges
+
+Accepted 2026-10-17 from the naming-cleanup request: current identity is exactly **2guys1canvas**. Rename safe internals and all callers together; never brand user-generated products or rewrite user text/history. New identifiers use the documented machine convention. Persistent and deployed identifiers retain only narrowly scoped readers/aliases with an owner, reason, removal condition and evidence. This supersedes D-0040’s blanket technical-name exemption. Retain original storage during validated mixed-version migration; fail closed on competing local ledgers. Hosted resource changes, old-store deletion and policy migrations require separate applicable authorization. [Implementation, residual ledger, checks and rollback](product-name-cleanup.md).
