@@ -12,7 +12,7 @@ export async function createArtifactFixture() {
     }>();
     const counts = { uploads: 0, downloads: 0, commits: 0 };
     const trace: string[] = [];
-    const controls = { publicBucket: false, failUpload: false, corruptUpload: false, failCommit: false,
+    const controls = { publicBucket: false, failUpload: false, corruptUpload: false, failCommit: false, latestDocumentSequence: 0, failDocumentSequence: false,
         beforeCommit: undefined as undefined | ((body: any) => Promise<void>), failVersion: 0,
         afterDownload: undefined as undefined | (() => void) };
     const server = http.createServer(async (req, res) => {
@@ -82,6 +82,10 @@ export async function createArtifactFixture() {
         }
         if (url.pathname === '/rest/v1/project_provider_requests')
             return respond(200, []);
+        if (url.pathname === '/rest/v1/project_document_updates')
+            return controls.failDocumentSequence
+                ? respond(503, { message: 'Controlled sequence lookup outage' })
+                : respond(200, controls.latestDocumentSequence ? [{ sequence: controls.latestDocumentSequence }] : []);
         respond(404, { message: 'Unknown controlled fixture route' });
     });
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));

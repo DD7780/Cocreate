@@ -32,6 +32,7 @@ import type { AcceptedIntentContext } from "./intent-authority.js";
 import type { ArtifactBody, ArtifactReference, ArchivedVersion } from "./artifacts.js";
 
 export type ProjectRole = "owner" | "editor" | "viewer";
+export const collaborationBatchSize = 32;
 export type DurableStore = {
   publishArtifactBodies?: (
     projectId: string,
@@ -73,6 +74,7 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
+  deliveryBatch?: Array<string | Buffer>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;
@@ -223,6 +225,9 @@ export type Room = {
   steeringQueue?: Promise<unknown>;
   persistQueue?: Promise<unknown>;
   documentQueue?: Promise<unknown>;
+  documentSequence?: number;
+  documentSaveTask?: Promise<void>;
+  documentSaveRequested?: boolean;
   submissions: StoredSubmission[];
   editHistory: EditRecord[];
   agentRevisions: Map<string, number>;

@@ -1,5 +1,12 @@
 # Harness status and outstanding work
 
+## Canonical save throughput — 2026-10-17
+
+- [x] Read-only production diagnostics identify delayed tiny-document snapshots and conflicting journal sequences; no data repair or migration. [Packet](canonical-save-throughput.md).
+- [x] Coalesce routine autosaves, separate full canonical flush from recovery-journal latency, authorize ordered batches with fresh membership/coordinator checks and restore the journal sequence high-water. Command receipts and inference authority remain unchanged.
+- [x] Initial regressions reproduce five failures; final focused queue/deletion/failure/revocation/restore checks pass **7/7**, existing provider/submission/hosted/coordinator/auth checks **40/40**, production build and boundaries pass. Windows artifact checks pass **5/10**, with isolated compiler resource failure/publication-gate timeouts retained; this is not a whole-suite pass.
+- [ ] Controlled browser dispatch and complete production-image CI; publication evidence and remaining hosted limits are tracked in the packet. Do not inspect Cloudflare deployment for this task.
+
 ## Beta registration visibility — 2026-10-16
 
 - [x] Trace the live mismatch with read-only aggregate SQL: two landing registrations, zero submitted access requests. Existing release source lists only requests.

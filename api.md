@@ -145,7 +145,7 @@ Workflow phases include draft/queued/running/awaiting_input/awaiting_approval/pa
 
 ## WebSocket collaboration and save receipts
 
-Connect `/ws?room=<roomId>&token=<ticket>` over ws/wss matching the page. Hosted origin must pass configured `COCREATE_APP_ORIGINS` and current membership/coordinator checks. Upgrade, every inbound message and every outbound delivery recheck authority; viewers receive state/awareness but cannot edit. Expired tickets close the socket. Revoked access prevents later delivery, but no proactive instantaneous closure of a completely silent socket is claimed.
+Connect `/ws?room=<roomId>&token=<ticket>` over ws/wss matching the page. Hosted origin must pass configured `COCREATE_APP_ORIGINS` and current membership/coordinator checks. Upgrade and every ordered inbound/outbound batch (at most 32 frames) recheck authority immediately before synchronous apply/delivery; no permission cache spans batches. Viewers receive state/awareness but cannot edit. Expired tickets close the socket. Revoked access prevents later delivery, but no proactive instantaneous closure of a completely silent socket is claimed.
 
 Binary frames: discriminator 0 Yjs V1 update, 1 awareness, 2 server state vector. Document fragment is `default`. Browser answers the vector with missing update bytes. Outgoing edits may coalesce for 40 ms.
 
@@ -161,6 +161,8 @@ Binary frames: discriminator 0 Yjs V1 update, 1 awareness, 2 server state vector
 | Server `{type:'permission-error', message}` | Actionable access failure |
 
 Saved status requires coverage of local insertion clocks and deletion signature. Only successful remote snapshot commit acknowledges hosted saving; ordered append failure can recover through a confirmed full snapshot, snapshot failure cannot. Browser filters older cursors/revisions within a connection and resets on a new authenticated generation so a lower canonical cursor can recover failed prior writes.
+
+Routine document autosaves coalesce behind pending canonical I/O. Explicit flush commits a complete snapshot with attributed pending edits without waiting for the independent recovery journal. Durable command/accounting/promotion receipts retain their original ordering. Snapshot metadata adds optional `documentSequence`; hosted restoration takes the maximum of it, retained edit history and the journal high-water before allocating a new sequence, and fails closed if the journal lookup fails. Existing snapshots remain readable. No wire message or submission payload changes. [Evidence and limits](docs/harness/canonical-save-throughput.md).
 
 Client connection states are connecting/connected/bounded reconnecting/terminal error. Transient retries use capped jittered backoff (six attempts, roughly ten-second cap before jitter); authenticated state diagnosis distinguishes 401/404/403 from transport failure. Replacement cleans stale listeners/timers/flush promises. In-memory edits and validated participant-scoped IndexedDB copies aid recovery after authenticated state restore, but do not provide full offline cold startup or access permission. Device-saved is separate from synced.
 

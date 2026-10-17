@@ -185,16 +185,21 @@ export class SupabasePlatform {
   async loadSnapshot(projectId:string) {
     const {data,error}=await this.admin.from('project_snapshots').select('revision,yjs_state,harness_state,committed_at').eq('project_id',projectId).maybeSingle();fail('Snapshot restore failed',error);
     if(!data)return null;
+    const {data:lastUpdate,error:sequenceError}=await this.admin.from('project_document_updates').select('sequence').eq('project_id',projectId).order('sequence',{ascending:false}).limit(1).maybeSingle();
+    fail('Document sequence restore failed',sequenceError);
+    const journalSequence=Number(lastUpdate?.sequence??0),snapshotSequence=Number(data.harness_state?.documentSequence??0);
+    if(!Number.isSafeInteger(journalSequence)||journalSequence<0||!Number.isSafeInteger(snapshotSequence)||snapshotSequence<0)throw new Error('Stored document sequence is invalid.');
+    const documentSequence=Math.max(journalSequence,snapshotSequence);
     const raw=data.yjs_state as unknown;
     let decoded:ReturnType<typeof decodePersistedYjsUpdate>;
     try{decoded=decodePersistedYjsUpdate(raw)}catch(error){
       await this.quarantine(projectId,'snapshot',Number(data.revision),raw,error);
       const recovered=await this.recoverDocumentUpdates(projectId);
       if(!recovered)throw new Error('Stored collaboration data is unreadable and no verified update history can recover it. The original bytes were quarantined; contact the project owner before making further edits.');
-      return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
+      return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
     }
     if(decoded.legacyBufferJson&&!await this.quarantine(projectId,'snapshot',Number(data.revision),raw,new Error('Legacy Node Buffer JSON serialization backed up before verified in-memory recovery.')))throw new Error('The collaboration snapshot is recoverable, but its required backup could not be recorded. Apply the persistence-quarantine migration before reopening this project.');
-    return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
+    return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
   }
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {

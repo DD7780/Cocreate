@@ -100,7 +100,7 @@ Status: accepted hosted authority boundary (2026-09-24), partially implemented a
 
 ## D-0022 — Membership precedes collaboration tickets
 
-Status: accepted 2026-09-24; strengthened by D-0042. Verify account/current project membership before issuing a five-minute role-scoped collaboration ticket; room URLs are not permission. Viewers cannot update Yjs or invoke mutations. Current code rechecks HTTP reads/mutations, upgrades, inbound messages and outbound packets; revocation blocks subsequent delivery. Ticket expiry bounds a completely silent idle socket, and proactive immediate closure without traffic remains unimplemented. Live hosted revocation and query-cost checks remain pending.
+Status: accepted 2026-09-24; strengthened by D-0042. Verify account/current project membership before issuing a five-minute role-scoped collaboration ticket; room URLs are not permission. Viewers cannot update Yjs or invoke mutations. Current code rechecks HTTP reads/mutations, upgrades and each ordered incoming/outgoing WebSocket batch (at most 32 frames), immediately before synchronous apply/delivery with no authority cache across batches; revocation blocks subsequent delivery. Ticket expiry bounds a completely silent idle socket, and proactive immediate closure without traffic remains unimplemented. The 2026-10-17 [save-throughput fix](canonical-save-throughput.md) adds controlled batching/revocation checks; live hosted revocation and capacity checks remain pending.
 
 ## D-0023 — Durable acknowledgement follows the remote commit
 

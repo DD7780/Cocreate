@@ -16,6 +16,7 @@ import type {
   Room,
 } from "./room-state.js";
 export type { Room } from "./room-state.js";
+import { collaborationBatchSize } from "./room-state.js";
 import {
   documentText,
   authenticatedDelta,
@@ -361,6 +362,7 @@ export class RoomManager {
     const room = this.rooms.get(id);
     if (!room) return;
     clearTimeout(room.saveTimer);
+    room.documentSaveRequested = false;
     clearTimeout(room.buildTimer);
     for (const timer of room.timers.values()) clearTimeout(timer);
     room.timers.clear();
@@ -423,7 +425,7 @@ export class RoomManager {
           origin as ClientSocket,
         );
       clearTimeout(room.saveTimer);
-      room.saveTimer = setTimeout(() => this.save(room), 180);
+      room.saveTimer = setTimeout(() => void this.saveDocument(room), 180);
     });
     awareness.on(
       "update",
@@ -448,6 +450,27 @@ export class RoomManager {
       },
     );
     return room;
+  }
+  private saveDocument(room: Room): Promise<void> {
+    room.documentSaveRequested = true;
+    if (room.documentSaveTask) return room.documentSaveTask;
+    room.documentSaveTask = (async () => {
+      while (room.documentSaveRequested) {
+        // Capture the latest document after prior commits, rather than queuing stale full snapshots.
+        await room.persistQueue?.catch(() => {});
+        if (!room.documentSaveRequested) return;
+        room.documentSaveRequested = false;
+        await this.save(room);
+      }
+    })().catch(error => {
+      room.documentSaveRequested = false;
+      for (const client of room.clients)
+        this.sendJson(client, { type: "save-error", message: error instanceof Error ? error.message : "Document persistence failed." });
+    }).finally(() => {
+      room.documentSaveTask = undefined;
+      if (room.documentSaveRequested) void this.saveDocument(room);
+    });
+    return room.documentSaveTask;
   }
   private restoreFailure(room: Room, meta: any) {
     if (
@@ -506,6 +529,7 @@ export class RoomManager {
     room.budgetResetReceipts = meta.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, this.eventStore.allProviderRequestRecordsForWorkspace(room.id));
     room.editHistory = meta.editHistory || [];
+    room.documentSequence = Math.max(Number(meta.documentSequence) || 0, room.editHistory.at(-1)?.seq || 0);
     room.pending = new Map(meta.pending || []);
     room.agentRevisions = new Map(meta.agentRevisions || []);
     room.submissions = meta.submissions || [];
@@ -570,6 +594,7 @@ export class RoomManager {
     room.budgetResetReceipts = meta?.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, meta?.providerLedger || []);
     room.editHistory = meta?.editHistory || [];
+    room.documentSequence = Math.max(Number(meta?.documentSequence) || 0, room.editHistory.at(-1)?.seq || 0);
     room.pending = new Map(meta?.pending || []);
     room.agentRevisions = new Map(meta?.agentRevisions || []);
     room.submissions = meta?.submissions || [];
@@ -624,7 +649,7 @@ export class RoomManager {
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+        documentSequence: room.documentSequence, interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
@@ -787,7 +812,7 @@ export class RoomManager {
     if (before === after && equalBytes(vector, Y.encodeStateVector(room.doc)))
       return;
     const record: EditRecord = {
-      seq: (room.editHistory.at(-1)?.seq || 0) + 1,
+      seq: Math.max(room.documentSequence || 0, room.editHistory.at(-1)?.seq || 0) + 1,
       participantId: p.id,
       at: now(),
       update: payload.toString("base64"),
@@ -796,6 +821,7 @@ export class RoomManager {
       after: insertedText,
     };
     room.editHistory.push(record);
+    room.documentSequence = record.seq;
     room.editHistory = room.editHistory.slice(-1000);
     this.eventStore.recordDocumentUpdate(room.id, p.id, record.seq, payload, {
       editSeq: record.seq,
@@ -830,7 +856,9 @@ export class RoomManager {
   }
   private async flushDocument(room: Room, ws: ClientSocket, requestId: string) {
     try {
-      await room.documentQueue?.catch(() => {});
+      clearTimeout(room.saveTimer);
+      room.documentSaveRequested = false;
+      // This full snapshot commits the document and attributed edits; the recovery journal is independent.
       if ((await this.save(room)) === false)
         throw new Error("The document could not be durably saved.");
       this.sendJson(ws, { type: "flushed", requestId });
@@ -851,10 +879,21 @@ export class RoomManager {
       ws.send(data);
       return;
     }
+    if (ws.deliveryBatch && ws.deliveryBatch.length < collaborationBatchSize) {
+      ws.deliveryBatch.push(data);
+      return;
+    }
+    const batch = [data];
+    ws.deliveryBatch = batch;
     ws.deliveryQueue = (ws.deliveryQueue || Promise.resolve())
       .then(async () => {
+        if (ws.deliveryBatch === batch) ws.deliveryBatch = undefined;
+        if (ws.readyState !== 1) return;
         await ws.authorizeRead!();
-        if (ws.readyState === 1) ws.send(data);
+        for (const packet of batch) {
+          if (ws.readyState !== 1) return;
+          ws.send(packet);
+        }
       })
       .catch((error) => {
         ws.close(
@@ -3147,6 +3186,7 @@ export class RoomManager {
     clearInterval(this.heartbeat);
     for (const room of this.rooms.values()) {
       clearTimeout(room.saveTimer);
+      room.documentSaveRequested = false;
       clearTimeout(room.buildTimer);
       for (const timer of room.timers.values()) clearTimeout(timer);
       for (const controller of room.agentControllers.values())

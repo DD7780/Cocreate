@@ -20,6 +20,7 @@ import {
 import { downloadableFiles } from "./project.js";
 import { previewDocument } from "./preview.js";
 import { RoomManager, type Room } from "./rooms.js";
+import { collaborationBatchSize } from "./room-state.js";
 import { createZip } from "./zip.js";
 import { registerProjectRoutes } from "./project-routes.js";
 import {
@@ -770,9 +771,18 @@ export async function createCoCreateServer(options: Options = {}) {
                 manager.connect(room, ws, session.participantId, session.role || 'editor', expiresAt);
                 const expiryTimer = expiresAt ? setTimeout(() => ws.close(4401, 'Project ticket expired'), Math.max(1, expiresAt - Date.now())) : undefined;
                 let messages = Promise.resolve();
+                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean }> | undefined;
                 ws.on('message', (data, isBinary) => {
                     const packet = Buffer.from(data as any);
+                    if (pendingBatch && pendingBatch.length < collaborationBatchSize) {
+                        pendingBatch.push({ packet, isBinary });
+                        return;
+                    }
+                    const batch = [{ packet, isBinary }];
+                    pendingBatch = batch;
                     messages = messages.then(async () => {
+                        if (pendingBatch === batch) pendingBatch = undefined;
+                        if (ws.readyState !== 1) return;
                         if (platformState.platform) {
                             const role = await platformState.platform.requireMembership(roomId, session.accountId!);
                             (ws as WebSocket & {
@@ -780,7 +790,10 @@ export async function createCoCreateServer(options: Options = {}) {
                             }).role = role;
                             await platformState.platform.assertCoordinator(roomId);
                         }
-                        manager.handleMessage(room, ws, packet, isBinary);
+                        for (const item of batch) {
+                            if (ws.readyState !== 1) return;
+                            manager.handleMessage(room, ws, item.packet, item.isBinary);
+                        }
                     }).catch(error => ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed'));
                 });
                 ws.on('close', code => {
