@@ -211,8 +211,10 @@
       "id": "immutable-evidence",
       "files": [
         "artifacts/artifact-reliability/naming-first.log",
+        "artifacts/artifact-reliability/native-final.log",
         "artifacts/artifact-reliability/native-first.log",
         "artifacts/artifact-reliability/native-second.log",
+        "artifacts/artifact-reliability/windows-full-final.log",
         "artifacts/artifact-reliability/windows-full-first.log",
         "artifacts/artifact-reliability/windows-full-second.log",
         "artifacts/beta-access-requests/active-deployment.json",

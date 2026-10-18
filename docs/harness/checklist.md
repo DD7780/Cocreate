@@ -6,7 +6,8 @@
 - [x] Reject synthetic missing/weak/default hosted secrets before listeners; repair the production SPA callback below hidden worktree ancestors.
 - [x] Replace startup-only readiness with real isolated compilation; compiler-only 60-second wall cap, numeric phases, process-owned jobs and bounded private candidate recompilation without another model call.
 - [x] Controlled restaurant/two-contributor/incremental/proposal/reopen/failed-verification scenario passes with an actual isolated browser. Built-client three-profile progress/replay/reload/viewer checks pass with three promoted versions; seven controlled calls, zero paid calls.
-- [ ] Complete fresh full Windows and native production-image/PostgreSQL gates, publish authorized source and record served identity. [Evidence and retained failures](artifact-reliability.md).
+- [x] Final Windows full regression: 294 passes, zero failures, eight Linux-only skips. Native CI 39118352619: PostgreSQL 3/3, compiler 11/11, browser/resource 15/15 and full production-image regression 302/302, zero skips. Publish authorized source f361bec / fingerprint af59b35b… to main with evidence-only follow-up. [Evidence and retained failures](artifact-reliability.md).
+- [ ] User verifies served repaired identity af59b35b… after Cloudflare rollout; last prepublication public health was 34eca68d… .
 - [ ] Real hosted provider acceptance remains manual; exact incident source was not retained, and no paid spend bound is authorized.
 
 ## Canvas capture replacement — 2026-10-17 (D-0081)

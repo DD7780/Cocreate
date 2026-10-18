@@ -1,0 +1,8 @@
+{
+  "observedAt": "2026-10-18T10:23:27.240Z",
+  "httpStatus": 200,
+  "releaseFingerprint": "34eca68d874a7640b1719d777036ab01ddeae7ae2db9eee000eb057681bc5708",
+  "preparedFingerprint": "af59b35b7f5cbef21098ca4ef1e754a4738dba4a909b41432c80c06ef02288a0",
+  "phase": "before-main-publication",
+  "paidProviderCalls": 0
+}
