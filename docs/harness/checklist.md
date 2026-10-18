@@ -7,7 +7,8 @@
 - [x] Replace client lifecycle/controller, preserve ticket-renewal identity and remove superseded submission wiring after vertical-slice checks.
 - [x] Prepare additive service-only SQL and verify embedded PostgreSQL semantics; built browser verifies renewal, pending identity, lost reply/reload, two actor scopes and no automatic resubmission.
 - [x] Runtime source b8b973d passes native PostgreSQL 3/3, compiler isolation 10/10, browser/resource 15/15 and full production-image regression 293/293, zero failures/skips (CI 39042550998). Prepared migration, rollback, deletion ledger and source fingerprint are in the [evidence ledger](canvas-capture-command.md); earlier failures remain retained.
-- [ ] Authorized hosted migration/release and designated-provider end-to-end acceptance. User chose manual provider testing; no spend cap supplied.
+- [x] User-authorized beta capture migration and corrective service-role grants applied; RLS/RPC permissions verified, private recovery export retained. [Live migration evidence](../../artifacts/canvas-capture-command/beta-migration.json).
+- [ ] Complete authorized main publication/served fingerprint verification, then designated-provider acceptance by the user. No agent paid inference is authorized.
 
 Earlier completed checks below apply to their dated source versions.
 
