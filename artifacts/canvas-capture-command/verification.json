@@ -10,7 +10,11 @@
   "focused": {"passed": 33, "failures": 0, "skips": 0},
   "localPreview": {"port": 5173, "health": 200, "authConfig": 200, "retainedRoomsAccessible": 1, "providerCommandsIssuedByVerification": 0, "dataBackedUp": true},
   "hostedMigrationApplied": true,
-  "hostedReleasePerformed": false,
+  "mainPublishedSource": "768cfeba477195a8ca3307304287d4ebdb48ae2c",
+  "hostedDeploymentTriggered": true,
+  "hostedDeploymentBuild": "success",
+  "hostedRuntimeVerified": false,
+  "hostedDeploymentVerification": "User explicitly took over rollout verification; last observed public response was release updating (503).",
   "hostedProviderAcceptance": "Manual user testing; not performed by agent",
   "earlierFailuresRetained": ["ci-first.log", "windows-full-first.log", "progress-browser-final.log"]
 }

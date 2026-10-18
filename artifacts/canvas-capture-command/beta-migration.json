@@ -7,7 +7,13 @@
     "encrypted": true,
     "ignored": true,
     "tables": 13,
-    "encryptedBytes": 2337594
+    "encryptedBytes": 2337594,
+    "decodedBytes": 1730425,
+    "ciphertextSha256": "1cad81928667c5474f34ea9c13fb5a9a68c257bd22a097443bf4ff9b73d0e523",
+    "decryptionVerified": true,
+    "projects": 39,
+    "snapshots": 39,
+    "documentUpdates": 5642
   },
   "applied": [
     {

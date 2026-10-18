@@ -8,7 +8,8 @@
 - [x] Prepare additive service-only SQL and verify embedded PostgreSQL semantics; built browser verifies renewal, pending identity, lost reply/reload, two actor scopes and no automatic resubmission.
 - [x] Runtime source b8b973d passes native PostgreSQL 3/3, compiler isolation 10/10, browser/resource 15/15 and full production-image regression 293/293, zero failures/skips (CI 39042550998). Prepared migration, rollback, deletion ledger and source fingerprint are in the [evidence ledger](canvas-capture-command.md); earlier failures remain retained.
 - [x] User-authorized beta capture migration and corrective service-role grants applied; RLS/RPC permissions verified, private recovery export retained. [Live migration evidence](../../artifacts/canvas-capture-command/beta-migration.json).
-- [ ] Complete authorized main publication/served fingerprint verification, then designated-provider acceptance by the user. No agent paid inference is authorized.
+- [x] Publish replacement and both applied migrations to main (768cfeb); Supabase migration check and automatic deployment build succeed. Privilege follow-up independently passes native SQL 3/3, compiler 10/10, browser/resource 15/15 and full regression 293/293 (CI 39098246168).
+- [ ] User verifies completed Cloudflare rollout/served fingerprint and designated-provider acceptance. User explicitly took over deployment verification; no agent paid inference or further rollout polling.
 
 Earlier completed checks below apply to their dated source versions.
 
