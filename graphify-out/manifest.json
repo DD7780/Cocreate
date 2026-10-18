@@ -528,9 +528,9 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1792246798.513776,
-    "seen": 1792246868.420292,
-    "ast_hash": "b6b8db7534fe309d1af2c6d88f84a5b0",
+    "mtime": 1792298117.4605546,
+    "seen": 1792298722.3610122,
+    "ast_hash": "04c86c46d53e4152829f7cfd3c059aa1",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1792246798.5191085,
-    "seen": 1792246868.430002,
-    "ast_hash": "237ad9dadb3ed33a8086c2858e18087a",
+    "mtime": 1792298117.456526,
+    "seen": 1792298722.3673785,
+    "ast_hash": "871d37950662b3c7770ce7444d8a5a86",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -1494,9 +1494,9 @@
     "semantic_hash": ""
   },
   "docs/harness/product-name-compatibility.json": {
-    "mtime": 1792248347.0426152,
-    "seen": 1792248595.40633,
-    "ast_hash": "0ff27cbc043cd304bd061709ab296fef",
+    "mtime": 1792298152.6315928,
+    "seen": 1792298722.3017375,
+    "ast_hash": "752fb5da79a79599b5fa67e9e82a1a73",
     "semantic_hash": ""
   },
   "scripts/check-product-naming.mjs": {
@@ -1602,9 +1602,9 @@
     "semantic_hash": ""
   },
   "tests/capture-sql.test.ts": {
-    "mtime": 1792247138.0101752,
-    "seen": 1792248067.800113,
-    "ast_hash": "1bb2dc08d07ab978a323deba8d073741",
+    "mtime": 1792298688.1175175,
+    "seen": 1792298722.3448968,
+    "ast_hash": "b6a7b13110a71a3b4e2bcb670505fed6",
     "semantic_hash": ""
   },
   "tests/fixtures/capture.ts": {
@@ -1614,9 +1614,9 @@
     "semantic_hash": ""
   },
   "docs/harness/canvas-capture-command.md": {
-    "mtime": 1792248570.203543,
-    "seen": 1792248595.479692,
-    "ast_hash": "eec34d87fefa53467cefec6da8b1ed21",
+    "mtime": 1792298117.464575,
+    "seen": 1792298722.3673785,
+    "ast_hash": "2c81a22e31ea24783ef7951cd45f0a27",
     "semantic_hash": ""
   },
   "tests/capture-http.test.ts": {

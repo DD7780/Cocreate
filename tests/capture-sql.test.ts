@@ -10,7 +10,10 @@ test('canonical capture SQL fences ownership, locks replay identity and preserve
     await db.exec('create table public.projects(id uuid primary key);');
     const ownership=fs.readFileSync(new URL('../supabase/migrations/20261001104120_workflow_coordinator_fencing.sql',import.meta.url),'utf8');
     await db.exec(ownership.slice(0,ownership.indexOf('create function')));
+    await db.exec('alter default privileges in schema public grant all on tables to service_role; alter default privileges in schema public grant all on sequences to service_role;');
     await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261017150000_workflow_capture_commands.sql',import.meta.url),'utf8'));
+    assert.equal((await db.query("select has_table_privilege('service_role','public.workflow_capture_commands','update') allowed")).rows[0].allowed,true,'reproduce hosted default grants');
+    await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261018044436_workflow_capture_privileges.sql',import.meta.url),'utf8'));
     await db.query('insert into public.projects values($1)',[project]);
     await db.query("insert into public.project_members(project_id,user_id,role) values($1,$2,'owner'),($1,$3,'editor')",[project,actor,other]);
     await db.query("insert into public.workflow_coordinator_leases values($1,$2,1,clock_timestamp()+interval '5 minutes')",[project,owner]);
@@ -33,6 +36,10 @@ test('canonical capture SQL fences ownership, locks replay identity and preserve
     }
     await assert.rejects(db.asRole('service_role','delete from public.workflow_capture_commands'),/permission denied/);
     await assert.rejects(db.asRole('service_role',"update public.workflow_capture_commands set request_id='changed'"),/permission denied/);
+    await assert.rejects(db.asRole('service_role','delete from public.workflow_capture_sources'),/permission denied/);
+    await assert.rejects(db.asRole('service_role',"update public.workflow_capture_sources set source_hash='changed'"),/permission denied/);
+    await assert.rejects(db.asRole('service_role','truncate public.workflow_capture_commands'),/permission denied/);
+    await assert.rejects(db.asRole('service_role',"select setval('public.workflow_capture_commands_cursor_seq',1)"),/permission denied/);
     const ordered=await Promise.all([commit('second'),commit('third')]);assert.notEqual(ordered[0].rows[0].receipt.cursor,ordered[1].rows[0].receipt.cursor);
     if(db.concurrentConnections){
       await db.exec("create function public.capture_delay() returns trigger language plpgsql as $$ begin if new.request_id='blocked' then perform pg_sleep(0.25); end if; return new; end $$; create trigger capture_delay before insert on public.workflow_capture_commands for each row execute function public.capture_delay();");
