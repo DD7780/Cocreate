@@ -51,3 +51,9 @@ Built-browser acceptance passes with two independent Chrome profiles, actual iso
 ## Required continuation
 
 Finish the fresh suite and required CI gates, review the exact source/compatibility diff, and validate the restored interaction in a built browser before release. Preserve original failures and report unsupported checks. Do not merge or deploy a failing candidate, reset the database, rewrite history or repeat paid generation to make the rollback look successful. A production restoration and designated-provider acceptance have not yet occurred.
+
+## Release verification follow-up
+
+The final Windows run recorded 279 passes, three failures and eight Linux-only skips in `output/oct14-restore-full-final.log`. The stale preview assertion was restored to the current canonical-prefix test. The HTTP integration fixture now performs the same acknowledged WebSocket flush as the real button and waits for the artifact matching the accepted revision; it previously raced both document delivery and promotion. The CPU adversity check stopped at the wall deadline under concurrent local checks; no resource bound/assertion was loosened. A focused rerun of preview, isolation and integration passed 19/19 before the additional accepted-revision wait. Production build/types and reviewed two-profile browser acceptance pass.
+
+Initial CI run 39139463120 stopped at the intentionally enforced stale release fingerprint guard; the prepared source identity is now `96afbe10bd067c58afdb411ce5266b5b97ec4fd199398152fc10bb0e9a939a8a`. CI run 39139689144 passed PostgreSQL, production-image build, real compiler/browser preflights and resource/authority adversity checks; its full regression result and the subsequent fixture-update run remain pending. PR: https://github.com/DD7780/Cocreate/pull/10. This is source preparation, not proof of a deployed restoration.
