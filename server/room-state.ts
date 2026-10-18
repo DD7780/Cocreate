@@ -80,7 +80,7 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
-  deliveryBatch?: Array<{data:string | Buffer}>;
+  deliveryBatch?: Array<{data:string | Buffer;trace?:SaveTrace}>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;

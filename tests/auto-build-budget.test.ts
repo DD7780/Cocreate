@@ -1,4 +1,5 @@
-import {captureAndProcess} from './fixtures/capture.js';
+import {isolationPolicy} from '../server/isolation.js';
+const compilationWaitMs=2*isolationPolicy.compileWallMs+2*isolationPolicy.wallMs;
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -7,9 +8,8 @@ import assert from "node:assert/strict";
 import http from "node:http";
 import * as Y from "yjs";
 import { RoomManager } from "../server/rooms.js";
-import {isolationPolicy} from '../server/isolation.js';
 
-const waitFor = async (check: () => boolean, timeout = 5_000) => {
+const waitFor = async (check: () => boolean, timeout = compilationWaitMs) => {
   const started = Date.now();
   while (Date.now() - started < timeout) {
     if (check()) return;
@@ -214,22 +214,20 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       ]),
       true,
     );
-    const first = await captureAndProcess(manager,
+    const first = await manager.submitChanges(
       room,
       participant.id,
       "first-submission",
     );
     assert.equal(first.status, "queued");
-    await waitFor(() => {if(room.status==='Error'&&!room.buildTask)throw new Error(room.lastError);return room.versions.length === 1;},2*isolationPolicy.compileWallMs+2_000).catch((error) => {
+    await waitFor(() => room.versions.length === 1).catch((error) => {
       console.log(
         JSON.stringify({
-          phase: "controlled-first-build",versions:room.versions.map(item=>item.id),
-          pendingPromotion:room.pendingPromotion,
+          phase: "controlled-first-build",
           personalCalls,
           builderCalls,
           status: room.status,
           error: room.lastError,
-          failedTools:manager.eventStore.eventsForWorkspace(room.id).filter(event=>event.eventType==='tool.failed').map(event=>event.payload),
           intents: participant.latest?.intents,
         }),
       );
@@ -256,13 +254,13 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       "another participant's draft remains unsubmitted",
     );
     bobDoc.destroy();
-    const replay = await captureAndProcess(manager,
+    const replay = await manager.submitChanges(
       room,
       participant.id,
       "first-submission",
     );
     assert.equal(replay.submissionId, first.submissionId);
-    const empty = await captureAndProcess(manager,
+    const empty = await manager.submitChanges(
       room,
       participant.id,
       "empty-submission",
@@ -292,7 +290,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       1,
       "later typing remains draft until submitted",
     );
-    await captureAndProcess(manager,room, participant.id, "second-submission");
+    await manager.submitChanges(room, participant.id, "second-submission");
     await waitFor(() => personalCalls === 2);
     await new Promise((resolve) => setTimeout(resolve, 180));
     assert.equal(
@@ -309,6 +307,14 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       outputTokens: 11,
     });
 
+    await manager.buildNow(room);
+    assert.equal(
+      builderCalls,
+      2,
+      "Build now should bypass automatic-build suppression",
+    );
+    assert.equal(room.versions.length, 2);
+    assert.equal(room.usage.builderRequests, 2);
   } finally {
     manager.shutdown();
     if (path.dirname(path.resolve(testDataDir)) !== path.resolve(os.tmpdir()))

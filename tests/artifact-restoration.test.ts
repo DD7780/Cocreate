@@ -1,4 +1,5 @@
-import {captureAndProcess} from './fixtures/capture.js';
+import {isolationPolicy} from '../server/isolation.js';
+const compilationWaitMs=2*isolationPolicy.compileWallMs+2*isolationPolicy.wallMs;
 import http from 'node:http';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -13,10 +14,9 @@ import { createSession } from '../server/auth.js';
 import { ArtifactUnavailableError, artifactPath, bodyFromBytes, canonicalJson, versionArtifactBytes } from '../server/artifacts.js';
 import { applyOperations, bundleProject } from '../server/project.js';
 import { createArtifactFixture } from './fixtures/artifact-storage.js';
-import {isolationPolicy} from '../server/isolation.js';
 const files = applyOperations(undefined, [{ type: 'write', path: 'src/App.tsx', content: 'export default function App(){return <main>Restored artifact</main>}' }]);
 const version = (id: number) => ({ id, createdAt: '2026-10-03T00:00:00Z', summary: `Version ${id}`, files, bundle: `window.fixtureVersion=${id}`, css: 'main{color:blue}', fileCount: files.length });
-const manager = (durableStore?: any) => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-')); return { dir, value: new RoomManager({ debounceMs: 1000, encryptionSecret: 'synthetic-encryption-secret-for-hosted-fixtures-2026', dataDir: dir, durableStore }) }; };
+const manager = (durableStore?: any) => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-')); return { dir, value: new RoomManager({ debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore }) }; };
 function clean(item: ReturnType<typeof manager>) { item.value.shutdown(); const resolved = path.resolve(item.dir); assert.equal(path.dirname(resolved), path.resolve(os.tmpdir())); assert.match(path.basename(resolved), /^artifact-step03-/); fs.rmSync(resolved, { recursive: true, force: true }); }
 test('empty cache restores compiled preview, current checkpoint, old version and receipts without inference', async () => {
     const fixture = await createArtifactFixture(), project = randomUUID(), platform = fixture.platform();
@@ -61,7 +61,7 @@ test('empty cache restores compiled preview, current checkpoint, old version and
         const old = await second.value.restoredVersion(restored, 1);
         assert.equal(old!.bundle, compiled.javascript);
         assert.deepEqual(old!.files, files);
-        const reply = await captureAndProcess(second.value,restored, 'alice', 'replayed-command');
+        const reply = await second.value.submitChanges(restored, 'alice', 'replayed-command');
         assert.equal(reply.submissionId, 'submission');
         assert.equal(restored.providerCalls.length, 0);
         assert.equal(second.value.view(restored).versions.length, 8);
@@ -170,11 +170,11 @@ test('authenticated lazy historical reads reject revoked users, including revoca
         await cold.claimCoordinator(project);
         cold.requireMembership = async () => { if (!role)
             throw Object.assign(new Error('Project access denied.'), { status: 403 }); return role; };
-        service = await createTwoGuysOneCanvasServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic-signing-secret-for-hosted-fixtures-2026', encryptionSecret: 'synthetic-encryption-secret-for-hosted-fixtures-2026' });
+        service = await createTwoGuysOneCanvasServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic-hosted-session-secret-at-least-32-bytes', encryptionSecret:'synthetic-hosted-encryption-secret-at-least-32-bytes' });
         const meta = await cold.loadSnapshot(project);
         const hydrated = service.manager.hydrate(project, meta);
         service.manager.join(hydrated, 'alice', 'Alice');
-        const { url } = await service.start(), token = createSession('synthetic-signing-secret-for-hosted-fixtures-2026', { roomId: project, participantId: 'alice', accountId: 'alice', name: 'Alice', role: 'viewer' }), headers = { Authorization: `Bearer ${token}` };
+        const { url } = await service.start(), token = createSession('synthetic-hosted-session-secret-at-least-32-bytes', { roomId: project, participantId: 'alice', accountId: 'alice', name: 'Alice', role: 'viewer' }), headers = { Authorization: `Bearer ${token}` };
         await hydrated.persistQueue;
         role = undefined;
         const before = fixture.counts.downloads;
@@ -234,12 +234,10 @@ async function buildFixture() {
     doc.destroy();
     return { fixture, platform, item, room, calls: () => calls, async close() { await room.buildTask; await room.persistQueue; clean(item); await fixture.close(); await new Promise<void>(resolve => provider.close(() => resolve())); } };
 }
-async function gateEntered(promise: Promise<void>,context:Awaited<ReturnType<typeof buildFixture>>) { let timer: NodeJS.Timeout | undefined,watching=true; try {
-    const completed=(async()=>{while(watching&&!context.room.buildTask&&context.room.status!=='Error')await new Promise(resolve=>setTimeout(resolve,10));if(!watching)return;await context.room.buildTask;throw new Error(`Build ended before publication gate: ${context.room.status}; ${context.room.lastError||'no build error'}`);})();
-    await Promise.race([promise,completed,new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error(`Publication gate exceeded preflight/compiler/browser bounds: ${context.room.status}`)), 2*isolationPolicy.compileWallMs+isolationPolicy.wallMs+10_000); })]);
+async function gateEntered(promise: Promise<void>) { let timer: NodeJS.Timeout | undefined; try {
+    await Promise.race([promise, new Promise<never>((_, reject) => { timer = setTimeout(() => reject(new Error('Controlled publication gate was not reached')), compilationWaitMs); })]);
 }
 finally {
-    watching=false;
     clearTimeout(timer);
 } }
 test('an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact', async () => {
@@ -250,8 +248,8 @@ test('an interrupted canonical promotion stays hidden; concurrent saves retain e
         await release.promise;
     } };
     try {
-        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
-        await gateEntered(entered.promise,context);
+        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
+        await gateEntered(entered.promise);
         assert.equal(context.item.value.view(context.room).latestVersion, 1);
         assert.equal(context.item.value.version(context.room, 2), null);
         assert.equal(context.fixture.snapshots.get(context.room.id)!.harness_state.versions.at(-1).id, 1);
@@ -271,7 +269,7 @@ test('an interrupted canonical promotion stays hidden; concurrent saves retain e
         Y.applyUpdate(restored, Buffer.from(canonical.yjs_state.slice(2), 'hex'));
         assert.equal(restored.getMap('fixture').get('later-edit'), 'retained');
         restored.destroy();
-        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
+        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
         assert.equal(context.calls(), before);
         assert.equal(before, 2);
     }
@@ -288,8 +286,8 @@ test('lease loss after private body upload cannot promote or start another physi
         await release.promise;
     } return result; };
     try {
-        await captureAndProcess(context.item.value,context.room, 'alice', 'controlled-build');
-        await gateEntered(entered.promise,context);
+        await context.item.value.submitChanges(context.room, 'alice', 'controlled-build');
+        await gateEntered(entered.promise);
         assert.equal(context.item.value.view(context.room).latestVersion, 1);
         context.platform.coordinator.invalidate(context.room.id);
         release.resolve();
@@ -311,8 +309,8 @@ test('synchronous publication failure clears the pending gate and preserves the 
         throw new ArtifactUnavailableError('corrupt');
     } return save(room, eventType, ...args); };
     try {
-        await captureAndProcess(context.item.value,context.room, 'alice', 'synchronous-publication-failure');
-        await gateEntered(entered.promise,context);
+        await context.item.value.submitChanges(context.room, 'alice', 'synchronous-publication-failure');
+        await gateEntered(entered.promise);
         await context.room.steeringQueue;
         await context.room.buildTask;
         await context.room.persistQueue;
@@ -355,8 +353,8 @@ test('new promotion after a retained-product rollback never overwrites an archiv
     context.room.versions.push(version(2));await context.item.value.save(context.room);
     context.room.versions.pop();await context.item.value.save(context.room);
     const entered=deferred();context.fixture.controls.beforeCommit=async body=>{if(body.target_harness_state.versions.some((value:any)=>value.id===3))entered.resolve()};
-    await captureAndProcess(context.item.value,context.room,'alice','after-retained-product-rollback');
-    try{await gateEntered(entered.promise,context)}catch(error){console.error('Retained-product fixture diagnostics',JSON.stringify({status:context.room.status,lastError:context.room.lastError,requirements:context.room.sharedRequirements.map(item=>({description:item.description,status:item.status})),activeBuild:!!context.room.buildTask,versions:context.room.versions.map(item=>item.id),calls:context.calls()}));throw error}
+    await context.item.value.submitChanges(context.room,'alice','after-retained-product-rollback');
+    try{await gateEntered(entered.promise)}catch(error){console.error('Retained-product fixture diagnostics',JSON.stringify({status:context.room.status,lastError:context.room.lastError,requirements:context.room.sharedRequirements.map(item=>({description:item.description,status:item.status})),activeBuild:!!context.room.buildTask,versions:context.room.versions.map(item=>item.id),calls:context.calls()}));throw error}
     await context.room.buildTask;await context.room.persistQueue;
     assert.equal(context.item.value.view(context.room).latestVersion,3);
     assert.equal((await context.item.value.restoredVersion(context.room,2))!.bundle,version(2).bundle);

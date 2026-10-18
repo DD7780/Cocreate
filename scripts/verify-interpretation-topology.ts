@@ -1,4 +1,3 @@
-import {captureAndProcess} from '../tests/fixtures/capture.js';
 import assert from 'node:assert/strict';
 import { createHash } from 'node:crypto';
 import fs from 'node:fs';
@@ -177,18 +176,18 @@ try {
   await Promise.all(['alice', 'bob', 'cara'].map((actor, index) => {
     f.edit(actor, workloads.independent[index].text);
     captured[index] = Date.now(); captureClock[index] = performance.now();
-    return captureAndProcess(f.manager,f.room, actor, `topology-${index}`).then(() => { accepted[index] = performance.now() - captureClock[index]; });
+    return f.manager.submitChanges(f.room, actor, `topology-${index}`).then(() => { accepted[index] = performance.now() - captureClock[index]; });
   }));
   assert.deepEqual(f.personal.map(item => item.actor), ['alice', 'bob', 'cara']);
   assert.equal(f.room.sharedRequirements.filter(item => item.status === 'accepted').length, 3);
   const scopeId = f.room.executionBudget!.id, calls = f.room.executionBudget!.calls;
   assert.equal(calls, 3);
-  for (let index = 0; index < 3; index++) await captureAndProcess(f.manager,f.room, ['alice', 'bob', 'cara'][index], `topology-${index}`);
+  for (let index = 0; index < 3; index++) await f.manager.submitChanges(f.room, ['alice', 'bob', 'cara'][index], `topology-${index}`);
   assert.equal(f.personal.length, 3);
   await f.reopen(); await pause(50);
   assert.equal(f.personal.length, 3); assert.equal(f.room.executionBudget!.calls, calls); assert.equal(f.room.executionBudget!.id, scopeId);
   assert.equal(f.room.sharedRequirements.filter(item => item.status === 'accepted').length, 3);
-  const replayStatus = (await captureAndProcess(f.manager,f.room, 'bob', 'topology-1')).status;
+  const replayStatus = (await f.manager.submitChanges(f.room, 'bob', 'topology-1')).status;
   assert.equal(replayStatus, 'queued', 'permanent replay retains the original acknowledged status');
   assert.equal(f.room.submissions.find(item => item.requestId === 'topology-1')!.status, 'queued');
   assert.equal(f.personal.length, 3);

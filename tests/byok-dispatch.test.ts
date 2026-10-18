@@ -44,7 +44,7 @@ test('saved Kimi/Muse policies reach interpretation, generation and bounded file
     const result = await generateProjectPlan(builder, [], undefined);
     assert.equal(result.value.operations.length, 1);
     assert.equal(bodies.length, 4);
-    assert.deepEqual(bodies.map(body => body.max_tokens), [8_000, 16_000, 2_000, 16_000]);
+    assert.deepEqual(bodies.map(body => body.max_tokens), [2_400, 8_000, 2_000, 8_000]);
     for (const body of bodies) {
       assert.deepEqual(body.reasoning, { effort: 'low' });
       assert.equal(body.provider.require_parameters, true);

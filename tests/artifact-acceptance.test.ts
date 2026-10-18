@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import fs from 'node:fs';
 import path from 'node:path';
 import {createProgressFixture,waitFor,pause} from './fixtures/build-progress.js';
-import {captureAndProcess} from './fixtures/capture.js';
+import {submitAndProcess} from './fixtures/restored-submit.js';
 import {restaurantFiles} from './fixtures/restaurant.js';
 import {withIsolatedBrowser} from '../server/isolation/browser.js';
 import {previewDocument} from '../server/preview.js';
@@ -13,7 +13,7 @@ test('two contributors produce a visible restaurant, increment safely, retain pr
   const settled=async(version:number)=>{await waitFor(()=>(f.room.versions.length===version||f.room.status==='Error')&&!f.room.buildTask&&!f.room.buildTimer,'candidate completion',90_000);assert.equal(f.room.versions.length,version,f.room.lastError);};
   try{
     f.edit('alice','Create a restaurant website.');f.edit('bob','Add online ordering, maybe; we have not decided.');
-    await captureAndProcess(f.manager,f.room,'alice','restaurant-first');await settled(1);
+    await submitAndProcess(f.manager,f.room,'alice','restaurant-first');await settled(1);
     assert.deepEqual(f.personal.map(item=>item.actor),['alice']);
     assert.deepEqual(f.builders[0].requirementTexts,['Create a restaurant website.']);assert.ok(f.room.pending.get('bob')?.length);
     const first=f.room.versions[0];assert.equal(first.aiRun?.verification.verified,false,'restaurant prose remains explicitly coverage-limited');
@@ -28,7 +28,7 @@ test('two contributors produce a visible restaurant, increment safely, retain pr
       const output=process.env.TWOGUYS1CANVAS_ACCEPTANCE_OUTPUT||f.dataDir;fs.mkdirSync(output,{recursive:true});fs.writeFileSync(path.join(output,'restaurant.png'),Buffer.from(screenshot.data,'base64'));
     });
     await f.submit('alice','Use black text on a white background.','restaurant-increment');await settled(2);
-    f.edit('bob','Use a white background.');await captureAndProcess(f.manager,f.room,'bob','compatible-background');await settled(3);
+    f.edit('bob','Use a white background.');await submitAndProcess(f.manager,f.room,'bob','compatible-background');await settled(3);
     assert.equal(f.room.conflictGroups.filter(group=>group.state!=='obsolete').length,0);
     assert.ok(f.builders.every(build=>build.requirementTexts.every(text=>!text.includes('online ordering'))));
     const before=f.builders.length;

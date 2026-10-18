@@ -1,3 +1,5 @@
+import {collaborationBatchSize} from './room-state.js';
+import {hostedSecretsError} from './credentials.js';
 import { productEnvironment } from '../shared/product-environment.js';
 import { assertIsolationAvailable } from "./isolation.js";
 import {assertVerificationBrowserAvailable} from './isolation/browser.js';
@@ -21,7 +23,6 @@ import {
 import { downloadableFiles } from "./project.js";
 import { previewDocument } from "./preview.js";
 import { RoomManager, type Room } from "./rooms.js";
-import { collaborationBatchSize } from "./room-state.js";
 import { createZip } from "./zip.js";
 import { registerProjectRoutes } from "./project-routes.js";
 import {
@@ -40,7 +41,6 @@ import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
-import {hostedSecretsError} from './credentials.js';
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -84,7 +84,6 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner']);
         } : undefined, mvpByokOnly: !!platformState.platform
     });
-    app.use('/api/rooms/:id/commands/capture',express.json({limit:'3mb'}));
     app.use(express.json({
         limit: '40kb'
     }));
@@ -493,6 +492,20 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             });
         }
     });
+    app.post('/api/rooms/:id/commands/capture', (_req,res) => {
+        res.status(410).json({code:'workflow_reload_required',error:'The build workflow was restored. Reload this page before submitting; your local draft and prior command are retained.'});
+    });
+    app.get('/api/rooms/:id/commands/:requestId',async(req,res)=>{
+        const auth=authorize(req,res);if(!auth)return;
+        try{
+            const receipt=await manager.captureReceipt(auth.room,auth.session.participantId,String(req.params.requestId));
+            if(!receipt)return res.status(404).json({code:'capture_not_found',error:'No recorded command with this identity.'});
+            res.setHeader('Cache-Control','no-store');res.json(receipt);
+        }catch(error){
+            if(coordinatorResponse(res,error))return;
+            res.status(503).json({error:'Prior command lookup is unavailable. Keep the original command and reload before retrying.'});
+        }
+    });
     app.post('/api/rooms/:id/build', (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -501,35 +514,28 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             error: 'Use Build my changes to submit only your own edits.'
         });
     });
-    app.post('/api/rooms/:id/commands/capture', async (req, res) => {
+    app.post('/api/rooms/:id/submit', async (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
             return;
         try {
             if (platformState.platform)
                 await platformState.platform.requireMembership(auth.room.id, auth.session.participantId, ['owner', 'editor']);
-            res.status(202).json(await manager.captureChanges(auth.room, auth.session.participantId, req.body));
+            const requestId = String(req.body.requestId || '');
+            if (!requestId || requestId.length > 100)
+                return res.status(400).json({
+                    error: 'A valid submission request ID is required.'
+                });
+            res.json(await manager.submitChanges(auth.room, auth.session.participantId, requestId));
         }
         catch (error) {
             if (coordinatorResponse(res, error))
                 return;
-            res.status(Number((error as {status?:number}).status)||503).json({
-                code:auth.room.captureUnknown?'capture_unknown':'capture_rejected',error:error instanceof Error?error.message:'Capture was not confirmed.'
+            res.status(400).json({
+                error: error instanceof Error ? error.message : String(error)
             });
         }
     });
-    app.get('/api/rooms/:id/commands/:requestId',async(req,res)=>{
-        const auth=authorize(req,res);if(!auth)return;
-        try{
-            const receipt=await manager.captureReceipt(auth.room,auth.session.participantId,String(req.params.requestId));
-            if(!receipt)return res.status(404).json({code:'capture_not_found',error:'No canonical capture exists for this identity.'});
-            res.json(receipt);
-        }catch(error){
-            if(coordinatorResponse(res,error))return;
-            res.status(503).json({code:'capture_lookup_unavailable',error:'Canonical capture status is unavailable. Retain this attempt and retry its status.'});
-        }
-    });
-    app.post('/api/rooms/:id/submit',(_req,res)=>res.status(426).json({code:'capture_upgrade_required',error:'Reload this workspace to use durable capture commands. Your drafts are retained.'}));
     app.post('/api/rooms/:id/conflicts/:groupId/selections', async (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -860,8 +866,8 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
         for (const client of wss.clients)
             client.terminate();
         await new Promise<void>(resolve => wss.close(() => resolve()));
-        await drained;
         await manager.drain();
+        await drained;
         manager.shutdown();
         closeBeta();
         await closeBetaRequests?.();

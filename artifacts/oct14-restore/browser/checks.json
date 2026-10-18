@@ -1,0 +1,17 @@
+{
+  "firstArtifact": true,
+  "incrementalArtifact": true,
+  "buttonAndAltX": true,
+  "callerOnly": true,
+  "teammateDraftRetained": true,
+  "typingInferenceFree": true,
+  "renewalPreservesWriting": true,
+  "reloadInferenceFree": true,
+  "interpreterCalls": 2,
+  "builderCalls": 2,
+  "paidCalls": 0,
+  "mobile": {
+    "width": 390,
+    "viewport": 390
+  }
+}

@@ -1,5 +1,9 @@
 # Harness decision log
 
+## D-0083 — Restore the October 14 build interaction selectively
+
+Explicit user request on October 18, followed by selection of Canvas → Build → Artifacts only and clarification that the whole application worked then. Use cutoff source `6c44029`; preserve newer branding, landing/sign-in and current project data. Restore classic flush → caller-only submit, with current metadata/journal/receipt interoperability and protection against stale-tab writes. Keep conservative intent/source fixes, private artifacts, accounting, OS isolation and serialized promotion. This supersedes D-0081's capture-write UI/protocol for the prepared restoration branch, not its historical records or anti-duplication requirements. Preparation, full/native validation and production/provider acceptance are separate. [Packet](oct14-build-restore.md).
+
 ## D-0082 — Faithful passages and measured isolated compiler recovery
 
 Accepted 2026-10-18 from the audit repair brief: reconstruct final caller-owned source at the frozen cutoff and retain exact provenance separately from interpretation. Qualifications and withheld decisions outrank imperative syntax; confirm design conflicts only for matching explicit properties/scopes. Refuse hosted startup without valid explicit signing/encryption secrets. Preflight real isolated compilation; evaluate the proposed 60-second compiler wall cap separately from the retained 20-second browser cap and independent CPU/memory/process/network/output controls. Phase diagnostics and one bounded private candidate permit explicit infrastructure-only recompilation without another model call; recovery cannot retry inference. Incidents, representative fixtures, source publication and hosted acceptance remain separate claims. This refines D-0081's source representation and startup-only compiler readiness while preserving durability, accounting, authority and serialized promotion. [Evidence](artifact-reliability.md).

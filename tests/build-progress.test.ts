@@ -1,4 +1,3 @@
-import {captureAndProcess} from './fixtures/capture.js';
 import {usedBudget} from './fixtures/workflow-budget.js';
 import test from 'node:test';
 import assert from 'node:assert/strict';
@@ -14,7 +13,7 @@ test('later captured submissions cannot starve a fixed accepted candidate and dr
     assert.equal(f.personal.length,1);assert.equal(f.room.specificationRevision,1);
     const queued=f.manager.view(f.room).buildProgress!;
     assert.equal(queued.buildingRevision,1);assert.equal(queued.pendingSubmissions,4);assert.equal(queued.availableVersion,null);
-    const calls=f.personal.length+f.builders.length;await captureAndProcess(f.manager,f.room,'bob','queued-feature-4');assert.equal(f.personal.length+f.builders.length,calls);
+    const calls=f.personal.length+f.builders.length;await f.manager.submitChanges(f.room,'bob','queued-feature-4');assert.equal(f.personal.length+f.builders.length,calls);
     f.release(1);
     await waitFor(()=>f.room.versions.length===1,'first promotion while submissions wait').catch(error=>{console.error('Progress diagnostics',JSON.stringify({status:f.room.status,error:f.room.lastError,active:!!f.room.buildTask,versions:f.room.versions.map(item=>item.id),submissions:f.room.submissions.map(item=>item.status),personal:f.personal.length,builders:f.builders.length,budget:f.room.executionBudget}));throw error;});
     assert.equal(f.room.versions[0].specificationRevision,1);
@@ -53,7 +52,7 @@ test('pending captured steering survives actual local restart without inference 
     const calls=f.personal.length+f.builders.length;
     await f.reopen();await pause(100);
     assert.equal(f.personal.length+f.builders.length,calls);assert.ok(f.room.pending.get('bob')?.some(item=>item.after.includes('favorites')));
-    assert.equal((await captureAndProcess(f.manager,f.room,'bob','restart-pending')).status,'failed');assert.equal(f.personal.length+f.builders.length,calls);
+    assert.equal((await f.manager.submitChanges(f.room,'bob','restart-pending')).status,'failed');assert.equal(f.personal.length+f.builders.length,calls);
     assert.equal(f.room.buildTask,undefined);assert.equal(f.room.buildTimer,undefined);
   }finally{await f.close();}
 });

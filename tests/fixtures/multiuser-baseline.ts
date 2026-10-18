@@ -1,4 +1,3 @@
-import {captureAndProcess} from './capture.js';
 import {usedBudget} from './workflow-budget.js';
 import { verifiedList } from './verified-list.js';
 import assert from 'node:assert/strict';
@@ -101,10 +100,10 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
     };
     const submit = (id: string, key: string) => {
       captures.set(id === 'alice' ? 'Alice' : 'Bob', performance.now() - started);
-      return captureAndProcess(manager!,room!, id, key);
+      return manager!.submitChanges(room!, id, key);
     };
     const drain = () => until(() => !!room!.versions.length && !room!.buildTask &&
-      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000).catch(error=>{console.error(JSON.stringify({event:'fixture.drain_failed',scenario,status:room!.status,error:room!.lastError,versions:room!.versions.map(item=>({id:item.id,revision:item.specificationRevision})),submissions:room!.submissions.map(item=>({actor:item.participantId,status:item.status,error:item.error})),active:!!room!.buildTask,scheduled:!!room!.buildTimer,closed:room!.buildAdmissionClosed,attempts:attempts.map(item=>({phase:item.phase,actor:item.actor}))}));throw error;});
+      room!.submissions.every(item => item.status === 'built' || item.status === 'failed'), 'finite workload drain', planVerification(room!.sharedRequirements.filter(item=>item.status==='accepted'),room!.specificationRevision).kinds.length?25_000:10_000);
 
     if (scenario === 'simultaneous-slow' || scenario === 'failed-interpreter') {
       edit('alice', 'Build a catalog'); edit('bob', 'Add favorites'); edit('cara', 'Add unsubmitted filters');
@@ -119,7 +118,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       assert.equal(observations.failedSubmissions, scenario === 'failed-interpreter' ? 1 : 0);
       assert.equal(observations.unsubmittedDraftRetained, true);
       if (scenario === 'failed-interpreter') assert.equal(room.pending.get('alice')?.length, 1);
-      const calls = attempts.length; await captureAndProcess(manager,room, 'bob', 'request-b');
+      const calls = attempts.length; await manager.submitChanges(room, 'bob', 'request-b');
       assert.equal(attempts.length, calls, 'duplicate command is inference-free');
       observations.duplicateExtraCalls = attempts.length - calls;
     } else if (scenario === 'later-steering' || scenario === 'continuous-arrivals') {
