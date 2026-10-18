@@ -1,5 +1,7 @@
 # Reliability verification — 2026-10-01
 
+Artifact reliability repair (2026-10-18, D-0082): [current repair evidence](artifact-reliability.md) separates preserved baseline failures, exact-source gates, controlled restaurant/browser behavior and manual hosted acceptance. The original live candidate was not retained. Compiler readiness uses real React compilation; compiler wall is 60 seconds while browser wall remains 20 seconds and CPU/memory/process/network/output controls remain unchanged. Representative engine measurements justify bounded Wasm compilation tasks; they do not prove the original stall cause.
+
 Capture boundary replacement (2026-10-17, D-0081): [current evidence](canvas-capture-command.md) separates immutable command durability, ordinary save receipts and asynchronous model/build acceptance. Baseline and intermediate failures are retained. A real built React workspace exercises same-account credential renewal while capture is pending, duplicate button/shortcut activation, later drafts, lost replies, reload lookup and account switching using a controlled loopback interpreter. Embedded PostgreSQL checks use the actual prepared SQL; native contention and production-image regression remain distinct gates. No hosted migration or paid inference is performed. Earlier test counts below apply to their dated commits.
 
 

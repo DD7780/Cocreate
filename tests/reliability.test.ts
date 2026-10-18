@@ -1,3 +1,4 @@
+import {isolationPolicy} from '../server/isolation.js';
 import {captureAndProcess} from './fixtures/capture.js';
 import {usedBudget} from './fixtures/workflow-budget.js';
 import { verifiedList } from './fixtures/verified-list.js';
@@ -220,7 +221,7 @@ test('ownership loss after compilation blocks promotion; command replay adds no 
   manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
     const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
-    const first=await captureAndProcess(manager,room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error');assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
+    const first=await captureAndProcess(manager,room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error',2*isolationPolicy.compileWallMs+isolationPolicy.wallMs+10_000);assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
     assert.equal((await captureAndProcess(manager,room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
     lose(room.id);release();await room.buildTask;await room.persistQueue;
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);

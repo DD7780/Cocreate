@@ -1,0 +1,226 @@
+TAP version 13
+# (node:9860) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"d405580d-b9de-432b-96f7-ca7122c5ad87","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# {"event":"command.captured","commandId":"7be1af87-d0c9-42cf-9b5e-b3854b8f1d91","epoch":1,"sourceRevision":3,"cursor":2,"durationMs":7}
+# {"event":"command.captured","commandId":"3d548fde-c0ec-4e74-a9f8-c1ba090bc900","epoch":1,"sourceRevision":4,"cursor":3,"durationMs":6}
+# {"event":"command.captured","commandId":"2a94a7d9-0008-4b4d-b84f-8acf973b66e0","epoch":1,"sourceRevision":5,"cursor":4,"durationMs":7}
+# {"event":"command.captured","commandId":"babbaf55-a074-4d49-8e1c-84a91088a315","epoch":2,"sourceRevision":6,"cursor":5,"durationMs":11}
+# Subtest: two contributors produce a visible restaurant, increment safely, retain proposals and preserve the prior product after verification failure
+ok 1 - two contributors produce a visible restaurant, increment safely, retain proposals and preserve the prior product after verification failure
+  ---
+  duration_ms: 28995.6808
+  type: 'test'
+  ...
+# (node:13480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"f6606b8f-6e00-4b41-80ae-7f7efc1474cd","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+ok 2 - hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+  ---
+  duration_ms: 18.7414
+  type: 'test'
+  ...
+# Subtest: tentative imperatives and withheld decisions cannot authorize a build
+ok 3 - tentative imperatives and withheld decisions cannot authorize a build
+  ---
+  duration_ms: 10.0113
+  type: 'test'
+  ...
+# Subtest: foreground and background values bind to their own property
+ok 4 - foreground and background values bind to their own property
+  ---
+  duration_ms: 28.636
+  type: 'test'
+  ...
+# Subtest: short model quotes cannot strip the same-sentence withheld decision
+ok 5 - short model quotes cannot strip the same-sentence withheld decision
+  ---
+  duration_ms: 2.4722
+  type: 'test'
+  ...
+# Subtest: compiler diagnostics never alter artifact identity or disclose arbitrary error data
+ok 6 - compiler diagnostics never alter artifact identity or disclose arbitrary error data
+  ---
+  duration_ms: 1.0633
+  type: 'test'
+  ...
+# Subtest: an explicit infrastructure retry reuses the persisted candidate without another model call
+ok 7 - an explicit infrastructure retry reuses the persisted candidate without another model call
+  ---
+  duration_ms: 20229.3139
+  type: 'test'
+  ...
+# Subtest: corrected final authored passage validates at its cutoff without coauthor or later text
+ok 8 - corrected final authored passage validates at its cutoff without coauthor or later text
+  ---
+  duration_ms: 18.8818
+  type: 'test'
+  ...
+# (node:13788) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"bf87cc31-fb85-4acf-a4d4-8c96878ac6f7","epoch":1,"sourceRevision":29,"cursor":1,"durationMs":15}
+# {"event":"command.captured","commandId":"3e52391f-2ecb-4850-8e64-d5176dc95b6e","epoch":1,"sourceRevision":31,"cursor":2,"durationMs":7}
+# Subtest: submitted builds ignore typing alone, preserve idempotency, and expose token usage
+ok 9 - submitted builds ignore typing alone, preserve idempotency, and expose token usage
+  ---
+  duration_ms: 12566.4224
+  type: 'test'
+  ...
+# Subtest: readiness compiles real React inside the boundary and leaves unrelated runtime jobs untouched
+ok 10 - readiness compiles real React inside the boundary and leaves unrelated runtime jobs untouched
+  ---
+  duration_ms: 7137.2217
+  type: 'test'
+  ...
+# Subtest: ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+ok 11 - ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+  ---
+  duration_ms: 13431.0924
+  type: 'test'
+  ...
+# Subtest: OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+ok 12 - OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+  ---
+  duration_ms: 673.4918
+  type: 'test'
+  ...
+# Subtest: restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+ok 13 - restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+  ---
+  duration_ms: 693.6487
+  type: 'test'
+  ...
+# Subtest: candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+ok 14 - candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+  ---
+  duration_ms: 14733.8834
+  type: 'test'
+  ...
+# Subtest: wall timeout terminates a running child and cleans its private input
+ok 15 - wall timeout terminates a running child and cleans its private input
+  ---
+  duration_ms: 715.026
+  type: 'test'
+  ...
+# Subtest: cancellation waits for real child termination and cleanup; pre-abort starts nothing
+ok 16 - cancellation waits for real child termination and cleanup; pre-abort starts nothing
+  ---
+  duration_ms: 217.2187
+  type: 'test'
+  ...
+# Subtest: memory exhaustion cannot escape the OS bound and leaves no child work
+ok 17 - memory exhaustion cannot escape the OS bound and leaves no child work
+  ---
+  duration_ms: 525.3548
+  type: 'test'
+  ...
+# Subtest: unavailable isolation fails explicitly and cannot fall back to host compilation
+ok 18 - unavailable isolation fails explicitly and cannot fall back to host compilation
+  ---
+  duration_ms: 1.1062
+  type: 'test'
+  ...
+# Subtest: CPU bound stops a busy child before the longer wall deadline
+ok 19 - CPU bound stops a busy child before the longer wall deadline
+  ---
+  duration_ms: 10503.8251
+  type: 'test'
+  ...
+# Subtest: untrusted output is bounded before it reaches application memory or artifacts
+ok 20 - untrusted output is bounded before it reaches application memory or artifacts
+  ---
+  duration_ms: 512.8684
+  type: 'test'
+  ...
+# (node:14200) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"2808ba1c-c12f-4d24-b4b1-eca61aa747ac","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":12}
+# {"event":"command.captured","commandId":"87dd076a-7814-4f68-9239-c67308612880","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":8}
+# {"event":"command.captured","commandId":"72b63cb2-c8fd-4aad-b6bd-f998423193b2","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":6}
+# {"event":"command.captured","commandId":"e31fd8af-39ff-4c64-b897-45d0c88bbf7f","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# Subtest: Current outcome of Step 01 scenario: simultaneous-slow
+ok 21 - Current outcome of Step 01 scenario: simultaneous-slow
+  ---
+  duration_ms: 15340.1941
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"93c280f3-5bf5-426f-9a1a-9b4f80b59e82","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":6}
+# Subtest: Current outcome of Step 01 scenario: failed-interpreter
+ok 22 - Current outcome of Step 01 scenario: failed-interpreter
+  ---
+  duration_ms: 7626.1014
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"7f5ee99b-933b-4551-b745-300eb012ddff","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":4}
+# {"event":"command.captured","commandId":"db11feb7-a76b-4405-8087-ac0ce80f01d6","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# Subtest: Current outcome of Step 01 scenario: later-steering
+ok 23 - Current outcome of Step 01 scenario: later-steering
+  ---
+  duration_ms: 7062.5497
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"ca6e3bfd-162a-4757-a932-5802c99fcefa","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":6}
+# {"event":"command.captured","commandId":"da19c561-8468-4a72-84c6-68efd4b1bdef","epoch":1,"sourceRevision":3,"cursor":3,"durationMs":5}
+# {"event":"command.captured","commandId":"29d9db81-b9f6-463f-b17c-8c2fcf59e28c","epoch":1,"sourceRevision":4,"cursor":4,"durationMs":7}
+# {"event":"command.captured","commandId":"a5c225b2-21d9-4022-83c1-fd6c92415d91","epoch":1,"sourceRevision":5,"cursor":5,"durationMs":7}
+# {"event":"command.captured","commandId":"4f2b9e43-592e-4566-b0c3-a5b315379a07","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":6}
+# Subtest: Current outcome of Step 01 scenario: continuous-arrivals
+ok 24 - Current outcome of Step 01 scenario: continuous-arrivals
+  ---
+  duration_ms: 12913.2006
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"19bc0c6c-cbbb-4ab0-bef7-3c299534c230","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: Current outcome of Step 01 scenario: ambiguous-reference
+ok 25 - Current outcome of Step 01 scenario: ambiguous-reference
+  ---
+  duration_ms: 207.1433
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"658d8fe1-6f1c-4ccc-b92c-a11eb16d4d32","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: Current outcome of Step 01 scenario: invented-passage
+ok 26 - Current outcome of Step 01 scenario: invented-passage
+  ---
+  duration_ms: 212.706
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: incorrect-product
+ok 27 - Current outcome of Step 01 scenario: incorrect-product
+  ---
+  duration_ms: 7644.1403
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: snapshot-body-gap
+ok 28 - Current outcome of Step 01 scenario: snapshot-body-gap
+  ---
+  duration_ms: 144.3438
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: projection-growth
+ok 29 - Current outcome of Step 01 scenario: projection-growth
+  ---
+  duration_ms: 174.3368
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: isolation-policy
+ok 30 - Current outcome of Step 01 scenario: isolation-policy
+  ---
+  duration_ms: 93.8854
+  type: 'test'
+  ...
+# Subtest: Current outcome of Step 01 scenario: restart-budget
+ok 31 - Current outcome of Step 01 scenario: restart-budget
+  ---
+  duration_ms: 116.8328
+  type: 'test'
+  ...
+1..31
+# tests 31
+# suites 0
+# pass 31
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 175304.9515

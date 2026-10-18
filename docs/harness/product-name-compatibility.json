@@ -212,7 +212,9 @@
       "files": [
         "artifacts/artifact-reliability/naming-first.log",
         "artifacts/artifact-reliability/native-first.log",
+        "artifacts/artifact-reliability/native-second.log",
         "artifacts/artifact-reliability/windows-full-first.log",
+        "artifacts/artifact-reliability/windows-full-second.log",
         "artifacts/beta-access-requests/active-deployment.json",
         "artifacts/beta-access-requests/hosted-anonymous.json",
         "artifacts/beta-registration-visibility/boundaries.log",

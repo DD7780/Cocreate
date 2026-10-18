@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "tests/integration.test.ts": {
-    "mtime": 1792246250.9801185,
-    "seen": 1792246868.4124084,
-    "ast_hash": "8e81e0e80cbe5bdde78f9c3755a33501",
+    "mtime": 1792317983.4469402,
+    "seen": 1792318062.359651,
+    "ast_hash": "27fc5dd70ee71fe3fb491812c2b24f86",
     "semantic_hash": ""
   },
   "tests/intent-classification.test.ts": {
@@ -648,15 +648,15 @@
     "semantic_hash": ""
   },
   "tests/reliability.test.ts": {
-    "mtime": 1792246640.1391232,
-    "seen": 1792246868.4154067,
-    "ast_hash": "99e3cf7e13d813ee3e391c61b158358b",
+    "mtime": 1792317983.4469402,
+    "seen": 1792318062.3733432,
+    "ast_hash": "57e043f91cfb2c95dc1d90a50eba1708",
     "semantic_hash": ""
   },
   "docs/harness/reliability-verification.md": {
-    "mtime": 1792246798.5468304,
-    "seen": 1792246868.4420362,
-    "ast_hash": "6ef2e40518bcd7c884e1c831d2da1add",
+    "mtime": 1792317412.7030287,
+    "seen": 1792318062.4090278,
+    "ast_hash": "a6d585dc91920980c460f1b373e0df4c",
     "semantic_hash": ""
   },
   "supabase/migrations/202609240001_projects_auth_persistence.sql": {
@@ -1494,9 +1494,9 @@
     "semantic_hash": ""
   },
   "docs/harness/product-name-compatibility.json": {
-    "mtime": 1792305004.0111005,
-    "seen": 1792305345.2651699,
-    "ast_hash": "aedac65a4bf05398954de697ef25d4a0",
+    "mtime": 1792318018.119042,
+    "seen": 1792318062.2592525,
+    "ast_hash": "6b14c07b46a76813528ddc832cc5cb71",
     "semantic_hash": ""
   },
   "scripts/check-product-naming.mjs": {
@@ -1656,9 +1656,9 @@
     "semantic_hash": ""
   },
   "docs/harness/artifact-reliability.md": {
-    "mtime": 1792317118.3470166,
-    "seen": 1792317153.988715,
-    "ast_hash": "18626f1f1ff739cad4357dda6c5b2aec",
+    "mtime": 1792318016.9457133,
+    "seen": 1792318062.386312,
+    "ast_hash": "89d2083f7b14b60c9f1cf78ed3cbcf71",
     "semantic_hash": ""
   }
 }
