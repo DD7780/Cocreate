@@ -3,7 +3,9 @@
   "exceptions": [
     {
       "id": "reject-legacy-development-secret",
-      "files": ["server/credentials.ts"],
+      "files": [
+        "server/credentials.ts"
+      ],
       "pattern": "cocreate\\|2guys1canvas",
       "owner": "Authentication maintainer",
       "reason": "Reject the known legacy development signing secret in hosted mode.",
@@ -12,7 +14,9 @@
     },
     {
       "id": "capture-release-repository-links",
-      "files": ["docs/harness/canvas-capture-command.md"],
+      "files": [
+        "docs/harness/canvas-capture-command.md"
+      ],
       "pattern": "Cocreate/(?:actions/|compare/)",
       "owner": "Repository operator",
       "reason": "Verified existing GitHub repository URLs for the release diff and CI evidence.",
@@ -206,6 +210,9 @@
     {
       "id": "immutable-evidence",
       "files": [
+        "artifacts/artifact-reliability/naming-first.log",
+        "artifacts/artifact-reliability/native-first.log",
+        "artifacts/artifact-reliability/windows-full-first.log",
         "artifacts/beta-access-requests/active-deployment.json",
         "artifacts/beta-access-requests/hosted-anonymous.json",
         "artifacts/beta-registration-visibility/boundaries.log",
@@ -224,13 +231,12 @@
         "artifacts/canonical-save-throughput/build.log",
         "artifacts/canonical-save-throughput/github-ci-summary.log",
         "artifacts/canonical-save-throughput/verification.json",
-        "artifacts/canvas-capture-command/ci-first.log",
         "artifacts/canvas-capture-command/ci-final.log",
+        "artifacts/canvas-capture-command/ci-first.log",
         "artifacts/canvas-capture-command/naming-check.log",
         "artifacts/canvas-capture-command/naming-final.log",
         "artifacts/canvas-capture-command/naming-release.log",
         "artifacts/canvas-capture-command/windows-full-first.log",
-        "artifacts/artifact-reliability/naming-first.log",
         "artifacts/founder-contact-icons/boundaries.log",
         "artifacts/founder-contact-icons/build.log",
         "artifacts/founder-contact-icons/ui-scope.log",

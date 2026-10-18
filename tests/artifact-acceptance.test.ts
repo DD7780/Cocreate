@@ -25,7 +25,7 @@ test('two contributors produce a visible restaurant, increment safely, retain pr
       let visible='';for(let attempt=0;attempt<40;attempt++){visible=(await read()).result.value||'';if(visible.includes('Chicken momo'))break;await pause(50);}
       assert.match(visible,/Mountain Momo/);assert.match(visible,/Chicken momo/);assert.match(visible,/Vegetable momo/);
       const screenshot=await browser.call('Page.captureScreenshot',{format:'png'},sessionId);
-      const output=path.resolve('artifacts/artifact-reliability');fs.mkdirSync(output,{recursive:true});fs.writeFileSync(path.join(output,'restaurant.png'),Buffer.from(screenshot.data,'base64'));
+      const output=process.env.TWOGUYS1CANVAS_ACCEPTANCE_OUTPUT||f.dataDir;fs.mkdirSync(output,{recursive:true});fs.writeFileSync(path.join(output,'restaurant.png'),Buffer.from(screenshot.data,'base64'));
     });
     await f.submit('alice','Use black text on a white background.','restaurant-increment');await settled(2);
     f.edit('bob','Use a white background.');await captureAndProcess(f.manager,f.room,'bob','compatible-background');await settled(3);

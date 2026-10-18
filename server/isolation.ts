@@ -20,13 +20,13 @@ export const isolationPolicy = Object.freeze({ version: 'isolated-compile-v2', w
 export class IsolationError extends Error {
   constructor(readonly code: 'isolation_unavailable' | 'isolation_cancelled' | 'isolation_timeout' | 'isolation_resource_limit', message: string) { super(message); }
 }
-export type IsolationDiagnostics={jobId:string;operation:string;wallMs:number;elapsedMs:number;phase:string;phasesMs:Record<string,number>;cleanupMs?:number;exitCode?:number|null;sandboxExit?:number;peakProcessBytes?:number;nativeExitCode?:number;diagnostic?:string;limit?:string};
+export type IsolationDiagnostics={jobId:string;operation:string;wallMs:number;elapsedMs:number;phase:string;phasesMs:Record<string,number>;cleanupMs?:number;exitCode?:number|null;sandboxExit?:number;peakProcessBytes?:number;peakJobBytes?:number;cpuUserMs?:number;cpuKernelMs?:number;nativeExitCode?:number;diagnostic?:string;limit?:string};
 export function safeIsolationDiagnostics(value:unknown){
   const input=value as Partial<IsolationDiagnostics>|undefined;if(!input)return undefined;
   const numeric=(key:keyof IsolationDiagnostics)=>typeof input[key]==='number'&&Number.isFinite(input[key])?input[key]:undefined;
   return {jobId:typeof input.jobId==='string'&&/^[a-f0-9-]{36}$/.test(input.jobId)?input.jobId:undefined,operation:['compile','probe','spin','allocate','flood'].includes(input.operation||'')?input.operation:undefined,
     phase:['launch','input','wasm_compile','wasm_initialize','bundle','output','cleanup'].includes(input.phase||'')?input.phase:undefined,
-    wallMs:numeric('wallMs'),elapsedMs:numeric('elapsedMs'),cleanupMs:numeric('cleanupMs'),exitCode:numeric('exitCode'),sandboxExit:numeric('sandboxExit'),peakProcessBytes:numeric('peakProcessBytes'),nativeExitCode:numeric('nativeExitCode'),
+    wallMs:numeric('wallMs'),elapsedMs:numeric('elapsedMs'),cleanupMs:numeric('cleanupMs'),exitCode:numeric('exitCode'),sandboxExit:numeric('sandboxExit'),peakProcessBytes:numeric('peakProcessBytes'),peakJobBytes:numeric('peakJobBytes'),cpuUserMs:numeric('cpuUserMs'),cpuKernelMs:numeric('cpuKernelMs'),nativeExitCode:numeric('nativeExitCode'),
     phasesMs:Object.fromEntries(Object.entries(input.phasesMs||{}).filter(([key,value])=>['input','wasm_compile','wasm_initialize','bundle','output'].includes(key)&&typeof value==='number'&&Number.isFinite(value)&&value>=0))};
 }
 const unavailable = () => new IsolationError('isolation_unavailable', 'Generated execution isolation is unavailable. Ask the operator to prepare or repair the isolated runtime, then explicitly retry; no host execution fallback is allowed.');
@@ -99,7 +99,8 @@ function linuxCommand(runtime:string,workspace:string,osProbe:boolean){
   for(const directory of ['/lib','/lib64','/usr/lib'])if(fs.existsSync(directory))args.push('--ro-bind',directory,directory);
   args.push('--setenv','NODE_ENV','production','--setenv','UV_THREADPOOL_SIZE','1','--chdir','/job','/node');
   if(!osProbe)args.push('--permission','--allow-fs-read=/runtime','--allow-fs-read=/job');
-  args.push('--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
+  // One-shot compiles should not spend their CPU allowance on background Wasm optimization.
+  args.push('--wasm-lazy-compilation','--no-wasm-tier-up','--wasm-num-compilation-tasks=1','--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
   return {executable:'/usr/bin/prlimit',args};
 }
 /** Internal trusted primitive. No HTTP/model output can choose operations, commands or runtime flags. */
@@ -151,7 +152,7 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
       }
       child.once('error',()=>finish(unavailable()));
       child.once('close',code=>{
-        Object.assign(diagnostics,{elapsedMs:Math.round(performance.now()-began),exitCode:code,sandboxExit,diagnostic:stderr.slice(0,2000),peakProcessBytes:Number(stderr.match(/ISOLATION_PEAK_BYTES (\d+)/)?.[1])||undefined,nativeExitCode:Number(stderr.match(/ISOLATION_EXIT (\d+)/)?.[1])||undefined});
+        Object.assign(diagnostics,{elapsedMs:Math.round(performance.now()-began),exitCode:code,sandboxExit,diagnostic:stderr.slice(0,2000),peakProcessBytes:Number(stderr.match(/ISOLATION_PEAK_BYTES (\d+)/)?.[1])||undefined,peakJobBytes:Number(stderr.match(/ISOLATION_PEAK_BYTES \d+ (\d+)/)?.[1])||undefined,cpuUserMs:stderr.match(/ISOLATION_ACCOUNTING (\d+)/)?Number(stderr.match(/ISOLATION_ACCOUNTING (\d+)/)![1])/10_000:undefined,cpuKernelMs:stderr.match(/ISOLATION_ACCOUNTING \d+ (\d+)/)?Number(stderr.match(/ISOLATION_ACCOUNTING \d+ (\d+)/)![1])/10_000:undefined,nativeExitCode:Number(stderr.match(/ISOLATION_EXIT (\d+)/)?.[1])||undefined});
         if(aborted){const error=cancelled();error.cause=diagnostics;return finish(error);}
         if(timedOut||code===124){const error=new IsolationError('isolation_timeout',`Compiler/isolated execution exceeded its wall-time bound during ${diagnostics.phase} and was removed.`);error.cause=diagnostics;return finish(error);}
         const linuxResource=process.platform==='linux'&&((sandboxExit===137||sandboxExit===152)||(/out of memory|allocation failed/i.test(stderr)||(request.operation==='allocate'&&/allocation failed/i.test(stdout))));

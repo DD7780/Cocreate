@@ -21,6 +21,7 @@ test('readiness compiles real React inside the boundary and leaves unrelated run
   try{
     const result=await assertIsolationAvailable();assert.match(result.javascript,/Compiler readiness/);
     assert.ok(result.diagnostics.phasesMs.wasm_initialize>=0);assert.ok(result.diagnostics.phasesMs.bundle>=0);
+    if(process.platform==='win32'){assert.ok(result.diagnostics.cpuUserMs!>0);assert.ok(result.diagnostics.peakJobBytes!>=result.diagnostics.peakProcessBytes!);}
     assert.equal(fs.readFileSync(sentinel,'utf8'),'preserve unrelated work');noJobs();
   }finally{assert.equal(path.dirname(foreign),path.resolve('.runtime/isolation/jobs'));fs.rmSync(foreign,{recursive:true});}
 });
