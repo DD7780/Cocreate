@@ -11,11 +11,13 @@
   },
   "applied": [
     {
-      "source": "20261017150000_workflow_capture_commands.sql",
+      "source": "20261018044323_workflow_capture_commands.sql",
+      "preparedSource": "20261017150000_workflow_capture_commands.sql",
       "hostedVersion": "20261018044323"
     },
     {
-      "source": "20261018044436_workflow_capture_privileges.sql",
+      "source": "20261018044503_workflow_capture_privileges.sql",
+      "preparedSource": "20261018044436_workflow_capture_privileges.sql",
       "hostedVersion": "20261018044503"
     }
   ],

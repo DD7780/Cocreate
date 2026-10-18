@@ -522,15 +522,15 @@
     "semantic_hash": ""
   },
   "api.md": {
-    "mtime": 1792248570.2020407,
-    "seen": 1792248595.4765046,
-    "ast_hash": "fb4f268be415f0431c86c8993ac67bdc",
+    "mtime": 1792298963.266312,
+    "seen": 1792298983.4439301,
+    "ast_hash": "9ba14278fbbdee9530a2edeb1a9582ee",
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1792298117.4605546,
-    "seen": 1792298722.3610122,
-    "ast_hash": "04c86c46d53e4152829f7cfd3c059aa1",
+    "mtime": 1792298808.4549353,
+    "seen": 1792298983.4439301,
+    "ast_hash": "12a14625dfc179bddeb7892e7f0b1f37",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
@@ -546,9 +546,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1792298117.456526,
-    "seen": 1792298722.3673785,
-    "ast_hash": "871d37950662b3c7770ce7444d8a5a86",
+    "mtime": 1792298808.4572766,
+    "seen": 1792298983.4499984,
+    "ast_hash": "d3ac4027eebef198cdae27e823f578c5",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -1602,9 +1602,9 @@
     "semantic_hash": ""
   },
   "tests/capture-sql.test.ts": {
-    "mtime": 1792298688.1175175,
-    "seen": 1792298722.3448968,
-    "ast_hash": "b6a7b13110a71a3b4e2bcb670505fed6",
+    "mtime": 1792298963.2696073,
+    "seen": 1792298983.42858,
+    "ast_hash": "f488f341a024b6f74d0cd08621c38e73",
     "semantic_hash": ""
   },
   "tests/fixtures/capture.ts": {
@@ -1614,9 +1614,9 @@
     "semantic_hash": ""
   },
   "docs/harness/canvas-capture-command.md": {
-    "mtime": 1792298117.464575,
-    "seen": 1792298722.3673785,
-    "ast_hash": "2c81a22e31ea24783ef7951cd45f0a27",
+    "mtime": 1792298769.7808888,
+    "seen": 1792298983.4499984,
+    "ast_hash": "269109034bd62ab541233bd0e90b3ae9",
     "semantic_hash": ""
   },
   "tests/capture-http.test.ts": {

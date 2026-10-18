@@ -11,9 +11,9 @@ test('canonical capture SQL fences ownership, locks replay identity and preserve
     const ownership=fs.readFileSync(new URL('../supabase/migrations/20261001104120_workflow_coordinator_fencing.sql',import.meta.url),'utf8');
     await db.exec(ownership.slice(0,ownership.indexOf('create function')));
     await db.exec('alter default privileges in schema public grant all on tables to service_role; alter default privileges in schema public grant all on sequences to service_role;');
-    await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261017150000_workflow_capture_commands.sql',import.meta.url),'utf8'));
+    await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261018044323_workflow_capture_commands.sql',import.meta.url),'utf8'));
     assert.equal((await db.query("select has_table_privilege('service_role','public.workflow_capture_commands','update') allowed")).rows[0].allowed,true,'reproduce hosted default grants');
-    await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261018044436_workflow_capture_privileges.sql',import.meta.url),'utf8'));
+    await db.exec(fs.readFileSync(new URL('../supabase/migrations/20261018044503_workflow_capture_privileges.sql',import.meta.url),'utf8'));
     await db.query('insert into public.projects values($1)',[project]);
     await db.query("insert into public.project_members(project_id,user_id,role) values($1,$2,'owner'),($1,$3,'editor')",[project,actor,other]);
     await db.query("insert into public.workflow_coordinator_leases values($1,$2,1,clock_timestamp()+interval '5 minutes')",[project,owner]);
