@@ -264,9 +264,9 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1792335208.7351205,
-    "seen": 1792336228.1829824,
-    "ast_hash": "bc1ff9f561bda7056985fc01e11784ef",
+    "mtime": 1792336427.4819953,
+    "seen": 1792336489.5715406,
+    "ast_hash": "9a47c18f34eb696741ef13bf03b9cfbb",
     "semantic_hash": ""
   },
   "src/ByokSetup.tsx": {
@@ -1596,9 +1596,9 @@
     "semantic_hash": ""
   },
   "docs/harness/oct14-build-restore.md": {
-    "mtime": 1792333023.522488,
-    "seen": 1792336228.2324538,
-    "ast_hash": "f3619a6b95e67578237723247269655f",
+    "mtime": 1792336239.9418552,
+    "seen": 1792336489.6898103,
+    "ast_hash": "5d8d6004e7c9a73c5efa328d8271ef2d",
     "semantic_hash": ""
   },
   "scripts/verify-restored-workflow.mjs": {

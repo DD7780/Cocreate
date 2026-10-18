@@ -399,7 +399,11 @@ function Product({ state, token }: { state: RoomView; token: string }) {
   );
 }
 
-export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameProject, inviteBusy = false }: {
+export function Workspace(props: Parameters<typeof WorkspaceScope>[0]) {
+    const token=props.tokenOverride||readBrowserStorage(localStorage, `2guys1canvas-session-${props.id}`)||'';
+    return <WorkspaceScope key={JSON.stringify([props.id,tokenParticipant(token)])} {...props}/>;
+}
+function WorkspaceScope({ id, tokenOverride, projectTitle, onInvite, onRenameProject, inviteBusy = false }: {
     id: string;
     tokenOverride?: string;
     projectTitle?: string;
@@ -411,7 +415,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     const [state, setState] = useState<RoomView | null>(null), [sessionNeeded, setSessionNeeded] = useState(!tokenOverride && (forceJoin || !token)), [connection, setConnection] = useState<ConnectionStatus>({
         state: 'connecting', message: 'Connecting to live collaboration…'
     }), [saveState, setSaveState] = useState<'saving' | 'saved' | 'unsynced'>('unsynced'), [savedAt, setSavedAt] = useState<string>(), [tab, setTab] = useState<'workflow' | 'document' | 'product'>('document'), [split, setSplit] = useState(false), [copied, setCopied] = useState(false), [error, setError] = useState(''), [notice, setNotice] = useState(''), [submitting, setSubmitting] = useState(false), shortcut = defaultBuildShortcut(isMac), [settings, setSettings] = useState(false);
-    const [localDraft, setLocalDraft] = useState<LocalDraftStatus>('loading');
+    const [localDraft, setLocalDraft] = useState<LocalDraftStatus>('loading'),[accessDenied,setAccessDenied]=useState('');
     const scopeActorId=tokenParticipant(token),credentials=useRef(token);credentials.current=token;
     const doc = useMemo(() => new Y.Doc(), [id,scopeActorId]), [provider, setProvider] = useState<TwoGuysOneCanvasProvider>(), submittingRef = useRef(false), apiButtonRef = useRef<HTMLButtonElement>(null), submissionRequest = useRef<string | undefined>(undefined), retryRequest = useRef<string | undefined>(undefined);
     useEffect(() => {
@@ -436,13 +440,23 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
                 setLocalDraft('saved');
                 stopDraft = persistDraft(doc, key, setLocalDraft);
             }
-            catch {
-                if (!cancelled)
+            catch (error) {
+                if (!cancelled) {
                     setLocalDraft('unavailable');
+                    if([401,403,404].includes(Number((error as {status?:number}).status)))setAccessDenied(error instanceof Error?error.message:'Workspace access changed.');
+                    setConnection({state:'error',reason:'unavailable',message:'Workspace access or device recovery could not be opened. Check your connection and browser storage, then reopen. Your saved data was retained.'});
+                }
+                return;
             }
             if (cancelled)
                 return;
-            p = new TwoGuysOneCanvasProvider(doc, id, credentials.current, receiveState, setConnection, (status, at) => {
+            p = new TwoGuysOneCanvasProvider(doc, id, credentials.current, receiveState, status=>{
+                if(cancelled)return;
+                setConnection(status);
+                if(status.state==='error'&&(status.reason==='forbidden'||status.reason==='missing-room'||status.reason==='invalid-session'&&!tokenOverride)){
+                    setAccessDenied(status.message);p?.destroy();
+                }
+            }, (status, at) => {
                 setSaveState(status);
                 if (at)
                     setSavedAt(at);
@@ -505,12 +519,13 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
             submissionRequest.current = undefined;
             setNotice(result.message || 'Changes submitted.');
         }
-        catch {
+        catch (error) {
+            setError(error instanceof Error?error.message:'Your changes were not confirmed. Keep this page open and try again.');
         }
         finally {
             submittingRef.current = false;
             setSubmitting(false);
-            if (keepFocus)
+            if (keepFocus && !activeEditor.isDestroyed)
                 requestAnimationFrame(() => activeEditor.commands.focus());
         }
     }, [action, connection, editor, id, provider, state]);
@@ -605,6 +620,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
                 location.href = '/';
         }}>{rejoin ? 'Rejoin room' : 'Return home'}</button></main>;
     }
+    if(accessDenied)return <main className="loading"><p>{accessDenied}</p><button onClick={()=>location.href=projectTitle?'/projects':'/'}>Return home</button></main>;
     if (!state)
         return <main className="loading"><LoaderCircle className="spin"/><p>{connection.message}</p></main>;
     const initialSetup = false;
