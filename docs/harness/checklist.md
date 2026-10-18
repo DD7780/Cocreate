@@ -1,5 +1,15 @@
 # Harness status and outstanding work
 
+## Workflow restoration candidate — 2026-10-18 (D-0083)
+
+- [x] Identify the October 14 source cutoff, isolate work and preserve current main/user data.
+- [x] Restore classic caller-only controls with current provenance/receipt/persistence compatibility and unchanged branding/authentication.
+- [x] Verify targeted multi-collaborator integration, metadata recovery, provider policy and authentication checks; retain initial full-run failures.
+- [ ] Complete fresh full-suite, production-image/native CI and built-browser acceptance on the exact candidate.
+- [ ] Verify served rollback identity and designated-provider artifact promotion before declaring the application restored.
+
+See [scope and evidence](oct14-build-restore.md). No deployed rollback is claimed.
+
 ## Artifact reliability repairs — 2026-10-18 (D-0082)
 
 - [x] Reproduce and repair tentative directives and false foreground/background conflicts; reconstruct final caller-owned passages at the exact cutoff with separate raw evidence, source references and eligibility.

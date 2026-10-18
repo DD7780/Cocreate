@@ -3,7 +3,6 @@ import assert from 'node:assert/strict';
 import * as Y from 'yjs';
 import { deletionSignature } from '../shared/document-state.js';
 import {TwoGuysOneCanvasProvider,type ConnectionStatus,providerInternals} from '../src/provider.js';
-import {CaptureCommandController} from '../src/capture-command.js';
 
 class FakeWebSocket {
   static CONNECTING=0;static OPEN=1;static CLOSING=2;static CLOSED=3;static instances:FakeWebSocket[]=[];
@@ -19,49 +18,30 @@ class FakeWebSocket {
 const tick=()=>new Promise(resolve=>setTimeout(resolve,0));
 const binary=(value:Uint8Array)=>value.buffer.slice(value.byteOffset,value.byteOffset+value.byteLength);
 
-test('tagged source bursts retain identities while sharing one coalesced transport frame',async()=>{
-  FakeWebSocket.instances=[];const callbacks=new Map<number,()=>void>(),doc=new Y.Doc(),remote=new Y.Doc();let timer=0;
-  const commands=new CaptureCommandController('scope',{read:async()=>undefined,merge:async()=>{}});await commands.restore();
-  const provider=new TwoGuysOneCanvasProvider(doc,'room','ticket',()=>{},()=>{},()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:callback=>{callbacks.set(++timer,callback);return timer;},clearTimer:id=>{callbacks.delete(id);}},commands);
+test('same-account credential renewal preserves writing and completes a pending save only on the renewed socket',async()=>{
+  FakeWebSocket.instances=[];
+  const doc=new Y.Doc();let timer=0,settled=false;
+  const provider=new TwoGuysOneCanvasProvider(doc,'room','old-token',()=>{},()=>{},()=>{},
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>++timer,clearTimer:()=>{}});
   try{
-    const socket=FakeWebSocket.instances[0];socket.open();doc.getText('draft').insert(0,'A');doc.getText('draft').insert(1,'B');
-    assert.equal(socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='document-updates').length,0);
-    for(const callback of [...callbacks.values()])callback();
-    const frames=socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='document-updates') as string[];
-    assert.equal(frames.length,1);const sources=JSON.parse(frames[0]).updates;assert.equal(sources.length,2);assert.notEqual(sources[0].id,sources[1].id);
-    for(const source of sources)Y.applyUpdate(remote,Buffer.from(source.update,'base64'));assert.equal(remote.getText('draft').toString(),'AB');
-  }finally{provider.destroy();commands.dispose();doc.destroy();remote.destroy();}
-});
-
-test('ticket renewal reconnects transport while retaining document and command identity; teardown removes listeners',async()=>{
-  FakeWebSocket.instances=[];const doc=new Y.Doc(),rows=new Map<string,Uint8Array>();
-  const commands=new CaptureCommandController('scope',{read:async key=>rows.get(key),merge:async(key,value)=>{rows.set(key,value);}});await commands.restore();
-  const provider=new TwoGuysOneCanvasProvider(doc,'room','first-ticket',()=>{},()=>{},()=>{},{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:()=>1,clearTimer:()=>{}},commands);
-  try{
-    const old=FakeWebSocket.instances[0];old.open();doc.getText('draft').insert(0,'kept');
-    const source=commands.sources()[0];let envelope:any;
-    await assert.rejects(()=>commands.capture(doc,[],{lookup:async()=>undefined,send:async value=>{envelope=value;throw new Error('lost');}},()=>{}));
-    provider.updateCredentials('renewed-ticket');const renewed=FakeWebSocket.instances[1];renewed.open();
-    assert.match(renewed.url,/renewed-ticket/);assert.equal(old.readyState,3);assert.equal(doc.getText('draft').toString(),'kept');assert.equal(commands.sources()[0].id,source.id);
-    old.message(binary(Uint8Array.from([0,0])));assert.equal(doc.getText('draft').toString(),'kept');
-    await commands.capture(doc,[],{lookup:async id=>{assert.equal(id,envelope.requestId);return {durable:true,commandId:'command',requestId:id,actorId:'actor',cursor:1,sourceRevision:1,acceptedRevision:0,state:'captured',productVersion:null};},send:async()=>{throw new Error('renewal must not submit');}},()=>{});
-    provider.destroy();const before=commands.sources().length;doc.getText('draft').insert(4,' after teardown');assert.equal(commands.sources().length,before);
-  }finally{provider.destroy();commands.dispose();doc.destroy();}
-});
-
-test('a deletion-only disconnected edit restores on reconnect and needs its own deletion receipt',async()=>{
-  FakeWebSocket.instances=[];const doc=new Y.Doc(),remote=new Y.Doc(),callbacks:(()=>void)[]=[],saves:string[]=[];
-  doc.getText('draft').insert(0,'Remove this');Y.applyUpdate(remote,Y.encodeStateAsUpdate(doc));
-  const oldDeletions=deletionSignature(doc),vector=Buffer.from(Y.encodeStateVector(doc)).toString('base64');
-  const provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},state=>saves.push(state),{WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}'),setTimer:run=>{callbacks.push(run);return callbacks.length},clearTimer:()=>{}});
-  try{
-    FakeWebSocket.instances[0].open();FakeWebSocket.instances[0].close();await tick();doc.getText('draft').delete(0,11);callbacks.shift()!();
-    const socket=FakeWebSocket.instances[1];socket.open();const remoteVector=Y.encodeStateVector(remote),packet=new Uint8Array(remoteVector.length+1);packet[0]=2;packet.set(remoteVector,1);socket.message(binary(packet));
-    const update=socket.sent.find(value=>value instanceof Uint8Array&&value[0]===0) as Uint8Array;assert.ok(update);Y.applyUpdate(remote,update.slice(1));assert.equal(remote.getText('draft').toString(),'');
-    socket.message(JSON.stringify({type:'saved',revision:1,vector,deletions:oldDeletions}));assert.notEqual(saves.at(-1),'saved');
-    socket.message(JSON.stringify({type:'saved',revision:2,vector,deletions:deletionSignature(remote)}));assert.equal(saves.at(-1),'saved');
-    assert.equal(socket.sent.filter(value=>typeof value==='string'&&JSON.parse(value).type==='flush').length,0,'reconnect does not submit');
-  }finally{provider.destroy();doc.destroy();remote.destroy()}
+    const first=FakeWebSocket.instances[0];first.open();
+    doc.getText('draft').insert(0,'Keep my writing');
+    const awareness=provider.awareness;
+    const saving=provider.flush().then(()=>{settled=true;});
+    const original=first.sent.filter((item):item is string=>typeof item==='string').map(item=>JSON.parse(item)).find(item=>item.type==='flush');
+    provider.updateCredentials('renewed-token');
+    assert.equal(provider.doc,doc);assert.equal(provider.awareness,awareness);
+    assert.equal(doc.getText('draft').toString(),'Keep my writing');
+    const renewed=FakeWebSocket.instances[1];assert.match(renewed.url,/renewed-token/);renewed.open();
+    first.message(JSON.stringify({type:'flushed',requestId:original.requestId}));await tick();
+    assert.equal(settled,false,'a retired transport cannot complete the current save');
+    const empty=new Y.Doc();
+    try{renewed.message(binary(Uint8Array.from([2,...Y.encodeStateVector(empty)])));}finally{empty.destroy();}
+    const replay=renewed.sent.filter((item):item is string=>typeof item==='string').map(item=>JSON.parse(item)).find(item=>item.type==='flush');
+    assert.equal(replay.requestId,original.requestId);
+    renewed.message(JSON.stringify({type:'flushed',requestId:replay.requestId}));
+    await saving;assert.equal(settled,true);
+  }finally{provider.destroy();doc.destroy();}
 });
 
 test('delayed save acknowledgements cannot label newer pending edits saved and stale room states are ignored',()=>{
@@ -129,6 +109,27 @@ test('a new connection can recover a lower authoritative cursor after uncommitte
   FakeWebSocket.instances[1].message(JSON.stringify({type:'room-state',state:{persistRevision:18,workflow:{activityCursor:28}}}));
   FakeWebSocket.instances[1].message(JSON.stringify({type:'room-state',state:{persistRevision:17,workflow:{activityCursor:27}}}));
   assert.deepEqual(states,[20,18]);provider.destroy();
+});
+
+test('disconnect rejects an in-flight flush and destroy removes document listeners',async()=>{
+  FakeWebSocket.instances=[];const timers=new Map<number,()=>void>();let timerId=0,saves=0;
+  const doc=new Y.Doc(),provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},()=>{saves++},
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',fetchImpl:async()=>new Response('{}',{status:200}),setTimer:callback=>{timers.set(++timerId,callback);return timerId},clearTimer:id=>{timers.delete(id)}});
+  const socket=FakeWebSocket.instances[0];socket.open();const flushing=provider.flush();socket.close();await assert.rejects(flushing,/No build was started/);provider.destroy();const before=saves;doc.getText('draft').insert(0,'after destroy');assert.equal(saves,before);
+});
+
+test('burst edits share one transport update and explicit flush drains before acknowledgement',async()=>{
+  FakeWebSocket.instances=[];const callbacks=new Map<number,()=>void>();let timerId=0;
+  const doc=new Y.Doc(),provider=new TwoGuysOneCanvasProvider(doc,'room','token',()=>{},()=>{},()=>{},
+    {WebSocketImpl:FakeWebSocket as any,origin:'http://example.test',setTimer:callback=>{callbacks.set(++timerId,callback);return timerId},clearTimer:id=>{callbacks.delete(id)}});
+  const socket=FakeWebSocket.instances[0];socket.open();
+  doc.getText('draft').insert(0,'A');doc.getText('draft').insert(1,'B');
+  assert.equal(socket.sent.filter(value=>value instanceof Uint8Array&&value[0]===0).length,0);
+  const pending=provider.flush();
+  const packets=socket.sent.filter(value=>value instanceof Uint8Array&&value[0]===0) as Uint8Array[];
+  assert.equal(packets.length,1);const remote=new Y.Doc();Y.applyUpdate(remote,packets[0].slice(1));assert.equal(remote.getText('draft').toString(),'AB');
+  const request=JSON.parse(socket.sent.at(-1) as string);assert.equal(request.type,'flush');socket.message(JSON.stringify({type:'flushed',requestId:request.requestId}));await pending;
+  provider.destroy();doc.destroy();remote.destroy();
 });
 
 test('owner unavailability honors bounded retry hints, retains edits, and ends without inference',async()=>{

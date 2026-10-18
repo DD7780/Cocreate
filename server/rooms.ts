@@ -1,7 +1,9 @@
-import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
+import {collaborationBatchSize} from './room-state.js';
 import {SaveTrace} from './save-diagnostics.js';
-import {MAX_CAPTURE_BYTES,validateCaptureEnvelope,captureCovers,decodeCaptureBytes,validCaptureId,type CaptureReceipt} from '../shared/capture-command.js';
-import {replayCaptureJournal,type CaptureRecord} from './capture-journal.js';
+import {insertedSpans,deletedSpans,captureAuthoredPassages} from './authored-passages.js';
+import {replayCaptureJournal} from './capture-journal.js';
+import {MAX_CAPTURE_BYTES, captureCovers,decodeCaptureBytes,validCaptureId,type CaptureReceipt} from '../shared/capture-command.js';
+import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
 import {buildProgressFor} from "./build-progress.js";
 import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
 import {assertVerificationBrowserAvailable} from "./isolation/browser.js";
@@ -19,7 +21,6 @@ import type {
   Room,
 } from "./room-state.js";
 export type { Room } from "./room-state.js";
-import { collaborationBatchSize } from "./room-state.js";
 import {
   documentText,
   authenticatedDelta,
@@ -50,7 +51,6 @@ import {
 } from "./artifacts.js";
 import { deletionSignature } from "../shared/document-state.js";
 import { applySteeringUpdate } from "./steering-edits.js";
-import {insertedSpans,deletedSpans,captureAuthoredPassages} from './authored-passages.js';
 import fs from "node:fs";
 import path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
@@ -135,9 +135,10 @@ import {
   managedCatalog,
   managedSetup,
 } from "./managed-catalog.js";
-import { BYOK_MODEL_VERSION, BYOK_ROLE_LIMITS, OpenRouterLeases } from "./byok-lease.js";
+import { BYOK_MODEL_VERSION, OpenRouterLeases } from "./byok-lease.js";
 import { aggregatePhysicalUsage } from "./usage-ledger.js";
 import { CoordinatorUnavailableError } from "./coordinator.js";
+const DOCUMENT_SAVE_TIMEOUT_MS=20_000;
 const colors = [
     "#5B6BE1",
     "#E05D7B",
@@ -234,11 +235,15 @@ export class RoomManager {
       const model = (
         role === "builder" ? lease.builders : lease.interpreters
       ).find((item) => item.id === modelId)!;
-      const maxOutputTokens = BYOK_ROLE_LIMITS[role].maxOutputTokens;
+      const maxOutputTokens = Math.min(
+        role === "builder" ? 8_000 : 2_400,
+        model.maxOutputTokens ?? Number.POSITIVE_INFINITY,
+        Math.floor(model.contextLength / 4),
+      );
       const maxInputTokens = Math.max(
         1_024,
         Math.min(
-          BYOK_ROLE_LIMITS[role].maxInputTokens,
+          role === "builder" ? 60_000 : 20_000,
           model.contextLength - maxOutputTokens - 2_000,
         ),
       );
@@ -258,8 +263,7 @@ export class RoomManager {
           verifiedAt: new Date().toISOString().slice(0, 10),
         },
         maxInputTokens,
-        maxOutputTokens,
-        reasoningConfig: model.reasoningConfig,
+        maxOutputTokens,reasoningConfig:model.reasoningConfig,
       };
     };
     room.ai.personal = { connectionId: "byok", model: personalModel };
@@ -350,17 +354,17 @@ export class RoomManager {
         ...pending,
       ]);
       submission.status = "failed";
-      submission.interrupted = true;
       submission.error =
         "Interpretation was interrupted. Your captured edits are retained; submit them again.";
       if (room.commandReceipts)
         room.commandReceipts[
           JSON.stringify([submission.participantId, submission.requestId])
         ] = {
+          ...room.commandReceipts[JSON.stringify([submission.participantId,submission.requestId])],
           id: submission.id,
           participantId: submission.participantId,
           requestId: submission.requestId,
-          status: "failed",payloadHash:submission.payloadHash,interrupted:true,
+          status: "failed",
         };
     }
   }
@@ -369,7 +373,6 @@ export class RoomManager {
     const room = this.rooms.get(id);
     if (!room) return;
     clearTimeout(room.saveTimer);
-    room.documentSaveRequested = false;
     clearTimeout(room.buildTimer);
     for (const timer of room.timers.values()) clearTimeout(timer);
     room.timers.clear();
@@ -458,27 +461,6 @@ export class RoomManager {
     );
     return room;
   }
-  private saveDocument(room: Room): Promise<void> {
-    room.documentSaveRequested = true;
-    if (room.documentSaveTask) return room.documentSaveTask;
-    room.documentSaveTask = (async () => {
-      while (room.documentSaveRequested) {
-        // Capture the latest document after prior commits, rather than queuing stale full snapshots.
-        await room.persistQueue?.catch(() => {});
-        if (!room.documentSaveRequested) return;
-        room.documentSaveRequested = false;
-        await this.save(room);
-      }
-    })().catch(error => {
-      room.documentSaveRequested = false;
-      for (const client of room.clients)
-        this.sendJson(client, { type: "save-error", message: error instanceof Error ? error.message : "Document persistence failed." });
-    }).finally(() => {
-      room.documentSaveTask = undefined;
-      if (room.documentSaveRequested) void this.saveDocument(room);
-    });
-    return room.documentSaveTask;
-  }
   private restoreFailure(room: Room, meta: any) {
     if (
       meta?.status === "Error" ||
@@ -496,8 +478,7 @@ export class RoomManager {
     if (!this.eventStore.hasWorkspace(room.id) && fs.existsSync(legacyFile))
         this.eventStore.importLegacyWorkspace(room.id, legacyFile);
     const checkpoint = this.eventStore.readWorkspaceSnapshot<any>(room.id);
-    const commands=this.eventStore.captureRecords(room.id,checkpoint?.captureCursor||0);
-    const meta=checkpoint||commands.length?replayCaptureJournal(checkpoint,commands):undefined;
+    const meta = replayCaptureJournal(checkpoint,this.eventStore.captureRecords(room.id,checkpoint?.captureCursor||0));
     if (!meta)
         throw new Error(`Workspace ${room.id} has no recoverable state.`);
     if (meta.update)
@@ -534,13 +515,11 @@ export class RoomManager {
     room.intentReceipts = meta.intentReceipts;
     room.requirementRevisions = meta.requirementRevisions;
     room.commandReceipts = meta.commandReceipts;
-    room.captureCursor=meta.captureCursor||0;
-    room.captureSources=new Map(Object.entries(meta.captureSources||{}));
+    room.captureCursor=meta.captureCursor||0;room.captureSources=new Map(Object.entries(meta.captureSources||{}));room.documentSequence=Math.max(Number(meta.documentSequence)||0,meta.editHistory?.at(-1)?.seq||0);
     room.recoveryCheckpoint = meta.recoveryCheckpoint;
     room.budgetResetReceipts = meta.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, this.eventStore.allProviderRequestRecordsForWorkspace(room.id));
     room.editHistory = meta.editHistory || [];
-    room.documentSequence = Math.max(Number(meta.documentSequence) || 0, room.editHistory.at(-1)?.seq || 0);
     room.pending = new Map(meta.pending || []);
     room.agentRevisions = new Map(meta.agentRevisions || []);
     room.submissions = meta.submissions || [];
@@ -572,8 +551,6 @@ export class RoomManager {
     if (this.rooms.has(id))
         return this.rooms.get(id)!;
     const room = this.makeRoom(id);
-    room.captureCursor=meta?.captureCursor||0;
-    room.captureSources=new Map(Object.entries(meta?.captureSources||{}));
     if (meta?.artifactBodies)
         this.eventStore.restoreArtifactBodies(meta.artifactBodies);
     if (meta?.harnessProjection)
@@ -603,11 +580,11 @@ export class RoomManager {
     room.intentReceipts = meta?.intentReceipts;
     room.requirementRevisions = meta?.requirementRevisions;
     room.commandReceipts = meta?.commandReceipts;
+    room.captureCursor=meta?.captureCursor||0;room.captureSources=new Map(Object.entries(meta?.captureSources||{}));room.documentSequence=Math.max(Number(meta?.documentSequence)||0,meta?.editHistory?.at(-1)?.seq||0);
     room.recoveryCheckpoint = meta?.recoveryCheckpoint;
     room.budgetResetReceipts = meta?.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, meta?.providerLedger || []);
     room.editHistory = meta?.editHistory || [];
-    room.documentSequence = Math.max(Number(meta?.documentSequence) || 0, room.editHistory.at(-1)?.seq || 0);
     room.pending = new Map(meta?.pending || []);
     room.agentRevisions = new Map(meta?.agentRevisions || []);
     room.submissions = meta?.submissions || [];
@@ -635,6 +612,27 @@ export class RoomManager {
     this.eventStore.recoverWorkflow(id);
     return room;
 }
+private saveDocument(room: Room): Promise<void> {
+    room.documentSaveRequested = true;
+    if (room.documentSaveTask) return room.documentSaveTask;
+    room.documentSaveTask = (async () => {
+      while (room.documentSaveRequested) {
+        // Capture the latest document after prior commits, rather than queuing stale full snapshots.
+        await room.persistQueue?.catch(() => {});
+        if (!room.documentSaveRequested) return;
+        room.documentSaveRequested = false;
+        await this.save(room);
+      }
+    })().catch(error => {
+      room.documentSaveRequested = false;
+      for (const client of room.clients)
+        this.sendJson(client, { type: "save-error", message: error instanceof Error ? error.message : "Document persistence failed." });
+    }).finally(() => {
+      room.documentSaveTask = undefined;
+      if (room.documentSaveRequested) void this.saveDocument(room);
+    });
+    return room.documentSaveTask;
+  }
   save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system', trace?:SaveTrace): boolean | Promise<boolean> {
     this.assertOwned(room);
     if (room.intentCommit && eventType !== 'intent.command_recorded')
@@ -822,7 +820,7 @@ export class RoomManager {
           if(size>MAX_CAPTURE_BYTES)throw new Error('Collaboration source batch exceeds its limit.');
           for(const update of updates)this.applyDocumentSource(room,p.id,update.bytes,update.id,ws);
         }
-        if(msg.type==='flush')this.sendJson(ws,{type:'flush-error',requestId:msg.requestId,code:'capture_upgrade_required',message:'Reload to use durable capture commands. Your drafts are retained.'});
+        if(msg.type==='flush'&&typeof msg.requestId==='string')void this.flushDocument(room,ws,msg.requestId);
       } catch {}
       return;
     }
@@ -914,23 +912,85 @@ export class RoomManager {
     if (record.before || record.after) this.queueEdit(room, p, record);
     return record;
   }
-  private sendPacket(ws: ClientSocket, data: string | Buffer) {
+  private async flushDocument(room: Room, ws: ClientSocket, requestId: string, trace=new SaveTrace({requestId})) {
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    let expired=false;
+    try {
+      clearTimeout(room.saveTimer);
+      room.documentSaveRequested = false;
+      trace.start('save-wait');
+      const target={vector:Y.decodeStateVector(Y.encodeStateVector(room.doc)),deletions:deletionSignature(room.doc),sequence:room.documentSequence||0};
+      const persist=async()=>{
+        this.assertOwned(room);
+        if(room.intentCommit)await room.intentCommit.done;
+        if(room.pendingPromotion)await room.persistQueue;
+        this.assertOwned(room);
+        if(expired)return false;
+        const pending=room.snapshotWrite;
+        if(pending?.pending){
+          trace.attach(pending.progress);
+          if(!await pending.promise)return false;
+          this.assertOwned(room);
+        }
+        if(expired)return false;
+        const receipt=room.committedDocument;
+        if(receipt&&receipt.documentSequence>=target.sequence&&receipt.deletions===target.deletions){
+          const saved=Y.decodeStateVector(receipt.vector);
+          if([...target.vector].every(([id,clock])=>(saved.get(id)||0)>=clock)){
+            this.sendJson(ws,{type:'saved',revision:receipt.revision,savedAt:receipt.savedAt,vector:Buffer.from(receipt.vector).toString('base64'),deletions:receipt.deletions});
+            return true;
+          }
+        }
+        return this.save(room,'workspace.snapshot_recorded','system','system',trace);
+      };
+      // Reuse only a confirmed covering receipt; the recovery journal is independent.
+      const confirmed = await Promise.race([
+        persist(),
+        new Promise<never>((_, reject) => {
+          timer = setTimeout(() => {expired=true;reject(new Error("Save acknowledgement timed out; the remote save outcome is unknown. No build was started. Your edits remain on this page; check the connection and try again."))}, DOCUMENT_SAVE_TIMEOUT_MS);
+        }),
+      ]);
+      if (confirmed === false)
+        throw new Error("The document save was not confirmed. No build was started. Your edits remain on this page; check the connection and try again.");
+      this.assertOwned(room);
+      trace.end('save-wait');trace.start('delivery');
+      await this.sendJson(ws, { type: "flushed", requestId },trace);
+      trace.end('delivery');trace.finish(ws.readyState===1?'acknowledged':'closed');
+    } catch (error) {
+      trace.end('save-wait');trace.start('delivery');
+      if(expired)trace.finish('unknown');
+      await this.sendJson(ws, {
+        type: "flush-error",
+        requestId,
+        message:
+          error instanceof Error
+            ? error.message
+            : "Document persistence failed. No build started.",
+      },trace);
+      trace.end('delivery');trace.finish(expired?'unknown':'failed');
+    } finally {
+      clearTimeout(timer);
+    }
+  }
+  private sendPacket(ws: ClientSocket, data: string | Buffer, trace?:SaveTrace) {
     if (ws.readyState !== 1) return;
     if (!ws.authorizeRead) {
       ws.send(data);
       return;
     }
     if (ws.deliveryBatch && ws.deliveryBatch.length < collaborationBatchSize) {
-      ws.deliveryBatch.push({data});
+      ws.deliveryBatch.push({data,trace});
       return ws.deliveryQueue;
     }
-    const batch = [{data}];
+    const batch = [{data,trace}];
     ws.deliveryBatch = batch;
     ws.deliveryQueue = (ws.deliveryQueue || Promise.resolve())
       .then(async () => {
         if (ws.deliveryBatch === batch) ws.deliveryBatch = undefined;
         if (ws.readyState !== 1) return;
-        await ws.authorizeRead!();
+        const traces=[...new Set(batch.flatMap(packet=>packet.trace?[packet.trace]:[]))];
+        for(const trace of traces)trace.start('delivery-authority');
+        try{await ws.authorizeRead!()}finally{for(const trace of traces)trace.end('delivery-authority')}
         for (const packet of batch) {
           if (ws.readyState !== 1) return;
           ws.send(packet.data);
@@ -975,8 +1035,8 @@ export class RoomManager {
     for (const c of room.clients)
       if (c !== except && c.readyState === 1) this.sendPacket(c, data);
   }
-  private sendJson(ws: ClientSocket, data: unknown) {
-    return this.sendPacket(ws, JSON.stringify(data));
+  private sendJson(ws: ClientSocket, data: unknown, trace?:SaveTrace) {
+    return this.sendPacket(ws, JSON.stringify(data),trace);
   }
   private broadcastState(room: Room) {
     const state = this.view(room);
@@ -1975,7 +2035,7 @@ export class RoomManager {
     if (!room.buildTask && !hasOpenContradictions(room.conflictGroups))
       room.status = room.versions.length ? "Updated" : "Waiting for ideas";
   }
-  private runAgent(room: Room, participantId: string, submittedBatch: EditRecord[], submission: StoredSubmission): Promise<void> {
+  private runAgent(room: Room, participantId: string, submittedBatch?: EditRecord[], submission?: StoredSubmission): Promise<void> {
     const existing = room.agentTasks.get(participantId);
     if (existing)
         return existing.then(() => this.runAgent(room, participantId, submittedBatch, submission));
@@ -1984,6 +2044,8 @@ export class RoomManager {
         if (!p || !this.hasAI(room) || !batch.length)
             return;
         const revision = submission?.documentRevision ?? room.agentRevisions.get(participantId) ?? 0, previous = p.latest, controller = new AbortController();
+        if (!submittedBatch)
+            room.pending.delete(participantId);
         room.agentControllers.set(participantId, controller);
         if (submission)
             submission.status = 'interpreting';
@@ -2002,9 +2064,11 @@ export class RoomManager {
             };
             const result = await this.tracked(room, {
                 purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
-            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission.snapshot, previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements),submission.authoredPassages));
+            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements),submission?.authoredPassages));
             this.recordUsage(room, 'personal', result.usage, reservation, usageMeta);
             if (controller.signal.aborted) {
+                if (!submittedBatch)
+                    room.pending.set(participantId, [...batch, ...(room.pending.get(participantId) || [])]);
                 return;
             }
             const priorAcceptance = {
@@ -2059,7 +2123,7 @@ export class RoomManager {
             }
             p.agentStatus = 'error';
             room.status = 'Error';
-            room.lastError = `Interpretation failed: ${error instanceof Error ? error.message : String(error)}`;
+            room.lastError = error instanceof Error ? error.message : String(error);
             this.save(room, 'submission.failed', participantId, 'system');
             this.broadcastState(room);
             if (submission)
@@ -2072,131 +2136,89 @@ export class RoomManager {
     room.agentTasks.set(participantId, task);
     return task;
 }
-  private checkCaptureConsistency(room:Room,actorId:string,requestId:string,record:CaptureRecord|undefined){
-    const prior=room.commandReceipts?.[JSON.stringify([actorId,requestId])];
-    if(prior&&((prior.payloadHash&&!record)||(record&&(prior.id!==record.submission.id||(prior.payloadHash&&prior.payloadHash!==record.payloadHash)))))
-      throw Object.assign(new Error('Canonical capture disagrees with its checkpoint. Retain the command and contact the owner.'),{status:503});
-  }
-  private legacyCaptureReceipt(room:Room,actorId:string,requestId:string):CaptureReceipt|undefined{
-    const prior=room.commandReceipts?.[JSON.stringify([actorId,requestId])];
-    if(!prior||prior.payloadHash)return;
-    const submission=room.submissions.find(item=>item.id===prior.id),version=room.versions.filter(item=>item.id!==room.pendingPromotion).at(-1);
-    return {durable:true,commandId:prior.id,requestId,actorId,cursor:0,sourceRevision:submission?.documentRevision||0,acceptedRevision:room.specificationRevision,state:prior.status==='failed'?'interrupted':prior.status==='built'?(version?'available':'no_build_needed'):'interrupted',productVersion:version?.id??null,message:'Recovered a pre-capture command. No new changes were submitted.'};
-  }
-  private projectCaptureReceipt(room:Room,record:CaptureRecord):CaptureReceipt{
-    const stored=record.submission,submission=room.submissions.find(item=>item.id===stored.id);
-    const remembered=room.commandReceipts?.[JSON.stringify([stored.participantId,stored.requestId])];
-    const status=submission?.status||remembered?.status||stored.status;
-    const productVersion=submission?.productVersion??remembered?.productVersion;
-    const promoting=productVersion!==undefined&&productVersion===room.pendingPromotion;
-    const execution=this.eventStore.runsForWorkspace(room.id).at(-1)?.state;
-    const state:CaptureReceipt['state']=submission?.interrupted||remembered?.interrupted?'interrupted':
-      status==='failed'?'failed':(submission?.outcome||remembered?.outcome)==='no_build_needed'?'no_build_needed':status==='interpreting'?'interpreting':status==='built'?(promoting?'verifying':productVersion!==undefined?'available':'no_build_needed'):
-      status==='queued'?(hasOpenContradictions(room.conflictGroups)?'awaiting_decision':room.buildTask?(execution==='verifying'?'verifying':'building'):'queued'):'captured';
-    return {durable:true,commandId:stored.id,requestId:stored.requestId,actorId:stored.participantId,cursor:record.cursor,
-      sourceRevision:stored.documentRevision,acceptedRevision:room.specificationRevision,state,
-      productVersion:promoting?null:productVersion??null,message:submission?.error||remembered?.error};
-  }
-  private installCapture(room:Room,record:CaptureRecord,interrupted=false){
-    const submission=structuredClone(record.submission),key=JSON.stringify([submission.participantId,submission.requestId]);
-    if(room.submissions.some(item=>item.id===submission.id))return;
-    room.captureCursor=Math.max(room.captureCursor||0,record.cursor);
-    room.captureSources||=new Map();
-    for(const edit of submission.capturedChanges||[])if(edit.sourceId)room.captureSources.set(edit.sourceId,{actorId:submission.participantId,hash:edit.sourceHash!});
-    const consumed=new Set(submission.editSeqs);
-    room.pending.set(submission.participantId,(room.pending.get(submission.participantId)||[]).filter(edit=>!consumed.has(edit.seq)));
-    room.submissions.push(submission);room.submissions=retainSubmissions(room.submissions);
-    room.commandReceipts||={};room.commandReceipts[key]={id:submission.id,participantId:submission.participantId,requestId:submission.requestId,status:submission.status,payloadHash:record.payloadHash};
-    if(interrupted){
-      submission.interrupted=true;
-      this.restoreCapturedSubmission(room,submission,'Capture recovered without restarting inference. Use Build my changes explicitly to retry.');
-      room.commandReceipts[key].status='failed';room.commandReceipts[key].interrupted=true;
-    }
-    room.lastEditAt=Date.now();
-    if(!interrupted){room.pendingBuildSince??=room.lastEditAt;if(!room.buildTask)room.status='Collecting submissions'}
-    this.workflowPhase(room,room.buildTask?'running':'queued',{submissionId:submission.id,requestId:submission.requestId,participantId:submission.participantId,sourceRevision:submission.documentRevision});
-    this.broadcastState(room);
-    return submission;
-  }
+  /** Read-only bridge for commands captured before the workflow restoration. */
   async captureReceipt(room:Room,actorId:string,requestId:string):Promise<CaptureReceipt|undefined>{
     if(!validCaptureId(requestId))throw new Error('Invalid capture request identity.');
-    this.assertOwned(room);await this.config.durableStore?.assertCoordinator?.(room.id);
+    this.assertOwned(room);
+    await this.config.durableStore?.assertCoordinator?.(room.id);
     await this.config.authorizeSubmission?.(room.id,actorId);
-    const record=this.config.durableStore?await this.config.durableStore.readCapture?.(room.id,actorId,requestId):this.eventStore.captureRecord(room.id,actorId,requestId);
-    if(this.config.durableStore&&!this.config.durableStore.readCapture)throw new Error('Canonical command lookup is unavailable.');
-    this.checkCaptureConsistency(room,actorId,requestId,record);
-    this.assertOwned(room);await this.config.authorizeSubmission?.(room.id,actorId);
-    if(room.captureUnknown?.actorId===actorId&&room.captureUnknown.requestId===requestId){
-      if(record&&record.payloadHash!==room.captureUnknown.payloadHash)throw new Error('Canonical capture identity disagrees; preserve the attempt and contact the owner.');
-      if(record)this.installCapture(room,record,true);
-      room.captureUnknown=undefined;
-    }
-    return record?this.projectCaptureReceipt(room,record):this.legacyCaptureReceipt(room,actorId,requestId);
+    const record=this.config.durableStore
+      ?await this.config.durableStore.readCapture?.(room.id,actorId,requestId)
+      :this.eventStore.captureRecord(room.id,actorId,requestId);
+    this.assertOwned(room);
+    await this.config.authorizeSubmission?.(room.id,actorId);
+    if(!record)return undefined;
+    const receipt=room.commandReceipts?.[JSON.stringify([actorId,requestId])];
+    const submission=room.submissions.find(item=>item.id===record.submission.id)||record.submission;
+    const status=receipt?.status||submission.status;
+    const productVersion=receipt?.productVersion??submission.productVersion??null;
+    const state:CaptureReceipt['state']=status==='failed'?'failed':productVersion!==null?'available':status==='interpreting'?'interpreting':status==='queued'?'queued':'captured';
+    return {durable:true,commandId:record.submission.id,requestId,actorId,cursor:record.cursor,
+      sourceRevision:record.submission.documentRevision,acceptedRevision:room.specificationRevision,state,productVersion,
+      message:'This command predates the restored workflow. Reload to continue; its recorded identity is retained.'};
   }
-  captureChanges(room:Room,actorId:string,input:unknown):Promise<CaptureReceipt>{
-    let envelope:ReturnType<typeof validateCaptureEnvelope>;
-    try{envelope=validateCaptureEnvelope(input);}catch(error){throw Object.assign(error instanceof Error?error:new Error('Invalid capture envelope.'),{status:400});}
-    const payloadHash=createHash('sha256').update(JSON.stringify(envelope)).digest('hex');
-    if((room.captureWaiting||0)>=16)throw Object.assign(new Error('Capture queue is full. Retain this attempt and retry its status.'),{status:429});
-    room.captureWaiting=(room.captureWaiting||0)+1;
-    const admission=(room.captureQueue||Promise.resolve()).catch(()=>{}).then(async()=>{
-      if(this.closing)throw Object.assign(new Error('The workflow is stopping. Retain this command and recover its status after reopening.'),{status:503});
-      this.assertOwned(room);
-      if(room.captureUnknown)throw Object.assign(new Error('A capture commit is unresolved. Recover its receipt before sending another command.'),{status:503});
-      if(room.intentCommit)await room.intentCommit.done;
-      await this.config.durableStore?.assertCoordinator?.(room.id);
-      await this.config.authorizeSubmission?.(room.id,actorId);this.assertOwned(room);
-      const participant=room.participants.get(actorId);if(!participant)throw new Error('Participant not found.');
-      const prior=this.config.durableStore?await this.config.durableStore.readCapture?.(room.id,actorId,envelope.requestId):this.eventStore.captureRecord(room.id,actorId,envelope.requestId);
-      this.checkCaptureConsistency(room,actorId,envelope.requestId,prior);
-      if(!prior){const legacy=this.legacyCaptureReceipt(room,actorId,envelope.requestId);if(legacy)return legacy;}
-      if(prior){
-        if(prior.payloadHash!==payloadHash)throw Object.assign(new Error('Capture request identity was reused with different input.'),{status:409});
-        return this.projectCaptureReceipt(room,prior);
-      }
-      if(this.config.durableStore&&(!this.config.durableStore.commitCapture||!this.config.durableStore.readCapture))throw new Error('The canonical capture migration is required before building.');
-      if(!this.hasAI(room))throw new Error('Connect and save the selected AI models before capturing a build command.');
-      if(room.ai.setup?.mode==='byok_lease')this.byok.require(room.id,room.ai.setup.credentialHandle||'',actorId);
-      const requested=new Set([...envelope.sourceIds,...envelope.updates.map(source=>source.id)]);
-      for(const source of envelope.updates){
-        if(!captureCovers(source.update,envelope.cutoff))throw new Error('Source update exceeds the immutable action cutoff.');
-        this.applyDocumentSource(room,actorId,decodeCaptureBytes(source.update),source.id);
-      }
-      const batch=(room.pending.get(actorId)||[]).filter(edit=>(!edit.sourceId||requested.has(edit.sourceId))&&captureCovers(edit.update,envelope.cutoff));
-      if(!batch.length)throw Object.assign(new Error('No eligible changes at this action cutoff. Your later edits remain drafts.'),{status:422});
-      const setup=structuredClone(room.ai.setup),assignment=setup?.mode==='recommended'||setup?.mode==='managed'||setup?.mode==='byok_lease'?room.ai.personal:room.ai.participantOverrides?.[actorId]||room.ai.personal;
-      if(!assignment)throw new Error('No personal model is assigned.');
-      const intentContext=acceptedContext(room.sharedRequirements),submission:StoredSubmission={
-        id:randomUUID(),requestId:envelope.requestId,participantId:actorId,payloadHash,
-        capturedChanges:structuredClone(batch),authoredPassages:captureAuthoredPassages(room.doc,batch,envelope.cutoff,[...room.editHistory,...room.submissions.flatMap(submission=>submission.participantId===actorId?submission.capturedChanges||[]:[])]),editSeqs:batch.map(edit=>edit.seq),documentRevision:Math.max(...batch.map(edit=>edit.seq)),
-        intentContext,snapshot:JSON.stringify(intentContext),previousInterpretationId:participant.latest?.id,createdAt:now(),status:'submitted',
-        assignment:structuredClone(assignment),setup,
-      };
-      const documentUpdate=Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64');
-      if(documentUpdate.length>12*1024*1024)throw new Error('Document recovery bytes exceed the capture limit.');
-      const record:CaptureRecord={epoch:room.coordinatorEpoch,releaseFingerprint:this.config.releaseFingerprint,cursor:0,payloadHash,documentUpdate,documentSequence:room.documentSequence||0,ownerId:room.ownerId,participant:{...structuredClone(participant),latest:undefined},submission,drafts:structuredClone([...room.pending]),participants:[...room.participants.values()].map(person=>({...person,latest:undefined}))};
-      if(Buffer.byteLength(JSON.stringify(record))>16*1024*1024)throw new Error('Capture recovery data exceeds its bounded journal limit. Retain the draft and contact the owner.');
-      const started=performance.now();let committed:CaptureRecord;
-      try{
-        committed=this.config.durableStore?await this.config.durableStore.commitCapture!(room.id,record):this.eventStore.commitCapture(room.id,record,{ownerId:this.coordinatorId,epoch:room.coordinatorEpoch});
-      }catch(error){
-        if(this.config.durableStore&&!['22023','42501','23514','23503'].includes(String((error as {code?:string}).code)))room.captureUnknown={actorId,requestId:envelope.requestId,payloadHash};
-        throw error;
-      }
-      let installed:StoredSubmission|undefined;
-      try{
-        this.assertOwned(room);await this.config.authorizeSubmission?.(room.id,actorId);
-        installed=this.installCapture(room,committed);
-      }catch(error){
-        room.captureUnknown={actorId,requestId:envelope.requestId,payloadHash};
-        throw Object.assign(new Error('Capture committed but local status is unavailable. Recover the original command receipt.'),{status:503});
-      }
-      console.info(JSON.stringify({event:'command.captured',commandId:committed.submission.id,epoch:room.coordinatorEpoch,releaseFingerprint:this.config.releaseFingerprint,sourceRevision:submission.documentRevision,cursor:committed.cursor,durationMs:Math.round(performance.now()-started)}));
-      clearTimeout(room.saveTimer);room.saveTimer=setTimeout(()=>void this.saveDocument(room),180);
-      if(installed)setImmediate(()=>{if(!this.closing&&this.rooms.has(room.id)&&!this.lostOwnership.has(room.id))void this.queueCapturedSubmission(room,installed!).catch(()=>{})});
-      return this.projectCaptureReceipt(room,committed);
-    }).finally(()=>{room.captureWaiting=(room.captureWaiting||1)-1});
-    room.captureQueue=admission;return admission;
+
+  async submitChanges(room: Room, participantId: string, requestId: string) {
+    this.assertOwned(room);
+    if (!this.hasAI(room))
+        throw new Error('Ask the project owner to connect and save an OpenRouter key and two models before building.');
+    if (room.ai.setup?.mode === 'byok_lease')
+        this.byok.require(room.id, room.ai.setup.credentialHandle || '', participantId);
+    const participant = room.participants.get(participantId);
+    if (!participant)
+        throw new Error('Participant not found.');
+    const replay = room.commandReceipts?.[JSON.stringify([participantId, requestId])] || room.submissions.find(item => item.requestId === requestId && item.participantId === participantId);
+    if (replay)
+        return {
+            submissionId: replay.id, status: replay.status, message: replay.status === 'failed' ? 'The previous submission failed; your edits are retained. Submit again with a new request.' : 'Changes already submitted.'
+        };
+    const batch = room.pending.get(participantId) || [];
+    if (!batch.length)
+        return {
+            status: 'empty', message: 'No new changes to submit'
+        };
+    const setup = structuredClone(room.ai.setup);
+    const assignment = setup?.mode === 'recommended' || setup?.mode === 'managed' || setup?.mode === 'byok_lease' ? room.ai.personal : room.ai.participantOverrides?.[participantId] || room.ai.personal;
+    if (!assignment)
+        throw new Error('No personal model is assigned.');
+    const submission: StoredSubmission = {
+        capturedChanges: structuredClone(batch), authoredPassages:captureAuthoredPassages(room.doc,batch,{vector:Buffer.from(Y.encodeStateVector(room.doc)).toString('base64'),deletions:deletionSignature(room.doc)},room.editHistory), id: randomUUID(), requestId, participantId,
+        editSeqs: batch.map(item => item.seq), documentRevision: room.agentRevisions.get(participantId) || 0,
+        intentContext: acceptedContext(room.sharedRequirements), snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
+        previousInterpretationId: participant.latest?.id, createdAt: now(), status: 'submitted', assignment: structuredClone(assignment), setup
+    };
+    room.pending.delete(participantId);
+    room.submissions.push(submission);
+    room.submissions = retainSubmissions(room.submissions);
+    room.lastEditAt = Date.now();
+    room.pendingBuildSince ??= room.lastEditAt;
+    if (!room.buildTask)
+        room.status = 'Collecting submissions';
+    const saved = this.save(room, 'submission.submitted', participantId, 'user');
+    this.workflowPhase(room, room.buildTask ? 'running' : 'queued', {
+        submissionId: submission.id, requestId, participantId, sourceRevision: submission.documentRevision
+    });
+    this.broadcastState(room);
+    await this.queueCapturedSubmission(room, submission, saved);
+    return {
+        submissionId: submission.id, status: submission.status, message: submission.status === 'queued' ? 'Changes accepted and queued for the shared build.' : 'Changes saved; interpretation waits for the current build to finish.'
+    };
+}
+  private async flushAgents(room: Room) {
+    if (!this.hasAI(room)) throw new Error("Connect an AI model first.");
+    for (;;) {
+      for (const timer of room.timers.values()) clearTimeout(timer);
+      room.timers.clear();
+      const ids = [...room.pending.entries()]
+          .filter(([, batch]) => batch.length)
+          .map(([id]) => id),
+        active = [...room.agentTasks.values()];
+      if (!ids.length && !active.length) return;
+      await Promise.all([
+        ...active,
+        ...ids.map((id) => this.runAgent(room, id)),
+      ]);
+    }
   }
   private scheduleBuild(room: Room) {
     if (this.lostOwnership.has(room.id) || !this.rooms.has(room.id))
@@ -2257,9 +2279,8 @@ export class RoomManager {
         room.pendingBuildSince = undefined;
         room.buildAdmissionClosed = false;
         room.collectionEndsAt = undefined;
-        for (const submission of room.submissions.filter(item => item.status === 'queued')){
-            submission.status = 'built';submission.outcome='no_build_needed';
-        }
+        for (const submission of room.submissions.filter(item => item.status === 'queued'))
+            submission.status = 'built';
         room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.length ? 'Updated' : 'Waiting for ideas';
         this.resumeCapturedSubmissions(room);
         if (!room.intentBuildPending && !room.submissions.some(item => item.status === 'submitted' || item.status === 'interpreting'))
@@ -2279,7 +2300,7 @@ export class RoomManager {
             room.buildTask = undefined;
             room.buildingRevision = undefined;
             room.buildAdmissionClosed = false;
-            if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
+            if (this.closing || !this.rooms.has(room.id) || this.lostOwnership.has(room.id))
                 return;
             if (room.buildNeedsRestart) {
                 room.buildNeedsRestart = false;
@@ -2293,6 +2314,14 @@ export class RoomManager {
             this.broadcastState(room);
         });
 }
+  async buildNow(room: Room) {
+    await this.flushAgents(room);
+    clearTimeout(room.buildTimer);
+    room.buildTimer = undefined;
+    if (room.buildTask) await room.buildTask;
+    this.requestBuild(room, true);
+    await room.buildTask;
+  }
   retryBuild(room: Room, participantId: string, requestId: string) {
     if (room.ai.setup?.mode !== "byok_lease" || !this.hasAI(room))
       throw new Error(
@@ -3095,6 +3124,24 @@ export class RoomManager {
       throw error;
     }
   }
+  async processNow(room: Room, participantId: string, correction?: string) {
+    const p = room.participants.get(participantId);
+    if (!p) throw new Error("Participant not found");
+    if (correction) {
+      const text = documentText(room.doc),
+        record: EditRecord = {
+          seq: Math.max(room.documentSequence||0,room.editHistory.at(-1)?.seq || 0) + 1,
+          participantId,
+          at: now(),
+          update: "manual-correction",
+          kind: "modify",
+          before: text,
+          after: `Participant correction: ${correction.slice(0, 1000)}`,
+        };
+      this.queueEdit(room, p, record);
+    }
+    await this.runAgent(room, participantId);
+  }
   reportRuntimeError(room: Room, message: string, version?: number) {
     const latest = room.versions.at(-1);
     if (latest && version === latest.id) {
@@ -3219,7 +3266,7 @@ export class RoomManager {
         room = {
             ...room, ...room.intentCommit.projection, intentCommit: undefined
         };
-    const participants = [...room.participants.values()].map(person=>({...person,draftSourceIds:(room.pending.get(person.id)||[]).flatMap(edit=>edit.sourceId?[edit.sourceId]:[])})), safe = room.ai.connections!.map(({ encryptedKey, ...connection }) => ({
+    const participants = [...room.participants.values()], safe = room.ai.connections!.map(({ encryptedKey, ...connection }) => ({
         ...connection, hasCredential: !!encryptedKey || !providerDefaults[connection.provider].requiresCredential
     })), personal = room.ai.personal, builder = room.ai.builder, primary = builder && room.ai.connections!.find(item => item.id === builder.connectionId), currentProduct = [...room.versions].reverse().find((version: StoredVersion) => version.id !== room.pendingPromotion && !!version.files?.length), ai: AIConnection = {
         status: this.hasAI(room) ? 'connected' : 'disconnected', connections: safe, personal, builder, participantOverrides: room.ai.participantOverrides, savedCustom: room.ai.savedCustom, participants, setup: room.ai.setup, temporary: this.byok.status(room.id), provider: room.ai.setup?.mode === 'byok_lease' ? 'openrouter' : primary?.provider, baseUrl: primary?.baseUrl, apiFormat: primary?.apiFormat, personalModel: personal?.model, builderModel: builder?.model
@@ -3285,7 +3332,7 @@ export class RoomManager {
       archived,
     );
   }
-  async drain(){
+async drain(){
     this.closing=true;
     for(const room of this.rooms.values()){
       clearTimeout(room.buildTimer);room.buildTimer=undefined;
@@ -3301,11 +3348,11 @@ export class RoomManager {
     }
   }
   shutdown() {
+    this.closing=true;
     this.unsubscribeOwnership?.();
     clearInterval(this.heartbeat);
     for (const room of this.rooms.values()) {
       clearTimeout(room.saveTimer);
-      room.documentSaveRequested = false;
       clearTimeout(room.buildTimer);
       for (const timer of room.timers.values()) clearTimeout(timer);
       for (const controller of room.agentControllers.values())
