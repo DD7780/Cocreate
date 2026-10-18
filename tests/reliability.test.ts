@@ -98,6 +98,7 @@ const edit=(manager:RoomManager,room:ReturnType<RoomManager['create']>,text:stri
   const doc=new Y.Doc();Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);
   manager.handleMessage(room,{participantId:'alice',readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);doc.destroy();
 };
+const buildWaitMs=2*isolationPolicy.compileWallMs+isolationPolicy.wallMs+10_000;
 const waitFor=async(check:()=>boolean,timeoutMs=5_000)=>{for(let i=0;i<Math.ceil(timeoutMs/20);i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
 const fixture=async(handler:(body:any)=>unknown|Promise<unknown>)=>{
   const server=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const value=await handler(JSON.parse(raw));res.setHeader('content-type','application/json');res.end(JSON.stringify(value));});
@@ -198,7 +199,7 @@ test('an exhausted recovery leaves the previously promoted and compiled artifact
   let exhaust=false;
   const provider=await fixture(body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals'))return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')));return exhaust?response({},'incomplete'):response(plan('src/App.tsx','export default function App(){return <main>Working catalog</main>}'));});
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'artifact-retention-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
-  try{const room=manager.create(`retained-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);const working=structuredClone(room.versions[0]);exhaust=true;edit(manager,room,'Add favorites');await captureAndProcess(manager,room,'alice','two');await waitFor(()=>room.status==='Error'&&!room.buildTask);assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0],working);assert.match(room.lastError||'',/Working artifact v1 retained/);assert.match(room.lastError||'',/24 physical calls/);assert.equal(manager.view(room).latestVersion,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
+  try{const room=manager.create(`retained-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.status==='Error'||room.versions.length===1&&!room.buildTask,buildWaitMs);assert.notEqual(room.status,'Error',room.lastError);const working=structuredClone(room.versions[0]);exhaust=true;edit(manager,room,'Add favorites');await captureAndProcess(manager,room,'alice','two');await waitFor(()=>room.status==='Error'&&!room.buildTask);assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0],working);assert.match(room.lastError||'',/Working artifact v1 retained/);assert.match(room.lastError||'',/24 physical calls/);assert.equal(manager.view(room).latestVersion,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('independent participants submit in durable capture order, retain later build inputs and saved drafts on reload',async()=>{
@@ -221,7 +222,7 @@ test('ownership loss after compilation blocks promotion; command replay adds no 
   manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
     const room=manager.create(`lost-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');
-    const first=await captureAndProcess(manager,room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error',2*isolationPolicy.compileWallMs+isolationPolicy.wallMs+10_000);assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
+    const first=await captureAndProcess(manager,room,'alice','same-command');await waitFor(()=>bundled||room.status==='Error',buildWaitMs);assert.notEqual(room.status,'Error',room.lastError);await bundling;const before=calls;
     assert.equal((await captureAndProcess(manager,room,'alice','same-command')).submissionId,first.submissionId);assert.equal(calls,before);assert.equal(calls,2);
     lose(room.id);release();await room.buildTask;await room.persistQueue;
     assert.equal(promotions,0);assert.equal(room.versions.length,0);assert.equal(canonicalVersions,0);assert.throws(()=>manager.save(room),CoordinatorUnavailableError);
@@ -240,7 +241,7 @@ test('unavailable isolation retains the promoted artifact and stops before build
   const prior=process.env.TWOGUYS1CANVAS_ISOLATION_MODE;
   try{
     const room=manager.create(`isolated-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
-    edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);
+    edit(manager,room,'Build catalog');await captureAndProcess(manager,room,'alice','one');await waitFor(()=>room.status==='Error'||room.versions.length===1&&!room.buildTask,buildWaitMs);assert.notEqual(room.status,'Error',room.lastError);
     const working=structuredClone(room.versions[0]);assert.equal(builders,1);
     process.env.TWOGUYS1CANVAS_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await captureAndProcess(manager,room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask);

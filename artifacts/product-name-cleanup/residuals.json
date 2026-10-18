@@ -4,7 +4,7 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 1061,
+  "textFiles": 1066,
   "matchedFiles": 262,
   "matches": 4125,
   "classificationCounts": {

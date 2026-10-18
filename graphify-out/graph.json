@@ -9202,7 +9202,7 @@
       "file_type": "code",
       "norm_label": "fixture()",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L102"
+      "source_location": "L103"
     },
     {
       "id": "tests_reliability_test_interpreted",
@@ -9250,7 +9250,7 @@
       "file_type": "code",
       "norm_label": "send()",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L169"
+      "source_location": "L170"
     },
     {
       "id": "tests_reliability_test_waitfor",
@@ -9262,7 +9262,7 @@
       "file_type": "code",
       "norm_label": "waitfor()",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L101"
+      "source_location": "L102"
     },
     {
       "id": "scripts_verify_candidate_evidence_converge",
@@ -45034,7 +45034,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L126",
+      "source_location": "L127",
       "weight": 1.0
     },
     {
@@ -45046,7 +45046,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L226",
+      "source_location": "L227",
       "weight": 1.0
     },
     {
@@ -45946,7 +45946,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L101",
+      "source_location": "L102",
       "weight": 1.0
     },
     {
@@ -45958,7 +45958,7 @@
       "confidence_score": 1.0,
       "context": "call",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L102",
+      "source_location": "L103",
       "weight": 1.0
     },
     {
@@ -46629,7 +46629,7 @@
       "context": "import",
       "deferred": true,
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L124",
+      "source_location": "L125",
       "weight": 1.0
     },
     {
@@ -90947,7 +90947,7 @@
       "confidence": "EXTRACTED",
       "confidence_score": 1.0,
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L209",
+      "source_location": "L210",
       "weight": 1.0
     },
     {
@@ -100103,7 +100103,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L127",
+      "source_location": "L128",
       "weight": 1.0
     },
     {
@@ -100115,7 +100115,7 @@
       "confidence_score": 0.85,
       "context": "argument",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L186",
+      "source_location": "L187",
       "weight": 1.0
     },
     {
@@ -100319,7 +100319,7 @@
       "confidence_score": 0.85,
       "context": "collection",
       "source_file": "tests/reliability.test.ts",
-      "source_location": "L210",
+      "source_location": "L211",
       "weight": 1.0
     },
     {
@@ -103398,5 +103398,5 @@
       "source_file": "product.md"
     }
   ],
-  "built_at_commit": "8278cb24a3564bf5239bf18cadb7295f661dbb36"
+  "built_at_commit": "ac83c474122788540f7a7a2ae169fe36a8b0afba"
 }

@@ -1,7 +1,7 @@
 # Graph Report - Devoffice  (2026-10-18)
 
 ## Corpus Check
-- 277 files · ~253,998 words
+- 277 files · ~254,056 words
 - Verdict: corpus is large enough that graph structure adds value.
 - Unclassified: 15 file(s) not represented in the graph (top: (none) 6, .css 6, .example 1)
 
@@ -11,7 +11,7 @@
 - Token cost: 0 input · 0 output
 
 ## Graph Freshness
-- Built from commit: `8278cb24`
+- Built from commit: `ac83c474`
 - Run `git rev-parse HEAD` and compare to check if the graph is stale.
 - Run `graphify update .` after code changes (no API cost).
 
@@ -597,7 +597,7 @@ _Questions this graph is uniquely positioned to answer:_
 - **Why does `EventStore` connect `EventStore` to `RoomManager`, `product-naming.test.ts`, `reliability.test.ts`, `verify-harness-integration.ts`, `CaptureRecord`, `event-store.ts`, `fixtures/multiuser-baseline.ts`, `artifacts.ts`, `.insert`, `rooms.ts`, `ref_node_assert_strict`, `tool-registry.ts`?**
   _High betweenness centrality (0.051) - this node is a cross-community bridge._
 - **Why does `yjs` connect `ref_node_assert_strict` to `save-throughput.test.ts`, `supabase-platform.ts`, `product-naming.test.ts`, `measure-responsiveness.ts`, `reliability.test.ts`, `live-collaboration-check.mjs`, `artifact-restoration.test.ts`, `index.ts`, `.loadSnapshot`, `App.tsx`, `capture-command.test.ts`, `package.json`, `artifact-reliability.test.ts`, `fixtures/multiuser-baseline.ts`, `rooms.ts`?**
-  _High betweenness centrality (0.044) - this node is a cross-community bridge._
+  _High betweenness centrality (0.043) - this node is a cross-community bridge._
 - **Why does `devDependencies` connect `devDependencies` to `package.json`?**
   _High betweenness centrality (0.032) - this node is a cross-community bridge._
 - **Are the 35 inferred relationships involving `createTwoGuysOneCanvasServer()` (e.g. with `.applyRecommendedAI()` and `.assignAI()`) actually correct?**
