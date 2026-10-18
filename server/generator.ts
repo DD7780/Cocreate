@@ -2,6 +2,7 @@ import {
   validateSubmittedInterpretation,
   type AcceptedIntentContext,
 } from "./intent-authority.js";
+import type {AuthoredPassage} from './authored-passages.js';
 import {
   recoverProjectPlan,
   type RecoveryCheckpoint,
@@ -351,6 +352,7 @@ export async function extractRequirement(
   revision: number,
   signal?: AbortSignal,
   intentContext: AcceptedIntentContext[] = [],
+  authoredPassages?:AuthoredPassage[],
 ): Promise<ModelResult<Requirement>> {
   if (config.mode === "demo")
     return {
@@ -358,7 +360,7 @@ export async function extractRequirement(
         demoExtract(
           participantId,
           participantName,
-          changes,
+          authoredPassages===undefined?changes:authoredPassages.map(passage=>({seq:Math.max(...passage.sources.map(source=>source.seq)),kind:'modify',before:'',after:passage.text})),
           context,
           previous,
           revision,
@@ -387,7 +389,8 @@ export async function extractRequirement(
       JSON.stringify({
         classifierVersion: INTERPRETATION_CLASSIFIER_VERSION,
         participantName,
-        authenticatedChanges: compactChanges,
+        authenticatedChanges: authoredPassages===undefined?compactChanges:authoredPassages.map(passage=>({seq:Math.max(...passage.sources.map(source=>source.seq)),kind:'modify',before:'',after:passage.text})),
+        authenticatedPassages: authoredPassages,
         previousContributionSummary: previous
           ? compactRequirement(previous)
           : null,
@@ -431,6 +434,7 @@ export async function extractRequirement(
       changes,
       intentContext,
       previous,
+      authoredPassages,
     ),
     usage: result.usage,
   };

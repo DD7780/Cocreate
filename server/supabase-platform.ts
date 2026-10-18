@@ -8,7 +8,7 @@ import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as Y from 'yjs';
 import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
-import { encryptSecret, decryptSecret, type EncryptedSecret } from './credentials.js';
+import { encryptSecret, decryptSecret, hostedSecretsError, type EncryptedSecret } from './credentials.js';
 import type { ProviderRequestRecord } from '../shared/types.js';
 import { betaDenied } from './beta.js';
 
@@ -462,6 +462,8 @@ export function supabasePlatformFromEnv(env=process.env) {
     const expectedJwks=`${projectUrl.origin}/auth/v1/.well-known/jwks.json`;
     if(env.SUPABASE_JWKS_URL&&env.SUPABASE_JWKS_URL!==expectedJwks)throw new Error('SUPABASE_JWKS_URL does not match SUPABASE_URL.');
   }catch(error){return{mode:'supabase' as const,platform:null,error:error instanceof Error?error.message:'Supabase server configuration is invalid.'};}
+  const error=hostedSecretsError(env.SESSION_SECRET,env.CREDENTIAL_ENCRYPTION_SECRET);
+  if(error)return {mode:'supabase' as const,platform:null,error};
   return {mode:'supabase' as const,platform:new SupabasePlatform({url,publishableKey,secretKey,jwksUrl:env.SUPABASE_JWKS_URL,artifactBucket:env.SUPABASE_ARTIFACT_BUCKET}),error:null};
 }
 

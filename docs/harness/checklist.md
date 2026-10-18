@@ -1,5 +1,14 @@
 # Harness status and outstanding work
 
+## Artifact reliability repairs — 2026-10-18 (D-0082)
+
+- [x] Reproduce and repair tentative directives and false foreground/background conflicts; reconstruct final caller-owned passages at the exact cutoff with separate raw evidence, source references and eligibility.
+- [x] Reject synthetic missing/weak/default hosted secrets before listeners; repair the production SPA callback below hidden worktree ancestors.
+- [x] Replace startup-only readiness with real isolated compilation; compiler-only 60-second wall cap, numeric phases, process-owned jobs and bounded private candidate recompilation without another model call.
+- [x] Controlled restaurant/two-contributor/incremental/proposal/reopen/failed-verification scenario passes with an actual isolated browser. Built-client three-profile progress/replay/reload/viewer checks pass with three promoted versions; seven controlled calls, zero paid calls.
+- [ ] Complete fresh full Windows and native production-image/PostgreSQL gates, publish authorized source and record served identity. [Evidence and retained failures](artifact-reliability.md).
+- [ ] Real hosted provider acceptance remains manual; exact incident source was not retained, and no paid spend bound is authorized.
+
 ## Canvas capture replacement — 2026-10-17 (D-0081)
 
 - [x] Reproduce provider teardown and interpretation-coupled acknowledgement; preserve original failing evidence.

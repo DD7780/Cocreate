@@ -140,6 +140,7 @@ export type InterpretationIntent = {
   authority?: "authenticated_submission" | "human_correction";
   validation?: IntentValidation;
   contextReferences?: IntentReference[];
+  sourceReferences?: Array<{passageId:string;start:number;end:number}>;
   withdrawn?: boolean;
   id: string;
   text: string;

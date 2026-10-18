@@ -1,0 +1,62 @@
+TAP version 13
+# Subtest: tentative imperatives and withheld decisions cannot authorize a build
+not ok 1 - tentative imperatives and withheld decisions cannot authorize a build
+  ---
+  duration_ms: 6.3
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\artifact-reliability.test.ts:1:483'
+  failureType: 'testCodeFailure'
+  error: |-
+    Add online ordering, maybe; we have not decided.
+    + actual - expected
+
+    + 'explicit_request'
+    - 'proposal'
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 'proposal'
+  actual: 'explicit_request'
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\artifact-reliability.test.ts:10:12)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.start (node:internal/test_runner/test:944:17)
+    startSubtestAfterBootstrap (node:internal/test_runner/harness:296:17)
+  ...
+# Subtest: foreground and background values bind to their own property
+not ok 2 - foreground and background values bind to their own property
+  ---
+  duration_ms: 28.9424
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\artifact-reliability.test.ts:1:1094'
+  failureType: 'testCodeFailure'
+  error: |-
+    Expected values to be strictly equal:
+
+    1 !== 0
+
+  code: 'ERR_ASSERTION'
+  name: 'AssertionError'
+  expected: 0
+  actual: 1
+  operator: 'strictEqual'
+  stack: |-
+    TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\artifact-reliability.test.ts:20:10)
+    Test.runInAsyncScope (node:async_hooks:214:14)
+    Test.run (node:internal/test_runner/test:1047:25)
+    Test.processPendingSubtests (node:internal/test_runner/test:744:18)
+    Test.postRun (node:internal/test_runner/test:1173:19)
+    Test.run (node:internal/test_runner/test:1101:12)
+    async startSubtestAfterBootstrap (node:internal/test_runner/harness:296:3)
+  ...
+1..2
+# tests 2
+# suites 0
+# pass 0
+# fail 2
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 832.781

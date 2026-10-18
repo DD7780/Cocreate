@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { IsolationError, isolationPolicy, prepareIsolation, type IsolationOptions } from '../isolation.js';
+import { IsolationError, isolationPolicy, isolationJobsDirectory, prepareIsolation, type IsolationOptions } from '../isolation.js';
 import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
 
 export type BrowserProtocol = {
@@ -13,7 +13,7 @@ export type BrowserProtocol = {
 export const linuxBrowserFileDescriptors = 256;
 // Native Mojo transfers include framing; the parent still rejects protocol output above 4 MiB.
 export const linuxBrowserFileBytes = 8 * 1024 * 1024;
-const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.');
+const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry.');
 export const browserExecutable = () => path.resolve(productEnvironment(process.env, 'TWOGUYS1CANVAS_VERIFICATION_BROWSER') ||
   (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium-headless-shell'));
 
@@ -23,7 +23,7 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
   if (productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') && productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') !== 'os') throw unavailable();
   const runtime = await prepareIsolation(), executable = browserExecutable();
   if (!fs.existsSync(executable)) throw unavailable();
-  const jobs = path.resolve('.runtime/isolation/jobs'), workspace = path.join(jobs, randomUUID());
+  const jobs = isolationJobsDirectory, workspace = path.join(jobs, randomUUID());
   const profile = 'twoguysonecanvas.isolation.' + path.basename(workspace).replaceAll('-', '');
   const wallMs = Math.min(isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
   fs.mkdirSync(path.join(workspace, 'browser-profile'), {recursive: true});

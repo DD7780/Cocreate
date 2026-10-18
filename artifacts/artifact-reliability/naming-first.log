@@ -1,0 +1,17 @@
+{"textFiles":1020,"matchedFiles":257,"matches":4065,"unexplained":2,"reportPath":"artifacts/product-name-cleanup/residuals.json"}
+[
+  {
+    "file": "server/credentials.ts",
+    "line": 4,
+    "column": 72,
+    "spelling": "cocreate",
+    "classification": "UNEXPLAINED"
+  },
+  {
+    "file": "tests/artifact-reliability.test.ts",
+    "line": 22,
+    "column": 54,
+    "spelling": "cocreate",
+    "classification": "UNEXPLAINED"
+  }
+]

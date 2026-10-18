@@ -4,9 +4,9 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 988,
-  "matchedFiles": 255,
-  "matches": 4063,
+  "textFiles": 1032,
+  "matchedFiles": 258,
+  "matches": 4065,
   "classificationCounts": {
     "hosted-resources": 14,
     "protected-local-ignores": 3,
@@ -15,12 +15,13 @@
     "immutable-evidence": 3912,
     "capture-release-repository-links": 2,
     "historical-decisions": 4,
-    "regression-fixtures": 62,
+    "regression-fixtures": 63,
     "stable-import": 1,
     "isolation-resources": 7,
     "sync-locks": 2,
     "email-identity": 2,
     "waitlist-wire": 4,
+    "reject-legacy-development-secret": 1,
     "durable-local": 3,
     "server-runtime-bridge": 3,
     "preview-bridge": 7,
@@ -86,10 +87,24 @@
     },
     {
       "file": "README.md",
-      "line": 44,
+      "line": 46,
       "column": 54,
       "spelling": "cocreate",
       "classification": "documented-contracts"
+    },
+    {
+      "file": "artifacts/artifact-reliability/naming-first.log",
+      "line": 7,
+      "column": 18,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/artifact-reliability/naming-first.log",
+      "line": 14,
+      "column": 18,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
     },
     {
       "file": "artifacts/beta-access-requests/active-deployment.json",
@@ -21940,14 +21955,14 @@
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 32,
+      "line": 41,
       "column": 183,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "docs/harness/checklist.md",
-      "line": 50,
+      "line": 59,
       "column": 234,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
@@ -21968,28 +21983,28 @@
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 79,
+      "line": 83,
       "column": 180,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 129,
+      "line": 133,
       "column": 130,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 129,
+      "line": 133,
       "column": 169,
       "spelling": "cocreate",
       "classification": "historical-decisions"
     },
     {
       "file": "docs/harness/decisions.md",
-      "line": 129,
+      "line": 133,
       "column": 304,
       "spelling": "CoCreate",
       "classification": "historical-decisions"
@@ -22689,7 +22704,7 @@
     },
     {
       "file": "graphify-out/GRAPH_REPORT.md",
-      "line": 475,
+      "line": 448,
       "column": 85,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
@@ -22697,2246 +22712,2232 @@
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 800332,
+      "column": 804319,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 969571,
+      "column": 974726,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 970053,
+      "column": 975208,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 970203,
+      "column": 975358,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 970663,
+      "column": 975818,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 970814,
+      "column": 975969,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 971306,
+      "column": 976461,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038000,
+      "column": 1006775,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038115,
+      "column": 1007241,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038403,
+      "column": 1049268,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038544,
+      "column": 1049383,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038665,
+      "column": 1049671,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1038816,
+      "column": 1049812,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1039260,
+      "column": 1049933,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1039381,
+      "column": 1050084,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1039531,
+      "column": 1050528,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1039993,
+      "column": 1050649,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1040114,
+      "column": 1050799,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1040264,
+      "column": 1051261,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1040715,
+      "column": 1051382,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1040836,
+      "column": 1051532,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1040986,
+      "column": 1051983,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1041428,
+      "column": 1052104,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1041549,
+      "column": 1052254,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1041699,
+      "column": 1052696,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1042159,
+      "column": 1052817,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1042280,
+      "column": 1052967,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1042431,
+      "column": 1053427,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1042851,
+      "column": 1053548,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1042972,
+      "column": 1053699,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1043123,
+      "column": 1054119,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1043571,
+      "column": 1054240,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1043692,
+      "column": 1054391,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1043843,
+      "column": 1054839,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1044307,
+      "column": 1054960,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1044428,
+      "column": 1055111,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1044580,
+      "column": 1055575,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1045033,
+      "column": 1055696,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1045154,
+      "column": 1055848,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1045305,
+      "column": 1056301,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1045736,
+      "column": 1056422,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1045857,
+      "column": 1056573,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1046008,
+      "column": 1057004,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1046424,
+      "column": 1057125,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1046545,
+      "column": 1057276,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1046696,
+      "column": 1057692,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1047101,
+      "column": 1057813,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1047222,
+      "column": 1057964,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1047373,
+      "column": 1058369,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1047819,
+      "column": 1058490,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1047940,
+      "column": 1058641,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1048091,
+      "column": 1059087,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1048527,
+      "column": 1059208,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1048648,
+      "column": 1059359,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1048799,
+      "column": 1059795,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1049238,
+      "column": 1059916,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1049359,
+      "column": 1060067,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1049510,
+      "column": 1060519,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 69,
-      "column": 1049962,
+      "column": 1060640,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
-      "line": 69,
-      "column": 1050083,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 793359,
+      "column": 811908,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 817753,
+      "column": 837509,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 886217,
+      "column": 912986,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1000156,
+      "column": 992440,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1042459,
+      "column": 1034999,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1061319,
+      "column": 1066034,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1120538,
+      "column": 1138275,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1139982,
+      "column": 1161996,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1154899,
+      "column": 1178142,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1220673,
+      "column": 1261469,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1321113,
+      "column": 1376009,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1326640,
+      "column": 1376133,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1348654,
+      "column": 1376388,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1348778,
+      "column": 1376508,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349033,
+      "column": 1376803,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349153,
+      "column": 1376923,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349448,
+      "column": 1377178,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349568,
+      "column": 1377302,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349823,
+      "column": 1377557,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1349947,
+      "column": 1377864,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1350202,
+      "column": 1378882,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1351220,
+      "column": 1379395,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1351733,
+      "column": 1383869,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1355974,
+      "column": 1383994,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1374802,
+      "column": 1384291,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1374912,
+      "column": 1384416,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1375172,
+      "column": 1384671,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1375282,
+      "column": 1400589,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1375542,
+      "column": 1407216,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1375652,
+      "column": 1407326,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1375917,
+      "column": 1407586,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1376027,
+      "column": 1407696,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1376300,
+      "column": 1407956,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1376410,
+      "column": 1408066,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1376685,
+      "column": 1408331,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1376795,
+      "column": 1408441,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377058,
+      "column": 1408714,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377168,
+      "column": 1408824,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377439,
+      "column": 1409099,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377549,
+      "column": 1409209,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377819,
+      "column": 1409472,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1377929,
+      "column": 1409582,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1378200,
+      "column": 1409853,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1378310,
+      "column": 1409963,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1378578,
+      "column": 1410234,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1378688,
+      "column": 1410344,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1378959,
+      "column": 1410612,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1379069,
+      "column": 1410722,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1379344,
+      "column": 1410993,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1379462,
+      "column": 1411103,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1379712,
+      "column": 1411378,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1379840,
+      "column": 1411496,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380090,
+      "column": 1411746,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380215,
+      "column": 1411874,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380470,
+      "column": 1412124,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380592,
+      "column": 1412249,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380855,
+      "column": 1412504,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1380981,
+      "column": 1412626,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1381278,
+      "column": 1412889,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1381396,
+      "column": 1413015,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1381693,
+      "column": 1413312,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1381823,
+      "column": 1413430,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1382114,
+      "column": 1413727,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1382240,
+      "column": 1413857,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1382536,
+      "column": 1414148,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1382662,
+      "column": 1414274,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1382956,
+      "column": 1414568,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1383071,
+      "column": 1414683,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1383357,
+      "column": 1414969,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1383477,
+      "column": 1415089,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1383763,
+      "column": 1415375,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 70,
-      "column": 1383878,
+      "column": 1415490,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.html",
       "line": 71,
-      "column": 5775,
+      "column": 5806,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 22787,
+      "line": 22966,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 26131,
-      "column": 21,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "line": 27515,
+      "line": 27605,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27525,
+      "line": 27615,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27531,
+      "line": 27621,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27542,
+      "line": 27632,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27548,
+      "line": 27638,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27559,
+      "line": 27649,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 27898,
+      "line": 27988,
       "column": 136,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 28555,
+      "line": 28645,
       "column": 40,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29001,
+      "line": 28822,
+      "column": 76,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "graphify-out/graph.json",
+      "line": 28833,
+      "column": 87,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "graphify-out/graph.json",
+      "line": 29108,
       "column": 294,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29097,
+      "line": 29204,
       "column": 110,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29161,
+      "line": 29268,
       "column": 42,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29193,
+      "line": 29300,
       "column": 56,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29193,
+      "line": 29300,
       "column": 95,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29193,
+      "line": 29300,
       "column": 230,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29209,
+      "line": 29316,
       "column": 133,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29257,
+      "line": 29364,
       "column": 305,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29433,
+      "line": 29540,
       "column": 80,
       "spelling": "CoCreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29844,
+      "line": 29636,
+      "column": 21,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "graphify-out/graph.json",
+      "line": 30143,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29845,
+      "line": 30144,
       "column": 81,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29850,
+      "line": 30149,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29853,
+      "line": 30152,
       "column": 86,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29855,
+      "line": 30154,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29861,
+      "line": 30160,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29867,
+      "line": 30166,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29871,
+      "line": 30170,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29877,
+      "line": 30176,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29883,
+      "line": 30182,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29887,
+      "line": 30186,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29893,
+      "line": 30192,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29899,
+      "line": 30198,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29903,
+      "line": 30202,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29909,
+      "line": 30208,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29915,
+      "line": 30214,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29919,
+      "line": 30218,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29925,
+      "line": 30224,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29931,
+      "line": 30230,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29936,
+      "line": 30235,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29942,
+      "line": 30241,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29948,
+      "line": 30247,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29953,
+      "line": 30252,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29959,
+      "line": 30258,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29965,
+      "line": 30264,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29970,
+      "line": 30269,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29976,
+      "line": 30275,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29982,
+      "line": 30281,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29987,
+      "line": 30286,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29993,
+      "line": 30292,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 29999,
+      "line": 30298,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30004,
+      "line": 30303,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30010,
+      "line": 30309,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30016,
+      "line": 30315,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30021,
+      "line": 30320,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30027,
+      "line": 30326,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30033,
+      "line": 30332,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30038,
+      "line": 30337,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30044,
+      "line": 30343,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30050,
+      "line": 30349,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30055,
+      "line": 30354,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30061,
+      "line": 30360,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30067,
+      "line": 30366,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30072,
+      "line": 30371,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30078,
+      "line": 30377,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30084,
+      "line": 30383,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30089,
+      "line": 30388,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30095,
+      "line": 30394,
       "column": 76,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30101,
+      "line": 30400,
       "column": 90,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30106,
+      "line": 30405,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30112,
-      "column": 76,
+      "line": 100760,
+      "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30118,
-      "column": 90,
+      "line": 100761,
+      "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 30123,
+      "line": 100766,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98806,
+      "line": 100771,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98807,
+      "line": 100772,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98812,
+      "line": 100777,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98817,
+      "line": 100782,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98818,
+      "line": 100783,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98823,
+      "line": 100788,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98828,
+      "line": 100793,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98829,
+      "line": 100794,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98834,
+      "line": 100799,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98839,
+      "line": 100804,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98840,
+      "line": 100805,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98845,
+      "line": 100810,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98850,
+      "line": 100980,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98851,
+      "line": 100981,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 98856,
+      "line": 100986,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99026,
+      "line": 100991,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99027,
+      "line": 100992,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99032,
+      "line": 100997,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99037,
+      "line": 101002,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99038,
+      "line": 101003,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99043,
+      "line": 101008,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99048,
+      "line": 101013,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99049,
+      "line": 101014,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99054,
+      "line": 101019,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99059,
+      "line": 101024,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99060,
+      "line": 101025,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99065,
+      "line": 101030,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99070,
+      "line": 101035,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99071,
+      "line": 101036,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99076,
+      "line": 101041,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99081,
+      "line": 101046,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99082,
+      "line": 101047,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99087,
+      "line": 101052,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99092,
+      "line": 101057,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99093,
+      "line": 101058,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99098,
+      "line": 101063,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99103,
+      "line": 101068,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99104,
+      "line": 101069,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99109,
+      "line": 101074,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99114,
+      "line": 102630,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 99115,
-      "column": 80,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "line": 99120,
+      "line": 102636,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100676,
+      "line": 102641,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100682,
+      "line": 102647,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100687,
+      "line": 102652,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100693,
+      "line": 102658,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100698,
+      "line": 102663,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100704,
+      "line": 102669,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100709,
+      "line": 102674,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100715,
+      "line": 102680,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100720,
+      "line": 102685,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100726,
+      "line": 102691,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100731,
+      "line": 102696,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100737,
+      "line": 102702,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100742,
+      "line": 102707,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100748,
+      "line": 102708,
+      "column": 80,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "graphify-out/graph.json",
+      "line": 102713,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100753,
+      "line": 102718,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100754,
+      "line": 102719,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100759,
+      "line": 102724,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100764,
+      "line": 102729,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100765,
+      "line": 102730,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100770,
+      "line": 102735,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100775,
+      "line": 102740,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100776,
+      "line": 102741,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100781,
+      "line": 102746,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100786,
+      "line": 102751,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100787,
+      "line": 102752,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100792,
+      "line": 102757,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100797,
+      "line": 102762,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100798,
+      "line": 102763,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100803,
+      "line": 102768,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100808,
+      "line": 102773,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100809,
+      "line": 102774,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100814,
+      "line": 102779,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100819,
+      "line": 102784,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100820,
+      "line": 102785,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100825,
+      "line": 102790,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100830,
+      "line": 102795,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100831,
+      "line": 102796,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100836,
+      "line": 102801,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100841,
+      "line": 102806,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100842,
+      "line": 102807,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100847,
+      "line": 102812,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100852,
+      "line": 102817,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100853,
+      "line": 102818,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100858,
+      "line": 102823,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100863,
+      "line": 102828,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100864,
+      "line": 102829,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100869,
+      "line": 102834,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100874,
+      "line": 102839,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100875,
+      "line": 102840,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100880,
+      "line": 102845,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100885,
+      "line": 102850,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100886,
+      "line": 102851,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100891,
+      "line": 102856,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100896,
+      "line": 102861,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100897,
-      "column": 80,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "line": 100902,
+      "line": 102867,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100907,
+      "line": 102872,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100913,
+      "line": 102878,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100918,
+      "line": 102883,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100924,
+      "line": 102889,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100929,
+      "line": 102894,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100935,
+      "line": 102900,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100940,
+      "line": 102905,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100946,
+      "line": 102911,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100951,
+      "line": 102916,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100957,
+      "line": 102922,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100962,
+      "line": 102927,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100968,
+      "line": 102933,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100973,
+      "line": 103169,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 100979,
+      "line": 103175,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 101215,
+      "line": 103180,
       "column": 80,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
     },
     {
       "file": "graphify-out/graph.json",
-      "line": 101221,
-      "column": 87,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "line": 101226,
-      "column": 80,
-      "spelling": "cocreate",
-      "classification": "immutable-evidence"
-    },
-    {
-      "file": "graphify-out/graph.json",
-      "line": 101232,
+      "line": 103186,
       "column": 87,
       "spelling": "cocreate",
       "classification": "immutable-evidence"
@@ -27903,6 +27904,13 @@
       "classification": "waitlist-wire"
     },
     {
+      "file": "server/credentials.ts",
+      "line": 4,
+      "column": 72,
+      "spelling": "cocreate",
+      "classification": "reject-legacy-development-secret"
+    },
+    {
       "file": "server/event-store.ts",
       "line": 68,
       "column": 88,
@@ -27925,21 +27933,21 @@
     },
     {
       "file": "server/index.ts",
-      "line": 68,
+      "line": 69,
       "column": 152,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
     },
     {
       "file": "server/index.ts",
-      "line": 73,
-      "column": 74,
+      "line": 80,
+      "column": 30,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
     },
     {
       "file": "server/index.ts",
-      "line": 88,
+      "line": 93,
       "column": 48,
       "spelling": "cocreate",
       "classification": "server-runtime-bridge"
@@ -28106,15 +28114,22 @@
       "classification": "regression-fixtures"
     },
     {
+      "file": "tests/artifact-reliability.test.ts",
+      "line": 22,
+      "column": 54,
+      "spelling": "cocreate",
+      "classification": "regression-fixtures"
+    },
+    {
       "file": "tests/artifact-restoration.test.ts",
-      "line": 139,
+      "line": 140,
       "column": 92,
       "spelling": "cocreate",
       "classification": "regression-fixtures"
     },
     {
       "file": "tests/artifact-restoration.test.ts",
-      "line": 146,
+      "line": 147,
       "column": 73,
       "spelling": "cocreate",
       "classification": "regression-fixtures"

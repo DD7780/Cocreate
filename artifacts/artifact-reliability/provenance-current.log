@@ -1,0 +1,55 @@
+TAP version 13
+# (node:11480) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"12e96bae-9c04-4be7-aaf3-332fd6920813","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+ok 1 - hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+  ---
+  duration_ms: 11.3566
+  type: 'test'
+  ...
+# Subtest: tentative imperatives and withheld decisions cannot authorize a build
+ok 2 - tentative imperatives and withheld decisions cannot authorize a build
+  ---
+  duration_ms: 20.2842
+  type: 'test'
+  ...
+# Subtest: foreground and background values bind to their own property
+ok 3 - foreground and background values bind to their own property
+  ---
+  duration_ms: 21.74
+  type: 'test'
+  ...
+# Subtest: short model quotes cannot strip the same-sentence withheld decision
+ok 4 - short model quotes cannot strip the same-sentence withheld decision
+  ---
+  duration_ms: 2.3326
+  type: 'test'
+  ...
+# Subtest: compiler diagnostics never alter artifact identity or disclose arbitrary error data
+ok 5 - compiler diagnostics never alter artifact identity or disclose arbitrary error data
+  ---
+  duration_ms: 0.6841
+  type: 'test'
+  ...
+# Subtest: an explicit infrastructure retry reuses the persisted candidate without another model call
+ok 6 - an explicit infrastructure retry reuses the persisted candidate without another model call
+  ---
+  duration_ms: 7291.3781
+  type: 'test'
+  ...
+# Subtest: corrected final authored passage validates at its cutoff without coauthor or later text
+ok 7 - corrected final authored passage validates at its cutoff without coauthor or later text
+  ---
+  duration_ms: 21.831
+  type: 'test'
+  ...
+1..7
+# tests 7
+# suites 0
+# pass 7
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 10545.6019

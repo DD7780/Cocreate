@@ -1,0 +1,136 @@
+TAP version 13
+# (node:23952) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+ok 1 - empty cache restores compiled preview, current checkpoint, old version and receipts without inference
+  ---
+  duration_ms: 4946.521
+  type: 'test'
+  ...
+# Subtest: upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+ok 2 - upload/verification interruption never commits a reference; failed commit replay reuses immutable bodies
+  ---
+  duration_ms: 229.108
+  type: 'test'
+  ...
+# Subtest: missing/corrupt stored bodies are explicit failures, distinct from an empty project
+ok 3 - missing/corrupt stored bodies are explicit failures, distinct from an empty project
+  ---
+  duration_ms: 378.6254
+  type: 'test'
+  ...
+# Subtest: private bucket and project-bound artifact identity fail closed; no public URL is created
+ok 4 - private bucket and project-bound artifact identity fail closed; no public URL is created
+  ---
+  duration_ms: 146.4211
+  type: 'test'
+  ...
+# Subtest: authenticated lazy historical reads reject revoked users, including revocation during download
+ok 5 - authenticated lazy historical reads reject revoked users, including revocation during download
+  ---
+  duration_ms: 1030.9247
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"4f4c38fc-33ec-4bc1-944a-9b52ec075c88","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":18}
+# Subtest: an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+ok 6 - an interrupted canonical promotion stays hidden; concurrent saves retain edits and the prior artifact
+  ---
+  duration_ms: 10216.5953
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"788c1008-0af2-4f5a-aba7-fd962b2b41d2","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":14}
+# Subtest: lease loss after private body upload cannot promote or start another physical attempt
+ok 7 - lease loss after private body upload cannot promote or start another physical attempt
+  ---
+  duration_ms: 7032.2352
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"244c2d81-097a-4cd3-892c-6fdea7baafea","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":17}
+# Subtest: synchronous publication failure clears the pending gate and preserves the previous product
+ok 8 - synchronous publication failure clears the pending gate and preserves the previous product
+  ---
+  duration_ms: 7858.4554
+  type: 'test'
+  ...
+# Subtest: legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+ok 9 - legacy inline checkpoint publication is verified and malformed metadata fails explicitly
+  ---
+  duration_ms: 211.5482
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"b442aa75-77db-4f01-b626-49c00712f3b9","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":9}
+# Subtest: new promotion after a retained-product rollback never overwrites an archived version identity
+ok 10 - new promotion after a retained-product rollback never overwrites an archived version identity
+  ---
+  duration_ms: 8132.498
+  type: 'test'
+  ...
+# Subtest: ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+ok 11 - ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code
+  ---
+  duration_ms: 6261.1984
+  type: 'test'
+  ...
+# Subtest: OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+ok 12 - OS boundary without Node permissions denies an existing private host file, writes and live loopback network
+  ---
+  duration_ms: 679.8557
+  type: 'test'
+  ...
+# Subtest: restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+ok 13 - restricted process strips injection/secrets and denies subprocesses, workers and cross-workspace reads
+  ---
+  duration_ms: 605.8805
+  type: 'test'
+  ...
+# Subtest: candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+ok 14 - candidate imports cannot read absolute files, traverse workspaces or download packages/styles
+  ---
+  duration_ms: 12128.1734
+  type: 'test'
+  ...
+# Subtest: wall timeout terminates a running child and cleans its private input
+ok 15 - wall timeout terminates a running child and cleans its private input
+  ---
+  duration_ms: 853.1186
+  type: 'test'
+  ...
+# Subtest: cancellation waits for real child termination and cleanup; pre-abort starts nothing
+ok 16 - cancellation waits for real child termination and cleanup; pre-abort starts nothing
+  ---
+  duration_ms: 388.5154
+  type: 'test'
+  ...
+# Subtest: memory exhaustion cannot escape the OS bound and leaves no child work
+ok 17 - memory exhaustion cannot escape the OS bound and leaves no child work
+  ---
+  duration_ms: 1025.0974
+  type: 'test'
+  ...
+# Subtest: unavailable isolation fails explicitly and cannot fall back to host compilation
+ok 18 - unavailable isolation fails explicitly and cannot fall back to host compilation
+  ---
+  duration_ms: 0.9626
+  type: 'test'
+  ...
+# Subtest: CPU bound stops a busy child before the longer wall deadline
+ok 19 - CPU bound stops a busy child before the longer wall deadline
+  ---
+  duration_ms: 16464.1685
+  type: 'test'
+  ...
+# Subtest: untrusted output is bounded before it reaches application memory or artifacts
+ok 20 - untrusted output is bounded before it reaches application memory or artifacts
+  ---
+  duration_ms: 411.3546
+  type: 'test'
+  ...
+1..20
+# tests 20
+# suites 0
+# pass 20
+# fail 0
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 82044.9313

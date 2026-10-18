@@ -98,13 +98,13 @@ test("hosted incoming edit bursts retain order, caller attribution and fresh rev
     saveSnapshot: async () => {}, appendDocumentUpdate: async () => {}, assertCoordinator: async () => {}, coordinator: { close: async () => {} },
     requireMembership: async () => { checks++; if (hold) await permission.promise; if (!allowed) throw new Error("Revoked"); return "editor"; },
   };
-  const service = await createTwoGuysOneCanvasServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: "127.0.0.1", sessionSecret: "synthetic" });
+  const service = await createTwoGuysOneCanvasServer({ platform: platform as any, dataDir: dir, serveClient: false, port: 0, host: "127.0.0.1", sessionSecret: "synthetic-signing-secret-for-hosted-fixtures-2026", encryptionSecret: "synthetic-encryption-secret-for-hosted-fixtures-2026" });
   let socket: WebSocket | undefined;
   const doc = new Y.Doc();
   try {
     const room = service.manager.create("project"); service.manager.join(room, "alice", "Alice"); await room.persistQueue;
     const { port, url } = await service.start();
-    const token = createSession("synthetic", { roomId: "project", participantId: "alice", accountId: "alice", name: "Alice", role: "editor" });
+    const token = createSession("synthetic-signing-secret-for-hosted-fixtures-2026", { roomId: "project", participantId: "alice", accountId: "alice", name: "Alice", role: "editor" });
     const messages: any[] = [];
     socket = new WebSocket(`ws://127.0.0.1:${port}/ws?room=project&token=${encodeURIComponent(token)}`, { origin: url });
     socket.on("message", (raw, binary) => { if (!binary) messages.push(JSON.parse(raw.toString())); });

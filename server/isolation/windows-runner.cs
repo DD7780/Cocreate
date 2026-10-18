@@ -55,7 +55,7 @@ public static class IsolationRunner {
    if(args.Length!=6&&!browser)throw new ArgumentException("Invalid launcher request.");
    string runtime=Path.GetFullPath(args[0]),workspace=Path.GetFullPath(args[1]);
    profile=args[2];int parentId=int.Parse(args[3]),timeout=int.Parse(args[4]);bool permission=args[5]=="restricted";
-   if(!OwnProfile(profile)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
+   if(!OwnProfile(profile)||timeout<10||timeout>60000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
    var parent=Process.GetProcessById(parentId);DateTime parentStarted=parent.StartTime;
    int hr=CreateAppContainerProfile(profile,profile,"Disposable 2guys1canvas compiler",IntPtr.Zero,0,out sid);
    if(hr!=0)Marshal.ThrowExceptionForHR(hr);created=true;

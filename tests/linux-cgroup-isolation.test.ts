@@ -6,7 +6,7 @@ import {spawn, type ChildProcess} from 'node:child_process';
 import {once} from 'node:events';
 import {LinuxJobGroup, linuxJobLauncher} from '../server/isolation/linux-cgroup.js';
 import {withIsolatedBrowser, linuxBrowserFileDescriptors, linuxBrowserFileBytes} from '../server/isolation/browser.js';
-import {IsolationError} from '../server/isolation.js';
+import {IsolationError,isolationJobsDirectory} from '../server/isolation.js';
 
 const linux = {skip: process.platform !== 'linux'};
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -156,7 +156,7 @@ test('missing Linux delegation fails closed and removes the candidate profile', 
   try {
     process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT = '/app';
     await assert.rejects(withIsolatedBrowser(browser => browser.call('Browser.getVersion')), error => error instanceof IsolationError && error.code === 'isolation_unavailable');
-    assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')), []);
+    assert.deepEqual((fs.existsSync(isolationJobsDirectory)?fs.readdirSync(isolationJobsDirectory):[]), []);
   } finally {before === undefined ? delete process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT : process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT = before;}
   noGroups();
 });

@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-18",
+  "main": "f6400fd48ddda93483b46adf21e27a4992bf9542",
+  "servedFingerprint": "34eca68d874a7640b1719d777036ab01ddeae7ae2db9eee000eb057681bc5708",
+  "incidentProject": "40431101-f92b-4c09-b6c2-3d3a524fa1bf",
+  "incidentRun": "0436d97a-1e2d-4be1-9244-268b4705ad03",
+  "incidentMetadata": {
+    "status": "Error",
+    "revision": 96,
+    "version_count": 0,
+    "recovery_file_count": 0,
+    "has_recovery_checkpoint": false,
+    "recovery_reference_present": false
+  },
+  "exactCandidateRecoverable": false,
+  "representativeFiles": 10,
+  "hostedMutation": false,
+  "paidCalls": 0
+}

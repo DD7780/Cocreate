@@ -292,14 +292,14 @@ test("pending invitation acceptance leaves the invite untouched and returns to t
 test("unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery", async () => {
   const dir = temp(),
     fixture = hostedFixture(),
-    secret = "synthetic-beta",
+    secret = "synthetic-beta-signing-secret-for-hosted-fixtures-2026",
     service = await createTwoGuysOneCanvasServer({
       platform: fixture.platform,
       dataDir: dir,
       serveClient: false,
       port: 0,
       host: "127.0.0.1",
-      sessionSecret: secret,
+      sessionSecret: secret, encryptionSecret: "synthetic-beta-encryption-secret-for-hosted-fixtures-2026",
     });
   const sockets: WebSocket[] = [];
   try {

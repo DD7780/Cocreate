@@ -1,0 +1,403 @@
+TAP version 13
+# (node:23876) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"7609f425-50c4-4909-aa57-9ad1bac6d79d","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# Subtest: hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+ok 1 - hosted startup rejects missing, short and development signing/encryption secrets without reading real configuration
+  ---
+  duration_ms: 9.768
+  type: 'test'
+  ...
+# Subtest: tentative imperatives and withheld decisions cannot authorize a build
+ok 2 - tentative imperatives and withheld decisions cannot authorize a build
+  ---
+  duration_ms: 6.1576
+  type: 'test'
+  ...
+# Subtest: foreground and background values bind to their own property
+ok 3 - foreground and background values bind to their own property
+  ---
+  duration_ms: 19.1086
+  type: 'test'
+  ...
+# Subtest: short model quotes cannot strip the same-sentence withheld decision
+ok 4 - short model quotes cannot strip the same-sentence withheld decision
+  ---
+  duration_ms: 1.934
+  type: 'test'
+  ...
+# Subtest: compiler diagnostics never alter artifact identity or disclose arbitrary error data
+ok 5 - compiler diagnostics never alter artifact identity or disclose arbitrary error data
+  ---
+  duration_ms: 0.5886
+  type: 'test'
+  ...
+# Subtest: an explicit infrastructure retry reuses the persisted candidate without another model call
+not ok 6 - an explicit infrastructure retry reuses the persisted candidate without another model call
+  ---
+  duration_ms: 94302.398
+  type: 'test'
+  location: 'C:\\Users\\QUTA4\\.codex\\worktrees\\build-save-timeout\\Devoffice\\tests\\artifact-reliability.test.ts:1:4822'
+  failureType: 'testCodeFailure'
+  error: 'Progress fixture timed out: retained candidate promotion'
+  code: 'ERR_TEST_FAILURE'
+  stack: |-
+    waitFor (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\fixtures\build-progress.ts:15:9)
+    async TestContext.<anonymous> (C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice\tests\artifact-reliability.test.ts:77:5)
+    async Test.run (node:internal/test_runner/test:1054:7)
+    async Test.processPendingSubtests (node:internal/test_runner/test:744:7)
+  ...
+# Subtest: corrected final authored passage validates at its cutoff without coauthor or later text
+ok 7 - corrected final authored passage validates at its cutoff without coauthor or later text
+  ---
+  duration_ms: 18.33
+  type: 'test'
+  ...
+# (node:22320) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+ok 8 - anonymous registration commits before success, retries dedupe, and restart preserves consent and limits
+  ---
+  duration_ms: 359.3001
+  type: 'test'
+  ...
+# Subtest: failed durable writes cannot show registration success; rate window expiry allows safe retry
+ok 9 - failed durable writes cannot show registration success; rate window expiry allows safe retry
+  ---
+  duration_ms: 58.5981
+  type: 'test'
+  ...
+# Subtest: registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+ok 10 - registration requires valid email and explicit consent, and forwarded rate identities require Worker proof
+  ---
+  duration_ms: 1.0962
+  type: 'test'
+  ...
+# Subtest: approval is fresh private authority, owner retains access, and approval grants no foreign membership
+ok 11 - approval is fresh private authority, owner retains access, and approval grants no foreign membership
+  ---
+  duration_ms: 10.1559
+  type: 'test'
+  ...
+# Subtest: pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+ok 12 - pending invitation acceptance leaves the invite untouched and returns to the existing contract after approval
+  ---
+  duration_ms: 1.1801
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"bd1893a2-82ca-4fac-9375-cda24f9ba077"}
+# {"event":"collaboration.connected","connectionId":"fd9de28f-5179-48fe-81b9-83aa2e47384a","correlationId":"506e177c-cac5-474e-9c9b-38336a5ca8f6"}
+# {"event":"collaboration.disconnected","connectionId":"fd9de28f-5179-48fe-81b9-83aa2e47384a","code":4403}
+# {"event":"collaboration.connected","connectionId":"7d2f040f-6f45-4d69-94eb-5f8ea941f46e","correlationId":"438cea60-4d5e-4af2-9087-78203d61a773"}
+# {"event":"collaboration.disconnected","connectionId":"7d2f040f-6f45-4d69-94eb-5f8ea941f46e","code":4403}
+# Subtest: unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+ok 13 - unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery
+  ---
+  duration_ms: 277.7654
+  type: 'test'
+  ...
+# (node:18960) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# (node:18960) ExperimentalWarning: The MockTimers API is an experimental feature and might change at any time
+# {"event":"command.captured","commandId":"006e13aa-513e-436e-b777-052205d03114","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":8}
+# {"event":"command.captured","commandId":"f2c0e175-54b7-477f-9dc5-9156e045dbe2","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":5}
+# Subtest: an expired HTTP wait reports an unknown outcome with recovery action and never retries itself
+ok 14 - an expired HTTP wait reports an unknown outcome with recovery action and never retries itself
+  ---
+  duration_ms: 7.306
+  type: 'test'
+  ...
+# Subtest: capture returns before interpretation, binds permanent identity and freezes each author cutoff
+ok 15 - capture returns before interpretation, binds permanent identity and freezes each author cutoff
+  ---
+  duration_ms: 244.4114
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"0d8a6030-ce00-4937-a871-c2a6e4bc28b3","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":27}
+# Subtest: canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+ok 16 - canonical commit gates consumption and dispatch while unrelated snapshots do not gate admission
+  ---
+  duration_ms: 159.5477
+  type: 'test'
+  ...
+# Subtest: lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+ok 17 - lost canonical commit reply is recovered without dispatch; newer commands survive an older checkpoint
+  ---
+  duration_ms: 149.0351
+  type: 'test'
+  ...
+# Subtest: local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+ok 18 - local command freezes unsent updates before awaits, retains identity across reload, and looks up before any resend
+  ---
+  duration_ms: 29.373
+  type: 'test'
+  ...
+# Subtest: unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+ok 19 - unknown lookup failure never mints a fresh identity; definitive absence resends identical deletion envelope
+  ---
+  duration_ms: 5.0227
+  type: 'test'
+  ...
+# Subtest: a command backup restores unsent source bytes even if the ordinary document backup was lost
+ok 20 - a command backup restores unsent source bytes even if the ordinary document backup was lost
+  ---
+  duration_ms: 19.0344
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"803c2977-cf94-44b3-b9a0-51b972f75926","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: closing a scope during delivery does not turn a confirmed capture into a new request on reload
+ok 21 - closing a scope during delivery does not turn a confirmed capture into a new request on reload
+  ---
+  duration_ms: 17.0485
+  type: 'test'
+  ...
+# {"event":"command.captured","commandId":"05d27b7b-9729-4aee-af1e-7e874cfa5787","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":7}
+# Subtest: a canonical/checkpoint disagreement is quarantined and a stale local lease cannot append a command
+ok 22 - a canonical/checkpoint disagreement is quarantined and a stale local lease cannot append a command
+  ---
+  duration_ms: 131.5009
+  type: 'test'
+  ...
+# Subtest: receipt projection hides an uncommitted product and binds the command result to its own promoted version
+ok 23 - receipt projection hides an uncommitted product and binds the command result to its own promoted version
+  ---
+  duration_ms: 126.3369
+  type: 'test'
+  ...
+# (node:22856) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"command.captured","commandId":"ff87bf5f-27a0-4889-912d-3480009bd1aa","epoch":1,"sourceRevision":1,"cursor":1,"durationMs":11}
+# {"event":"command.captured","commandId":"9f42cfea-31d6-4fcb-8b79-6388bbbfddb3","epoch":1,"sourceRevision":2,"cursor":2,"durationMs":6}
+# Subtest: real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+ok 24 - real authenticated HTTP capture accepts bounded unsent bytes, returns 202 and scopes canonical status; old clients only upgrade
+  ---
+  duration_ms: 425.5445
+  type: 'test'
+  ...
+# (node:7564) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# {"event":"collaboration.upgrade_rejected","category":"forbidden","correlationId":"e701a9be-0553-48e0-836c-c9025bacad04"}
+# {"event":"collaboration.connected","connectionId":"f11cabf9-304d-4ba2-addd-97301fd4f81d","correlationId":"88120a0c-79f9-452b-a0c1-7bf4f785a0fb"}
+# {"event":"collaboration.disconnected","connectionId":"f11cabf9-304d-4ba2-addd-97301fd4f81d","code":4403}
+# Subtest: hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+ok 25 - hosted reads, mutations and live delivery check current membership rather than a stale ticket role
+  ---
+  duration_ms: 251.0025
+  type: 'test'
+  ...
+# {"event":"collaboration.upgrade_rejected","category":"coordinator_unavailable","correlationId":"e7118887-df49-44a5-b09f-424a55057db3"}
+# Subtest: non-owner ingress retries without hydrating a second writer or bypassing membership
+ok 26 - non-owner ingress retries without hydrating a second writer or bypassing membership
+  ---
+  duration_ms: 210.6789
+  type: 'test'
+  ...
+# (node:24664) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: a clear restaurant website assignment is accepted even when a model labels the batch as proposal
+ok 27 - a clear restaurant website assignment is accepted even when a model labels the batch as proposal
+  ---
+  duration_ms: 7.8131
+  type: 'test'
+  ...
+# Subtest: classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation
+ok 28 - classification semantics distinguish requests, proposals, questions, quotes, hypotheticals, and negation
+  ---
+  duration_ms: 0.861
+  type: 'test'
+  ...
+# Subtest: mixed contribution keeps request, proposal, and question separate
+ok 29 - mixed contribution keeps request, proposal, and question separate
+  ---
+  duration_ms: 16.8998
+  type: 'test'
+  ...
+# Subtest: missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates
+ok 30 - missing classifications become ambiguity and reinterpretation supersedes only its own source without duplicates
+  ---
+  duration_ms: 1.2821
+  type: 'test'
+  ...
+# Subtest: targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions
+ok 31 - targeted reinterpretation reuses authenticated edits, preserves identity, avoids duplicate builds, and protects decisions
+  ---
+  duration_ms: 223.0064
+  type: 'test'
+  ...
+# (node:29980) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: project tickets are scoped and expire
+ok 32 - project tickets are scoped and expire
+  ---
+  duration_ms: 2.0312
+  type: 'test'
+  ...
+# Subtest: hosted Supabase mode fails closed when the server secret is absent
+ok 33 - hosted Supabase mode fails closed when the server secret is absent
+  ---
+  duration_ms: 0.557
+  type: 'test'
+  ...
+# Subtest: server Supabase configuration rejects mismatched credentials and JWKS
+ok 34 - server Supabase configuration rejects mismatched credentials and JWKS
+  ---
+  duration_ms: 0.4052
+  type: 'test'
+  ...
+# Subtest: public auth configuration is explicit and derives the Worker callback
+ok 35 - public auth configuration is explicit and derives the Worker callback
+  ---
+  duration_ms: 1.456
+  type: 'test'
+  ...
+# Subtest: Wrangler uses matching server and Vite build-time Supabase configuration
+ok 36 - Wrangler uses matching server and Vite build-time Supabase configuration
+  ---
+  duration_ms: 1.0097
+  type: 'test'
+  ...
+# Subtest: Google callback exchanges once, reports errors, and restores only local destinations
+ok 37 - Google callback exchanges once, reports errors, and restores only local destinations
+  ---
+  duration_ms: 0.7481
+  type: 'test'
+  ...
+# Subtest: Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+ok 38 - Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect
+  ---
+  duration_ms: 12.4623
+  type: 'test'
+  ...
+# Subtest: auth source preserves Google and adds password, confirmation, and recovery flows
+ok 39 - auth source preserves Google and adds password, confirmation, and recovery flows
+  ---
+  duration_ms: 2.3383
+  type: 'test'
+  ...
+# Subtest: project names and invitation emails use canonical validation
+ok 40 - project names and invitation emails use canonical validation
+  ---
+  duration_ms: 0.8429
+  type: 'test'
+  ...
+# Subtest: transactional invitation email is truthful and idempotent at the provider boundary
+ok 41 - transactional invitation email is truthful and idempotent at the provider boundary
+  ---
+  duration_ms: 30.9462
+  type: 'test'
+  ...
+# Subtest: email invitation migration binds recipients and enforces sharing permissions
+ok 42 - email invitation migration binds recipients and enforces sharing permissions
+  ---
+  duration_ms: 1.8569
+  type: 'test'
+  ...
+# Subtest: invite tokens are hashed before persistence
+ok 43 - invite tokens are hashed before persistence
+  ---
+  duration_ms: 0.2908
+  type: 'test'
+  ...
+# Subtest: migration enables RLS and keeps authoritative runtime writes server-only
+ok 44 - migration enables RLS and keeps authoritative runtime writes server-only
+  ---
+  duration_ms: 2.4064
+  type: 'test'
+  ...
+# Subtest: shared requirements keep a stable identity across collaborators and canvas locations
+ok 45 - shared requirements keep a stable identity across collaborators and canvas locations
+  ---
+  duration_ms: 16.12
+  type: 'test'
+  ...
+# Subtest: a proposal remains visible but is excluded from builder input
+ok 46 - a proposal remains visible but is excluded from builder input
+  ---
+  duration_ms: 0.5319
+  type: 'test'
+  ...
+# Subtest: opposed accepted requirements create one focused consequential conflict
+ok 47 - opposed accepted requirements create one focused consequential conflict
+  ---
+  duration_ms: 17.801
+  type: 'test'
+  ...
+# Subtest: same-subject colors form one durable multi-option group
+ok 48 - same-subject colors form one durable multi-option group
+  ---
+  duration_ms: 1.6319
+  type: 'test'
+  ...
+# Subtest: different subjects and conditional scopes remain compatible
+ok 49 - different subjects and conditional scopes remain compatible
+  ---
+  duration_ms: 1.2209
+  type: 'test'
+  ...
+# Subtest: proposals never enter accepted conflict groups
+ok 50 - proposals never enter accepted conflict groups
+  ---
+  duration_ms: 0.547
+  type: 'test'
+  ...
+# Subtest: explicit selections stay pending, then resolve or disagree without model voting
+ok 51 - explicit selections stay pending, then resolve or disagree without model voting
+  ---
+  duration_ms: 1.5906
+  type: 'test'
+  ...
+# Subtest: legacy pairwise contradictions migrate without losing identity or affected contributors
+ok 52 - legacy pairwise contradictions migrate without losing identity or affected contributors
+  ---
+  duration_ms: 0.7966
+  type: 'test'
+  ...
+# Subtest: selection submissions are authorized, revision-safe, and idempotent
+ok 53 - selection submissions are authorized, revision-safe, and idempotent
+  ---
+  duration_ms: 1.3688
+  type: 'test'
+  ...
+# Subtest: unresolved alternatives are excluded while independent accepted work remains eligible
+ok 54 - unresolved alternatives are excluded while independent accepted work remains eligible
+  ---
+  duration_ms: 1.3774
+  type: 'test'
+  ...
+# Subtest: explicit withdrawal removes only that collaborator source and preserves supported intent
+ok 55 - explicit withdrawal removes only that collaborator source and preserves supported intent
+  ---
+  duration_ms: 0.8926
+  type: 'test'
+  ...
+# (node:23104) ExperimentalWarning: SQLite is an experimental feature and might change at any time
+# (Use `node --trace-warnings ...` to show where the warning was created)
+# Subtest: routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+ok 56 - routine autosaves keep one active snapshot and coalesce later typing instead of queuing stale copies
+  ---
+  duration_ms: 1558.6144
+  type: 'test'
+  ...
+# Subtest: hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+ok 57 - hosted restore allocates above the remote journal high water and fails closed when that lookup is unavailable
+  ---
+  duration_ms: 8076.8781
+  type: 'test'
+  ...
+# {"event":"collaboration.connected","connectionId":"25a528cb-6c4a-4ce5-add0-1e43b6e5282c","correlationId":"1ec127df-1149-438f-aa38-6af3dc33da47"}
+# {"event":"collaboration.disconnected","connectionId":"25a528cb-6c4a-4ce5-add0-1e43b6e5282c","code":4403}
+# Subtest: hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+ok 58 - hosted incoming edit bursts retain order, caller attribution and fresh revocation checks without one lookup per frame
+  ---
+  duration_ms: 652.3353
+  type: 'test'
+  ...
+1..58
+# tests 58
+# suites 0
+# pass 57
+# fail 1
+# cancelled 0
+# skipped 0
+# todo 0
+# duration_ms 121051.7112

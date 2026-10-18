@@ -2,6 +2,15 @@
   "version": 1,
   "exceptions": [
     {
+      "id": "reject-legacy-development-secret",
+      "files": ["server/credentials.ts"],
+      "pattern": "cocreate\\|2guys1canvas",
+      "owner": "Authentication maintainer",
+      "reason": "Reject the known legacy development signing secret in hosted mode.",
+      "removeWhen": "Keep while the legacy local signing bridge remains supported.",
+      "evidence": "Synthetic hosted-startup refusal tests; no production secret inspection."
+    },
+    {
       "id": "capture-release-repository-links",
       "files": ["docs/harness/canvas-capture-command.md"],
       "pattern": "Cocreate/(?:actions/|compare/)",
@@ -156,6 +165,7 @@
         "scripts/check-product-naming.mjs",
         "scripts/verify-product-naming.mjs",
         "tests/artifact-restoration.test.ts",
+        "tests/artifact-reliability.test.ts",
         "tests/cloudflare-container.test.ts",
         "tests/fixtures/artifact-storage.ts",
         "tests/fixtures/beta-database.ts",
@@ -220,6 +230,7 @@
         "artifacts/canvas-capture-command/naming-final.log",
         "artifacts/canvas-capture-command/naming-release.log",
         "artifacts/canvas-capture-command/windows-full-first.log",
+        "artifacts/artifact-reliability/naming-first.log",
         "artifacts/founder-contact-icons/boundaries.log",
         "artifacts/founder-contact-icons/build.log",
         "artifacts/founder-contact-icons/ui-scope.log",

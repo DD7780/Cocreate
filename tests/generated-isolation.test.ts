@@ -5,13 +5,25 @@ import path from 'node:path';
 import os from 'node:os';
 import net from 'node:net';
 import { once } from 'node:events';
-import { runIsolated, prepareIsolation, IsolationError, isolationPolicy } from '../server/isolation.js';
+import { runIsolated, prepareIsolation, assertIsolationAvailable, IsolationError, isolationPolicy, isolationJobsDirectory } from '../server/isolation.js';
 import { applyOperations, bundleProject } from '../server/project.js';
 
-const jobs=path.resolve('.runtime/isolation/jobs');
+const jobs=isolationJobsDirectory;
+const existingJobs=new Set(fs.existsSync(jobs)?fs.readdirSync(jobs):[]);
 const files=applyOperations(undefined,[{type:'write',path:'src/App.tsx',content:"import{useState}from'react';export default function App(){const[value]=useState('Working isolated product');return <main>{value}</main>}"}]);
 function noChild(pid:number){assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});}
-function noJobs(){assert.deepEqual(fs.existsSync(jobs)?fs.readdirSync(jobs):[],[]);}
+function noJobs(){assert.deepEqual((fs.existsSync(jobs)?fs.readdirSync(jobs):[]),[]);}
+
+test('readiness compiles real React inside the boundary and leaves unrelated runtime jobs untouched',async()=>{
+  fs.mkdirSync(path.dirname(isolationJobsDirectory),{recursive:true});
+  const foreign=fs.mkdtempSync(path.resolve('.runtime/isolation/jobs/unrelated-fixture-'));
+  const sentinel=path.join(foreign,'synthetic.txt');fs.writeFileSync(sentinel,'preserve unrelated work');
+  try{
+    const result=await assertIsolationAvailable();assert.match(result.javascript,/Compiler readiness/);
+    assert.ok(result.diagnostics.phasesMs.wasm_initialize>=0);assert.ok(result.diagnostics.phasesMs.bundle>=0);
+    assert.equal(fs.readFileSync(sentinel,'utf8'),'preserve unrelated work');noJobs();
+  }finally{assert.equal(path.dirname(foreign),path.resolve('.runtime/isolation/jobs'));fs.rmSync(foreign,{recursive:true});}
+});
 
 test('ordinary compilation runs in the real OS boundary and never evaluates candidate top-level code',async()=>{
   await prepareIsolation();const result=await bundleProject(files);

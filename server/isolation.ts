@@ -11,14 +11,25 @@ import type { ProjectFile } from './project.js';
 const require = createRequire(import.meta.url);
 const sourceDirectory = fileURLToPath(new URL('./isolation/', import.meta.url));
 const runtimeDirectory = path.resolve('.runtime/isolation');
+/** A trusted process-owned namespace prevents tests or cleanup from claiming another server's jobs. */
+export const isolationJobsDirectory=path.join(runtimeDirectory,'jobs',`${process.pid}-${randomUUID()}`);
 const maxOutput = 4 * 1024 * 1024;
-export const isolationPolicy = Object.freeze({ version: 'isolated-compile-v1', wallMs: 20_000,
+export const isolationPolicy = Object.freeze({ version: 'isolated-compile-v2', wallMs: 20_000,compileWallMs:60_000,
   cpuSeconds: 10, windowsMemoryBytes: 512 * 1024 * 1024, linuxAddressSpaceBytes: 2 * 1024 ** 3,
   heapMiB: 128, windowsProcesses: 1, linuxTasksPerUser: 64, network: 'none', outputBytes: maxOutput });
 export class IsolationError extends Error {
   constructor(readonly code: 'isolation_unavailable' | 'isolation_cancelled' | 'isolation_timeout' | 'isolation_resource_limit', message: string) { super(message); }
 }
-const unavailable = () => new IsolationError('isolation_unavailable', 'Generated execution isolation is unavailable. The previous artifact is retained. Ask the operator to prepare or repair the isolated runtime, then explicitly retry; no host execution fallback is allowed.');
+export type IsolationDiagnostics={jobId:string;operation:string;wallMs:number;elapsedMs:number;phase:string;phasesMs:Record<string,number>;cleanupMs?:number;exitCode?:number|null;sandboxExit?:number;peakProcessBytes?:number;nativeExitCode?:number;diagnostic?:string;limit?:string};
+export function safeIsolationDiagnostics(value:unknown){
+  const input=value as Partial<IsolationDiagnostics>|undefined;if(!input)return undefined;
+  const numeric=(key:keyof IsolationDiagnostics)=>typeof input[key]==='number'&&Number.isFinite(input[key])?input[key]:undefined;
+  return {jobId:typeof input.jobId==='string'&&/^[a-f0-9-]{36}$/.test(input.jobId)?input.jobId:undefined,operation:['compile','probe','spin','allocate','flood'].includes(input.operation||'')?input.operation:undefined,
+    phase:['launch','input','wasm_compile','wasm_initialize','bundle','output','cleanup'].includes(input.phase||'')?input.phase:undefined,
+    wallMs:numeric('wallMs'),elapsedMs:numeric('elapsedMs'),cleanupMs:numeric('cleanupMs'),exitCode:numeric('exitCode'),sandboxExit:numeric('sandboxExit'),peakProcessBytes:numeric('peakProcessBytes'),nativeExitCode:numeric('nativeExitCode'),
+    phasesMs:Object.fromEntries(Object.entries(input.phasesMs||{}).filter(([key,value])=>['input','wasm_compile','wasm_initialize','bundle','output'].includes(key)&&typeof value==='number'&&Number.isFinite(value)&&value>=0))};
+}
+const unavailable = () => new IsolationError('isolation_unavailable', 'Generated execution isolation is unavailable. Ask the operator to prepare or repair the isolated runtime, then explicitly retry; no host execution fallback is allowed.');
 const cancelled = () => new IsolationError('isolation_cancelled', 'Generated execution was cancelled and its isolated child was removed.');
 const hostEnvironment = () => process.platform === 'win32' ? { SystemRoot: process.env.SystemRoot || 'C:\\Windows', windir:process.env.SystemRoot||'C:\\Windows', USERPROFILE:os.homedir(), LOCALAPPDATA:process.env.LOCALAPPDATA||path.join(os.homedir(),'AppData','Local'), APPDATA:process.env.APPDATA||path.join(os.homedir(),'AppData','Roaming'), TEMP: os.tmpdir(), TMP: os.tmpdir() } : { PATH: '/usr/bin:/bin', LANG: 'C.UTF-8' };
 let preparing: Promise<string> | undefined;
@@ -78,7 +89,7 @@ function trustedDependencies(){
   dependencyCache={roots,dependencies:[...byPath.values()]};return dependencyCache;
 }
 export type IsolatedRequest = { operation:'compile';files:ProjectFile[] } |
-  { operation:'probe';outside:string;port:number } | { operation:'ready'|'spin'|'allocate'|'flood' };
+  { operation:'probe';outside:string;port:number } | { operation:'spin'|'allocate'|'flood' };
 export type IsolationOptions = {signal?:AbortSignal;wallMs?:number; onStarted?:(pid:number)=>void;
   /** Operator-owned boundary test only; compile always retains Node permissions. */
   osProbe?:boolean };
@@ -93,16 +104,19 @@ function linuxCommand(runtime:string,workspace:string,osProbe:boolean){
 }
 /** Internal trusted primitive. No HTTP/model output can choose operations, commands or runtime flags. */
 export async function runIsolated(request:IsolatedRequest,options:IsolationOptions={}) : Promise<unknown> {
+  const began=performance.now();
   if(productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')&&productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')!=='os')throw unavailable();
   if(options.signal?.aborted)throw cancelled();
   if(options.osProbe&&request.operation==='compile')throw unavailable();
   const runtime=await prepareIsolation();if(options.signal?.aborted)throw cancelled();
-  const workspace=path.join(runtimeDirectory,'jobs',randomUUID());
+  const workspace=path.join(isolationJobsDirectory,randomUUID());
   const profile='twoguysonecanvas.isolation.'+path.basename(workspace).replaceAll('-','');
   const payload=request.operation==='compile'?{...request,...trustedDependencies()}:{...request,osOnly:options.osProbe===true};
   const serialized=JSON.stringify(payload);if(Buffer.byteLength(serialized)>maxOutput)throw new IsolationError('isolation_resource_limit','Compiler input exceeded its bound.');
   fs.mkdirSync(workspace,{recursive:true});
-  const wallMs=Math.min(isolationPolicy.wallMs,Math.max(10,options.wallMs??isolationPolicy.wallMs));
+  const maximumWall=request.operation==='compile'?isolationPolicy.compileWallMs:isolationPolicy.wallMs;
+  const wallMs=Math.min(maximumWall,Math.max(10,options.wallMs??maximumWall));
+  const diagnostics:IsolationDiagnostics={jobId:path.basename(workspace),operation:request.operation,wallMs,elapsedMs:0,phase:'launch',phasesMs:{}};
   const command=process.platform==='win32'?{executable:path.join(runtime,'runner.exe'),args:[runtime,workspace,profile,String(process.pid),String(wallMs),options.osProbe?'os-probe':'restricted']}:linuxCommand(runtime,workspace,options.osProbe===true);
   let child:ChildProcess|undefined,aborted=false,limited=false,timedOut=false,linuxPid=0;
   try{
@@ -120,7 +134,7 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
       options.signal?.addEventListener('abort',abort,{once:true});if(options.signal?.aborted)abort();
       const finish=(error?:Error,result?:unknown)=>{if(done)return;done=true;clearTimeout(timer);clearTimeout(force);options.signal?.removeEventListener('abort',abort);error?reject(error):resolve(result)};
       child.stdout!.on('data',chunk=>{if(limited)return;stdout+=chunk;if(Buffer.byteLength(stdout)>maxOutput)stop('limit')});
-      child.stderr!.on('data',chunk=>{if(limited)return;stderr+=chunk;if(Buffer.byteLength(stderr)>16_000)stop('limit');const match=stderr.match(/ISOLATION_STARTED (\d+)/);if(match){options.onStarted?.(Number(match[1]));options.onStarted=undefined}});
+      child.stderr!.on('data',chunk=>{if(limited)return;stderr+=chunk;if(Buffer.byteLength(stderr)>16_000)stop('limit');for(const mark of stderr.matchAll(/COMPILER_PHASE (input|wasm_compile|wasm_initialize|bundle|output) (\d+)/g)){diagnostics.phase=mark[1];diagnostics.phasesMs[mark[1]]=Number(mark[2]);}const match=stderr.match(/ISOLATION_STARTED (\d+)/);if(match){options.onStarted?.(Number(match[1]));options.onStarted=undefined}});
       // Bubblewrap writes host-visible lifecycle IDs on this pipe and closes it in the sandbox child.
       if(process.platform==='linux'){
         const status=child.stdio[3] as NodeJS.ReadableStream;
@@ -137,15 +151,17 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
       }
       child.once('error',()=>finish(unavailable()));
       child.once('close',code=>{
-        if(aborted)return finish(cancelled());
-        if(timedOut||code===124)return finish(new IsolationError('isolation_timeout','Generated execution exceeded its wall-time bound and was removed.'));
+        Object.assign(diagnostics,{elapsedMs:Math.round(performance.now()-began),exitCode:code,sandboxExit,diagnostic:stderr.slice(0,2000),peakProcessBytes:Number(stderr.match(/ISOLATION_PEAK_BYTES (\d+)/)?.[1])||undefined,nativeExitCode:Number(stderr.match(/ISOLATION_EXIT (\d+)/)?.[1])||undefined});
+        if(aborted){const error=cancelled();error.cause=diagnostics;return finish(error);}
+        if(timedOut||code===124){const error=new IsolationError('isolation_timeout',`Compiler/isolated execution exceeded its wall-time bound during ${diagnostics.phase} and was removed.`);error.cause=diagnostics;return finish(error);}
         const linuxResource=process.platform==='linux'&&((sandboxExit===137||sandboxExit===152)||(/out of memory|allocation failed/i.test(stderr)||(request.operation==='allocate'&&/allocation failed/i.test(stdout))));
-        if(limited||code===125||linuxResource){const error=new IsolationError('isolation_resource_limit','Generated execution failed within its memory/process/CPU/output limits. The previous artifact is retained.');error.cause={exitCode:code,limit:limited?'output':'kernel',diagnostic:stderr.slice(0,2000)};return finish(error);}
-        if(code!==0){const error=unavailable();error.cause={exitCode:code,diagnostic:stderr.slice(0,2000)};return finish(error);}
-        try{const response=JSON.parse(stdout);if(!response||typeof response.ok!=='boolean')throw Error();if(!response.ok)return finish(new Error('Candidate compilation failed: '+String(response.error).slice(0,1000)));finish(undefined,response.result)}catch{return finish(unavailable())}
+        if(limited||code===125||linuxResource){const error=new IsolationError('isolation_resource_limit','Generated execution failed within its memory/process/CPU/output limits.');diagnostics.limit=limited?'output':'kernel';error.cause=diagnostics;return finish(error);}
+        if(code!==0){const error=unavailable();error.cause=diagnostics;return finish(error);}
+        try{const response=JSON.parse(stdout);if(!response||typeof response.ok!=='boolean')throw Error();if(!response.ok)return finish(new Error('Candidate compilation failed: '+String(response.error).slice(0,1000)));if(request.operation==='compile')response.result.diagnostics=diagnostics;finish(undefined,response.result)}catch{return finish(unavailable())}
       });
     });
   }finally{
+    const cleanup=performance.now();
     // Resolve/reject only after the launcher has closed its kill-on-close Job Object/process group.
     if(process.platform==='win32')await trustedProcess(path.join(runtime,'runner.exe'),['cleanup',profile],runtime).catch(()=>{});
     if(process.platform==='linux'&&linuxPid){
@@ -157,22 +173,28 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
       }
       if(!removed){const error=unavailable();error.cause={phase:'cleanup',diagnostic:'Sandbox PID remains after launcher exit; verify the init reaper.'};throw error;}
     }
-    const root=path.resolve(runtimeDirectory,'jobs');if(path.dirname(path.resolve(workspace))!==root)throw unavailable();
-    fs.rmSync(workspace,{recursive:true,force:true,maxRetries:3,retryDelay:50});
+    const root=isolationJobsDirectory;if(path.dirname(path.resolve(workspace))!==root)throw unavailable();
+    try{fs.rmSync(workspace,{recursive:true,force:true,maxRetries:3,retryDelay:50});}
+    catch{const error=unavailable();diagnostics.phase='cleanup';error.cause=diagnostics;throw error;}
+    diagnostics.cleanupMs=Math.round(performance.now()-cleanup);
+    diagnostics.elapsedMs=Math.round(performance.now()-began);
   }
 }
 export async function compileIsolated(files:ProjectFile[],signal?:AbortSignal){
-  const result=await runIsolated({operation:'compile',files},{signal}) as {javascript?:unknown;css?:unknown};
+  const result=await runIsolated({operation:'compile',files},{signal}) as {javascript?:unknown;css?:unknown;diagnostics:IsolationDiagnostics};
   if(typeof result?.javascript!=='string'||typeof result.css!=='string')throw unavailable();
-  return {javascript:result.javascript,css:result.css};
+  return {javascript:result.javascript,css:result.css,diagnostics:result.diagnostics};
 }
 
 
-let readiness:Promise<unknown>|undefined;
+let readiness:ReturnType<typeof compileIsolated>|undefined,readyUntil=0;
 /** Inference-free preflight of the actual kernel boundary before generation dispatch. */
 export async function assertIsolationAvailable(signal?:AbortSignal){
   if(productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')&&productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE')!=='os')throw unavailable();
   if(signal?.aborted)throw cancelled();
-  readiness??=runIsolated({operation:'ready'}).catch(error=>{readiness=undefined;throw error});
-  await readiness;if(signal?.aborted)throw cancelled();
+  if(Date.now()>readyUntil){readiness=undefined;readyUntil=Date.now()+5*60_000;}
+  readiness??=compileIsolated([{path:'src/main.tsx',content:"import React from 'react';import{createRoot}from'react-dom/client';createRoot(document.getElementById('root')).render(<main>Compiler readiness</main>);"}]).catch(error=>{readiness=undefined;throw error});
+  const result=await readiness;if(signal?.aborted)throw cancelled();
+  if(!result.javascript.includes('Compiler readiness')){readiness=undefined;throw unavailable();}
+  return result;
 }

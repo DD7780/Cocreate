@@ -5,6 +5,7 @@ import path from 'node:path';
 import http from 'node:http';
 import express from 'express';
 import assert from 'node:assert/strict';
+import {StringDecoder} from 'node:string_decoder';
 
 process.env.NODE_ENV = 'production';
 process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
@@ -13,11 +14,12 @@ const {build}=await import('vite');
 await build({configLoader:'runner',build:{outDir:'.runtime/build-progress-browser',emptyOutDir:true}});
 const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
-const output = path.resolve('artifacts/canvas-capture-command/progress-browser');
+const {browserExecutable}=await import('../server/isolation/browser.js');
+const output = path.resolve(process.env.TWOGUYS1CANVAS_TEST_ARTIFACT_DIR||'artifacts/canvas-capture-command/progress-browser');
 fs.mkdirSync(output, { recursive: true });
 const wait = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 async function until(check: () => Promise<boolean>, label: string) {
-  for (let i = 0; i < 150; i++) { if (await check()) return; await wait(100); }
+  for (let i = 0; i < 150; i++) { if (await check()) return;if(room.status==='Error')throw new Error(`Progress stopped at ${label}: ${room.lastError}`); await wait(100); }
   throw new Error(`Progress browser timed out: ${label}`);
 }
 let interpreterCalls = 0;
@@ -55,28 +57,35 @@ const connection = await service.manager.saveConnection(room,{name:'Controlled p
 room.ai.connections![0].checks.fixture={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};
 await service.manager.assignAI(room,{connectionId:connection.id,model:'fixture'},{connectionId:connection.id,model:'fixture'});
 const {url:origin} = await service.start();
-type Browser = {call:(method:string,params?:object)=>Promise<any>;evaluate:(code:string)=>Promise<any>;socket:WebSocket;process:ReturnType<typeof spawn>;profile:string};
+type Browser = {call:(method:string,params?:object)=>Promise<any>;evaluate:(code:string)=>Promise<any>;socket:{close():void};process:ReturnType<typeof spawn>;profile:string};
 const browsers: Browser[] = [];
+const launches:Array<{process:ReturnType<typeof spawn>;profile:string}>=[];
 const session = (id:string) => createSession('progress-browser',{roomId:room.id,participantId:id,name:id,role:id==='cara'?'viewer':id==='alice'?'owner':'editor'});
 
 async function open(id:string,index:number): Promise<Browser> {
-  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'progress-chrome-')),port=9900+index+process.pid%200;
-  const processHandle=spawn('C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe',['--headless=new','--disk-cache-size=1','--media-cache-size=1','--disable-component-update','--disable-background-networking','--disable-sync','--disable-gpu','--no-first-run','--no-default-browser-check',`--remote-debugging-port=${port}`,`--user-data-dir=${profile}`,'about:blank'],{stdio:'ignore'});
-  let target:any;
-  await until(async()=>{try{target=await fetch(`http://127.0.0.1:${port}/json/new?about:blank`,{method:'PUT'}).then(value=>value.json());return!!target.webSocketDebuggerUrl;}catch{return false;}},'Chrome startup');
-  const socket=new WebSocket(target.webSocketDebuggerUrl);
-  await new Promise<void>((resolve,reject)=>{socket.addEventListener('open',()=>resolve(),{once:true});socket.addEventListener('error',reject,{once:true});});
+  const profile=fs.mkdtempSync(path.join(os.tmpdir(),'progress-chrome-'));
+  const processHandle=spawn(browserExecutable(),['--headless=new','--disk-cache-size=1','--media-cache-size=1','--disable-component-update','--disable-background-networking','--disable-sync','--disable-gpu','--no-first-run','--no-default-browser-check','--remote-debugging-pipe',`--user-data-dir=${profile}`,'about:blank'],{stdio:['ignore','ignore','ignore','pipe','pipe'],windowsHide:true});
+  launches.push({process:processHandle,profile});
+  const input=processHandle.stdio[3] as import('node:stream').Writable,outputPipe=processHandle.stdio[4] as import('node:stream').Readable;
+  const socket={close(){input.end();outputPipe.destroy();}};
   let sequence=0;
   const pending=new Map<number,{resolve:(value:any)=>void;reject:(error:Error)=>void}>();
-  socket.addEventListener('message',event=>{
-    const result=JSON.parse(String(event.data)),task=pending.get(result.id);
-    if(task){pending.delete(result.id);result.error?task.reject(new Error(result.error.message)):task.resolve(result.result);}
+  const decoder=new StringDecoder('utf8');let buffered='';
+  outputPipe.on('data',chunk=>{
+    buffered+=decoder.write(chunk);if(Buffer.byteLength(buffered)>4*1024*1024)throw new Error('Test browser response exceeded its bound.');let end:number;
+    while((end=buffered.indexOf('\0'))>=0){const raw=buffered.slice(0,end);buffered=buffered.slice(end+1);if(!raw)continue;const result=JSON.parse(raw),task=pending.get(result.id);
+      if(task){pending.delete(result.id);result.error?task.reject(new Error(result.error.message)):task.resolve(result.result);}}
   });
-  const call=(method:string,params={})=>new Promise<any>((resolve,reject)=>{
+  const failed=()=>{for(const task of pending.values())task.reject(new Error('Test browser transport closed.'));pending.clear();};
+  processHandle.once('error',failed);processHandle.once('exit',failed);input.on('error',failed);
+  const rawCall=(method:string,params={},sessionId?:string)=>new Promise<any>((resolve,reject)=>{
     const id=++sequence,timer=setTimeout(()=>{pending.delete(id);reject(new Error(`${method} timed out`));},15_000);
     pending.set(id,{resolve:value=>{clearTimeout(timer);resolve(value);},reject:error=>{clearTimeout(timer);reject(error);}});
-    socket.send(JSON.stringify({id,method,params}));
+    input.write(JSON.stringify({id,method,params,sessionId})+'\0');
   });
+  await rawCall('Browser.getVersion');
+  const {targetId}=await rawCall('Target.createTarget',{url:'about:blank'}),{sessionId}=await rawCall('Target.attachToTarget',{targetId,flatten:true});
+  const call=(method:string,params={})=>rawCall(method,params,method.startsWith('Browser.')?undefined:sessionId);
   const evaluate=async(code:string)=>{
     const result=await call('Runtime.evaluate',{expression:code,returnByValue:true,awaitPromise:true});
     if(result.exceptionDetails)throw new Error(JSON.stringify(result.exceptionDetails));
@@ -137,13 +146,14 @@ try {
   const report={scope:'Three independent signed local owner/editor/viewer Chrome profiles, real SQLite, controlled loopback provider and Windows isolated compiler; no hosted accounts, paid inference or SQL execution',participants:3,capturedPendingDurable:true,reloadDuringBuild:true,replayAddsNoInference:true,viewerDenied:true,convergedRevisionLabels:true,progressWithFurtherCaptures:true,promotedRevisions:room.versions.map(item=>item.specificationRevision),interpreterCalls,builderCalls:candidates.length,physicalCalls:service.manager.view(room).physicalUsage.recorded.requests,functionalVerified:false};
   fs.writeFileSync(path.join(output,'checks.json'),JSON.stringify(report,null,2));console.log(JSON.stringify(report));
 } catch (error) {
-  console.error(JSON.stringify({phase:'browser-failure',status:room.status,error:room.lastError,acceptedRevision:room.specificationRevision,versions:room.versions.map(item=>({id:item.id,revision:item.specificationRevision})),candidates,submissions:room.submissions.map(item=>({actor:item.participantId,status:item.status,error:item.error})),runs:room.aiRuns.map(item=>({outcome:item.outcome,verification:item.verification}))}));
+  console.error(JSON.stringify({phase:'browser-failure',status:room.status,error:room.lastError,acceptedRevision:room.specificationRevision,versions:room.versions.map(item=>({id:item.id,revision:item.specificationRevision})),candidates,failedTools:service.manager.eventStore.eventsForWorkspace(room.id).filter(event=>event.eventType==='tool.failed').map(event=>event.payload),submissions:room.submissions.map(item=>({actor:item.participantId,status:item.status,error:item.error})),runs:room.aiRuns.map(item=>({outcome:item.outcome,verification:item.verification}))}));
   throw error;
 } finally {
   for(const release of gates.values())release();
   for(const browser of browsers)await browser.call('Page.navigate',{url:'about:blank'}).catch(()=>{});
-  for(const browser of browsers){browser.socket.close();browser.process.kill();}
+  for(const browser of browsers){await browser.call('Browser.close').catch(()=>{});browser.socket.close();}
+  for(const launch of launches){if(launch.process.exitCode===null)launch.process.kill();}
   await service.stop();fake.closeAllConnections();await new Promise<void>(resolve=>fake.close(()=>resolve()));await wait(500);
-  for(const browser of browsers){if(path.dirname(path.resolve(browser.profile))!==path.resolve(os.tmpdir())||!/^progress-chrome-[A-Za-z0-9]+$/.test(path.basename(browser.profile)))throw new Error('Unsafe Chrome cleanup');fs.rmSync(browser.profile,{recursive:true,force:true,maxRetries:6,retryDelay:200});}
+  for(const browser of launches){if(path.dirname(path.resolve(browser.profile))!==path.resolve(os.tmpdir())||!/^progress-chrome-[A-Za-z0-9]+$/.test(path.basename(browser.profile)))throw new Error('Unsafe Chrome cleanup');fs.rmSync(browser.profile,{recursive:true,force:true,maxRetries:6,retryDelay:200});}
   if(path.dirname(path.resolve(dataDir))!==path.resolve(os.tmpdir())||!path.basename(dataDir).startsWith('progress-browser-'))throw new Error('Unsafe data cleanup');fs.rmSync(dataDir,{recursive:true,force:true});
 }

@@ -1,0 +1,12 @@
+import {applyOperations} from '../../server/project.js';
+export const restaurantFiles=()=>applyOperations(undefined,[
+  {type:'write',path:'src/styles.css',content:"*{box-sizing:border-box}body{margin:0;background:white;color:black;font:18px Georgia,serif}header,footer{padding:28px 7vw;background:#f8f1e7}header{display:flex;justify-content:space-between}a{color:#953d27}main>section{padding:40px 7vw}h1{font-size:clamp(36px,6vw,76px);max-width:750px;margin:20px 0}h2{font-size:32px}ul{list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:20px;padding:0}li{border:1px solid #dfd3c3;padding:22px;border-radius:8px}input{margin:12px;padding:10px;max-width:100%}nav{font:14px system-ui}"},
+  {type:'write',path:'src/App.tsx',content:"import Header from './Header';import Hero from './Hero';import Menu from './Menu';import Footer from './Footer';export default function App(){return <><Header/><main><Hero/><Menu/></main><Footer/></>}"},
+  {type:'write',path:'src/Header.tsx',content:"export default function Header(){return <header><a href='#menu'>Mountain Momo</a><nav>Menu · Our story · Visit</nav></header>}"},
+  {type:'write',path:'src/Hero.tsx',content:"export default function Hero(){return <section><h1>Fresh momo, made with care</h1><p>Traditional Nepali flavors at Mountain Momo.</p><a href='#menu'>Explore our menu</a></section>}"},
+  {type:'write',path:'src/Menu.tsx',content:"import{useState}from'react';import{dishes}from './dishes';import Dish from './Dish';export default function Menu(){const[q,setQ]=useState('');return <section id='menu'><h2>Our menu</h2><label>Filter dishes<input aria-label='Filter dishes' value={q} onChange={e=>setQ(e.target.value)}/></label><ul>{dishes.filter(d=>d.name.toLowerCase().includes(q.toLowerCase())).map(d=><Dish key={d.name} dish={d}/>)}</ul></section>}"},
+  {type:'write',path:'src/Dish.tsx',content:"export default function Dish({dish}:{dish:{name:string;price:string}}){return <li><h3>{dish.name}</h3><p>{dish.price}</p></li>}"},
+  {type:'write',path:'src/dishes.ts',content:"export const dishes=[{name:'Chicken momo',price:'$12'},{name:'Vegetable momo',price:'$10'},{name:'Buff momo',price:'$13'}];"},
+  {type:'write',path:'src/Footer.tsx',content:"import{hours}from './hours';export default function Footer(){return <footer><h2>Visit Mountain Momo</h2><p>123 Main Street</p><p>{hours}</p></footer>}"},
+  {type:'write',path:'src/hours.ts',content:"export const hours='Tuesday–Sunday, 12–9 pm';"},
+]);

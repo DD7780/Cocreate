@@ -7,6 +7,7 @@ import assert from "node:assert/strict";
 import http from "node:http";
 import * as Y from "yjs";
 import { RoomManager } from "../server/rooms.js";
+import {isolationPolicy} from '../server/isolation.js';
 
 const waitFor = async (check: () => boolean, timeout = 5_000) => {
   const started = Date.now();
@@ -219,7 +220,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
       "first-submission",
     );
     assert.equal(first.status, "queued");
-    await waitFor(() => room.versions.length === 1).catch((error) => {
+    await waitFor(() => {if(room.status==='Error'&&!room.buildTask)throw new Error(room.lastError);return room.versions.length === 1;},2*isolationPolicy.compileWallMs+2_000).catch((error) => {
       console.log(
         JSON.stringify({
           phase: "controlled-first-build",versions:room.versions.map(item=>item.id),
@@ -228,6 +229,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
           builderCalls,
           status: room.status,
           error: room.lastError,
+          failedTools:manager.eventStore.eventsForWorkspace(room.id).filter(event=>event.eventType==='tool.failed').map(event=>event.payload),
           intents: participant.latest?.intents,
         }),
       );

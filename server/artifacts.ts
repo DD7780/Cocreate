@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { Version, ProductSource } from '../shared/types.js';
-import { validateFiles, type ProjectFile, type ProjectSpec } from './project.js';
+import { validateFiles, type ProjectFile, type ProjectSpec, type ProjectPlan } from './project.js';
 import type { EventStore } from './event-store.js';
 export type ArtifactReference = {
     ref: string;
@@ -24,6 +24,7 @@ export type ArchivedVersion = Version & {
     downloadable: boolean;
 };
 export type RecoveryCheckpoint = {
+    compileRetry?:{runId:string;sourceHash:string;expiresAt:number;plan:Omit<ProjectPlan,'operations'>};
     fingerprint: string;
     revision: number;
     files: ProjectFile[];
@@ -150,6 +151,10 @@ export function restoreCheckpoint(bytes: Uint8Array, projectId: string, expected
     for (const key of ['fingerprint', 'revision', 'task', 'index', 'total'] as const)
         if (value[key] !== expected[key])
             throw new ArtifactUnavailableError('corrupt');
+    if(value.compileRetry){
+        const retry=value.compileRetry;
+        if(typeof retry.runId!=='string'||!/^[a-f0-9-]{36}$/.test(retry.runId)||!/^[a-f0-9]{64}$/.test(retry.sourceHash)||!Number.isFinite(retry.expiresAt)||!retry.plan||typeof retry.plan.summary!=='string'||!Array.isArray(retry.plan.decisions)||!Array.isArray(retry.plan.conflicts)||!retry.plan.specification||canonicalJson(retry)!==canonicalJson(expected.compileRetry))throw new ArtifactUnavailableError('corrupt');
+    }
     return { ...value, files: checkFiles(value.files), artifactRef: String(expected.artifactRef) };
 }
 /** Capture immutable bodies in the local cache; canonical publication happens later. */

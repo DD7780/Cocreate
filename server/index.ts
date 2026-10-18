@@ -40,6 +40,7 @@ import { CoordinatorUnavailableError } from "./coordinator.js";
 import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
+import {hostedSecretsError} from './credentials.js';
 type Options = {
   platform?: SupabasePlatform;
   port?: number;
@@ -68,11 +69,15 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
     const releaseFile = fs.existsSync('/usr/local/share/2guys1canvas-release.json') ? '/usr/local/share/2guys1canvas-release.json' : '/usr/local/share/cocreate-release.json';
     const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
     if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
+    const signing=options.sessionSecret??process.env.SESSION_SECRET,encryption=options.encryptionSecret??process.env.CREDENTIAL_ENCRYPTION_SECRET;
+    const platformState = options.platform ? {mode:'supabase' as const,platform:options.platform,error:null}:supabasePlatformFromEnv({...process.env,SESSION_SECRET:signing,CREDENTIAL_ENCRYPTION_SECRET:encryption});
+    if(platformState.mode==='supabase'){
+        const error=hostedSecretsError(signing,encryption)||platformState.error;
+        if(error)throw new Error(`Hosted startup refused: ${error}`);
+    }
     const app = express(), server = http.createServer(app), wss = new WebSocketServer({
         noServer: true
-    }), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {
-        mode: 'supabase' as const, platform: options.platform, error: null
-    } : supabasePlatformFromEnv(), manager = new RoomManager({
+    }), secret = signing || 'cocreate-local-session-secret', encryptionSecret = encryption || secret, manager = new RoomManager({
         releaseFingerprint,debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner', 'editor']);
         } : undefined, authorizeBudgetReset: platformState.platform ? async (projectId, participantId) => {
@@ -827,7 +832,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
     if (options.serveClient !== false) {
         if (process.env.NODE_ENV === 'production') {
             app.use(express.static(path.join(process.cwd(), 'dist')));
-            app.get('*path', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')));
+            app.get('*path', (req, res) => res.sendFile('index.html',{root:path.join(process.cwd(),'dist')}));
         }
         else {
             const vite = await createViteServer({

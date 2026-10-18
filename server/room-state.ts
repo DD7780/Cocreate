@@ -1,4 +1,5 @@
 import type {WorkflowBudget} from "./workflow-budget.js";
+import type {AuthoredSpan,AuthoredPassage} from './authored-passages.js';
 import type {SaveTrace} from './save-diagnostics.js';
 import type {CaptureRecord} from './capture-journal.js';
 import * as Y from "yjs";
@@ -95,6 +96,8 @@ export type StoredVersion = Version & {
   specification?: ProjectSpec;
 };
 export type EditRecord = AgentChange & {
+  authoredSpans?:AuthoredSpan[];
+  deletedSpans?:AuthoredSpan[];
   sourceId?:string;
   sourceHash?:string;
   participantId: string;
@@ -108,6 +111,7 @@ export type SubmissionStatus =
   | "built"
   | "failed";
 export type StoredSubmission = {
+  authoredPassages?:AuthoredPassage[];
   payloadHash?:string;
   captureCursor?:number;
   interrupted?:boolean;
@@ -227,6 +231,7 @@ export type Room = {
     }
   >;
   recoveryCheckpoint?: {
+    compileRetry?:import('./artifacts.js').RecoveryCheckpoint['compileRetry'];
     fingerprint: string;
     revision: number;
     files: ProjectFile[];

@@ -78,7 +78,7 @@ test('targeted reinterpretation reuses authenticated edits, preserves identity, 
     await manager.reinterpretLatest(room,'alice');
     assert.equal(room.sharedRequirements.length,1);
     assert.equal(room.sharedRequirements[0].status,'accepted');
-    assert.equal(participant.latest?.classifierVersion,'intent-v2');
+    assert.equal(participant.latest?.classifierVersion,'intent-v3');
     assert.equal(manager.eventStore.eventsForWorkspace(room.id).at(-1)?.eventType,'interpretation.reinterpreted');
     const stableId=room.sharedRequirements[0].id;
 

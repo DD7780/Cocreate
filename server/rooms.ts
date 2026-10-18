@@ -36,7 +36,7 @@ import {
   parseIntentCommand,
 } from "./intent-commands.js";
 import type { IntentCommandResult, IntentCorrection } from "../shared/types.js";
-import { IsolationError, assertIsolationAvailable } from "./isolation.js";
+import { IsolationError, assertIsolationAvailable, safeIsolationDiagnostics } from "./isolation.js";
 import {
   captureArtifacts,
   versionArtifactBytes,
@@ -50,6 +50,7 @@ import {
 } from "./artifacts.js";
 import { deletionSignature } from "../shared/document-state.js";
 import { applySteeringUpdate } from "./steering-edits.js";
+import {insertedSpans,deletedSpans,captureAuthoredPassages} from './authored-passages.js';
 import fs from "node:fs";
 import path from "node:path";
 import { createHash, randomUUID } from "node:crypto";
@@ -391,7 +392,7 @@ export class RoomManager {
       id,
       this.coordinatorId,
     );
-    const doc = new Y.Doc(),
+    const doc = new Y.Doc({gc:false}),
       awareness = new Awareness(doc),
       room: Room = {
         id,
@@ -858,6 +859,7 @@ export class RoomManager {
     }finally{probe.destroy()}
     const ws=socket||({participantId:actorId,readyState:0} as ClientSocket);
     const vector = Y.encodeStateVector(room.doc),
+      beforeDeletions=deletionSignature(room.doc),
       before = documentText(room.doc);
     const insertedText = applySteeringUpdate(room.doc, payload, ws);
     const after = documentText(room.doc);
@@ -867,6 +869,8 @@ export class RoomManager {
       seq: Math.max(room.documentSequence || 0, room.editHistory.at(-1)?.seq || 0) + 1,
       participantId: p.id,
       sourceId,sourceHash,
+      authoredSpans:insertedSpans(payload,vector),
+      deletedSpans:deletedSpans(payload,beforeDeletions),
       at: now(),
       update: Buffer.from(payload).toString("base64"),
       kind: kindOf(before, after),
@@ -1998,7 +2002,7 @@ export class RoomManager {
             };
             const result = await this.tracked(room, {
                 purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
-            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission.snapshot, previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements)));
+            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission.snapshot, previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements),submission.authoredPassages));
             this.recordUsage(room, 'personal', result.usage, reservation, usageMeta);
             if (controller.signal.aborted) {
                 return;
@@ -2055,7 +2059,7 @@ export class RoomManager {
             }
             p.agentStatus = 'error';
             room.status = 'Error';
-            room.lastError = error instanceof Error ? error.message : String(error);
+            room.lastError = `Interpretation failed: ${error instanceof Error ? error.message : String(error)}`;
             this.save(room, 'submission.failed', participantId, 'system');
             this.broadcastState(room);
             if (submission)
@@ -2164,7 +2168,7 @@ export class RoomManager {
       if(!assignment)throw new Error('No personal model is assigned.');
       const intentContext=acceptedContext(room.sharedRequirements),submission:StoredSubmission={
         id:randomUUID(),requestId:envelope.requestId,participantId:actorId,payloadHash,
-        capturedChanges:structuredClone(batch),editSeqs:batch.map(edit=>edit.seq),documentRevision:Math.max(...batch.map(edit=>edit.seq)),
+        capturedChanges:structuredClone(batch),authoredPassages:captureAuthoredPassages(room.doc,batch,envelope.cutoff,[...room.editHistory,...room.submissions.flatMap(submission=>submission.participantId===actorId?submission.capturedChanges||[]:[])]),editSeqs:batch.map(edit=>edit.seq),documentRevision:Math.max(...batch.map(edit=>edit.seq)),
         intentContext,snapshot:JSON.stringify(intentContext),previousInterpretationId:participant.latest?.id,createdAt:now(),status:'submitted',
         assignment:structuredClone(assignment),setup,
       };
@@ -2397,7 +2401,7 @@ export class RoomManager {
         room.status = 'Building';
         room.lastError = undefined;
         this.broadcastState(room);
-        let evidence: CandidateVerification | undefined, operationsApplied = false, compilationPassed = false;
+        let evidence: CandidateVerification | undefined, operationsApplied = false, compilationPassed = false,failureStage='compiler',candidateSourceHash:string|undefined;
         const verificationPlan = planVerification(requirements, specificationRevision);
         builderConfig.verificationChecks = verificationPlan.kinds;
         try {
@@ -2435,12 +2439,23 @@ export class RoomManager {
                 css: string;
             } | undefined, plan: Awaited<ReturnType<typeof generateProjectPlan>>['value'] | undefined, lastFailure = '', attempts = 0;
             await assertIsolationAvailable(controller.signal);
+            failureStage='verification';
             if (verificationPlan.kinds.length)
                 await assertVerificationBrowserAvailable(controller.signal);
-            for (let attempt = 0; attempt < maxAttempts; attempt++) {
+            failureStage='compiler';
+            const retainedCompile=room.recoveryCheckpoint?.fingerprint===fingerprint&&room.recoveryCheckpoint.revision===specificationRevision?room.recoveryCheckpoint:undefined;
+            if(retainedCompile?.compileRetry&&(retainedCompile.compileRetry.expiresAt<=Date.now()||retainedCompile.compileRetry.sourceHash!==sourceHash(retainedCompile.files)))throw new Error('The retained compiler candidate is expired or inconsistent. Submit an explicit new build request after reviewing the accepted requirements; no model was called.');
+            if(retainedCompile?.compileRetry&&retainedCompile.compileRetry.expiresAt>Date.now()&&retainedCompile.compileRetry.sourceHash===sourceHash(retainedCompile.files)){
+                working=retainedCompile.files;plan={operations:[],...retainedCompile.compileRetry.plan};
+                candidateSourceHash=sourceHash(working);operationsApplied=true;
+                this.eventStore.append({workspaceId:room.id,runId,actorId:'coordinator',actorType:'system',eventType:'build.infrastructure_retry',inputRevision:specificationRevision,contentHash:sourceHash(working),payload:{sourceRunId:retainedCompile.compileRetry.runId,releaseFingerprint:this.config.releaseFingerprint,providerCalls:0}});
+                compiled=await this.tools.execute('project.bundle',{files:working},toolContext);compilationPassed=true;
+            }
+            for (let attempt = 0; attempt < maxAttempts&&!compiled; attempt++) {
                 attempts = attempt + 1;
                 let reservation: BudgetReservation | undefined;
                 try {
+                    failureStage='provider';
                     reservation = this.reserveBudget(room, 'builder', frozenSetup, 2);
                     const result = await this.tracked(room, {
                         purpose: attempt ? 'compilation_repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model, workflowRunId: runId, actorId: queuedSubmissions[0]?.participantId || room.ownerId || undefined, setup: frozenSetup, estimatedOutputTokens: builderConfig.maxOutputTokens
@@ -2456,10 +2471,12 @@ export class RoomManager {
                     });
                     throw error;
                 }
+                failureStage='source_validation';
                 working = (await this.tools.execute('project.apply_operations', {
                     current: working, operations: plan.operations
                 }, toolContext)).files;
                 operationsApplied = true;
+                candidateSourceHash=sourceHash(working);failureStage='compiler';
                 try {
                     const available = room.versions.at(-1), retained = available && {
                         javascript: available.bundle, css: available.css || ''
@@ -2481,8 +2498,14 @@ export class RoomManager {
                     break;
                 }
                 catch (error) {
-                    if (error instanceof IsolationError)
+                    if (error instanceof IsolationError){
+                        if(error.code!=='isolation_cancelled'){
+                            const {operations,...metadata}=plan;
+                            room.recoveryCheckpoint={fingerprint,revision:specificationRevision,files:structuredClone(working),task:'Retry isolated compilation',index:1,total:1,compileRetry:{runId,sourceHash:sourceHash(working),expiresAt:Date.now()+24*60*60_000,plan:structuredClone(metadata)}};
+                            if(await this.save(room,'build.compiler_candidate_retained')===false)throw new Error('Compiler failed; candidate persistence is unconfirmed. Reopen to reconcile before retrying.');
+                        }
                         throw error;
+                    }
                     lastFailure = error instanceof Error ? error.message : String(error);
                     if (attempt < maxAttempts - 1) {
                         this.eventStore.transitionRun({
@@ -2510,6 +2533,7 @@ export class RoomManager {
                 workspaceId: room.id, taskId: runId, state: 'verifying', evidenceStatus: 'pending'
             });
             this.broadcastState(room);
+            failureStage='verification';
             evidence = await this.tools.execute('project.verify', {
                 files: working, compiled, requirements
             }, toolContext);
@@ -2520,7 +2544,7 @@ export class RoomManager {
                 }
             });
             if (await this.save(room, 'build.verification_recorded', 'verification', 'system') === false)
-                throw new Error('Verification evidence could not be durably saved. The previous artifact is retained.');
+                throw new Error('Verification evidence could not be durably saved.');
             assertPromotionEvidence(evidence, working, compiled, requirements, specificationRevision);
             if (!shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room)) {
                 this.eventStore.transitionRun({
@@ -2539,6 +2563,7 @@ export class RoomManager {
             this.assertOwned(room);
             if (fingerprint !== buildFingerprint(room))
                 throw new Error('A newer specification superseded this candidate.');
+            failureStage='promotion';
             const priorPromotion = {
                 versions: [...room.versions], aiRuns: [...room.aiRuns], runWindow: room.runWindow, fingerprint: room.lastBuiltFingerprint, requirements: room.lastBuiltRequirements, recoveryCheckpoint: room.recoveryCheckpoint, budgetWindow: room.budgetWindow
             };
@@ -2555,6 +2580,7 @@ export class RoomManager {
             this.assertOwned(room);
             if (controller.signal.aborted || fingerprint !== buildFingerprint(room))
                 throw new ProviderError('cancelled', 'Accepted intent changed.');
+            failureStage='promotion';
             await this.tools.execute('project.promote', {
                 files: working
             }, {
@@ -2621,7 +2647,7 @@ export class RoomManager {
                 }
                 if (oldFiles && owned)
                     persistProject(room.id, oldFiles);
-                throw promotionError || new Error('Artifact promotion could not be durably saved; the last working artifact is retained.');
+                throw promotionError || new Error('Artifact promotion could not be durably saved; reopen to reconcile canonical status.');
             }
             this.compiledVersions.add(version);
             this.eventStore.transitionRun({
@@ -2680,7 +2706,7 @@ export class RoomManager {
             });
             this.eventStore.transitionRun({
                 workspaceId: room.id, runId, kind: 'builder', state: 'failed', inputRevision: specificationRevision, error: message, payload: {
-                    configuration, budget: room.budgetWindow
+                    configuration, budget: room.budgetWindow,stage:failureStage,releaseFingerprint:this.config.releaseFingerprint,candidateSourceHash,isolation:error instanceof IsolationError?safeIsolationDiagnostics(error.cause):undefined
                 }
             });
             this.eventStore.transitionTask({
@@ -2690,7 +2716,8 @@ export class RoomManager {
                 taskId: runId, reason: message
             });
             room.status = 'Error';
-            room.lastError = `${message} Build r${specificationRevision}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : 'Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.'}`;
+            const recovery=failureStage==='compiler'?'Repair the isolated compiler runtime, then explicitly Retry build. A matching retained candidate is recompiled without another model call.':failureStage==='verification'?'Review the failed checks before explicitly retrying; compilation alone does not verify the request.':failureStage==='promotion'?'Reopen to reconcile canonical product status before retrying.':'Review the reported provider/source error before explicitly retrying.';
+            room.lastError = `${failureStage.replace('_',' ')} failed: ${message} Build r${specificationRevision}; run ${runId}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : recovery}`;
             await this.save(room, 'build.failed', 'builder', 'builder');
             this.broadcastState(room);
             return;
@@ -3008,6 +3035,7 @@ export class RoomManager {
           revision,
           undefined,
           acceptedContext(room.sharedRequirements),
+          [...room.submissions].reverse().find(submission=>submission.participantId===participantId&&submission.editSeqs.length===previous.sourceEditSeqs.length&&submission.editSeqs.every(seq=>previous.sourceEditSeqs.includes(seq)))?.authoredPassages,
         );
       this.recordUsage(room, "personal", result.usage, undefined, {
         phase: "interpretation",
