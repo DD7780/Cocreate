@@ -5,7 +5,8 @@
 - [x] Identify the October 14 source cutoff, isolate work and preserve current main/user data.
 - [x] Restore classic caller-only controls with current provenance/receipt/persistence compatibility and unchanged branding/authentication.
 - [x] Verify targeted multi-collaborator integration, metadata recovery, provider policy and authentication checks; retain initial full-run failures.
-- [ ] Complete fresh full-suite, production-image/native CI and built-browser acceptance on the exact candidate.
+- [x] Production-image CI 39140187020: full suite 290/290 with zero skips/failures, PostgreSQL 3/3, compiler adversity 11/11 and browser adversity 15/15. Built-browser two-profile acceptance passes desktop/390px, button/Alt+X, renewal and reload with local fixtures only.
+- [x] Publish validated restoration through PR #10 to main (92e89c0); prepared source fingerprint 96afbe10… .
 - [ ] Verify served rollback identity and designated-provider artifact promotion before declaring the application restored.
 
 See [scope and evidence](oct14-build-restore.md). No deployed rollback is claimed.

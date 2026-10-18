@@ -2,7 +2,7 @@
 
 ## D-0083 — Restore the October 14 build interaction selectively
 
-Explicit user request on October 18, followed by selection of Canvas → Build → Artifacts only and clarification that the whole application worked then. Use cutoff source `6c44029`; preserve newer branding, landing/sign-in and current project data. Restore classic flush → caller-only submit, with current metadata/journal/receipt interoperability and protection against stale-tab writes. Keep conservative intent/source fixes, private artifacts, accounting, OS isolation and serialized promotion. This supersedes D-0081's capture-write UI/protocol for the prepared restoration branch, not its historical records or anti-duplication requirements. Preparation, full/native validation and production/provider acceptance are separate. [Packet](oct14-build-restore.md).
+Explicit user request on October 18, followed by selection of Canvas → Build → Artifacts only and clarification that the whole application worked then. Use cutoff source `6c44029`; preserve newer branding, landing/sign-in and current project data. Restore classic flush → caller-only submit, with current metadata/journal/receipt interoperability and protection against stale-tab writes. Keep conservative intent/source fixes, private artifacts, accounting, OS isolation and serialized promotion. This supersedes D-0081's capture-write UI/protocol in published main source through PR #10, not its historical records or anti-duplication requirements. Preparation, full/native validation and production/provider acceptance are separate. [Packet](oct14-build-restore.md).
 
 ## D-0082 — Faithful passages and measured isolated compiler recovery
 

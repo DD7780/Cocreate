@@ -426,9 +426,9 @@
     "semantic_hash": ""
   },
   "tests/integration.test.ts": {
-    "mtime": 1792330512.1602535,
-    "seen": 1792331111.5926013,
-    "ast_hash": "872206304120d6f1e81d9ef66008b341",
+    "mtime": 1792336934.0908513,
+    "seen": 1792336990.521067,
+    "ast_hash": "814e2abd0da7d5357cdd9e509af4620a",
     "semantic_hash": ""
   },
   "tests/intent-classification.test.ts": {
@@ -1290,9 +1290,9 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1792329655.7786767,
-    "seen": 1792331111.5926013,
-    "ast_hash": "15a52c5b3791db23e7d205294d321c38",
+    "mtime": 1792336528.6463702,
+    "seen": 1792336990.4543362,
+    "ast_hash": "c03ebb48546b3c094fea92fa30820444",
     "semantic_hash": ""
   },
   "scripts/diagnose-browser-file-limit.ts": {
@@ -1506,9 +1506,9 @@
     "semantic_hash": ""
   },
   "tests/canvas.test.ts": {
-    "mtime": 1792334296.541145,
-    "seen": 1792336228.207194,
-    "ast_hash": "6ffe747ed635719dd29a0aa174fa2a2f",
+    "mtime": 1792336779.5766442,
+    "seen": 1792336990.5127068,
+    "ast_hash": "569dd7d7d3651e540865ae84046291cc",
     "semantic_hash": ""
   },
   "docs/harness/product-name-cleanup.md": {
@@ -1596,9 +1596,9 @@
     "semantic_hash": ""
   },
   "docs/harness/oct14-build-restore.md": {
-    "mtime": 1792336239.9418552,
-    "seen": 1792336489.6898103,
-    "ast_hash": "5d8d6004e7c9a73c5efa328d8271ef2d",
+    "mtime": 1792336934.302503,
+    "seen": 1792336990.548209,
+    "ast_hash": "a34c67555d2234dd97c3952bf9be67b1",
     "semantic_hash": ""
   },
   "scripts/verify-restored-workflow.mjs": {
