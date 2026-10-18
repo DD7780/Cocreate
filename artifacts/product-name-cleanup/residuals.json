@@ -4,15 +4,16 @@
     "docs/harness/product-name-compatibility.json",
     "artifacts/product-name-cleanup/residuals.json"
   ],
-  "textFiles": 975,
-  "matchedFiles": 253,
-  "matches": 4040,
+  "textFiles": 980,
+  "matchedFiles": 255,
+  "matches": 4067,
   "classificationCounts": {
     "hosted-resources": 14,
     "protected-local-ignores": 3,
     "environment-bridge": 18,
     "documented-contracts": 16,
-    "immutable-evidence": 3891,
+    "immutable-evidence": 3916,
+    "capture-release-repository-links": 2,
     "historical-decisions": 4,
     "regression-fixtures": 62,
     "stable-import": 1,
@@ -787,6 +788,181 @@
       "file": "artifacts/canonical-save-throughput/verification.json",
       "line": 32,
       "column": 39,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 142,
+      "column": 51,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 157,
+      "column": 57,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 159,
+      "column": 70,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 159,
+      "column": 79,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 165,
+      "column": 107,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 165,
+      "column": 116,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 166,
+      "column": 74,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 166,
+      "column": 83,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 168,
+      "column": 75,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 168,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 182,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 182,
+      "column": 93,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 183,
+      "column": 96,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 199,
+      "column": 61,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 263,
+      "column": 152,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 263,
+      "column": 161,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 323,
+      "column": 86,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 323,
+      "column": 95,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 336,
+      "column": 75,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 336,
+      "column": 84,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 1638,
+      "column": 125,
+      "spelling": "COCREATE",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 3176,
+      "column": 72,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 3177,
+      "column": 70,
+      "spelling": "cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 3812,
+      "column": 107,
+      "spelling": "Cocreate",
+      "classification": "immutable-evidence"
+    },
+    {
+      "file": "artifacts/canvas-capture-command/ci-final.log",
+      "line": 3812,
+      "column": 116,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
     },
@@ -21740,6 +21916,20 @@
       "column": 124,
       "spelling": "Cocreate",
       "classification": "immutable-evidence"
+    },
+    {
+      "file": "docs/harness/canvas-capture-command.md",
+      "line": 89,
+      "column": 155,
+      "spelling": "Cocreate",
+      "classification": "capture-release-repository-links"
+    },
+    {
+      "file": "docs/harness/canvas-capture-command.md",
+      "line": 95,
+      "column": 60,
+      "spelling": "Cocreate",
+      "classification": "capture-release-repository-links"
     },
     {
       "file": "docs/harness/canvas-writing-surface.md",

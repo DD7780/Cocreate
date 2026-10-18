@@ -6,7 +6,7 @@
 - [x] Implement immutable per-author cutoffs, canonical capture journal/RPC, receipt-first admission and unknown-reply lookup; integrate the existing serial coordinator.
 - [x] Replace client lifecycle/controller, preserve ticket-renewal identity and remove superseded submission wiring after vertical-slice checks.
 - [x] Prepare additive service-only SQL and verify embedded PostgreSQL semantics; built browser verifies renewal, pending identity, lost reply/reload, two actor scopes and no automatic resubmission.
-- [ ] Complete current source full/native production-image checks and release package: [evidence ledger](canvas-capture-command.md).
+- [x] Runtime source b8b973d passes native PostgreSQL 3/3, compiler isolation 10/10, browser/resource 15/15 and full production-image regression 293/293, zero failures/skips (CI 39042550998). Prepared migration, rollback, deletion ledger and source fingerprint are in the [evidence ledger](canvas-capture-command.md); earlier failures remain retained.
 - [ ] Authorized hosted migration/release and designated-provider end-to-end acceptance. User chose manual provider testing; no spend cap supplied.
 
 Earlier completed checks below apply to their dated source versions.

@@ -2,6 +2,15 @@
   "version": 1,
   "exceptions": [
     {
+      "id": "capture-release-repository-links",
+      "files": ["docs/harness/canvas-capture-command.md"],
+      "pattern": "Cocreate/(?:actions/|compare/)",
+      "owner": "Repository operator",
+      "reason": "Verified existing GitHub repository URLs for the release diff and CI evidence.",
+      "removeWhen": "Repository is separately renamed and links are verified.",
+      "evidence": "Exact published branch and successful workflow run links."
+    },
+    {
       "id": "browser-bridge",
       "files": [
         "src/browser-storage.ts",
@@ -206,6 +215,7 @@
         "artifacts/canonical-save-throughput/github-ci-summary.log",
         "artifacts/canonical-save-throughput/verification.json",
         "artifacts/canvas-capture-command/ci-first.log",
+        "artifacts/canvas-capture-command/ci-final.log",
         "artifacts/canvas-capture-command/naming-check.log",
         "artifacts/canvas-capture-command/naming-final.log",
         "artifacts/canvas-capture-command/naming-release.log",
