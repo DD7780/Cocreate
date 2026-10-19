@@ -1,5 +1,7 @@
 # Harness status and outstanding work
 
+Historical restoration (2026-10-19): complete `4ccc1fb` baseline checked out separately with empty local data; dependency install/build/boundaries pass. SPA hidden-parent correction passes 1/1. Complete suite and live-provider acceptance remain open; reproduced failures must not be reported as fixed by rollback. [Current restoration evidence](historical-coherent-restoration.md).
+
 Approved editorial landing (2026-10-15): three-column introduction, expandable plain-language explanations, multi-output illustrative demo and beta tester sign-in placement are implemented against main ab287413. Actual waitlist handler and private access contracts are preserved. Fresh local, CI and rollout observations are recorded in [the landing release packet](landing-editorial.md); main publication does not by itself prove live rollout.
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](workflow-overview.md).

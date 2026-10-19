@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Restoration branch (2026-10-19): complete `4ccc1fb` architecture retained. Built SPA fallback now serves fixed `index.html` relative to `dist`, allowing hidden checkout parents while retaining dotfile filtering and API 404. No submission/storage architecture replacement. [Separate correction and compatibility limits](historical-coherent-restoration.md).
+
 Public landing presentation (2026-10-15): src/main.tsx still lazily loads LandingPage only at /. Its native expandable explanations and React-controlled example tab groups are local UI, with no model execution. All landing style selectors and preview-specific class names are isolated under .landing; the narrow-screen root minimum-width exception is conditional on landing presence. The actual anonymous waitlist POST and sign-in paths remain unchanged. [Packet](landing-editorial.md).
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](workflow-overview.md).

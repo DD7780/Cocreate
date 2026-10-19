@@ -1,5 +1,7 @@
 # 2guys1canvas current handoff
 
+Isolated restoration (2026-10-19): `codex/restore-coherent-4ccc1fb` starts from the complete editorial landing tree `4ccc1fb` and earlier core, with fresh local data and existing work preserved. One separate SPA-path correction supports hidden checkout parents. Build/boundaries pass; full/native and live-provider acceptance remain in progress. No push, migration or deployment. [Baseline, repairs and compatibility limits](docs/harness/historical-coherent-restoration.md) govern this branch; release statements below are historical.
+
 Approved public landing redesign (2026-10-15): the user approved the three-column team introduction, expandable first-time-visitor explanations, lower workspace illustration and refined beta sign-in placement, then requested main publication. This client-only release retains actual waitlist persistence and all private access gates; it does not merge the separate artifact/browser/Blender/staging foundations. [Scope, evidence and rollback](docs/harness/landing-editorial.md). Source publication and live rollout are separate observations.
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](docs/harness/workflow-overview.md).
