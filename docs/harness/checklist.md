@@ -4,8 +4,11 @@
 
 - [x] User selected complete `6c44029`, before all October 15 UI changes, and authorized main publication without pulling the broken remote source.
 - [x] Isolated local restoration prepared; original worktree's staged/unstaged Graphify work preserved.
-- [ ] Fresh source equivalence, boundaries, build, fingerprint, full regression and production-image CI.
-- [ ] Non-forced main publication preserving the prior remote tip; deployment observation remains separate.
+- [x] Exact runtime/contracts/tests/migrations/build input comparison to `6c44029`; boundaries, strict build and 91-input release fingerprint pass; independent restoration review has no P1/P2 finding.
+- [x] Fresh full Windows run retained: 220 passed, 16 failed, eight skipped out of 244; this is a failed local gate, not a passing restoration claim.
+- [x] Production-image execution log: frozen dependency install/build/boundaries, PostgreSQL 2/2, compiler/resource 10/10, browser/authority 15/15 and full regression 244/244 pass, zero skips. GitHub's API summary still reports in progress after the completed job log; finalization remains separately observed.
+- [x] Normal non-forced push `33d54e8..747dd33` to main, retaining the prior tip as parent. Local pre-restoration references and five unrelated Graphify files are backed up.
+- [ ] Cloudflare rollout, final CI summary and live restored fingerprint; signed-in provider acceptance remains separate.
 
 [Current restoration packet](oct9-restoration.md). Historical release claims below are not fresh restoration evidence.
 
