@@ -33,7 +33,7 @@ Logs are in `.runtime/restoration-evidence/`; earlier dated repository evidence 
 - `corepack pnpm install --frozen-lockfile`: passed; 404 packages reused, historical lockfile unchanged, pnpm 10.18.3 / Node 22.23.2. No newer application Git objects fetched.
 - `VITE_COCREATE_AUTH_MODE=local corepack pnpm build`: passed before corrections; strict types plus 1,753 transformed modules. Existing bundle-size warning retained.
 - `corepack pnpm check:boundaries`: passed, 155 files, zero boundary violations, no Jev calls.
-- Initial complete-suite attempt: running; historical promotion waits and native-browser cleanup/resource failures have reproduced. This candidate is not a green rollback.
+- Initial complete-suite attempt: **248 tests: 212 passed, 28 failed, eight Linux-only skips**, 576.9 seconds, exit 1. The run began from the baseline and overlapped only the separate SPA correction (which does not change native/promotion behavior). New SPA regression was run separately. Historical promotion waits and native-browser cleanup/resource failures reproduced. This candidate is not a green rollback.
 
 ### Separate correction 1: SPA entry under hidden checkout parents
 
@@ -44,6 +44,48 @@ Change: send fixed filename `index.html` relative to existing `dist` as `root`. 
 Afterward: focused regression 1/1 passes for app/login/room routes under a hidden checkout, private-dotfile non-disclosure and unknown API 404. Actual browser opens Canvas, accepts a counter requirement and visibly reports **Synced**. Opening AI setup makes no inference. Paid execution remains pending temporary OpenRouter key connection. The available OpenAI environment key was not used after the user selected OpenRouter.
 
 Current OpenRouter catalog returned `deepseek/deepseek-v4.1-flash`, `response_format` support and input/output rates $0.0328/$0.08 per million tokens. These are October 19 catalog observations, not an invoice or quality guarantee; no application pricing table changed. The historical temporary-key UI has no dollar-limit control, so testing needs a key with at most $2 remaining or an independently enforced allowance before paid dispatch. Sources: [models](https://openrouter.ai/api/v1/models), [key limits](https://openrouter.ai/docs/api/api-reference/api-keys/create-a-new-api-key), [Express sendFile](https://expressjs.com/en/5x/api.html#res.sendFile).
+
+### Native/browser investigation
+
+`pnpm exec tsx .runtime/compiler-probe.ts`: a real isolated React counter compiled in 5,323 ms, producing 608,192 JavaScript bytes and 159 CSS bytes. No provider call was involved. This proves compilation of that input, not product workflow acceptance.
+
+The unchanged three-profile `scripts/verify-reliability.ts` timed out at the first shared artifact. A separate diagnostic-only harness change records safe failure/settled state and a screenshot, without altering assertions, limits or application behavior. At timeout the two personal fixture calls succeeded, one fixture builder call ran, and the build remained active. Awaiting that existing bounded task showed `compilationPassed:true`, then `EBUSY` deleting a generated isolated verification-browser profile; no version was promoted. The suite's first native-profile cleanup failure also left a directory that invalidated subsequent empty-jobs assertions. Some additional failures are actual native resource outcomes or fixture deadlines; do not attribute every red test to the leftover directory.
+
+One failed synthetic job was moved into evidence quarantine using a verified absolute path. A separate recursive-delete probe was rejected by automatic approval review (no detailed reason supplied); no alternate deletion was attempted. Failed directories/evidence remain recoverable. No sandbox limit, timeout, retry policy, functional gate or host-execution fallback changed. The broader native cleanup/resource problem remains a release blocker.
+
+### Live-provider checks and operator configuration
+
+The supplied OpenRouter key was passed on masked standard input to the existing local temporary-connection API, held only by the server lease, and never written to a script, environment file, log or Git. A raw-key-pattern scan of restoration data/evidence found zero matches. The unrelated OpenAI environment key was not used.
+
+The isolated operator launcher configures the **existing** `AISetupPolicy.maximumSpendUsd=1` durably before each paid capture. It allows only the three designated test captures: one diagnosed failure, its explicit resubmission in the same retained workflow budget, then the editor's incremental change in the next workflow budget. Thus at most two $1 workflow allowances cover the user's $2 ceiling; physical attempts/repairs stay within each historical durable scope. This is local test configuration, not a production API or a restored architecture change.
+
+Both participants typed/saved with zero inference. An initial same-origin-tab attempt correctly failed spending authorization because localStorage shared the second identity; no provider request ran. The actual ownership scenario uses distinct `localhost`/`127.0.0.1` browser storage origins and distinct signed local participant IDs, not hosted Supabase accounts.
+
+The first real `deepseek/deepseek-v4.1-flash` interpretation and its bounded structured-output repair each exhausted 2,400 output tokens (2,372/2,400 reported reasoning tokens). No accepted requirement or artifact resulted. The held/reconciled workflow amount was $0.0032576; this is accounting evidence, not a provider invoice. No allowance was increased. The model was explicitly changed, with user-visible notice, to current compatible non-reasoning `deepseek/deepseek-chat-v3-0324` (catalog $0.29/$1.14 per million input/output tokens). Its resubmission interpreted in 213 output tokens with zero reported reasoning and accepted only the owner's counter requirement; the editor's Reset draft remained pending.
+
+### Real-provider browser outcome
+
+The owner used **Build my changes** to publish **v1/r1**. Its visible Artifacts counter incremented from 0 to 1. The editor's Reset draft remained unsubmitted and absent from accepted requirements/product. The owner then wrote an unsubmitted purple-page request. Provider-call count stayed four while both drafts were saved. The editor used focused **Alt+X** to submit Reset; **v2/r2** appeared with a working Reset button, and the original increment behavior still worked. The owner's purple request remained pending and was absent from the two accepted requirements. These are two real signed local participants in separate storage origins, not hosted-account acceptance.
+
+The complete live attempt used seven physical HTTP calls: two failed reasoning-model responses, successful non-reasoning interpretation/build, then failed interpretation plus successful bounded structured repair/build for Reset. Sum of provider-reported response costs: **$0.00876682** (not invoice reconciliation). Both durable workflow scopes stayed within their separate $1 ceilings; unknown-cost flags remain in source accounting. No fake output, raised token allowance or silent provider/model fallback was used in this live project. Reload retained the Canvas drafts and v2 without another inference call.
+
+Screenshots: `.runtime/restoration-evidence/live-artifact-v1.png` and `live-artifact-v2.png`; safe state/call/provenance summaries: `live-before-submit.json`, `live-before-second.json`, `live-final.json`. The generated title is `TeamCounter` rather than the requested `Team Counter`; the observed counter/reset behavior passes, not a claim of exact arbitrary semantic satisfaction. The UI correctly still labels its automated acceptance coverage limited/unverified; manual checks do not rewrite durable verification evidence.
+
+Fresh final build passed; focused SPA/auth/reconnect checks passed **12/12**; boundaries passed over 156 files with zero violations. `graphify update .` succeeded using AST only (2,242 nodes/5,304 edges); 14 SQL files lack optional parser coverage. No API/model inference ran for graph maintenance.
+
+Eight pre-existing checkout HEADs and dirty inventories are unchanged. The preservation inventory also captured the newly created restoration checkout before its intentional branch/commits; that entry is expected to change. No raw OpenRouter key was found in restoration evidence or local project files.
+
+### Available local application
+
+The real application remains at `http://localhost:5185/`; the live test project is `/r/CsL3s_hlvsthjy2lg2JiThI8`. Owner storage is on `localhost`; the second participant uses the same path on `127.0.0.1`. Preview, Canvas and both generated versions remain in isolated local data. The launcher deliberately blocks additional paid captures in this test project once the three designated captures have been consumed. Interacting with the generated counter and writing/reloading do not spend. Other new local projects start without an AI key; the existing temporary connection expires after two hours or server restart.
+
+The `.runtime/restoration-local.ts` launcher and all test configurations/evidence are local ignored files; they are not deployment settings. It binds only loopback, uses newly generated development session secrets, and never connects production databases. `NODE_ENV=production` serves a built client; `COCREATE_AUTH_MODE=local` explicitly avoids hosted identity/database configuration.
+
+### Controlled failed-build browser outcome
+
+A separate, explicitly labeled loopback fixture produced a working counter through the historical application and real OS compiler. A subsequent `FAIL_BUILD` submission returned invalid JSX for all three existing bounded builder attempts. The app reported the compilation error and **Working artifact v1 retained**. Artifacts still displayed v1 and its counter remained interactive (0 → 1) with the failure visible. Screenshot: `.runtime/restoration-evidence/controlled-failed-build-retained.png`; safe state: `retention/state.json`. Two personal and four builder fixture HTTP calls ran; paid-provider calls: zero. The fixture process was stopped afterward, preserving its isolated data.
+
+Initial fixture setup exposed an inherited `OPENAI_BASE_URL` overriding a saved custom loopback URL. Its zero-call connection failure was a test configuration problem, not evidence that document saving or OpenRouter was broken. The corrected fixture explicitly set its server-owned test base URL. A second full suite is therefore run with process-local `OPENAI_BASE_URL`, `PROVIDER_BASE_URL_OVERRIDE` and `OPENAI_API_KEY` cleared, local auth selected, the existing verification browser explicitly configured, and prior failed jobs moved into quarantine. This changes neither the running real-provider app's environment nor any existing environment file. Retain both whole-suite runs; clearing configuration does not retrospectively turn the first red result green.
 
 ## Release compatibility
 

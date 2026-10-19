@@ -1,6 +1,6 @@
 # Harness status and outstanding work
 
-Historical restoration (2026-10-19): complete `4ccc1fb` baseline checked out separately with empty local data; dependency install/build/boundaries pass. SPA hidden-parent correction passes 1/1. Complete suite and live-provider acceptance remain open; reproduced failures must not be reported as fixed by rollback. [Current restoration evidence](historical-coherent-restoration.md).
+Historical restoration (2026-10-19): complete `4ccc1fb` baseline checked out separately with empty local data; dependency install/build/boundaries and 12 focused checks pass. Two real OpenRouter artifact versions work in browser (increment, then Reset), with caller-only accepted requirements and inference-free typing. Initial whole suite: 212 pass/28 fail/eight skips. Native verification-profile cleanup and current-data compatibility remain release blockers; rollback is not a green whole-product fix. [Current restoration evidence](historical-coherent-restoration.md).
 
 Approved editorial landing (2026-10-15): three-column introduction, expandable plain-language explanations, multi-output illustrative demo and beta tester sign-in placement are implemented against main ab287413. Actual waitlist handler and private access contracts are preserved. Fresh local, CI and rollout observations are recorded in [the landing release packet](landing-editorial.md); main publication does not by itself prove live rollout.
 

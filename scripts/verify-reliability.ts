@@ -691,6 +691,21 @@ try {
     JSON.stringify(report, null, 2),
   );
   console.log(JSON.stringify(report, null, 2));
+} catch (error) {
+  const failure = {message: error instanceof Error ? error.message : String(error),
+    status: room.status, lastError: room.lastError, interpreterCalls, builderCalls,
+    versions: room.versions.map(version => version.id),
+    submissions: room.submissions.map(item => ({participantId:item.participantId,status:item.status})),
+    runs: room.aiRuns.map(run => ({outcome:run.outcome,verification:run.verification}))};
+  fs.writeFileSync(path.join(output, 'failure.json'), JSON.stringify(failure, null, 2));
+  const observedAt = Date.now();
+  await room.buildTask?.catch(() => {});
+  fs.writeFileSync(path.join(output, 'settled-after-failure.json'), JSON.stringify({
+    elapsedAfterFailureMs:Date.now()-observedAt,status:room.status,lastError:room.lastError,
+    versions:room.versions.map(version=>version.id),
+    runs:room.aiRuns.map(run=>({outcome:run.outcome,verification:run.verification}))}, null, 2));
+  if (browsers[0]) await snapshot(browsers[0], 'failure.png').catch(() => {});
+  throw error;
 } finally {
   for (const browser of browsers) {
     browser.socket.close();
