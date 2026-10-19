@@ -7,11 +7,11 @@ import http from "node:http";
 import assert from "node:assert/strict";
 
 process.env.NODE_ENV = "production";
-process.env.TWOGUYS1CANVAS_AUTH_MODE = "local";
-const { createTwoGuysOneCanvasServer } = await import("../server/index.js");
+process.env.COCREATE_AUTH_MODE = "local";
+const { createCoCreateServer } = await import("../server/index.js");
 const { createSession } = await import("../server/auth.js");
 const output = path.resolve(
-  (process.env.TWOGUYS1CANVAS_RELIABILITY_OUTPUT ?? process.env.COCREATE_RELIABILITY_OUTPUT) || (process.env.TWOGUYS1CANVAS_VERIFICATION_OUTPUT ?? process.env.COCREATE_VERIFICATION_OUTPUT) || "artifacts/reliability",
+  process.env.COCREATE_RELIABILITY_OUTPUT || process.env.COCREATE_VERIFICATION_OUTPUT || "artifacts/reliability",
 );
 fs.mkdirSync(output, { recursive: true });
 const wait = (ms: number) => new Promise((resolve) => setTimeout(resolve, ms));
@@ -92,7 +92,7 @@ const providerAddress = fake.address();
 if (!providerAddress || typeof providerAddress === "string")
   throw new Error("Controlled provider did not bind a TCP port.");
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), "reliability-browser-"));
-let service = await createTwoGuysOneCanvasServer({
+let service = await createCoCreateServer({
   port: 0,
   host: "127.0.0.1",
   serveClient: true,
@@ -242,7 +242,7 @@ async function open(id: string, index: number) {
     name: id,
   });
   await evaluate(
-    `localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(token)})`,
+    `localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(token)})`,
   );
   await call("Page.navigate", { url: `${origin}/r/${room.id}` });
   await until(
@@ -398,18 +398,12 @@ try {
   const states = await Promise.all(
     browsers.map((browser) =>
       browser.evaluate(
-        `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
+        `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,usage:state.physicalUsage,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
       ),
     ),
   );
   assert.deepEqual(states[0], states[1]);
   assert.deepEqual(states[1], states[2]);
-  // Canvas is a writing surface only; Shared context remains reusable beside Artifacts.
-  assert.equal(await a.evaluate("document.querySelector('.document-layout .agent-panel') === null"), true);
-  await a.evaluate(
-    "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Artifacts').click()",
-  );
-  await wait(100);
   await a.evaluate(
     "{const select=document.querySelector('.intent-revision-selector select');select.value='2';select.dispatchEvent(new Event('change',{bubbles:true}))}",
   );
@@ -449,6 +443,10 @@ try {
     "usage action",
   );
   await snapshot(a, "workflow.png");
+  await a.evaluate(
+    "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()",
+  );
+  await wait(100);
   const responsive = [];
   for (const width of [1440, 1024, 768, 390]) {
     await a.call("Emulation.setDeviceMetricsOverride", {
@@ -458,18 +456,6 @@ try {
       mobile: width < 600,
     });
     await wait(150);
-    await a.evaluate(
-      "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Canvas').click()",
-    );
-    await wait(100);
-    const canvas = await a.evaluate(
-      '({width:document.documentElement.scrollWidth,sidebar:!!document.querySelector(".document-layout .agent-panel"),paper:Math.round(document.querySelector(".paper").getBoundingClientRect().width),content:Math.round(document.querySelector(".content").clientWidth)})',
-    );
-    assert.ok(canvas.width <= width && !canvas.sidebar && canvas.paper === canvas.content, `Canvas at ${width}: ${JSON.stringify(canvas)}`);
-    await a.evaluate(
-      "[...document.querySelectorAll('.tabs button')].find(button=>button.textContent==='Artifacts').click()",
-    );
-    await wait(100);
     const layout = await a.evaluate(
       '({width:document.documentElement.scrollWidth,viewport:innerWidth,card:!!document.querySelector(".project-token-card"),selector:!!document.querySelector(".intent-revision-selector select")})',
     );
@@ -478,7 +464,7 @@ try {
       `Overflow at ${width}: ${JSON.stringify(layout)}`,
     );
     assert.ok(layout.card && layout.selector);
-    responsive.push({ width, canvas, ...layout });
+    responsive.push({ width, ...layout });
     if (width === 390) {
       await a.evaluate(
         "document.querySelector('.agent-panel').scrollIntoView()",
@@ -498,7 +484,7 @@ try {
     }
   }
   let artifactRestoration: Record<string, unknown> | undefined;
-  if (process.env.TWOGUYS1CANVAS_ARTIFACT_BROWSER_RESTORE === "true") {
+  if (process.env.COCREATE_ARTIFACT_BROWSER_RESTORE === "true") {
     const beforeCalls = { interpreterCalls, builderCalls };
     room.recoveryCheckpoint = {
       fingerprint: "controlled-restoration",
@@ -532,7 +518,7 @@ try {
     const replacementDir = fs.mkdtempSync(
       path.join(os.tmpdir(), "reliability-replacement-"),
     );
-    service = await createTwoGuysOneCanvasServer({
+    service = await createCoCreateServer({
       port: Number(new URL(origin).port),
       host: "127.0.0.1",
       serveClient: true,
@@ -572,7 +558,7 @@ try {
     const restoredStates = await Promise.all(
       browsers.map((browser) =>
         browser.evaluate(
-          `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
+          `fetch('/api/rooms/${room.id}/state',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(response=>response.json()).then(state=>({revision:state.specificationRevision,artifact:state.latestVersion,accepted:state.requirements.filter(item=>item.status==='accepted').map(item=>item.id).sort()}))`,
         ),
       ),
     );
@@ -582,7 +568,7 @@ try {
       assert.deepEqual(state.accepted, states[0].accepted);
     }
     const downloaded = await a.evaluate(
-      `fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('2guys1canvas-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`,
+      `fetch('/api/rooms/${room.id}/download/1',{headers:{Authorization:'Bearer '+localStorage.getItem('cocreate-session-${room.id}')}}).then(async response=>({status:response.status,bytes:Array.from(new Uint8Array(await response.arrayBuffer()).slice(0,2))}))`,
     );
     assert.equal(downloaded.status, 200);
     assert.deepEqual(downloaded.bytes, [80, 75]);
@@ -624,7 +610,7 @@ try {
     };
   }
   let ownerRetry: Record<string, unknown> | undefined;
-  if (process.env.TWOGUYS1CANVAS_COORDINATOR_BROWSER_RETRY === "true") {
+  if (process.env.COCREATE_COORDINATOR_BROWSER_RETRY === "true") {
     // Controlled browser transport failure; hosted authorization/SQL are separate fixtures.
     const beforeCalls = { interpreterCalls, builderCalls };
     await a.call("Emulation.setDeviceMetricsOverride", {

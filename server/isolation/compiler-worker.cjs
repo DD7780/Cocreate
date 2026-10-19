@@ -3,12 +3,10 @@ const fs = require('node:fs');
 const path = require('node:path');
 globalThis.self = globalThis;
 (async () => {
- const began=performance.now();
- const phase=name=>console.error('COMPILER_PHASE '+name+' '+Math.round(performance.now()-began));
- phase('input');
  const raw=fs.readFileSync(process.argv[2]);
  if(raw.length>4*1024*1024)throw Error('Compiler input exceeded its bound.');
  const input=JSON.parse(raw.toString('utf8'));
+ if(input.operation==='ready'){console.log(JSON.stringify({ok:true,result:{policy:'isolated-compile-v1'}}));return;}
  if(input.operation==='probe') {
   const result={environment:Object.keys(process.env),pid:process.pid};
   const attempt=(key,action)=>{try{result[key]={allowed:true,value:action()}}catch(error){result[key]={allowed:false,code:error.code}}};
@@ -25,10 +23,7 @@ globalThis.self = globalThis;
  if(input.operation==='allocate'){const retained=[];while(true){const buffer=Buffer.alloc(16*1024*1024,1);retained.push(buffer)} }
  if(input.operation!=='compile')throw Error('Unknown isolated operation.');
  const esbuild=require('./esbuild.cjs');
- phase('wasm_compile');
- const wasmModule=await WebAssembly.compile(fs.readFileSync(path.join(process.argv[3],'esbuild.wasm')));
- phase('wasm_initialize');
- await esbuild.initialize({wasmModule,worker:false});
+ await esbuild.initialize({wasmModule:await WebAssembly.compile(fs.readFileSync(path.join(process.argv[3],'esbuild.wasm'))),worker:false});
  const sources=new Map(input.files.map(file=>[file.path,file.content]));
  const dependencies=new Map(input.dependencies.map(file=>[file.id,file]));
  const resolveSource=(importer,specifier)=>{
@@ -54,12 +49,10 @@ globalThis.self = globalThis;
   api.onLoad({filter:/.*/,namespace:'dependency'},args=>({contents:dependencies.get(args.path).content,loader:'js'}));
  }};
  try {
-  phase('bundle');
   const result=await esbuild.build({entryPoints:['entry'],plugins:[plugin],define:{'process.env.NODE_ENV':'"production"'},jsx:'automatic',bundle:true,write:false,format:'iife',platform:'browser',target:'es2022',logLevel:'silent',outdir:'out'});
   const javascript=result.outputFiles.find(file=>file.path.endsWith('.js'))?.text,css=result.outputFiles.find(file=>file.path.endsWith('.css'))?.text||'';
   if(!javascript)throw Error('Candidate produced no browser bundle.');
-  phase('output');
   console.log(JSON.stringify({ok:true,result:{javascript,css}}));
- }catch(error){const source=Array.isArray(error.errors)&&error.errors.length>0;console.log(JSON.stringify({ok:false,kind:source?'source':'runtime',error:(error.errors?.map(item=>item.text).join('; ')||error.message).slice(0,1000)}));if(!source)process.exitCode=1;}
+ }catch(error){console.log(JSON.stringify({ok:false,error:(error.errors?.map(item=>item.text).join('; ')||error.message).slice(0,1000)}))}
  esbuild.stop();
 })().catch(error=>{console.log(JSON.stringify({ok:false,error:String(error.message).slice(0,1000)}));process.exitCode=1});

@@ -10,7 +10,7 @@ export const CHECK_VERSION = VERIFICATION_POLICY_VERSION;
 type Kind = CandidateVerification['checks'][number]['kind'];
 const hash = (value: unknown) => createHash('sha256').update(JSON.stringify(value)).digest('hex');
 export const sourceHash = (files: ProjectFile[]) => hash([...files].sort((a, b) => a.path.localeCompare(b.path)));
-export const candidateHash = (files: ProjectFile[], compiled: {javascript: string; css: string}) => hash({sourceHash: sourceHash(files),javascript:compiled.javascript,css:compiled.css});
+export const candidateHash = (files: ProjectFile[], compiled: {javascript: string; css: string}) => hash({sourceHash: sourceHash(files), ...compiled});
 
 function checksFor(criterion: string): Kind[] {
   const text = criterion.replace(/^A user can verify this behavior in the product:\s*/i, '').trim().replace(/[.!]$/, '');
@@ -113,8 +113,8 @@ export function assertPromotionEvidence(report: CandidateVerification | undefine
     const status = criteria.some(item => item.status === 'failed') ? 'failed' : criteria.length && criteria.every(item => item.status === 'passed') ? 'verified' : 'unverified';
     if (JSON.stringify(evidence.criteria) !== JSON.stringify(criteria) || evidence.implementation !== implementation || evidence.status !== status) throw new Error('Requirement verification results are inconsistent.');
   }
-  for (const kind of plan.kinds) if (!report.checks.some(check => check.kind === kind && check.version === CHECK_VERSION && check.implemented && check.passed)) throw new Error('Required behavior verification failed. Correct the accepted scope or retry the selected builder explicitly.');
-  if (report.status === 'failed') throw new Error('Required behavior verification failed.');
+  for (const kind of plan.kinds) if (!report.checks.some(check => check.kind === kind && check.version === CHECK_VERSION && check.implemented && check.passed)) throw new Error('Required behavior verification failed. The previous artifact is retained. Correct the accepted scope or retry the selected builder explicitly.');
+  if (report.status === 'failed') throw new Error('Required behavior verification failed. The previous artifact is retained.');
   const status = report.requirements.length && report.requirements.every(row => row.status === 'verified') ? 'passed' : 'unverified';
   if (report.status !== status) throw new Error('Candidate verification status is inconsistent.');
 }

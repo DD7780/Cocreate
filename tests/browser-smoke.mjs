@@ -3,8 +3,8 @@ import fs from 'node:fs';
 import os from 'node:os';
 import path from 'node:path';
 
-const origin=process.env.TWOGUYS1CANVAS_ORIGIN||'http://localhost:5173';
-const profile=path.join(os.tmpdir(),`2guys1canvas-browser-smoke-${process.pid}-${Date.now()}`);
+const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173';
+const profile=path.join(os.tmpdir(),`cocreate-browser-smoke-${process.pid}-${Date.now()}`);
 const debugPort=9300+(process.pid%300);
 const chrome='C:\\Program Files\\Google\\Chrome\\Application\\chrome.exe';
 fs.mkdirSync(profile,{recursive:true});
@@ -37,13 +37,13 @@ try{
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:1000,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin});
   await new Promise(resolve=>setTimeout(resolve,500));
-  await call('Runtime.evaluate',{expression:`localStorage.setItem('2guys1canvas-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('2guys1canvas-name','Browser QA');localStorage.removeItem('2guys1canvas-build-shortcut')`});
+  await call('Runtime.evaluate',{expression:`localStorage.setItem('cocreate-session-${roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Browser QA');localStorage.removeItem('cocreate-build-shortcut')`});
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   const evaluate=async expression=>(await call('Runtime.evaluate',{expression,returnByValue:true,awaitPromise:true})).result.value;
   let text='';
   for(let attempt=0;attempt<40&&!text.includes('AI setup');attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}
   if(!text.includes('AI setup')||!text.includes('Generation is paused')){
-    const diagnostic=await evaluate(`Promise.race([fetch('/api/rooms/${roomId}/state?token=${encodeURIComponent(session.token)}').then(async response=>({status:response.status,body:await response.text(),stored:localStorage.getItem('2guys1canvas-session-${roomId}'),path:location.pathname})).catch(error=>({error:String(error)})),new Promise(resolve=>setTimeout(()=>resolve({error:'diagnostic timeout'}),2000))])`);
+    const diagnostic=await evaluate(`Promise.race([fetch('/api/rooms/${roomId}/state?token=${encodeURIComponent(session.token)}').then(async response=>({status:response.status,body:await response.text(),stored:localStorage.getItem('cocreate-session-${roomId}'),path:location.pathname})).catch(error=>({error:String(error)})),new Promise(resolve=>setTimeout(()=>resolve({error:'diagnostic timeout'}),2000))])`);
     throw new Error(`Workspace connection controls did not render: ${text||'empty document'}; exceptions=${exceptions.join('; ')||'none'}; ${JSON.stringify(diagnostic)}`);
   }
 
@@ -51,11 +51,11 @@ try{
   for(const removed of['General app','Engineer','Designer','Web developer','Motion designer'])if(text.includes(removed))throw new Error(`Legacy specialty remains user-facing: ${removed}`);
   const recommendedText=text.toLowerCase();
   if(!text.includes('Your API powers Recommended')||!text.includes('Know the ceiling before you build')||!recommendedText.includes('this build')||!recommendedText.includes('room spend')||!recommendedText.includes('limit')||!text.includes('Model rates')||!text.includes('validated data ingestion')||!text.includes('retrieval, source capture')||!text.includes('Connect your API'))throw new Error(`Recommended API-powered setup is incomplete: ${text}`);
-  const setupSemantics=await evaluate(`({modes:[...document.querySelectorAll('[aria-label="2guys1canvas mode"] [role="radio"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked')})),modalHasEffort:!!document.querySelector('[role="dialog"] [aria-label*="AI effort"]'),limitLabel:document.querySelector('input[aria-label="Spending limit (USD)"]')?.getAttribute('aria-label')})`);
+  const setupSemantics=await evaluate(`({modes:[...document.querySelectorAll('[aria-label="CoCreate mode"] [role="radio"]')].map(node=>({label:node.textContent,checked:node.getAttribute('aria-checked')})),modalHasEffort:!!document.querySelector('[role="dialog"] [aria-label*="AI effort"]'),limitLabel:document.querySelector('input[aria-label="Spending limit (USD)"]')?.getAttribute('aria-label')})`);
   if(setupSemantics.modes.length!==3||setupSemantics.modes.filter(item=>item.checked==='true').length!==1||setupSemantics.modalHasEffort||setupSemantics.limitLabel!=='Spending limit (USD)')throw new Error(`Recommended selection semantics failed: ${JSON.stringify(setupSemantics)}`);
-  if(process.env.TWOGUYS1CANVAS_RECOMMENDED_SCREENSHOT){
+  if(process.env.COCREATE_RECOMMENDED_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
-    fs.writeFileSync(process.env.TWOGUYS1CANVAS_RECOMMENDED_SCREENSHOT,Buffer.from(capture.data,'base64'));
+    fs.writeFileSync(process.env.COCREATE_RECOMMENDED_SCREENSHOT,Buffer.from(capture.data,'base64'));
   }
   const unavailableMode=await evaluate(`(async()=>{[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Analyst')).click();await new Promise(resolve=>setTimeout(resolve,250));const use=[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Use Analyst'));return{disabled:use?.disabled,text:document.body.innerText}})()`);
   if(!unavailableMode.disabled||!unavailableMode.text.includes('validated data ingestion and isolated reproducible computation are not implemented'))throw new Error('Analyst did not remain explicitly unavailable');
@@ -64,9 +64,9 @@ try{
   await new Promise(resolve=>setTimeout(resolve,250));
   text=await evaluate('document.body.innerText');
   if(!text.toLowerCase().includes('bring your own key · advanced')||!text.includes('API key')||!text.includes('may consume provider usage')||!text.includes('View recommended setup')||text.includes('Try demo'))throw new Error(`Owner API panel is incomplete or still exposes demo UI: ${text}`);
-  if(process.env.TWOGUYS1CANVAS_SCREENSHOT){
+  if(process.env.COCREATE_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
-    fs.writeFileSync(process.env.TWOGUYS1CANVAS_SCREENSHOT,Buffer.from(capture.data,'base64'));
+    fs.writeFileSync(process.env.COCREATE_SCREENSHOT,Buffer.from(capture.data,'base64'));
   }
   const dialogIgnored=await evaluate(`(()=>{const input=document.querySelector('[role="dialog"] input');input.focus();return input.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}))})()`);
   if(!dialogIgnored)throw new Error('Dialog incorrectly handled Alt+X');
@@ -75,9 +75,9 @@ try{
   if(canvasEffort.options.length!==4||canvasEffort.value!=='1'||canvasEffort.valueText!=='Medium'||!canvasEffort.disabled||canvasEffort.options.map(item=>item.label).join('|')!=='Low|Medium|High|Extra')throw new Error(`AI effort toggle did not render safely while Recommended is inactive: ${JSON.stringify(canvasEffort)}`);
   const workflowOverview=await evaluate(`(()=>{const panel=document.querySelector('.workflow-compact');return{text:panel?.textContent||'',summary:panel?.querySelector('summary')?.textContent||''}})()`);
   if(!workflowOverview.summary.includes('draft')||!workflowOverview.text.includes('No submitted work is planned yet'))throw new Error(`Durable workflow overview is incomplete: ${JSON.stringify(workflowOverview)}`);
-  if(process.env.TWOGUYS1CANVAS_WORKSPACE_SCREENSHOT){
+  if(process.env.COCREATE_WORKSPACE_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
-    fs.writeFileSync(process.env.TWOGUYS1CANVAS_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));
+    fs.writeFileSync(process.env.COCREATE_WORKSPACE_SCREENSHOT,Buffer.from(capture.data,'base64'));
   }
 
   const shortcut=await evaluate(`(()=>{const button=[...document.querySelectorAll('button')].find(item=>item.textContent.includes('Build my changes'));const editor=document.querySelector('.document-editor');const metadata={aria:button?.getAttribute('aria-keyshortcuts'),title:button?.getAttribute('title')};editor.focus();const handled=!editor.dispatchEvent(new KeyboardEvent('keydown',{key:'x',altKey:true,bubbles:true,cancelable:true}));return{...metadata,handled,focused:document.activeElement===editor}})()`);
@@ -92,15 +92,15 @@ try{
   await new Promise(resolve=>setTimeout(resolve,200));
   text=await evaluate('document.body.innerText');
   if(!text.includes('Connect an AI model to generate your app.'))throw new Error('Disconnected Product state is incorrect');
-  if(process.env.TWOGUYS1CANVAS_PRODUCT_SCREENSHOT){
+  if(process.env.COCREATE_PRODUCT_SCREENSHOT){
     const capture=await call('Page.captureScreenshot',{format:'png',captureBeyondViewport:true});
-    fs.writeFileSync(process.env.TWOGUYS1CANVAS_PRODUCT_SCREENSHOT,Buffer.from(capture.data,'base64'));
+    fs.writeFileSync(process.env.COCREATE_PRODUCT_SCREENSHOT,Buffer.from(capture.data,'base64'));
   }
   await call('Emulation.setDeviceMetricsOverride',{width:390,height:844,deviceScaleFactor:1,mobile:true});
   await new Promise(resolve=>setTimeout(resolve,200));
   const metrics=await evaluate('({width:document.documentElement.scrollWidth,viewport:innerWidth,text:document.body.innerText})');
   if(metrics.width>metrics.viewport||!metrics.text.includes('Artifacts'))throw new Error('Mobile workspace overflow or navigation failure');
-  await evaluate(`localStorage.setItem('2guys1canvas-session-${roomId}','invalid-session')`);
+  await evaluate(`localStorage.setItem('cocreate-session-${roomId}','invalid-session')`);
   await call('Page.navigate',{url:`${origin}/r/${roomId}`});
   let invalidText='';
   for(let attempt=0;attempt<120&&!invalidText.includes('Rejoin room');attempt++){await new Promise(resolve=>setTimeout(resolve,100));invalidText=await evaluate('document.body.innerText')}

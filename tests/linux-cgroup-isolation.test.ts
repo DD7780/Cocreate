@@ -6,11 +6,11 @@ import {spawn, type ChildProcess} from 'node:child_process';
 import {once} from 'node:events';
 import {LinuxJobGroup, linuxJobLauncher} from '../server/isolation/linux-cgroup.js';
 import {withIsolatedBrowser, linuxBrowserFileDescriptors, linuxBrowserFileBytes} from '../server/isolation/browser.js';
-import {IsolationError,isolationJobsDirectory} from '../server/isolation.js';
+import {IsolationError} from '../server/isolation.js';
 
 const linux = {skip: process.platform !== 'linux'};
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
-const jobs = () => path.join(process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate', 'jobs');
+const jobs = () => path.join(process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate', 'jobs');
 const noGroups = () => assert.deepEqual(fs.readdirSync(jobs(), {withFileTypes: true}).filter(entry => entry.isDirectory()), []);
 async function removed(pid: number) {
   for (let i = 0; i < 400; i++) {
@@ -152,11 +152,11 @@ test('real Linux browser physical-memory exhaustion kills its job while the appl
 });
 
 test('missing Linux delegation fails closed and removes the candidate profile', linux, async () => {
-  const before = process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT;
+  const before = process.env.COCREATE_LINUX_CGROUP_ROOT;
   try {
-    process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT = '/app';
+    process.env.COCREATE_LINUX_CGROUP_ROOT = '/app';
     await assert.rejects(withIsolatedBrowser(browser => browser.call('Browser.getVersion')), error => error instanceof IsolationError && error.code === 'isolation_unavailable');
-    assert.deepEqual((fs.existsSync(isolationJobsDirectory)?fs.readdirSync(isolationJobsDirectory):[]), []);
-  } finally {before === undefined ? delete process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT : process.env.TWOGUYS1CANVAS_LINUX_CGROUP_ROOT = before;}
+    assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')), []);
+  } finally {before === undefined ? delete process.env.COCREATE_LINUX_CGROUP_ROOT : process.env.COCREATE_LINUX_CGROUP_ROOT = before;}
   noGroups();
 });

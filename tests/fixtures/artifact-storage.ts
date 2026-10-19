@@ -4,7 +4,6 @@ import { SupabasePlatform } from '../../server/supabase-platform.js';
 /** Real SDK over loopback HTTP; synthetic Storage/PostgREST, not real Supabase or SQL. */
 export async function createArtifactFixture() {
     const objects = new Map<string, Buffer>();
-    const captures=new Map<string,any>();
     const snapshots = new Map<string, {
         revision: number;
         yjs_state: string;
@@ -13,7 +12,7 @@ export async function createArtifactFixture() {
     }>();
     const counts = { uploads: 0, downloads: 0, commits: 0 };
     const trace: string[] = [];
-    const controls = { publicBucket: false, failUpload: false, corruptUpload: false, failCommit: false, latestDocumentSequence: 0, failDocumentSequence: false,
+    const controls = { publicBucket: false, failUpload: false, corruptUpload: false, failCommit: false,
         beforeCommit: undefined as undefined | ((body: any) => Promise<void>), failVersion: 0,
         afterDownload: undefined as undefined | (() => void) };
     const server = http.createServer(async (req, res) => {
@@ -62,12 +61,6 @@ export async function createArtifactFixture() {
                 return respond(200, 1);
             if (name === 'release_workflow_coordinator' || name === 'append_workflow_document_update' || name === 'record_workflow_provider_dispatch' || name === 'record_project_provider_request')
                 return respond(200, null);
-            if(name==='read_workflow_capture')return respond(200,captures.get(JSON.stringify([body.target_project_id,body.target_actor_id,body.target_request_id]))||null);
-            if(name==='commit_workflow_capture'){
-                const key=JSON.stringify([body.target_project_id,body.target_actor_id,body.target_request_id]),prior=captures.get(key);
-                if(prior&&prior.payloadHash!==body.target_payload_hash)return respond(400,{code:'22023',message:'Capture conflict'});
-                const record=prior||{...structuredClone(body.target_record),cursor:captures.size+1};captures.set(key,record);return respond(200,record);
-            }
             if (name === 'commit_workflow_snapshot') {
                 trace.push('commit');
                 await controls.beforeCommit?.(body);
@@ -82,7 +75,6 @@ export async function createArtifactFixture() {
                 return respond(200, true);
             }
         }
-        if(url.pathname==='/rest/v1/workflow_capture_commands'){const project=(url.searchParams.get('project_id')||'').replace(/^eq\./,''),after=Number((url.searchParams.get('cursor')||'').replace(/^gt\./,''));return respond(200,[...captures].filter(([key,record])=>JSON.parse(key)[0]===project&&record.cursor>after).map(([,record])=>({cursor:record.cursor,command_record:record})));}
         if (url.pathname === '/rest/v1/project_snapshots') {
             const project = (url.searchParams.get('project_id') || '').replace(/^eq\./, '');
             const snapshot = snapshots.get(project);
@@ -90,10 +82,6 @@ export async function createArtifactFixture() {
         }
         if (url.pathname === '/rest/v1/project_provider_requests')
             return respond(200, []);
-        if (url.pathname === '/rest/v1/project_document_updates')
-            return controls.failDocumentSequence
-                ? respond(503, { message: 'Controlled sequence lookup outage' })
-                : respond(200, controls.latestDocumentSequence ? [{ sequence: controls.latestDocumentSequence }] : []);
         respond(404, { message: 'Unknown controlled fixture route' });
     });
     await new Promise<void>(resolve => server.listen(0, '127.0.0.1', resolve));

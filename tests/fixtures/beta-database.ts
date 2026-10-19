@@ -1,4 +1,3 @@
-import {productEnvironment} from '../../shared/product-environment.js';
 import { createRequire } from "node:module";
 import fs from "node:fs";
 import pg from "pg";
@@ -26,19 +25,19 @@ export const betaAccounts = {
 };
 
 export async function betaDatabase(): Promise<BetaDatabase> {
-  const connection = productEnvironment(process.env,'TWOGUYS1CANVAS_BETA_TEST_DATABASE_URL');
+  const connection = process.env.COCREATE_BETA_TEST_DATABASE_URL;
   let db: BetaDatabase;
   if (connection) {
     const url = new URL(connection);
     if (
       !["localhost", "127.0.0.1"].includes(url.hostname) ||
-      !["/twoguysonecanvas_beta_test", "/cocreate_beta_test"].includes(url.pathname)
+      url.pathname !== "/cocreate_beta_test"
     )
       throw new Error(
-        "Beta SQL tests require a disposable local twoguysonecanvas_beta_test database.",
+        "Beta SQL tests require a disposable local cocreate_beta_test database.",
       );
     // Create a fresh database; never reset schemas or delete data in the supplied database.
-    const databaseName = `twoguysonecanvas_beta_test_${randomUUID().replaceAll("-", "")}`;
+    const databaseName = `cocreate_beta_test_${randomUUID().replaceAll("-", "")}`;
     const administrator = new pg.Client({ connectionString: connection });
     await administrator.connect();
     try {
@@ -105,10 +104,6 @@ export async function betaDatabase(): Promise<BetaDatabase> {
       alter table public.beta_access enable row level security;
       revoke all on public.beta_access from public,anon,authenticated;
       grant select,insert,update,delete on public.beta_access to service_role;
-      create table public.beta_waitlist(email text primary key,consent_version text not null,registered_at timestamptz not null default now());
-      alter table public.beta_waitlist enable row level security;
-      revoke all on public.beta_waitlist from public,anon,authenticated;
-      grant select,insert,update,delete on public.beta_waitlist to service_role;
       grant usage on schema auth to service_role;
       create table public.project_members(project_id uuid,user_id uuid,role text,can_share boolean not null default false);
       grant select on public.project_members to service_role;

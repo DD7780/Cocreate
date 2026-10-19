@@ -1,6 +1,6 @@
 import { assertPromotionEvidence, verifyCandidate } from './verification.js';
 import type { CandidateVerification, SharedRequirement } from "../shared/types.js";
-import { isolationPolicy, IsolationError, safeIsolationDiagnostics, type IsolationDiagnostics } from './isolation.js';
+import { isolationPolicy, IsolationError } from './isolation.js';
 import { createHash, randomUUID } from 'node:crypto';
 import { applyOperations, bundleProject, persistProject, type FileOperation, type ProjectFile } from './project.js';
 import { EventStore, type ActorType } from './event-store.js';
@@ -15,7 +15,7 @@ type ToolInputs={
 };
 type ToolOutputs={
   'project.apply_operations':{files:ProjectFile[]};
-  'project.bundle':{javascript:string;css:string;diagnostics?:IsolationDiagnostics};
+  'project.bundle':{javascript:string;css:string};
   'project.verify':CandidateVerification;
   'project.promote':{fileCount:number};
 };
@@ -38,12 +38,12 @@ const inputSummary=(name:ToolName,input:ToolInputs[ToolName])=>name==='project.a
 const outputSummary=(name:ToolName,output:ToolOutputs[ToolName])=>name==='project.verify'
   ?{candidateHash:(output as CandidateVerification).candidateHash,status:(output as CandidateVerification).status,checkCount:(output as CandidateVerification).checks.length}
   :name==='project.bundle'
-  ?{javascriptBytes:Buffer.byteLength((output as ToolOutputs['project.bundle']).javascript),cssBytes:Buffer.byteLength((output as ToolOutputs['project.bundle']).css),isolation:safeIsolationDiagnostics((output as ToolOutputs['project.bundle']).diagnostics)}
+  ?{javascriptBytes:Buffer.byteLength((output as ToolOutputs['project.bundle']).javascript),cssBytes:Buffer.byteLength((output as ToolOutputs['project.bundle']).css)}
   :{fileCount:name==='project.apply_operations'?(output as ToolOutputs['project.apply_operations']).files.length:(output as ToolOutputs['project.promote']).fileCount};
 
 const definitions:{[K in ToolName]:ToolDefinition<K>}={
   'project.apply_operations':{name:'project.apply_operations',purpose:'Validate and apply model-proposed edits to an in-memory candidate.',behavior:'write',permission:'builder:candidate:write',environment:'host-process-restricted-api',timeoutMs:2_000,resourceLimits:{maxFiles:16,maxInputBytes:160_000},retry:'idempotent',idempotent:true,cancellation:'before-start-only',logging:'metadata-and-hashes',inputSchema:'ProjectFile[] + FileOperation[]',outputSchema:'validated ProjectFile[]'},
-  'project.bundle':{name:'project.bundle',purpose:'Compile a validated candidate in a secret-free OS-isolated process.',behavior:'read',permission:'builder:candidate:build',environment:'isolated-process',timeoutMs:isolationPolicy.compileWallMs,resourceLimits:{maxFiles:16,maxInputBytes:160_000,memoryBytes:process.platform==='win32'?isolationPolicy.windowsMemoryBytes:isolationPolicy.linuxAddressSpaceBytes,cpuSeconds:isolationPolicy.cpuSeconds,maxProcesses:process.platform==='win32'?1:isolationPolicy.linuxTasksPerUser},retry:'idempotent',idempotent:true,cancellation:'during-execution',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'browser JavaScript and CSS'},
+  'project.bundle':{name:'project.bundle',purpose:'Compile a validated candidate in a secret-free OS-isolated process.',behavior:'read',permission:'builder:candidate:build',environment:'isolated-process',timeoutMs:isolationPolicy.wallMs,resourceLimits:{maxFiles:16,maxInputBytes:160_000,memoryBytes:process.platform==='win32'?isolationPolicy.windowsMemoryBytes:isolationPolicy.linuxAddressSpaceBytes,cpuSeconds:isolationPolicy.cpuSeconds,maxProcesses:process.platform==='win32'?1:isolationPolicy.linuxTasksPerUser},retry:'idempotent',idempotent:true,cancellation:'during-execution',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'browser JavaScript and CSS'},
   'project.verify':{name:'project.verify',purpose:'Observe trusted acceptance and retained covered behaviors in an OS-contained browser.',behavior:'read',permission:'builder:candidate:verify',environment:'isolated-process',timeoutMs:isolationPolicy.wallMs,resourceLimits:{maxFiles:16,maxInputBytes:isolationPolicy.outputBytes,memoryBytes:process.platform==='win32'?isolationPolicy.windowsMemoryBytes:isolationPolicy.linuxAddressSpaceBytes,cpuSeconds:isolationPolicy.cpuSeconds,maxProcesses:process.platform==='win32'?1:isolationPolicy.linuxTasksPerUser},retry:'none',idempotent:true,cancellation:'during-execution',logging:'metadata-and-hashes',inputSchema:'validated files + compiled bytes + frozen accepted requirements',outputSchema:'candidate-bound requirement/check evidence'},
   'project.promote':{name:'project.promote',purpose:'Persist an already verified candidate inside the current workspace project.',behavior:'write',permission:'builder:workspace:promote',environment:'host-process-restricted-api',timeoutMs:5_000,resourceLimits:{maxFiles:16,maxInputBytes:160_000},retry:'idempotent',idempotent:true,cancellation:'before-start-only',logging:'metadata-and-hashes',inputSchema:'validated ProjectFile[]',outputSchema:'persisted file count'},
 };
@@ -75,7 +75,7 @@ export class ToolRegistry{
     }catch(error){
       const message=error instanceof Error?error.message:String(error);
       const diagnostic=error instanceof IsolationError?error.cause as {exitCode?:number;diagnostic?:string}|undefined:undefined;
-      this.store.append({eventType:'tool.failed',workspaceId:context.workspaceId,actorId:context.actorId,actorType:context.actorType,runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,error:message.slice(0,1000),isolation:error instanceof IsolationError?{...safeIsolationDiagnostics(error.cause),code:error.code,exitCode:diagnostic?.exitCode,nativeExitCode:Number(diagnostic?.diagnostic?.match(/ISOLATION_EXIT (\d+)/)?.[1])||undefined,peakProcessBytes:Number(diagnostic?.diagnostic?.match(/ISOLATION_PEAK_BYTES (\d+)/)?.[1])||undefined}:undefined}});
+      this.store.append({eventType:'tool.failed',workspaceId:context.workspaceId,actorId:context.actorId,actorType:context.actorType,runId:context.runId,stepId,correlationId:context.runId,inputRevision:context.inputRevision,contentHash:inputHash,payload:{tool:name,error:message.slice(0,1000),isolation:error instanceof IsolationError?{code:error.code,exitCode:diagnostic?.exitCode,nativeExitCode:Number(diagnostic?.diagnostic?.match(/ISOLATION_EXIT (\d+)/)?.[1])||undefined,peakProcessBytes:Number(diagnostic?.diagnostic?.match(/ISOLATION_PEAK_BYTES (\d+)/)?.[1])||undefined}:undefined}});
       throw error;
     }
   }

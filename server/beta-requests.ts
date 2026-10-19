@@ -1,13 +1,10 @@
-import { productEnvironment } from '../shared/product-environment.js';
 import { randomUUID } from "node:crypto";
 import type express from "express";
 import {
   betaMessageLimit,
   betaDeclineCooldownDays,
-  betaWaitlistPageSize,
   type BetaRequest,
   type BetaRequestState,
-  type BetaReviewList,
 } from "../shared/beta-access.js";
 import type { SupabasePlatform } from "./supabase-platform.js";
 import {
@@ -145,27 +142,8 @@ export class BetaRequestService {
     return rowRequest(data);
   }
 
-  async list(
-    userId: string,
-    selectedId?: string,
-    waitlistOffset = 0,
-  ): Promise<BetaReviewList> {
+  async list(userId: string, selectedId?: string) {
     await this.requireReviewer(userId);
-    if (
-      !Number.isSafeInteger(waitlistOffset) ||
-      waitlistOffset < 0 ||
-      waitlistOffset > 1_000_000
-    )
-      throw Object.assign(new Error("Invalid registration page."), { status: 400 });
-    const waitlist = await this.platform.admin
-      .from("beta_waitlist")
-      .select("email,registered_at,consent_version", { count: "exact" })
-      .order("registered_at", { ascending: false })
-      .order("email", { ascending: true })
-      .range(waitlistOffset, waitlistOffset + betaWaitlistPageSize - 1);
-    databaseError(waitlist.error);
-    if (waitlist.count === null)
-      throw new Error("Registration count was not confirmed.");
     const pending = await this.platform.admin
       .from("beta_access_requests")
       .select(requestColumns)
@@ -198,18 +176,6 @@ export class BetaRequestService {
       pending: (pending.data || []).map(rowRequest),
       recent: (recent.data || []).map(rowRequest),
       selected,
-      waitlist: {
-        registrations: (waitlist.data || []).map((row) => ({
-          email: row.email,
-          registeredAt: row.registered_at,
-          consentVersion: row.consent_version,
-        })),
-        total: waitlist.count,
-        offset: waitlistOffset,
-        nextOffset:
-          waitlistOffset + betaWaitlistPageSize < waitlist.count
-            ? waitlistOffset + betaWaitlistPageSize : null,
-      },
     };
   }
 
@@ -306,7 +272,7 @@ export function registerBetaRequestRoutes(
   const service = new BetaRequestService(
     platform,
     transactionalEmailSenderFromEnv(env),
-    productEnvironment(env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN') || "https://2guys1canvas.com",
+    env.COCREATE_PUBLIC_ORIGIN || "https://2guys1canvas.com",
   );
   let stopped = false,
     running: Promise<void> | null = null;
@@ -340,8 +306,8 @@ export function registerBetaRequestRoutes(
       try {
         if (mutation) {
           const origins = [
-            productEnvironment(env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN'),
-            ...(productEnvironment(env, 'TWOGUYS1CANVAS_APP_ORIGINS') || "").split(","),
+            env.COCREATE_PUBLIC_ORIGIN,
+            ...(env.COCREATE_APP_ORIGINS || "").split(","),
             `${req.protocol}://${req.get("host")}`,
           ];
           if (
@@ -391,9 +357,6 @@ export function registerBetaRequestRoutes(
       service.list(
         id,
         typeof req.query.request === "string" ? req.query.request : undefined,
-        req.query.waitlistOffset === undefined ? 0
-          : typeof req.query.waitlistOffset === "string" && /^\d+$/.test(req.query.waitlistOffset)
-            ? Number(req.query.waitlistOffset) : NaN,
       ),
     ),
   );

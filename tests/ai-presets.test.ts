@@ -106,7 +106,7 @@ test('applying a preset is opt-in, preserves Advanced overrides, and does not sp
 });
 
 test('legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history', async()=>{
-  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-mode-migration-')),roomId=`mode-migration-${crypto.randomUUID()}`,manager=new RoomManager({debounceMs:500,encryptionSecret:'migration-test-secret',dataDir}),room=manager.create(roomId);
+  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-mode-migration-')),roomId=`mode-migration-${crypto.randomUUID()}`,manager=new RoomManager({debounceMs:500,encryptionSecret:'migration-test-secret',dataDir}),room=manager.create(roomId);
   let managerClosed=false,restoredManager:RoomManager|undefined,restoredClosed=false;
   try{
     const connectionId=(await manager.saveConnection(room,{name:'Existing',provider:'openrouter',baseUrl:'https://openrouter.ai/api/v1',apiKey:'secret'})).id;

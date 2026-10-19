@@ -8,15 +8,13 @@ COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 
 COPY . .
-RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && gcc -O2 -Wall -Wextra -Werror server/isolation/linux-job-launcher.c -o /usr/local/bin/twoguysonecanvas-job-launcher && apt-get purge -y gcc libc6-dev && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
+RUN apt-get update && apt-get install -y --no-install-recommends gcc libc6-dev && gcc -O2 -Wall -Wextra -Werror server/isolation/linux-job-launcher.c -o /usr/local/bin/cocreate-job-launcher && apt-get purge -y gcc libc6-dev && apt-get autoremove -y && rm -rf /var/lib/apt/lists/*
 ARG VITE_COCREATE_AUTH_MODE
 ARG VITE_COCREATE_APP_ORIGIN
-ARG VITE_TWOGUYS1CANVAS_AUTH_MODE
-ARG VITE_TWOGUYS1CANVAS_APP_ORIGIN
 ARG VITE_SUPABASE_URL
 ARG VITE_SUPABASE_PUBLISHABLE_KEY
-ENV VITE_TWOGUYS1CANVAS_AUTH_MODE=${VITE_TWOGUYS1CANVAS_AUTH_MODE:-$VITE_COCREATE_AUTH_MODE}
-ENV VITE_TWOGUYS1CANVAS_APP_ORIGIN=${VITE_TWOGUYS1CANVAS_APP_ORIGIN:-$VITE_COCREATE_APP_ORIGIN}
+ENV VITE_COCREATE_AUTH_MODE=$VITE_COCREATE_AUTH_MODE
+ENV VITE_COCREATE_APP_ORIGIN=$VITE_COCREATE_APP_ORIGIN
 ENV VITE_SUPABASE_URL=$VITE_SUPABASE_URL
 ENV VITE_SUPABASE_PUBLISHABLE_KEY=$VITE_SUPABASE_PUBLISHABLE_KEY
 RUN pnpm build
@@ -25,7 +23,7 @@ RUN pnpm exec tsx scripts/prepare-isolation.ts --files-only && mkdir -p /app/dat
 USER root
 
 ENV NODE_ENV=production
-ENV TWOGUYS1CANVAS_HOSTED=true
+ENV COCREATE_HOSTED=true
 ENV PORT=5173
 
 EXPOSE 5173

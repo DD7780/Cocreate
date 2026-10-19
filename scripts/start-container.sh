@@ -1,9 +1,9 @@
 #!/bin/sh
 set -eu
 # Bootstrap alone has privilege. The application and all jobs run as node with no capabilities.
-mount_root=${TWOGUYS1CANVAS_CGROUP_MOUNT:-${COCREATE_CGROUP_MOUNT:-/sys/fs/cgroup}}
+mount_root=${COCREATE_CGROUP_MOUNT:-/sys/fs/cgroup}
 test "$(/usr/bin/findmnt -n -o FSTYPE -T "$mount_root")" = cgroup2
-case "$mount_root" in /sys/fs/cgroup|/run/2guys1canvas-cgroup|/run/cocreate-cgroup) ;; *) exit 126 ;; esac
+case "$mount_root" in /sys/fs/cgroup|/run/cocreate-cgroup) ;; *) exit 126 ;; esac
 test "$(id -u)" = 0
 root="$mount_root/cocreate"
 if test -d "$root"; then
@@ -26,5 +26,5 @@ echo '+memory +pids' > "$root/jobs/cgroup.subtree_control"
 # Leave aggregate controller limits root-owned. Delegate migration at the common ancestor.
 chown 1000:1000 "$root/cgroup.procs" "$root/app/cgroup.procs"
 chown 1000:1000 "$root/jobs" "$root/jobs/cgroup.procs"
-export TWOGUYS1CANVAS_LINUX_CGROUP_ROOT="$root"
+export COCREATE_LINUX_CGROUP_ROOT="$root"
 exec /usr/bin/setpriv --reuid=1000 --regid=1000 --init-groups --bounding-set=-all --inh-caps=-all --ambient-caps=-all --no-new-privs /usr/bin/tini -s -- "$@"

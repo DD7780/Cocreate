@@ -1,19 +1,11 @@
 import type { InterpretationIntent, Requirement, SharedRequirement } from '../shared/types.js';
 import type { AgentChange } from './generator.js';
-import type {AuthoredPassage} from './authored-passages.js';
-import {classifyIntentText} from './requirements.js';
 
 export type AcceptedIntentContext = Pick<SharedRequirement, 'id' | 'revision' | 'category' | 'description' | 'authority' | 'sources' | 'status'>;
 const normalize = (value: string) => value.replace(/\s+/g, ' ').trim();
 const unresolved = /\b(?:make|change|remove|delete|use|update|replace|move|rename|style|color|keep|disable|enable|fix)\s+(?:that|it|this|these|those|them)(?:\s|[.!?]|$)/i;
 const sourceWords = (value: string) => normalize(value).toLowerCase().match(/[a-z0-9_-]+/g) || [];
 const generic = new Set('make change remove delete use update replace move rename style color keep disable enable fix add build create show please the a an that this it these those them to and blue red green yellow black white'.split(' '));
-function quoteRange(source:string,quote:string){
-  let normalized='',offsets:number[]=[];
-  for(const word of source.matchAll(/\S+/g)){if(normalized){normalized+=' ';offsets.push(word.index!-1);}normalized+=word[0];for(let index=0;index<word[0].length;index++)offsets.push(word.index!+index);}
-  const query=normalize(quote),index=normalized.indexOf(query);
-  return query&&index>=0?{start:offsets[index],end:offsets[index+query.length-1]+1}:undefined;
-}
 
 /** Validate provenance and references independently of the model's classification or authorship. */
 export function validateSubmittedInterpretation(
@@ -21,11 +13,10 @@ export function validateSubmittedInterpretation(
   changes: AgentChange[],
   acceptedContext: AcceptedIntentContext[],
   previous?: Requirement,
-  authoredPassages?:AuthoredPassage[],
 ): Requirement {
   const authored=changes.map(change=>change.after).filter(Boolean);
   // Authenticated insertion fragments may span keyboard updates. Never use deleted before-text or shared drafts.
-  const passages=authoredPassages===undefined?[...authored.map(normalize),normalize(authored.join('')),normalize(authored.join(' '))].filter(Boolean):authoredPassages.map(passage=>normalize(passage.text));
+  const passages=[...authored.map(normalize),normalize(authored.join('')),normalize(authored.join(' '))].filter(Boolean);
   const known = new Map(acceptedContext.filter(item => item.status === 'accepted').map(item => [item.id, item]));
   const intents = (interpretation.intents || []).map((candidate): InterpretationIntent => {
     // Only schema fields survive the provider boundary; it cannot stamp human authority/history.
@@ -41,22 +32,8 @@ export function validateSubmittedInterpretation(
     const carry = previous?.intents?.find(item => item.validation?.status === 'verified' && !item.withdrawn &&
       item.text === intent.text && item.sourcePassage === intent.sourcePassage && item.classification === intent.classification);
     const supported = !!passage && passages.some(source => source.includes(passage));
-    const exact=authoredPassages?.map(source=>({source,range:quoteRange(source.text,passage)})).find(match=>match.range);
-    const eligible=exact?.range&&(exact.source.sources.some(source=>source.eligible&&source.offset<exact.range!.end&&source.offset+source.length>exact.range!.start)||exact.source.deletions?.some(deletion=>deletion.offset>=exact.range!.start&&deletion.offset<=exact.range!.end));
-    if(exact?.range){
-      // Include same-sentence qualifications; a short model quote cannot omit "maybe/not decided".
-      const raw=exact.source.text,start=raw.slice(0,exact.range.start).search(/[^.!?\n]*$/),tail=raw.slice(exact.range.end).search(/[.!?\n]/);
-      let end=/[.!?\n]$/.test(raw.slice(0,exact.range.end))?exact.range.end:tail<0?raw.length:exact.range.end+tail+1;
-      const following=raw.slice(end).match(/^\s*(?:(?:we|i) (?:have not|haven't|have not yet) decided|(?:we are|i am) (?:not sure|undecided))[^.!?\n]*[.!?]?/i);
-      if(following)end+=following[0].length;
-      intent.sourcePassage=raw.slice(start,end).trim();
-      const range=quoteRange(raw,intent.sourcePassage)!;
-      intent.sourceReferences=[{passageId:exact.source.id,...range}];
-      intent.classification=classifyIntentText(intent.sourcePassage,intent.classification);
-    }
     let reason: string | undefined;
     if (!supported && !carry) reason = 'The quoted source is absent from your authenticated captured edits. Correct this interpretation explicitly.';
-    if(authoredPassages!==undefined&&supported&&!eligible&&!carry)reason='The quote contains only unchanged authored context. Clarify the actual submitted change; older text is not fresh authorization.';
     const unknown = intent.affectedRequirementIds.some(id => !known.has(id));
     if (unknown) reason = 'A referenced requirement is not in the captured accepted revision. Review and clarify the target.';
     const requested = intent.affectedRequirementIds.map(id => known.get(id)).filter((item): item is AcceptedIntentContext => !!item);

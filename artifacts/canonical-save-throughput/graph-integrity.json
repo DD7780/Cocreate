@@ -1,9 +1,0 @@
-{
-  "nodes": 2313,
-  "edges": 5516,
-  "communities": 137,
-  "danglingEndpoints": 0,
-  "documentFileLinksChecked": 317,
-  "missingFileLinks": [],
-  "scope": "AST-only update; optional SQL parser unavailable; semantic/document relabeling not run"
-}

@@ -65,7 +65,6 @@ export function betaPlatform(db: BetaDatabase) {
       if (
         ![
           "beta_access",
-          "beta_waitlist",
           "beta_reviewers",
           "beta_access_requests",
           "beta_email_deliveries",
@@ -79,7 +78,7 @@ export function betaPlatform(db: BetaDatabase) {
       const params: unknown[] = [],
         conditions: string[] = [];
       for (const [key, value] of url.searchParams) {
-        if (["select", "order", "limit", "offset"].includes(key)) continue;
+        if (["select", "order", "limit"].includes(key)) continue;
         if (!/^[a-z_]+$/.test(key))
           throw new Error("Invalid synthetic filter.");
         if (value === "is.null") conditions.push(`${key} is null`);
@@ -94,30 +93,20 @@ export function betaPlatform(db: BetaDatabase) {
         }
       }
       const order = url.searchParams.get("order"),
-        limit = url.searchParams.get("limit"),
-        offset = url.searchParams.get("offset");
+        limit = url.searchParams.get("limit");
       if (order && !/^[a-z_]+\.(asc|desc)(,[a-z_]+\.(asc|desc))*$/.test(order))
         throw new Error("Invalid synthetic order.");
       if (limit && !/^\d+$/.test(limit))
         throw new Error("Invalid synthetic limit.");
-      if (offset && !/^\d+$/.test(offset))
-        throw new Error("Invalid synthetic offset.");
-      const where = conditions.length ? " where " + conditions.join(" and ") : "";
       const result = await db.asRole(
         "service_role",
-        `select ${columns} from public.${table}${where}${order ? " order by " + order.replaceAll(".", " ") : ""}${limit ? " limit " + limit : ""}${offset ? " offset " + offset : ""}`,
+        `select ${columns} from public.${table}${conditions.length ? " where " + conditions.join(" and ") : ""}${order ? " order by " + order.replaceAll(".", " ") : ""}${limit ? " limit " + limit : ""}`,
         params,
       );
       const single = headers
         .get("Accept")
         ?.includes("application/vnd.pgrst.object+json");
-      const responseHeaders: Record<string, string> = {};
-      if (headers.get("Prefer")?.includes("count=exact")) {
-        const count = await db.asRole("service_role", `select count(*)::int total from public.${table}${where}`, params);
-        const start = Number(offset || 0);
-        responseHeaders["Content-Range"] = `${start}-${start + result.rows.length - 1}/${count.rows[0].total}`;
-      }
-      return Response.json(single ? result.rows[0] || null : result.rows, { headers: responseHeaders });
+      return Response.json(single ? result.rows[0] || null : result.rows);
     } catch (error) {
       return Response.json(
         {

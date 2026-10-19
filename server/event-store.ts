@@ -3,7 +3,6 @@ import fs from 'node:fs';
 import path from 'node:path';
 import { createHash, randomUUID } from 'node:crypto';
 import { DatabaseSync } from 'node:sqlite';
-import type {CaptureRecord} from './capture-journal.js';
 import type { ProviderRequestRecord, WorkflowActivity, WorkflowPhase, WorkflowTask, WorkflowTaskState } from '../shared/types.js';
 
 export type ActorType='user'|'personal_agent'|'builder'|'system'|'tool';
@@ -65,9 +64,7 @@ export class EventStore{
   private db:DatabaseSync;
   constructor(readonly dataDir=path.join(process.cwd(),'data')){
     fs.mkdirSync(dataDir,{recursive:true});
-    const canonical=path.join(dataDir,'2guys1canvas.sqlite'),legacy=path.join(dataDir,'cocreate.sqlite');
-    if(fs.existsSync(canonical)&&fs.existsSync(legacy))throw new Error('Two local workflow databases exist. Preserve both and verify an offline recovery before reopening.');
-    this.file=fs.existsSync(legacy)?legacy:canonical;
+    this.file=path.join(dataDir,'cocreate.sqlite');
     this.db=new DatabaseSync(this.file);
     this.db.exec('PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA foreign_keys=ON;');
     this.migrate();
@@ -75,15 +72,6 @@ export class EventStore{
   private migrate(){
     this.db.exec(`
       CREATE TABLE IF NOT EXISTS schema_migrations(version INTEGER PRIMARY KEY, applied_at TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS capture_commands(
-        cursor INTEGER PRIMARY KEY AUTOINCREMENT,workspace_id TEXT NOT NULL,actor_id TEXT NOT NULL,
-        request_id TEXT NOT NULL,payload_hash TEXT NOT NULL,record_json TEXT NOT NULL,
-        UNIQUE(workspace_id,actor_id,request_id)
-      );
-      CREATE TABLE IF NOT EXISTS capture_sources(
-        workspace_id TEXT NOT NULL,source_id TEXT NOT NULL,actor_id TEXT NOT NULL,source_hash TEXT NOT NULL,
-        PRIMARY KEY(workspace_id,source_id)
-      );
       CREATE TABLE IF NOT EXISTS coordinator_leases(
         workspace_id TEXT PRIMARY KEY,owner_id TEXT NOT NULL,epoch INTEGER NOT NULL,expires_at INTEGER NOT NULL
       );
@@ -132,35 +120,6 @@ export class EventStore{
     `);
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(1,?)').run(new Date().toISOString());
     this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(2,?)').run(new Date().toISOString());
-    this.db.prepare('INSERT OR IGNORE INTO schema_migrations(version,applied_at) VALUES(3,?)').run(new Date().toISOString());
-  }
-  captureRecord(workspaceId:string,actorId:string,requestId:string):CaptureRecord|undefined{
-    const row=this.db.prepare('SELECT cursor,record_json FROM capture_commands WHERE workspace_id=? AND actor_id=? AND request_id=?').get(workspaceId,actorId,requestId) as {cursor:number;record_json:string}|undefined;
-    return row?{...JSON.parse(row.record_json),cursor:row.cursor}:undefined;
-  }
-  captureRecords(workspaceId:string,after=0):CaptureRecord[]{
-    return (this.db.prepare('SELECT cursor,record_json FROM capture_commands WHERE workspace_id=? AND cursor>? ORDER BY cursor').all(workspaceId,after) as {cursor:number;record_json:string}[]).map(row=>({...JSON.parse(row.record_json),cursor:row.cursor}));
-  }
-  commitCapture(workspaceId:string,record:CaptureRecord,fence:{ownerId:string;epoch:number}):CaptureRecord{
-    this.db.exec('BEGIN IMMEDIATE');
-    try{
-      const lease=this.db.prepare('SELECT owner_id,epoch,expires_at FROM coordinator_leases WHERE workspace_id=?').get(workspaceId) as {owner_id:string;epoch:number;expires_at:number}|undefined;
-      if(!lease||lease.owner_id!==fence.ownerId||lease.epoch!==fence.epoch||lease.expires_at<=Date.now())throw new Error('Stale capture coordinator.');
-      const submission=record.submission,prior=this.captureRecord(workspaceId,submission.participantId,submission.requestId);
-      if(prior){
-        if(prior.payloadHash!==record.payloadHash)throw new Error('Capture request identity was reused with different input.');
-        this.db.exec('COMMIT');return prior;
-      }
-      for(const edit of submission.capturedChanges||[])if(edit.sourceId){
-        const source=this.db.prepare('SELECT actor_id,source_hash FROM capture_sources WHERE workspace_id=? AND source_id=?').get(workspaceId,edit.sourceId) as {actor_id:string;source_hash:string}|undefined;
-        if(source&&(source.actor_id!==submission.participantId||source.source_hash!==edit.sourceHash))throw new Error('Capture source identity conflict.');
-        this.db.prepare('INSERT OR IGNORE INTO capture_sources VALUES(?,?,?,?)').run(workspaceId,edit.sourceId,submission.participantId,edit.sourceHash!);
-      }
-      const inserted=this.db.prepare('INSERT INTO capture_commands(workspace_id,actor_id,request_id,payload_hash,record_json) VALUES(?,?,?,?,?)').run(workspaceId,submission.participantId,submission.requestId,record.payloadHash,JSON.stringify(record));
-      const stored={...record,cursor:Number(inserted.lastInsertRowid)};
-      this.insert({workspaceId,actorId:submission.participantId,actorType:'user',eventType:'submission.captured',payload:{submissionId:submission.id,requestId:submission.requestId,cursor:stored.cursor,sourceRevision:submission.documentRevision}});
-      this.db.exec('COMMIT');return stored;
-    }catch(error){this.db.exec('ROLLBACK');throw error}
   }
   claimCoordinator(workspaceId:string,ownerId:string,ttlMs=30_000,at=Date.now()){
     this.db.exec('BEGIN IMMEDIATE');try{
@@ -196,7 +155,7 @@ export class EventStore{
   readArtifact(ref:string){const contentHash=ref.replace(/^sha256:/,'');const row=this.db.prepare('SELECT content FROM artifacts WHERE content_hash=?').get(contentHash) as {content:Uint8Array}|undefined;if(!row)return null;const bytes=Buffer.from(row.content);if(artifactHash(bytes)!==contentHash)throw new ArtifactUnavailableError('corrupt');return bytes}
   artifactBodiesForWorkspace(workspaceId: string, extraRefs: string[] = []): ArtifactBody[] {
     // Canonical workspace snapshots are stored separately in Postgres, not recursively archived.
-    const rows = this.db.prepare("SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type NOT IN ('application/vnd.2guys1canvas.workspace+json','application/vnd.cocreate.workspace+json')").all(workspaceId) as {
+    const rows = this.db.prepare("SELECT DISTINCT a.content,a.mime_type,a.content_hash FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND a.mime_type<>'application/vnd.cocreate.workspace+json'").all(workspaceId) as {
         content: Uint8Array;
         mime_type: string;
         content_hash: string;
@@ -234,13 +193,13 @@ export class EventStore{
   saveWorkspaceSnapshot(workspaceId:string,state:unknown,eventType='workspace.snapshot_recorded',actorId='system',actorType:ActorType='system'){
     const stateJson=JSON.stringify(state),stateHash=hash(stateJson),updatedAt=new Date().toISOString();
     this.db.exec('BEGIN IMMEDIATE');try{
-      const artifact=this.insertArtifact(stateJson,'application/vnd.2guys1canvas.workspace+json');
+      const artifact=this.insertArtifact(stateJson,'application/vnd.cocreate.workspace+json');
       const event=this.insert({eventType,workspaceId,actorId,actorType,contentHash:stateHash,artifactRef:artifact.ref,payload:{stateHash,byteLength:artifact.byteLength}});
       this.db.prepare(`INSERT INTO workspace_state(workspace_id,state_json,state_hash,source_event_id,updated_at) VALUES(?,?,?,?,?) ON CONFLICT(workspace_id) DO UPDATE SET state_json=excluded.state_json,state_hash=excluded.state_hash,source_event_id=excluded.source_event_id,updated_at=excluded.updated_at`).run(workspaceId,stateJson,stateHash,event.eventId,updatedAt);
       this.db.exec('COMMIT');return event;
     }catch(error){this.db.exec('ROLLBACK');throw error}
   }
-  readWorkspaceSnapshot<T=unknown>(workspaceId:string){const row=this.db.prepare('SELECT state_json AS stateJson FROM workspace_state WHERE workspace_id=?').get(workspaceId) as {stateJson:string}|undefined;if(row)return JSON.parse(row.stateJson) as T;const artifact=this.db.prepare(`SELECT a.content FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND e.artifact_ref LIKE 'sha256:%' AND a.mime_type IN ('application/vnd.2guys1canvas.workspace+json','application/vnd.cocreate.workspace+json') ORDER BY e.workspace_seq DESC LIMIT 1`).get(workspaceId) as {content:Uint8Array}|undefined;return artifact?JSON.parse(Buffer.from(artifact.content).toString('utf8')) as T:null}
+  readWorkspaceSnapshot<T=unknown>(workspaceId:string){const row=this.db.prepare('SELECT state_json AS stateJson FROM workspace_state WHERE workspace_id=?').get(workspaceId) as {stateJson:string}|undefined;if(row)return JSON.parse(row.stateJson) as T;const artifact=this.db.prepare(`SELECT a.content FROM events e JOIN artifacts a ON a.content_hash=substr(e.artifact_ref,8) WHERE e.workspace_id=? AND e.artifact_ref LIKE 'sha256:%' AND a.mime_type='application/vnd.cocreate.workspace+json' ORDER BY e.workspace_seq DESC LIMIT 1`).get(workspaceId) as {content:Uint8Array}|undefined;return artifact?JSON.parse(Buffer.from(artifact.content).toString('utf8')) as T:null}
   importLegacyWorkspace(workspaceId:string,legacyFile:string){
     if(this.hasWorkspace(workspaceId))return false;
     const raw=fs.readFileSync(legacyFile,'utf8'),backupDir=path.join(this.dataDir,'backups','pre-event-store'),backup=path.join(backupDir,path.basename(legacyFile));

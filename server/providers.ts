@@ -1,19 +1,15 @@
-import { productEnvironment } from '../shared/product-environment.js';
 import { AsyncLocalStorage } from "node:async_hooks";
 import { randomUUID } from "node:crypto";
 import type {
   AIFormat,
   AIModel,
   AIProvider,
-  AIReasoningConfig,
   ProviderRequestPurpose,
   ProviderRequestRecord,
-  ProviderDiagnostics,
 } from "../shared/types.js";
 
 export type ErrorKind =
   | "invalid_credentials"
-  | "invalid_request"
   | "permission"
   | "balance"
   | "context_limit"
@@ -28,7 +24,6 @@ export type ErrorKind =
   | "truncated"
   | "invalid_output";
 export class ProviderError extends Error {
-  diagnostics?: ProviderDiagnostics;
   constructor(
     public kind: ErrorKind,
     message: string,
@@ -61,7 +56,6 @@ export type ProviderConfig = {
   baseUrl: string;
   apiKey?: string;
   apiFormat?: AIFormat;
-  reasoningConfig?: AIReasoningConfig;
 };
 export type GenerateRequest = {
   model: string;
@@ -109,13 +103,7 @@ const accounting = new AsyncLocalStorage<ProviderAccountingContext>();
 export const withProviderAccounting = <T>(
   context: ProviderAccountingContext,
   action: () => Promise<T>,
-) => accounting.run({...context,record:async entry=>{
-  try{await context.record(entry)}
-  catch(error){
-    if(entry.outcome==='dispatching'||error instanceof ProviderAccountingError)throw error;
-    throw new ProviderAccountingError('Provider accounting could not be confirmed. Reconnect to recover its receipt before retrying.');
-  }
-}}, action);
+) => accounting.run(context, action);
 export const withProviderRetryReason = <T>(
   purpose: ProviderRequestPurpose,
   retryReason: string,
@@ -139,7 +127,7 @@ const localHosts = new Set(["localhost", "127.0.0.1", "::1"]);
 export function validateProviderUrl(
   value: string,
   provider: AIProvider,
-  hosted = productEnvironment(process.env, 'TWOGUYS1CANVAS_HOSTED') === "true",
+  hosted = process.env.COCREATE_HOSTED === "true",
 ) {
   let url: URL;
   try {
@@ -204,43 +192,6 @@ const parseMessage = (raw: string, status: number) => {
     return `Provider returned HTTP ${status}${raw ? `: ${raw.slice(0, 160)}` : ""}`;
   }
 };
-const errorTypes = new Set(['invalid_request','invalid_prompt','unprocessable','payload_too_large','precondition_failed','context_length_exceeded','max_tokens_exceeded','token_limit_exceeded','string_too_long','authentication','permission_denied','payment_required','rate_limit_exceeded','provider_overloaded','provider_unavailable','not_found']);
-const errorCodes = new Set(['INVALID_ARGUMENT','RESOURCE_EXHAUSTED','PERMISSION_DENIED','UNAUTHENTICATED','NOT_FOUND','UNAVAILABLE','INTERNAL','DEADLINE_EXCEEDED','invalid_request_error','invalid_argument','rate_limit_exceeded','context_length_exceeded']);
-function safeRequestId(value: unknown) {
-  return typeof value === 'string' && /^[A-Za-z0-9_-]{1,120}$/.test(value) && !/(?:^sk-|sb_secret|bearer|api[_-]?key|token)/i.test(value) ? value : undefined;
-}
-function providerDiagnostics(response: Response, raw: string): ProviderDiagnostics {
-  const result: ProviderDiagnostics = {httpStatus: response.status};
-  result.requestId = safeRequestId(response.headers.get('x-request-id') || response.headers.get('request-id') || response.headers.get('openai-request-id'));
-  // Read only bounded, named metadata; upstream text is never persisted or put into errors.
-  if (raw.length > 16_384) return result;
-  let value: any;
-  try { value = JSON.parse(raw); } catch { return result; }
-  const error = value?.error, metadata = error?.metadata;
-  const type = metadata?.error_type ?? error?.error_type ?? value?.error_type;
-  if (errorTypes.has(type)) result.type = type;
-  const paths = new Set<string>();
-  const inspect = (candidate: any) => {
-    if (!candidate || typeof candidate !== 'object') return;
-    const code = candidate.status ?? candidate.code;
-    if (typeof code === 'number' && code >= 400 && code <= 599 || typeof code === 'string' && errorCodes.has(code)) result.code = String(code);
-    const candidates = [candidate.param, candidate.parameter, ...(Array.isArray(candidate.details) ? candidate.details.slice(0,8).flatMap((item: any) => Array.isArray(item?.fieldViolations) ? item.fieldViolations.slice(0,8).map((field:any)=>field?.field) : []) : [])];
-    for (const path of candidates) if (typeof path === 'string' && path.length <= 160 && /^(?:model|messages|response_format|generationConfig|generation_config|responseSchema|responseJsonSchema|max_tokens|max_output_tokens|maxOutputTokens|reasoning|tools|tool_choice|stream|provider)(?:\.[A-Za-z_][A-Za-z0-9_]*|\[\d{1,5}\])*$/.test(path) && paths.size < 8) paths.add(path);
-  };
-  inspect(error);
-  if (typeof metadata?.raw === 'string' && metadata.raw.length <= 8192) {
-    try { const nested=JSON.parse(metadata.raw); inspect(nested?.error ?? nested); } catch { /* Unstructured provider text is not diagnostic metadata. */ }
-  }
-  if (paths.size) result.parameterPaths = [...paths];
-  return result;
-}
-function errorStatus(status: number, value: any, diagnostics: ProviderDiagnostics) {
-  const typed: Record<string,number> = {authentication:401,permission_denied:403,payment_required:402,rate_limit_exceeded:429,provider_overloaded:503,provider_unavailable:502,not_found:404};
-  if (diagnostics.type) return typed[diagnostics.type] ?? 400;
-  if (diagnostics.code === 'INVALID_ARGUMENT' || diagnostics.code === 'invalid_argument') return 400;
-  if (status >= 400) return status;
-  return typeof value?.error?.code === 'number' && value.error.code >= 400 && value.error.code <= 599 ? value.error.code : 400;
-}
 const classify = (
   status: number,
   message: string,
@@ -278,7 +229,7 @@ const classify = (
   if (status === 402 || /balance|credit|quota.*exceed|insufficient/.test(lower))
     return new ProviderError(
       "balance",
-      'The provider reports insufficient balance or quota. Check the key’s credit and limits; for paid models, add credit or choose a FREE model.',
+      "The provider reports insufficient balance or quota.",
       false,
     );
   if (
@@ -303,7 +254,7 @@ const classify = (
   )
     return new ProviderError(
       "unsupported",
-      /structured (?:output|response)/i.test(message) ? 'The selected model does not support structured outputs for this request.' : 'The provider rejected a request feature. The rejected field is recorded when supplied by the provider.',
+      `The provider rejected a request feature: ${message.slice(0, 180)}`,
       false,
     );
   if (status >= 500)
@@ -313,10 +264,9 @@ const classify = (
       true,
       retryMs,
     );
-  if (status === 408) return new ProviderError('timeout', 'The provider request timed out.', true, retryMs);
   return new ProviderError(
-    "invalid_request",
-    `The provider rejected the request (HTTP ${status}). Review the recorded error code and parameter paths before retrying.`,
+    "network",
+    message.slice(0, 220) || `Provider returned HTTP ${status}`,
     false,
   );
 };
@@ -336,7 +286,6 @@ const sleep = (ms: number, signal?: AbortSignal) =>
   });
 async function request(url: string, init: RequestInit, timeoutMs: number, signal?: AbortSignal, retries = 2) {
     for (let attempt = 0;; attempt++) {
-        if (signal?.aborted) throw new ProviderError('cancelled', 'Provider request was cancelled.');
         const controller = new AbortController(), timer = setTimeout(() => controller.abort(), timeoutMs), abort = () => controller.abort(), context = accounting.getStore(), callId = randomUUID(), startedAt = new Date().toISOString(), body = typeof init.body === 'string' ? init.body : '', estimatedInputTokens = Buffer.byteLength(body), base = context && {
             callId, workspaceId: context.workspaceId, workflowRunId: context.workflowRunId, submissionId: context.submissionId, parentCallId: context.parentCallId, purpose: context.purpose, retryReason: attempt ? `transport retry ${attempt}` : context.retryReason, provider: context.provider, model: context.model, configurationVersion: context.configurationVersion, startedAt, estimatedInputTokens, estimatedOutputTokens: context.estimatedOutputTokens, usage: {}, usageStatus: 'estimated' as const
         };
@@ -360,19 +309,11 @@ async function request(url: string, init: RequestInit, timeoutMs: number, signal
             const response = await fetch(url, {
                 ...init, signal: controller.signal
             }), raw = await response.text();
-            let json: any;
-            try { json = raw ? JSON.parse(raw) : {}; }
-            catch { if (response.ok) throw new ProviderError('invalid_output', 'The provider returned a non-JSON API response.'); }
-            // OpenRouter can also return a non-streaming API error inside HTTP 200.
-            if (!response.ok || json?.error) {
-                const diagnostics = providerDiagnostics(response, raw);
-                const status = errorStatus(response.status, json, diagnostics);
-                const message = diagnostics.type === 'context_length_exceeded' ? 'maximum context exceeded' : diagnostics.type ? '' : raw.length <= 16_384 ? parseMessage(raw, status) : '';
-                const error = classify(status, message, response.headers.get('retry-after'));
-                error.diagnostics = diagnostics;
+            if (!response.ok) {
+                const error = classify(response.status, parseMessage(raw, response.status), response.headers.get('retry-after'));
                 if (base)
                     await context!.record({
-                        ...base, endedAt: new Date().toISOString(), outcome: 'failed', usageStatus: 'unknown', errorKind: error.kind, providerRequestId: diagnostics.requestId, diagnostics
+                        ...base, endedAt: new Date().toISOString(), outcome: 'failed', usageStatus: 'unknown', errorKind: error.kind, providerRequestId: response.headers.get('x-request-id') || response.headers.get('request-id') || undefined
                     });
                 if (error.retryable && attempt < retries) {
                     await sleep(error.retryAfterMs ?? Math.min(2000, 250 * 2 ** attempt), signal);
@@ -380,11 +321,18 @@ async function request(url: string, init: RequestInit, timeoutMs: number, signal
                 }
                 throw error;
             }
+            let json: any;
+            try {
+                json = raw ? JSON.parse(raw) : {};
+            }
+            catch {
+                throw new ProviderError('invalid_output', 'The provider returned a non-JSON API response.');
+            }
             if (base) {
                 const terminationReason = json.choices?.[0]?.finish_reason ?? json.incomplete_details?.reason ?? json.stop_reason ?? json.candidates?.[0]?.finishReason ?? json.done_reason ?? json.status;
                 const reported = usage(json.usage ?? json.usageMetadata ?? json, response.headers), hasUsage = Object.values(reported).some(value => typeof value === 'number');
                 await context!.record({
-                    ...base, endedAt: new Date().toISOString(), outcome: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'failed' : 'succeeded', terminationReason, errorKind: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'truncated' : undefined, providerRequestId: safeRequestId(response.headers.get('x-request-id') || response.headers.get('request-id') || response.headers.get('openai-request-id')), usage: reported, providerCostUsd: typeof json.usage?.cost === 'number' && Number.isFinite(json.usage.cost) && json.usage.cost >= 0 ? json.usage.cost : undefined, usageStatus: hasUsage ? (reported.inputTokens !== undefined && reported.outputTokens !== undefined ? 'measured' : 'incomplete') : 'unknown'
+                    ...base, endedAt: new Date().toISOString(), outcome: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'failed' : 'succeeded', terminationReason, errorKind: /length|max_tokens|max_output_tokens/i.test(terminationReason || '') ? 'truncated' : undefined, providerRequestId: response.headers.get('x-request-id') || response.headers.get('request-id') || response.headers.get('openai-request-id') || undefined, usage: reported, providerCostUsd: typeof json.usage?.cost === 'number' && Number.isFinite(json.usage.cost) && json.usage.cost >= 0 ? json.usage.cost : undefined, usageStatus: hasUsage ? (reported.inputTokens !== undefined && reported.outputTokens !== undefined ? 'measured' : 'incomplete') : 'unknown'
                 });
             }
             return {
@@ -394,12 +342,12 @@ async function request(url: string, init: RequestInit, timeoutMs: number, signal
         catch (error) {
             if (error instanceof ProviderAccountingError)
                 throw error;
-            const normalized = error instanceof ProviderError ? error : signal?.aborted ? new ProviderError('cancelled', 'Provider request was cancelled.') : controller.signal.aborted ? new ProviderError('timeout', 'The provider request timed out.', true) : new ProviderError('network', 'Could not reach the provider endpoint.', true);
+            const normalized = error instanceof ProviderError ? error : signal?.aborted ? new ProviderError('cancelled', 'Provider request was cancelled.') : controller.signal.aborted ? new ProviderError('timeout', 'The provider request timed out.') : new ProviderError('network', 'Could not reach the provider endpoint.');
             if (base && !(error instanceof ProviderError && error.kind !== 'invalid_output'))
                 await context!.record({
                     ...base, endedAt: new Date().toISOString(), outcome: normalized.kind === 'cancelled' ? 'cancelled' : normalized.kind === 'timeout' || normalized.kind === 'network' ? 'unknown' : 'failed', usage: normalized.usage || {}, usageStatus: normalized.usage ? 'incomplete' : 'unknown', errorKind: normalized.kind
                 });
-            if (normalized.retryable && attempt < retries) {
+            if ((normalized.kind === 'network' || normalized.kind === 'timeout') && attempt < retries) {
                 await sleep(Math.min(2000, 250 * 2 ** attempt), signal);
                 continue;
             }
@@ -615,7 +563,7 @@ const openAICompatible = (
         body.text = {
           format: {
             type: "json_schema",
-            name: "two_guys_one_canvas_output",
+            name: "cocreate_output",
             strict: true,
             schema: req.schema,
           },
@@ -658,15 +606,11 @@ const openAICompatible = (
       body.response_format = {
         type: "json_schema",
         json_schema: {
-          name: "two_guys_one_canvas_output",
+          name: "cocreate_output",
           strict: true,
           schema: req.schema,
         },
       };
-    if (id === "openrouter" && req.schema) {
-      body.provider = { require_parameters: true };
-      if (config.reasoningConfig) body.reasoning = config.reasoningConfig;
-    }
     if (id === "openrouter" && accounting.getStore()?.managed) {
       body.provider = {
         allow_fallbacks: false,
@@ -689,7 +633,7 @@ const openAICompatible = (
       if (
         !(error instanceof ProviderError) ||
         error.kind !== "unsupported" ||
-        !req.schema || id === "openrouter"
+        !req.schema
       )
         throw error;
       delete body.response_format;
@@ -1265,14 +1209,14 @@ export async function generateStructured(
       ) {
         repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
         repairError.message =
-          `The model reached the ${request.maxOutputTokens?.toLocaleString('en-US') ?? 'configured'}-token response allowance twice, including any reasoning tokens. Submit a smaller change and try again. The last working artifact is retained. The spending limit controls cost but does not expand output or context capacity.`;
+          "The response exhausted the per-call output allowance twice. The last working artifact is retained. Split the submitted work or choose a model with a verified larger output allowance; the spending limit controls cost but does not expand output or context capacity.";
       } else if (
         repairError instanceof ProviderError &&
         repairError.kind === "invalid_output"
       ) {
         repairError.usage = mergeUsage(firstUsage, repairError.usage || {});
         repairError.message =
-          "The model returned invalid structured JSON twice. The last working artifact is retained. Submit a smaller change or choose another compatible model.";
+          "The model returned invalid structured JSON twice. The last working artifact is retained. Retry with a model that supports the Builder file schema.";
       }
       throw repairError;
     }

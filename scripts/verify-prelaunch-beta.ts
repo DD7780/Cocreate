@@ -9,10 +9,10 @@ import { SupabasePlatform } from "../server/supabase-platform.js";
 import { LocalWaitlist } from "../server/beta.js";
 
 process.env.NODE_ENV = "production";
-const { createTwoGuysOneCanvasServer } = await import("../server/index.js");
+const { createCoCreateServer } = await import("../server/index.js");
 const output = path.resolve("artifacts/prelaunch-beta/browser");
 fs.mkdirSync(output, { recursive: true });
-const directory = fs.mkdtempSync(path.join(os.tmpdir(), "2guys1canvas-beta-ui-"));
+const directory = fs.mkdtempSync(path.join(os.tmpdir(), "cocreate-beta-ui-"));
 const local = new LocalWaitlist(directory),
   approved = new Set(["owner", "approved"]);
 const platform = new SupabasePlatform({
@@ -36,7 +36,7 @@ platform.listProjects = async (token) => {
   await platform.requireBetaAccess(user.id);
   return { projects: [], total: 0, nextOffset: null };
 };
-const service = await createTwoGuysOneCanvasServer({
+const service = await createCoCreateServer({
   platform,
   port: 0,
   host: "127.0.0.1",
@@ -137,9 +137,9 @@ try {
   await call("Page.navigate", { url });
   await until("!!document.querySelector('.landing h1')");
   const desktop = await evaluate(
-    "({heading:document.querySelector('h1').innerText,forms:document.forms.length,video:!!document.querySelector('video,iframe'),planned:document.querySelector('.landing').textContent.includes('Automatic model selection based on the task is planned'),overflow:document.documentElement.scrollWidth>innerWidth})",
+    "({heading:document.querySelector('h1').innerText,forms:document.forms.length,video:!!document.querySelector('video,iframe'),planned:document.body.innerText.includes('Planned: automatic routing'),overflow:document.documentElement.scrollWidth>innerWidth})",
   );
-  assert.match(desktop.heading, /Meet\s+2guys1canvas/);
+  assert.match(desktop.heading, /One canvas/);
   assert.equal(desktop.forms, 1);
   assert.equal(desktop.video, false);
   assert.equal(desktop.planned, true);
@@ -268,12 +268,12 @@ try {
     ),
   );
   try {
-    await evaluate(`localStorage.setItem('2guys1canvas-session-fixture','old-ticket');localStorage.setItem('2guys1canvas-product-storage-fixture','old-cache');const originalFetch=window.fetch;window.fetch=(...args)=>String(args[0]).startsWith(${JSON.stringify(publicUrl + '/auth/v1/logout')})?Promise.resolve(new Response(null,{status:204})):originalFetch(...args);[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Log out / switch account')).click()`);
+    await evaluate(`localStorage.setItem('cocreate-session-fixture','old-ticket');localStorage.setItem('cocreate-product-storage-fixture','old-cache');const originalFetch=window.fetch;window.fetch=(...args)=>String(args[0]).startsWith(${JSON.stringify(publicUrl + '/auth/v1/logout')})?Promise.resolve(new Response(null,{status:204})):originalFetch(...args);[...document.querySelectorAll('button')].find(button=>button.textContent.includes('Log out / switch account')).click()`);
   } catch(error) {
     if (!/Inspected target navigated|Execution context was destroyed|Cannot find context/.test(String(error))) throw error;
   }
   await until("location.pathname==='/login' && !!document.querySelector('.auth-form')");
-  checks.accountSwitch=await evaluate("({returnTo:new URLSearchParams(location.search).get('returnTo'),cacheCleared:!localStorage.getItem('2guys1canvas-session-fixture')&&!localStorage.getItem('2guys1canvas-product-storage-fixture')})");
+  checks.accountSwitch=await evaluate("({returnTo:new URLSearchParams(location.search).get('returnTo'),cacheCleared:!localStorage.getItem('cocreate-session-fixture')&&!localStorage.getItem('cocreate-product-storage-fixture')})");
   assert.equal((checks.accountSwitch as any).returnTo,'/invite/retained-token');
   assert.equal((checks.accountSwitch as any).cacheCleared,true);
   await setSession('pending');

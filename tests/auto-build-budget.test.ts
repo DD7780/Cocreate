@@ -1,5 +1,3 @@
-import {isolationPolicy} from '../server/isolation.js';
-const compilationWaitMs=2*isolationPolicy.compileWallMs+2*isolationPolicy.wallMs;
 import fs from "node:fs";
 import os from "node:os";
 import path from "node:path";
@@ -9,7 +7,7 @@ import http from "node:http";
 import * as Y from "yjs";
 import { RoomManager } from "../server/rooms.js";
 
-const waitFor = async (check: () => boolean, timeout = compilationWaitMs) => {
+const waitFor = async (check: () => boolean, timeout = 5_000) => {
   const started = Date.now();
   while (Date.now() - started < timeout) {
     if (check()) return;

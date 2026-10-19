@@ -1,8 +1,3 @@
-import {collaborationBatchSize} from './room-state.js';
-import {SaveTrace} from './save-diagnostics.js';
-import {insertedSpans,deletedSpans,captureAuthoredPassages} from './authored-passages.js';
-import {replayCaptureJournal} from './capture-journal.js';
-import {MAX_CAPTURE_BYTES, captureCovers,decodeCaptureBytes,validCaptureId,type CaptureReceipt} from '../shared/capture-command.js';
 import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
 import {buildProgressFor} from "./build-progress.js";
 import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
@@ -37,7 +32,7 @@ import {
   parseIntentCommand,
 } from "./intent-commands.js";
 import type { IntentCommandResult, IntentCorrection } from "../shared/types.js";
-import { IsolationError, assertIsolationAvailable, safeIsolationDiagnostics } from "./isolation.js";
+import { IsolationError, assertIsolationAvailable } from "./isolation.js";
 import {
   captureArtifacts,
   versionArtifactBytes,
@@ -53,7 +48,7 @@ import { deletionSignature } from "../shared/document-state.js";
 import { applySteeringUpdate } from "./steering-edits.js";
 import fs from "node:fs";
 import path from "node:path";
-import { createHash, randomUUID } from "node:crypto";
+import { randomUUID } from "node:crypto";
 import * as Y from "yjs";
 import {
   Awareness,
@@ -138,7 +133,6 @@ import {
 import { BYOK_MODEL_VERSION, OpenRouterLeases } from "./byok-lease.js";
 import { aggregatePhysicalUsage } from "./usage-ledger.js";
 import { CoordinatorUnavailableError } from "./coordinator.js";
-const DOCUMENT_SAVE_TIMEOUT_MS=20_000;
 const colors = [
     "#5B6BE1",
     "#E05D7B",
@@ -168,7 +162,6 @@ const buildFingerprint = (room: Room) =>
   acceptedRequirementFingerprint(room.sharedRequirements, room.conflictGroups);
 
 export class RoomManager {
-  private closing=false;
   private lostOwnership = new Set<string>();
   private unsubscribeOwnership?: () => void;
   private coordinatorId = randomUUID();
@@ -180,7 +173,6 @@ export class RoomManager {
   private dataDir: string;
   private conflictQueue = new Map<string, Promise<unknown>>();
   constructor(private config: {
-    releaseFingerprint?:string;
     debounceMs: number;
     buildDebounceMs?: number;
     buildCooldownMs?: number;
@@ -263,7 +255,7 @@ export class RoomManager {
           verifiedAt: new Date().toISOString().slice(0, 10),
         },
         maxInputTokens,
-        maxOutputTokens,reasoningConfig:model.reasoningConfig,
+        maxOutputTokens,
       };
     };
     room.ai.personal = { connectionId: "byok", model: personalModel };
@@ -360,7 +352,6 @@ export class RoomManager {
         room.commandReceipts[
           JSON.stringify([submission.participantId, submission.requestId])
         ] = {
-          ...room.commandReceipts[JSON.stringify([submission.participantId,submission.requestId])],
           id: submission.id,
           participantId: submission.participantId,
           requestId: submission.requestId,
@@ -395,7 +386,7 @@ export class RoomManager {
       id,
       this.coordinatorId,
     );
-    const doc = new Y.Doc({gc:false}),
+    const doc = new Y.Doc(),
       awareness = new Awareness(doc),
       room: Room = {
         id,
@@ -435,7 +426,7 @@ export class RoomManager {
           origin as ClientSocket,
         );
       clearTimeout(room.saveTimer);
-      room.saveTimer = setTimeout(() => void this.saveDocument(room), 180);
+      room.saveTimer = setTimeout(() => this.save(room), 180);
     });
     awareness.on(
       "update",
@@ -477,8 +468,7 @@ export class RoomManager {
     const legacyFile = path.join(this.dataDir, `${room.id}.json`);
     if (!this.eventStore.hasWorkspace(room.id) && fs.existsSync(legacyFile))
         this.eventStore.importLegacyWorkspace(room.id, legacyFile);
-    const checkpoint = this.eventStore.readWorkspaceSnapshot<any>(room.id);
-    const meta = replayCaptureJournal(checkpoint,this.eventStore.captureRecords(room.id,checkpoint?.captureCursor||0));
+    const meta = this.eventStore.readWorkspaceSnapshot<any>(room.id);
     if (!meta)
         throw new Error(`Workspace ${room.id} has no recoverable state.`);
     if (meta.update)
@@ -515,7 +505,6 @@ export class RoomManager {
     room.intentReceipts = meta.intentReceipts;
     room.requirementRevisions = meta.requirementRevisions;
     room.commandReceipts = meta.commandReceipts;
-    room.captureCursor=meta.captureCursor||0;room.captureSources=new Map(Object.entries(meta.captureSources||{}));room.documentSequence=Math.max(Number(meta.documentSequence)||0,meta.editHistory?.at(-1)?.seq||0);
     room.recoveryCheckpoint = meta.recoveryCheckpoint;
     room.budgetResetReceipts = meta.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, this.eventStore.allProviderRequestRecordsForWorkspace(room.id));
@@ -580,7 +569,6 @@ export class RoomManager {
     room.intentReceipts = meta?.intentReceipts;
     room.requirementRevisions = meta?.requirementRevisions;
     room.commandReceipts = meta?.commandReceipts;
-    room.captureCursor=meta?.captureCursor||0;room.captureSources=new Map(Object.entries(meta?.captureSources||{}));room.documentSequence=Math.max(Number(meta?.documentSequence)||0,meta?.editHistory?.at(-1)?.seq||0);
     room.recoveryCheckpoint = meta?.recoveryCheckpoint;
     room.budgetResetReceipts = meta?.budgetResetReceipts;
     room.executionBudget = recoverWorkflowBudget(meta, meta?.providerLedger || []);
@@ -612,45 +600,23 @@ export class RoomManager {
     this.eventStore.recoverWorkflow(id);
     return room;
 }
-private saveDocument(room: Room): Promise<void> {
-    room.documentSaveRequested = true;
-    if (room.documentSaveTask) return room.documentSaveTask;
-    room.documentSaveTask = (async () => {
-      while (room.documentSaveRequested) {
-        // Capture the latest document after prior commits, rather than queuing stale full snapshots.
-        await room.persistQueue?.catch(() => {});
-        if (!room.documentSaveRequested) return;
-        room.documentSaveRequested = false;
-        await this.save(room);
-      }
-    })().catch(error => {
-      room.documentSaveRequested = false;
-      for (const client of room.clients)
-        this.sendJson(client, { type: "save-error", message: error instanceof Error ? error.message : "Document persistence failed." });
-    }).finally(() => {
-      room.documentSaveTask = undefined;
-      if (room.documentSaveRequested) void this.saveDocument(room);
-    });
-    return room.documentSaveTask;
-  }
-  save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system', trace?:SaveTrace): boolean | Promise<boolean> {
+  save(room: Room, eventType = 'workspace.snapshot_recorded', actorId = 'system', actorType: 'user' | 'personal_agent' | 'builder' | 'system' | 'tool' = 'system'): boolean | Promise<boolean> {
     this.assertOwned(room);
     if (room.intentCommit && eventType !== 'intent.command_recorded')
         return room.intentCommit.done.then(() => {
             try {
-                return this.save(room, eventType, actorId, actorType, trace);
+                return this.save(room, eventType, actorId, actorType);
             }
             catch {
                 return false;
             }
         });
     if (room.pendingPromotion && eventType !== 'product.promoted')
-        return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType, trace));
-    const progress=new SaveTrace({revision:room.persistRevision+1});trace?.attach(progress);progress.start('snapshot-prepare');
+        return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType));
     room.commandReceipts ||= {};
     for (const item of room.submissions)
         room.commandReceipts[JSON.stringify([item.participantId, item.requestId])] = {
-            id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status,payloadHash:item.payloadHash,interrupted:item.interrupted,outcome:item.outcome,productVersion:item.productVersion,error:item.error
+            id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status
         };
     room.requirementRevisions ||= [];
     if (room.requirementRevisions.at(-1)?.revision !== room.specificationRevision)
@@ -661,25 +627,18 @@ private saveDocument(room: Room): Promise<void> {
     room.persistRevision++;
     room.savedAt = now();
     const payload = {
-        captureCursor:room.captureCursor||0,captureSources:Object.fromEntries(room.captureSources||[]),
-        documentSequence: room.documentSequence, interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
+        interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, intentReceipts: room.intentReceipts, artifactHistory: captured.artifactHistory, artifactManifest: room.artifactManifest, update: Buffer.from(Y.encodeStateAsUpdate(room.doc)).toString('base64'), participants: [...room.participants.values()].map(p => ({
             ...p, active: false, agentStatus: 'idle'
         })), ownerId: room.ownerId, requirements: room.requirements, sharedRequirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, versions: room.versions.slice(-6), aiRuns: room.aiRuns.slice(-50), providerCalls: room.providerCalls.slice(-500), runWindow: room.runWindow, ai: room.ai, editHistory: room.editHistory.slice(-1000), submissions: retainSubmissions(room.submissions), requestedRevision: room.requestedRevision, usage: room.usage, budgetWindow: room.budgetWindow, lastBuildAt: room.lastBuildAt, lastBuiltFingerprint: room.lastBuiltFingerprint, lastBuiltRequirements: room.lastBuiltRequirements, persistRevision: room.persistRevision, savedAt: room.savedAt, status: room.status, lastError: room.lastError, commandReceipts: room.commandReceipts, requirementRevisions: room.requirementRevisions, recoveryCheckpoint: room.recoveryCheckpoint, executionBudget: room.executionBudget, budgetResetReceipts: room.budgetResetReceipts, pending: [...room.pending], agentRevisions: [...room.agentRevisions]
     };
-    const revision = room.persistRevision, savedAt = room.savedAt, documentSequence = room.documentSequence || 0, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
+    const revision = room.persistRevision, savedAt = room.savedAt, deletions = deletionSignature(room.doc), vector = Buffer.from(Y.encodeStateVector(room.doc)).toString('base64');
     this.eventStore.saveWorkspaceSnapshot(room.id, payload, eventType, actorId, actorType);
-    const committedDocument={revision,savedAt,documentSequence,vector:Buffer.from(vector,'base64'),deletions};
     if (this.config.durableStore) {
         const snapshot = structuredClone({
             ...payload, artifactBodies: captured.artifactBodies, harnessProjection: this.eventStore.exportHarness(room.id)
         }), prior = room.persistQueue || Promise.resolve();
-        progress.end('snapshot-prepare');progress.start('canonical-queue');
-        let write:NonNullable<Room['snapshotWrite']>;
         const saving = prior.catch(() => {
-        }).then(() => {progress.end('canonical-queue');return this.config.durableStore!.saveSnapshot(room.id, revision, snapshot, progress)}).then(result => {
-            room.persistedDocumentSequence = documentSequence;
-            room.committedDocument=committedDocument;
-            progress.committed();
+        }).then(() => this.config.durableStore!.saveSnapshot(room.id, revision, snapshot)).then(result => {
             room.artifactHistory = captured.artifactHistory;
             const manifest = (result as {
                 artifactManifest?: ArtifactReference[];
@@ -697,8 +656,7 @@ private saveDocument(room: Room): Promise<void> {
                     type: 'save-error', revision, message: error instanceof Error ? error.message : 'Remote persistence failed.'
                 });
             return false;
-        }).finally(()=>{write.pending=false});
-        write={progress,pending:true,promise:saving};room.snapshotWrite=write;
+        });
         room.persistQueue = saving;
         return saving;
     }
@@ -722,7 +680,6 @@ private saveDocument(room: Room): Promise<void> {
         fs.copyFileSync(temp, target);
         fs.unlinkSync(temp);
     }
-    progress.end('snapshot-prepare');room.committedDocument=committedDocument;
     for (const client of room.clients)
         this.sendJson(client, {
             type: 'saved', revision, savedAt, vector, deletions
@@ -807,20 +764,8 @@ private saveDocument(room: Room): Promise<void> {
         const msg = JSON.parse(data.toString());
         if (msg.type === "awareness-client" && Number.isInteger(msg.clientId))
           ws.awarenessClientId = msg.clientId;
-        if(msg.type==='document-update'||msg.type==='document-updates'){
-          if(ws.role==='viewer'){this.sendJson(ws,{type:'permission-error',message:'Viewers cannot edit this project.'});return;}
-          const sources=msg.type==='document-updates'?msg.updates:[{id:msg.sourceId,update:msg.update}];
-          if(!Array.isArray(sources)||sources.length>32)throw new Error('Invalid collaboration source batch.');
-          let size=0;const ids=new Set<string>();
-          const updates=sources.map(source=>{
-            if(!source||!validCaptureId(source.id)||ids.has(source.id))throw new Error('Invalid source identity.');
-            ids.add(source.id);const bytes=decodeCaptureBytes(source.update);size+=bytes.length;
-            return {id:source.id,bytes};
-          });
-          if(size>MAX_CAPTURE_BYTES)throw new Error('Collaboration source batch exceeds its limit.');
-          for(const update of updates)this.applyDocumentSource(room,p.id,update.bytes,update.id,ws);
-        }
-        if(msg.type==='flush'&&typeof msg.requestId==='string')void this.flushDocument(room,ws,msg.requestId);
+        if (msg.type === "flush" && typeof msg.requestId === "string")
+          void this.flushDocument(room, ws, msg.requestId);
       } catch {}
       return;
     }
@@ -838,46 +783,22 @@ private saveDocument(room: Room): Promise<void> {
       });
       return;
     }
-    this.applyDocumentSource(room,p.id,payload,undefined,ws);
-  }
-  private applyDocumentSource(room:Room,actorId:string,payload:Uint8Array,sourceId?:string,socket?:ClientSocket):EditRecord|undefined{
-    const p=room.participants.get(actorId);
-    if(!p)throw new Error('Participant not found.');
-    const sourceHash=createHash('sha256').update(payload).digest('hex');
-    const known=sourceId&&(room.captureSources?.get(sourceId)||room.editHistory.find(edit=>edit.sourceId===sourceId));
-    if(known){
-      const actor='actorId' in known?known.actorId:known.participantId,hash='hash' in known?known.hash:known.sourceHash;
-      if(actor!==actorId||hash!==sourceHash)throw Object.assign(new Error('Source identity conflicts with authenticated provenance.'),{status:409});
-      return room.editHistory.find(edit=>edit.sourceId===sourceId);
-    }
-    const probe=new Y.Doc();
-    try{
-      Y.applyUpdate(probe,Y.encodeStateAsUpdate(room.doc));Y.applyUpdate(probe,payload);
-      if(!captureCovers(Buffer.from(payload).toString('base64'),{vector:Buffer.from(Y.encodeStateVector(probe)).toString('base64'),deletions:deletionSignature(probe)}))throw new Error('Source dependencies are missing. Reconnect before capturing.');
-    }finally{probe.destroy()}
-    const ws=socket||({participantId:actorId,readyState:0} as ClientSocket);
     const vector = Y.encodeStateVector(room.doc),
-      beforeDeletions=deletionSignature(room.doc),
       before = documentText(room.doc);
     const insertedText = applySteeringUpdate(room.doc, payload, ws);
     const after = documentText(room.doc);
     if (before === after && equalBytes(vector, Y.encodeStateVector(room.doc)))
       return;
     const record: EditRecord = {
-      seq: Math.max(room.documentSequence || 0, room.editHistory.at(-1)?.seq || 0) + 1,
+      seq: (room.editHistory.at(-1)?.seq || 0) + 1,
       participantId: p.id,
-      sourceId,sourceHash,
-      authoredSpans:insertedSpans(payload,vector),
-      deletedSpans:deletedSpans(payload,beforeDeletions),
       at: now(),
-      update: Buffer.from(payload).toString("base64"),
+      update: payload.toString("base64"),
       kind: kindOf(before, after),
       ...authenticatedDelta(before, after),
       after: insertedText,
     };
-    if(sourceId){room.captureSources||=new Map();room.captureSources.set(sourceId,{actorId,hash:sourceHash});}
     room.editHistory.push(record);
-    room.documentSequence = record.seq;
     room.editHistory = room.editHistory.slice(-1000);
     this.eventStore.recordDocumentUpdate(room.id, p.id, record.seq, payload, {
       editSeq: record.seq,
@@ -897,8 +818,7 @@ private saveDocument(room: Room): Promise<void> {
             payload,
           ),
         );
-      void room.documentQueue.catch((error) => {
-        if ((room.persistedDocumentSequence || 0) >= record.seq) return;
+      void room.documentQueue.catch((error) =>
         this.sendJson(ws, {
           type: "save-error",
           revision: room.persistRevision,
@@ -906,95 +826,38 @@ private saveDocument(room: Room): Promise<void> {
             error instanceof Error
               ? error.message
               : "Remote update persistence failed.",
-        });
-      });
+        }),
+      );
     }
     if (record.before || record.after) this.queueEdit(room, p, record);
-    return record;
   }
-  private async flushDocument(room: Room, ws: ClientSocket, requestId: string, trace=new SaveTrace({requestId})) {
-    let timer: ReturnType<typeof setTimeout> | undefined;
-    let expired=false;
+  private async flushDocument(room: Room, ws: ClientSocket, requestId: string) {
     try {
-      clearTimeout(room.saveTimer);
-      room.documentSaveRequested = false;
-      trace.start('save-wait');
-      const target={vector:Y.decodeStateVector(Y.encodeStateVector(room.doc)),deletions:deletionSignature(room.doc),sequence:room.documentSequence||0};
-      const persist=async()=>{
-        this.assertOwned(room);
-        if(room.intentCommit)await room.intentCommit.done;
-        if(room.pendingPromotion)await room.persistQueue;
-        this.assertOwned(room);
-        if(expired)return false;
-        const pending=room.snapshotWrite;
-        if(pending?.pending){
-          trace.attach(pending.progress);
-          if(!await pending.promise)return false;
-          this.assertOwned(room);
-        }
-        if(expired)return false;
-        const receipt=room.committedDocument;
-        if(receipt&&receipt.documentSequence>=target.sequence&&receipt.deletions===target.deletions){
-          const saved=Y.decodeStateVector(receipt.vector);
-          if([...target.vector].every(([id,clock])=>(saved.get(id)||0)>=clock)){
-            this.sendJson(ws,{type:'saved',revision:receipt.revision,savedAt:receipt.savedAt,vector:Buffer.from(receipt.vector).toString('base64'),deletions:receipt.deletions});
-            return true;
-          }
-        }
-        return this.save(room,'workspace.snapshot_recorded','system','system',trace);
-      };
-      // Reuse only a confirmed covering receipt; the recovery journal is independent.
-      const confirmed = await Promise.race([
-        persist(),
-        new Promise<never>((_, reject) => {
-          timer = setTimeout(() => {expired=true;reject(new Error("Save acknowledgement timed out; the remote save outcome is unknown. No build was started. Your edits remain on this page; check the connection and try again."))}, DOCUMENT_SAVE_TIMEOUT_MS);
-        }),
-      ]);
-      if (confirmed === false)
-        throw new Error("The document save was not confirmed. No build was started. Your edits remain on this page; check the connection and try again.");
-      this.assertOwned(room);
-      trace.end('save-wait');trace.start('delivery');
-      await this.sendJson(ws, { type: "flushed", requestId },trace);
-      trace.end('delivery');trace.finish(ws.readyState===1?'acknowledged':'closed');
+      await room.documentQueue?.catch(() => {});
+      if ((await this.save(room)) === false)
+        throw new Error("The document could not be durably saved.");
+      this.sendJson(ws, { type: "flushed", requestId });
     } catch (error) {
-      trace.end('save-wait');trace.start('delivery');
-      if(expired)trace.finish('unknown');
-      await this.sendJson(ws, {
+      this.sendJson(ws, {
         type: "flush-error",
         requestId,
         message:
           error instanceof Error
             ? error.message
             : "Document persistence failed. No build started.",
-      },trace);
-      trace.end('delivery');trace.finish(expired?'unknown':'failed');
-    } finally {
-      clearTimeout(timer);
+      });
     }
   }
-  private sendPacket(ws: ClientSocket, data: string | Buffer, trace?:SaveTrace) {
+  private sendPacket(ws: ClientSocket, data: string | Buffer) {
     if (ws.readyState !== 1) return;
     if (!ws.authorizeRead) {
       ws.send(data);
       return;
     }
-    if (ws.deliveryBatch && ws.deliveryBatch.length < collaborationBatchSize) {
-      ws.deliveryBatch.push({data,trace});
-      return ws.deliveryQueue;
-    }
-    const batch = [{data,trace}];
-    ws.deliveryBatch = batch;
     ws.deliveryQueue = (ws.deliveryQueue || Promise.resolve())
       .then(async () => {
-        if (ws.deliveryBatch === batch) ws.deliveryBatch = undefined;
-        if (ws.readyState !== 1) return;
-        const traces=[...new Set(batch.flatMap(packet=>packet.trace?[packet.trace]:[]))];
-        for(const trace of traces)trace.start('delivery-authority');
-        try{await ws.authorizeRead!()}finally{for(const trace of traces)trace.end('delivery-authority')}
-        for (const packet of batch) {
-          if (ws.readyState !== 1) return;
-          ws.send(packet.data);
-        }
+        await ws.authorizeRead!();
+        if (ws.readyState === 1) ws.send(data);
       })
       .catch((error) => {
         ws.close(
@@ -1004,7 +867,6 @@ private saveDocument(room: Room): Promise<void> {
             : "Project access changed",
         );
       });
-    return ws.deliveryQueue;
   }
   private sendSync(ws: ClientSocket, room: Room) {
     this.sendPacket(
@@ -1035,8 +897,8 @@ private saveDocument(room: Room): Promise<void> {
     for (const c of room.clients)
       if (c !== except && c.readyState === 1) this.sendPacket(c, data);
   }
-  private sendJson(ws: ClientSocket, data: unknown, trace?:SaveTrace) {
-    return this.sendPacket(ws, JSON.stringify(data),trace);
+  private sendJson(ws: ClientSocket, data: unknown) {
+    this.sendPacket(ws, JSON.stringify(data));
   }
   private broadcastState(room: Room) {
     const state = this.view(room);
@@ -1315,7 +1177,6 @@ private saveDocument(room: Room): Promise<void> {
         provider: "openrouter",
         maxInputTokens: expected.maxInputTokens,
         maxOutputTokens: expected.maxOutputTokens,
-        reasoningConfig: expected.reasoningConfig,
         workflowInstruction: workflowInstruction("developer"),
         presetVersion: setup.presetVersion,
         pricingVersion: setup.pricingVersion,
@@ -2064,7 +1925,7 @@ private saveDocument(room: Room): Promise<void> {
             };
             const result = await this.tracked(room, {
                 purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
-            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements),submission?.authoredPassages));
+            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements)));
             this.recordUsage(room, 'personal', result.usage, reservation, usageMeta);
             if (controller.signal.aborted) {
                 if (!submittedBatch)
@@ -2136,28 +1997,6 @@ private saveDocument(room: Room): Promise<void> {
     room.agentTasks.set(participantId, task);
     return task;
 }
-  /** Read-only bridge for commands captured before the workflow restoration. */
-  async captureReceipt(room:Room,actorId:string,requestId:string):Promise<CaptureReceipt|undefined>{
-    if(!validCaptureId(requestId))throw new Error('Invalid capture request identity.');
-    this.assertOwned(room);
-    await this.config.durableStore?.assertCoordinator?.(room.id);
-    await this.config.authorizeSubmission?.(room.id,actorId);
-    const record=this.config.durableStore
-      ?await this.config.durableStore.readCapture?.(room.id,actorId,requestId)
-      :this.eventStore.captureRecord(room.id,actorId,requestId);
-    this.assertOwned(room);
-    await this.config.authorizeSubmission?.(room.id,actorId);
-    if(!record)return undefined;
-    const receipt=room.commandReceipts?.[JSON.stringify([actorId,requestId])];
-    const submission=room.submissions.find(item=>item.id===record.submission.id)||record.submission;
-    const status=receipt?.status||submission.status;
-    const productVersion=receipt?.productVersion??submission.productVersion??null;
-    const state:CaptureReceipt['state']=status==='failed'?'failed':productVersion!==null?'available':status==='interpreting'?'interpreting':status==='queued'?'queued':'captured';
-    return {durable:true,commandId:record.submission.id,requestId,actorId,cursor:record.cursor,
-      sourceRevision:record.submission.documentRevision,acceptedRevision:room.specificationRevision,state,productVersion,
-      message:'This command predates the restored workflow. Reload to continue; its recorded identity is retained.'};
-  }
-
   async submitChanges(room: Room, participantId: string, requestId: string) {
     this.assertOwned(room);
     if (!this.hasAI(room))
@@ -2182,7 +2021,7 @@ private saveDocument(room: Room): Promise<void> {
     if (!assignment)
         throw new Error('No personal model is assigned.');
     const submission: StoredSubmission = {
-        capturedChanges: structuredClone(batch), authoredPassages:captureAuthoredPassages(room.doc,batch,{vector:Buffer.from(Y.encodeStateVector(room.doc)).toString('base64'),deletions:deletionSignature(room.doc)},room.editHistory), id: randomUUID(), requestId, participantId,
+        capturedChanges: structuredClone(batch), id: randomUUID(), requestId, participantId,
         editSeqs: batch.map(item => item.seq), documentRevision: room.agentRevisions.get(participantId) || 0,
         intentContext: acceptedContext(room.sharedRequirements), snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
         previousInterpretationId: participant.latest?.id, createdAt: now(), status: 'submitted', assignment: structuredClone(assignment), setup
@@ -2300,7 +2139,7 @@ private saveDocument(room: Room): Promise<void> {
             room.buildTask = undefined;
             room.buildingRevision = undefined;
             room.buildAdmissionClosed = false;
-            if (this.closing || !this.rooms.has(room.id) || this.lostOwnership.has(room.id))
+            if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
                 return;
             if (room.buildNeedsRestart) {
                 room.buildNeedsRestart = false;
@@ -2395,7 +2234,6 @@ private saveDocument(room: Room): Promise<void> {
             room.pendingBuildSince = undefined;
             const blocked = hasOpenContradictions(room.conflictGroups);
             room.status = blocked ? 'Decision needed' : 'Waiting for ideas';
-            if(!blocked)for(const submission of room.submissions.filter(item=>item.status==='queued')){submission.status='built';submission.outcome='no_build_needed';}
             this.workflowPhase(room, 'awaiting_input', {
                 specificationRevision, reason: blocked ? 'A requirement decision is pending.' : 'No accepted requirements are eligible for execution.'
             });
@@ -2430,7 +2268,7 @@ private saveDocument(room: Room): Promise<void> {
         room.status = 'Building';
         room.lastError = undefined;
         this.broadcastState(room);
-        let evidence: CandidateVerification | undefined, operationsApplied = false, compilationPassed = false,failureStage='compiler',candidateSourceHash:string|undefined;
+        let evidence: CandidateVerification | undefined, operationsApplied = false, compilationPassed = false;
         const verificationPlan = planVerification(requirements, specificationRevision);
         builderConfig.verificationChecks = verificationPlan.kinds;
         try {
@@ -2451,7 +2289,7 @@ private saveDocument(room: Room): Promise<void> {
                 room.recoveryCheckpoint = {
                     fingerprint, revision: specificationRevision, files: checkpoint.files, task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
                 };
-                const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.2guys1canvas.recovery+json');
+                const artifact = this.eventStore.writeArtifact(JSON.stringify(checkpoint), 'application/vnd.cocreate.recovery+json');
                 this.eventStore.append({
                     workspaceId: room.id, runId, actorId: 'builder', actorType: 'builder', eventType: 'build.task_checkpointed', inputRevision: specificationRevision, artifactRef: artifact.ref, payload: {
                         task: checkpoint.task, index: checkpoint.index, total: checkpoint.total
@@ -2468,23 +2306,12 @@ private saveDocument(room: Room): Promise<void> {
                 css: string;
             } | undefined, plan: Awaited<ReturnType<typeof generateProjectPlan>>['value'] | undefined, lastFailure = '', attempts = 0;
             await assertIsolationAvailable(controller.signal);
-            failureStage='verification';
             if (verificationPlan.kinds.length)
                 await assertVerificationBrowserAvailable(controller.signal);
-            failureStage='compiler';
-            const retainedCompile=room.recoveryCheckpoint?.fingerprint===fingerprint&&room.recoveryCheckpoint.revision===specificationRevision?room.recoveryCheckpoint:undefined;
-            if(retainedCompile?.compileRetry&&(retainedCompile.compileRetry.expiresAt<=Date.now()||retainedCompile.compileRetry.sourceHash!==sourceHash(retainedCompile.files)))throw new Error('The retained compiler candidate is expired or inconsistent. Submit an explicit new build request after reviewing the accepted requirements; no model was called.');
-            if(retainedCompile?.compileRetry&&retainedCompile.compileRetry.expiresAt>Date.now()&&retainedCompile.compileRetry.sourceHash===sourceHash(retainedCompile.files)){
-                working=retainedCompile.files;plan={operations:[],...retainedCompile.compileRetry.plan};
-                candidateSourceHash=sourceHash(working);operationsApplied=true;
-                this.eventStore.append({workspaceId:room.id,runId,actorId:'coordinator',actorType:'system',eventType:'build.infrastructure_retry',inputRevision:specificationRevision,contentHash:sourceHash(working),payload:{sourceRunId:retainedCompile.compileRetry.runId,releaseFingerprint:this.config.releaseFingerprint,providerCalls:0}});
-                compiled=await this.tools.execute('project.bundle',{files:working},toolContext);compilationPassed=true;
-            }
-            for (let attempt = 0; attempt < maxAttempts&&!compiled; attempt++) {
+            for (let attempt = 0; attempt < maxAttempts; attempt++) {
                 attempts = attempt + 1;
                 let reservation: BudgetReservation | undefined;
                 try {
-                    failureStage='provider';
                     reservation = this.reserveBudget(room, 'builder', frozenSetup, 2);
                     const result = await this.tracked(room, {
                         purpose: attempt ? 'compilation_repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model, workflowRunId: runId, actorId: queuedSubmissions[0]?.participantId || room.ownerId || undefined, setup: frozenSetup, estimatedOutputTokens: builderConfig.maxOutputTokens
@@ -2500,12 +2327,10 @@ private saveDocument(room: Room): Promise<void> {
                     });
                     throw error;
                 }
-                failureStage='source_validation';
                 working = (await this.tools.execute('project.apply_operations', {
                     current: working, operations: plan.operations
                 }, toolContext)).files;
                 operationsApplied = true;
-                candidateSourceHash=sourceHash(working);failureStage='compiler';
                 try {
                     const available = room.versions.at(-1), retained = available && {
                         javascript: available.bundle, css: available.css || ''
@@ -2527,14 +2352,8 @@ private saveDocument(room: Room): Promise<void> {
                     break;
                 }
                 catch (error) {
-                    if (error instanceof IsolationError){
-                        if(error.code!=='isolation_cancelled'){
-                            const {operations,...metadata}=plan;
-                            room.recoveryCheckpoint={fingerprint,revision:specificationRevision,files:structuredClone(working),task:'Retry isolated compilation',index:1,total:1,compileRetry:{runId,sourceHash:sourceHash(working),expiresAt:Date.now()+24*60*60_000,plan:structuredClone(metadata)}};
-                            if(await this.save(room,'build.compiler_candidate_retained')===false)throw new Error('Compiler failed; candidate persistence is unconfirmed. Reopen to reconcile before retrying.');
-                        }
+                    if (error instanceof IsolationError)
                         throw error;
-                    }
                     lastFailure = error instanceof Error ? error.message : String(error);
                     if (attempt < maxAttempts - 1) {
                         this.eventStore.transitionRun({
@@ -2562,7 +2381,6 @@ private saveDocument(room: Room): Promise<void> {
                 workspaceId: room.id, taskId: runId, state: 'verifying', evidenceStatus: 'pending'
             });
             this.broadcastState(room);
-            failureStage='verification';
             evidence = await this.tools.execute('project.verify', {
                 files: working, compiled, requirements
             }, toolContext);
@@ -2573,7 +2391,7 @@ private saveDocument(room: Room): Promise<void> {
                 }
             });
             if (await this.save(room, 'build.verification_recorded', 'verification', 'system') === false)
-                throw new Error('Verification evidence could not be durably saved.');
+                throw new Error('Verification evidence could not be durably saved. The previous artifact is retained.');
             assertPromotionEvidence(evidence, working, compiled, requirements, specificationRevision);
             if (!shouldPromoteRevision(revision, room.requestedRevision) || fingerprint !== buildFingerprint(room)) {
                 this.eventStore.transitionRun({
@@ -2592,13 +2410,12 @@ private saveDocument(room: Room): Promise<void> {
             this.assertOwned(room);
             if (fingerprint !== buildFingerprint(room))
                 throw new Error('A newer specification superseded this candidate.');
-            failureStage='promotion';
             const priorPromotion = {
                 versions: [...room.versions], aiRuns: [...room.aiRuns], runWindow: room.runWindow, fingerprint: room.lastBuiltFingerprint, requirements: room.lastBuiltRequirements, recoveryCheckpoint: room.recoveryCheckpoint, budgetWindow: room.budgetWindow
             };
             const preparedArtifact = bodyFromBytes(versionArtifactBytes(room.id, {
                 id: Math.max(0, ...room.versions.map(version => version.id), ...(room.artifactHistory || []).map(version => version.id)) + 1, files: working, bundle: compiled.javascript, css: compiled.css
-            }), 'application/vnd.2guys1canvas.product+json');
+            }), 'application/vnd.cocreate.product+json');
             await this.config.durableStore?.publishArtifactBodies?.(room.id, [preparedArtifact]);
             this.assertOwned(room);
             await this.config.durableStore?.assertCoordinator?.(room.id);
@@ -2609,7 +2426,6 @@ private saveDocument(room: Room): Promise<void> {
             this.assertOwned(room);
             if (controller.signal.aborted || fingerprint !== buildFingerprint(room))
                 throw new ProviderError('cancelled', 'Accepted intent changed.');
-            failureStage='promotion';
             await this.tools.execute('project.promote', {
                 files: working
             }, {
@@ -2642,9 +2458,8 @@ private saveDocument(room: Room): Promise<void> {
             room.pendingBuildSince = undefined;
             room.status = 'Updated';
             room.budgetWindow = undefined;
-            for (const submission of queuedSubmissions){
-                submission.status = 'built';submission.productVersion=version.id;
-            }
+            for (const submission of queuedSubmissions)
+                submission.status = 'built';
             let committed = false, promotionError: unknown;
             try {
                 committed = await this.save(room, 'product.promoted', 'builder', 'builder') !== false;
@@ -2663,9 +2478,8 @@ private saveDocument(room: Room): Promise<void> {
                 room.lastBuiltRequirements = priorPromotion.requirements;
                 room.recoveryCheckpoint = priorPromotion.recoveryCheckpoint;
                 room.budgetWindow = priorPromotion.budgetWindow;
-                for (const submission of queuedSubmissions){
-                    submission.status = 'queued';delete submission.productVersion;
-                }
+                for (const submission of queuedSubmissions)
+                    submission.status = 'queued';
                 const oldFiles = room.versions.at(-1)?.files;
                 let owned = true;
                 try {
@@ -2676,7 +2490,7 @@ private saveDocument(room: Room): Promise<void> {
                 }
                 if (oldFiles && owned)
                     persistProject(room.id, oldFiles);
-                throw promotionError || new Error('Artifact promotion could not be durably saved; reopen to reconcile canonical status.');
+                throw promotionError || new Error('Artifact promotion could not be durably saved; the last working artifact is retained.');
             }
             this.compiledVersions.add(version);
             this.eventStore.transitionRun({
@@ -2735,7 +2549,7 @@ private saveDocument(room: Room): Promise<void> {
             });
             this.eventStore.transitionRun({
                 workspaceId: room.id, runId, kind: 'builder', state: 'failed', inputRevision: specificationRevision, error: message, payload: {
-                    configuration, budget: room.budgetWindow,stage:failureStage,releaseFingerprint:this.config.releaseFingerprint,candidateSourceHash,isolation:error instanceof IsolationError?safeIsolationDiagnostics(error.cause):undefined
+                    configuration, budget: room.budgetWindow
                 }
             });
             this.eventStore.transitionTask({
@@ -2745,8 +2559,7 @@ private saveDocument(room: Room): Promise<void> {
                 taskId: runId, reason: message
             });
             room.status = 'Error';
-            const recovery=failureStage==='compiler'?'Repair the isolated compiler runtime, then explicitly Retry build. A matching retained candidate is recompiled without another model call.':failureStage==='verification'?'Review the failed checks before explicitly retrying; compilation alone does not verify the request.':failureStage==='promotion'?'Reopen to reconcile canonical product status before retrying.':'Review the reported provider/source error before explicitly retrying.';
-            room.lastError = `${failureStage.replace('_',' ')} failed: ${message} Build r${specificationRevision}; run ${runId}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : recovery}`;
+            room.lastError = `${message} Build r${specificationRevision}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : 'Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.'}`;
             await this.save(room, 'build.failed', 'builder', 'builder');
             this.broadcastState(room);
             return;
@@ -3064,7 +2877,6 @@ private saveDocument(room: Room): Promise<void> {
           revision,
           undefined,
           acceptedContext(room.sharedRequirements),
-          [...room.submissions].reverse().find(submission=>submission.participantId===participantId&&submission.editSeqs.length===previous.sourceEditSeqs.length&&submission.editSeqs.every(seq=>previous.sourceEditSeqs.includes(seq)))?.authoredPassages,
         );
       this.recordUsage(room, "personal", result.usage, undefined, {
         phase: "interpretation",
@@ -3130,7 +2942,7 @@ private saveDocument(room: Room): Promise<void> {
     if (correction) {
       const text = documentText(room.doc),
         record: EditRecord = {
-          seq: Math.max(room.documentSequence||0,room.editHistory.at(-1)?.seq || 0) + 1,
+          seq: (room.editHistory.at(-1)?.seq || 0) + 1,
           participantId,
           at: now(),
           update: "manual-correction",
@@ -3332,23 +3144,7 @@ private saveDocument(room: Room): Promise<void> {
       archived,
     );
   }
-async drain(){
-    this.closing=true;
-    for(const room of this.rooms.values()){
-      clearTimeout(room.buildTimer);room.buildTimer=undefined;
-      for(const controller of room.agentControllers.values())controller.abort();
-      room.buildController?.abort();
-    }
-    await Promise.allSettled([...this.rooms.values()].map(room=>room.captureQueue));
-    await new Promise(resolve=>setImmediate(resolve));
-    for(const room of this.rooms.values()){
-      await Promise.allSettled([room.steeringQueue,room.buildTask,...room.agentTasks.values(),...room.submissionTasks?.values()||[]]);
-      clearTimeout(room.saveTimer);
-      await Promise.allSettled([room.persistQueue,room.documentQueue]);
-    }
-  }
   shutdown() {
-    this.closing=true;
     this.unsubscribeOwnership?.();
     clearInterval(this.heartbeat);
     for (const room of this.rooms.values()) {
@@ -3425,7 +3221,7 @@ private queueCapturedSubmission(room: Room, submission: StoredSubmission, saved:
             this.restoreCapturedSubmission(room, submission, 'Submission persistence failed; edits retained. Submit again.');
             throw new Error(submission.error);
         }
-        if (this.closing || submission.status !== 'submitted' || room.buildAdmissionClosed || room.buildTask)
+        if (submission.status !== 'submitted' || room.buildAdmissionClosed || room.buildTask)
             return;
         this.assertOwned(room);
         await this.runAgent(room, submission.participantId, submission.capturedChanges || [], submission);
@@ -3456,7 +3252,7 @@ private restoreCapturedSubmission(room: Room, submission: StoredSubmission, mess
 }
 
 private resumeCapturedSubmissions(room: Room) {
-    if (this.closing || !this.rooms.has(room.id) || this.lostOwnership.has(room.id))
+    if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
         return;
     if (room.status === 'Error' || !this.hasAI(room)) {
         for (const submission of room.submissions.filter(item => item.status === 'submitted')) {

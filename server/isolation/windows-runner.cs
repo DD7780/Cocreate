@@ -45,9 +45,8 @@ public static class IsolationRunner {
   access.AddAccessRule(new FileSystemAccessRule(sid,rights,InheritanceFlags.ContainerInherit|InheritanceFlags.ObjectInherit,PropagationFlags.None,AccessControlType.Allow));
   Directory.SetAccessControl(directory,access);
  }
- static bool OwnProfile(string profile) { return profile.StartsWith("twoguysonecanvas.isolation.",StringComparison.Ordinal)||profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal); }
  public static int Main(string[] args) {
-  if(args.Length==2&&args[0]=="cleanup"&&OwnProfile(args[1])) { DeleteAppContainerProfile(args[1]);return 0; }
+  if(args.Length==2&&args[0]=="cleanup"&&args[1].StartsWith("cocreate.isolation.",StringComparison.Ordinal)) { DeleteAppContainerProfile(args[1]);return 0; }
   IntPtr sid=IntPtr.Zero,job=IntPtr.Zero,attributes=IntPtr.Zero,capsPtr=IntPtr.Zero,handlesPtr=IntPtr.Zero,env=IntPtr.Zero;
   PROCESS_INFORMATION process=new PROCESS_INFORMATION(); string profile=null;bool created=false;
   try {
@@ -55,9 +54,9 @@ public static class IsolationRunner {
    if(args.Length!=6&&!browser)throw new ArgumentException("Invalid launcher request.");
    string runtime=Path.GetFullPath(args[0]),workspace=Path.GetFullPath(args[1]);
    profile=args[2];int parentId=int.Parse(args[3]),timeout=int.Parse(args[4]);bool permission=args[5]=="restricted";
-   if(!OwnProfile(profile)||timeout<10||timeout>60000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
+   if(!profile.StartsWith("cocreate.isolation.",StringComparison.Ordinal)||timeout<10||timeout>20000||Path.GetFileName(workspace).Length!=36)throw new ArgumentException("Invalid isolation bounds.");
    var parent=Process.GetProcessById(parentId);DateTime parentStarted=parent.StartTime;
-   int hr=CreateAppContainerProfile(profile,profile,"Disposable 2guys1canvas compiler",IntPtr.Zero,0,out sid);
+   int hr=CreateAppContainerProfile(profile,profile,"Disposable CoCreate compiler",IntPtr.Zero,0,out sid);
    if(hr!=0)Marshal.ThrowExceptionForHR(hr);created=true;
    Grant(runtime,new SecurityIdentifier("S-1-15-2-1"),FileSystemRights.ReadAndExecute);
    Grant(workspace,new SecurityIdentifier(sid),FileSystemRights.ReadAndExecute);
@@ -82,7 +81,7 @@ public static class IsolationRunner {
    // Rebuild environment rather than inheriting provider/deployment secrets or Node injection flags.
    env=Marshal.StringToHGlobalUni("APPDATA="+Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\0LOCALAPPDATA="+Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)+"\0NODE_ENV=production\0SystemRoot="+Environment.GetFolderPath(Environment.SpecialFolder.Windows)+"\0USERPROFILE="+Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)+"\0UV_THREADPOOL_SIZE=1\0\0");
    string node=Path.Combine(runtime,"node.exe"),worker=Path.Combine(runtime,"worker.cjs"),input=Path.Combine(workspace,"input.json");
-   var command=new StringBuilder(Quote(node)+" --preserve-symlinks --preserve-symlinks-main --wasm-lazy-compilation --no-wasm-tier-up --wasm-num-compilation-tasks=1 --max-old-space-size=128 --disable-wasm-trap-handler "+(permission?"--permission "+Quote("--allow-fs-read="+runtime)+" "+Quote("--allow-fs-read="+workspace)+" ":"")+Quote(worker)+" "+Quote(input)+" "+Quote(runtime));
+   var command=new StringBuilder(Quote(node)+" --preserve-symlinks --preserve-symlinks-main --wasm-lazy-compilation --max-old-space-size=128 --disable-wasm-trap-handler "+(permission?"--permission "+Quote("--allow-fs-read="+runtime)+" "+Quote("--allow-fs-read="+workspace)+" ":"")+Quote(worker)+" "+Quote(input)+" "+Quote(runtime));
    if(browser){
     node=Path.GetFullPath(args[6]);if(!File.Exists(node)||(Path.GetFileName(node)!="chrome.exe"&&Path.GetFileName(node)!="chrome-headless-shell.exe"))throw new ArgumentException("Browser runtime unavailable.");
     string browserCache=Path.Combine(Directory.GetParent(Directory.GetParent(runtime).FullName).FullName,"browser")+Path.DirectorySeparatorChar;

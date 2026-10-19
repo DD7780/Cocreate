@@ -1,4 +1,3 @@
-import { ConflictChoice } from './ConflictChoice';
 import { IntentReview } from "../IntentReview";
 import { useEffect, useRef, useState } from "react";
 import {
@@ -11,6 +10,7 @@ import {
 } from "lucide-react";
 import type {
   AIEffort,
+  ConflictGroup,
   Participant,
   RoomView,
 } from "../../shared/types";
@@ -103,6 +103,138 @@ function EffortToggle({
         </button>
       ))}
     </div>
+  );
+}
+
+function ConflictChoice({
+  group,
+  participantId,
+  canDecide,
+  roomId,
+  token,
+}: {
+  group: ConflictGroup;
+  participantId?: string;
+  canDecide: boolean;
+  roomId: string;
+  token: string;
+}) {
+  const current = group.selections.find(
+    (selection) => selection.participantId === participantId,
+  );
+  const [choice, setChoice] = useState(current?.alternativeId || ""),
+    [busy, setBusy] = useState(false),
+    [error, setError] = useState(""),
+    [message, setMessage] = useState("");
+  const requestId = useRef<string>("");
+  useEffect(() => {
+    setChoice(current?.alternativeId || "");
+    setError("");
+    requestId.current = "";
+  }, [group.updatedAt, current?.alternativeId]);
+  const allowed =
+    canDecide &&
+    !!participantId &&
+    group.requiredResolverIds.includes(participantId) &&
+    group.state === "awaiting_choices";
+  async function submit(event: React.FormEvent) {
+    event.preventDefault();
+    if (!allowed || !choice) return;
+    setBusy(true);
+    setError("");
+    setMessage("");
+    requestId.current ||= crypto.randomUUID();
+    try {
+      await api(
+        `/api/rooms/${roomId}/conflicts/${group.id}/selections`,
+        token,
+        {
+          method: "POST",
+          body: JSON.stringify({
+            groupRevision: group.revision,
+            expectedUpdatedAt: group.updatedAt,
+            alternativeId: choice,
+            requestId: requestId.current,
+          }),
+        },
+      );
+      setMessage("Your choice was saved.");
+      requestId.current = "";
+    } catch (cause) {
+      setError(
+        cause instanceof Error ? cause.message : "Could not save your choice.",
+      );
+    } finally {
+      setBusy(false);
+    }
+  }
+  return (
+    <article className="conflict-choice">
+      <span>
+        {group.state.replaceAll("_", " ")} · round {group.round}
+      </span>
+      <h3>{group.subject}</h3>
+      <p>{group.explanation}</p>
+      <form onSubmit={(event) => void submit(event)}>
+        <fieldset disabled={!allowed || busy}>
+          <legend>Choose an alternative for {group.subject}</legend>
+          {group.alternatives.map((option) => (
+            <label key={option.id}>
+              <input
+                type="radio"
+                name={`conflict-${group.id}`}
+                value={option.id}
+                checked={choice === option.id}
+                onChange={() => setChoice(option.id)}
+              />
+              {option.label}
+            </label>
+          ))}
+          <label>
+            <input
+              type="radio"
+              name={`conflict-${group.id}`}
+              value="reject_both"
+              checked={choice === "reject_both"}
+              onChange={() => setChoice("reject_both")}
+            />
+            Reject both alternatives
+          </label>
+        </fieldset>
+        {allowed && (
+          <button type="submit" disabled={!choice || busy}>
+            {busy ? "Saving…" : "Save my choice"}
+          </button>
+        )}
+      </form>
+      {!allowed && (
+        <p>
+          {group.state === "awaiting_choices"
+            ? "Only affected contributors with edit permission can choose."
+            : "This decision round is closed."}
+        </p>
+      )}
+      {error && (
+        <p role="alert" className="form-error">
+          {error}
+        </p>
+      )}
+      {message && <p role="status">{message}</p>}
+      <details>
+        <summary>Decisions and history</summary>
+        {group.selections.map((selection, index) => (
+          <p key={index}>
+            {selection.participantId}: {selection.alternativeId}
+          </p>
+        ))}
+        {group.history.map((entry, index) => (
+          <p key={index}>
+            Round {entry.round} - {entry.state.replaceAll("_", " ")} -{" "}
+            {new Date(entry.recordedAt).toLocaleString()}
+          </p>
+        ))}
+      </details>
+    </article>
   );
 }
 

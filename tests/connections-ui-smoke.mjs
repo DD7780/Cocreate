@@ -1,5 +1,5 @@
 import{spawn}from'node:child_process';import{createServer}from'node:http';import fs from'node:fs';import os from'node:os';import path from'node:path';
-const origin=process.env.TWOGUYS1CANVAS_ORIGIN||'http://localhost:5173',profile=path.join(os.tmpdir(),`2guys1canvas-connections-smoke-${process.pid}-${Date.now()}`),debugPort=9400+(process.pid%200);
+const origin=process.env.COCREATE_ORIGIN||'http://localhost:5173',profile=path.join(os.tmpdir(),`cocreate-connections-smoke-${process.pid}-${Date.now()}`),debugPort=9400+(process.pid%200);
 fs.mkdirSync(profile,{recursive:true});
 const provider=createServer((req,res)=>{if(req.url==='/v1/models'&&req.headers.authorization==='Bearer synthetic-key'){res.writeHead(200,{'content-type':'application/json'});res.end(JSON.stringify({data:[{id:'synthetic/fast',name:'Synthetic Fast'},{id:'synthetic/capable',name:'Synthetic Capable'}]}));return}res.writeHead(401,{'content-type':'application/json'});res.end('{"error":{"message":"Invalid synthetic credential"}}')});
 await new Promise(resolve=>provider.listen(0,'127.0.0.1',resolve));
@@ -18,7 +18,7 @@ try{
   const call=(method,params={})=>new Promise((resolve,reject)=>{const id=++sequence;pending.set(id,{resolve,reject});socket.send(JSON.stringify({id,method,params}))});
   socket.addEventListener('message',event=>{const message=JSON.parse(event.data),task=pending.get(message.id);if(task){pending.delete(message.id);message.error?task.reject(new Error(message.error.message)):task.resolve(message.result)}});
   await call('Page.enable');await call('Runtime.enable');await call('Page.navigate',{url:origin});await new Promise(resolve=>setTimeout(resolve,500));
-  await call('Runtime.evaluate',{expression:"localStorage.setItem('2guys1canvas-session-"+roomId+"',"+JSON.stringify(session.token)+")"});
+  await call('Runtime.evaluate',{expression:"localStorage.setItem('cocreate-session-"+roomId+"',"+JSON.stringify(session.token)+")"});
   await call('Page.navigate',{url:origin+'/r/'+roomId});
   const evaluate=async expression=>(await call('Runtime.evaluate',{expression,returnByValue:true})).result.value;
   let text='';for(let attempt=0;attempt<50&&!text.includes('API connections');attempt++){await new Promise(resolve=>setTimeout(resolve,100));text=await evaluate('document.body.innerText')}

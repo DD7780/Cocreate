@@ -27,7 +27,6 @@ yarn-debug.log*
 yarn-error.log*
 .pnpm-debug.log*
 /.cocreate-server*.log
-/.2guys1canvas-server*.log
 
 # local environment
 .env*
@@ -69,6 +68,4 @@ next-env.d.ts
 # Local UI review copies and Supabase CLI state are not project source.
 /.review-cocreate-v1/
 /.review-cocreate-v2/
-/.review-2guys1canvas-v1/
-/.review-2guys1canvas-v2/
 /supabase/.temp/

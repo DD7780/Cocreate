@@ -1,7 +1,4 @@
 import type {WorkflowBudget} from "./workflow-budget.js";
-import type {AuthoredSpan,AuthoredPassage} from './authored-passages.js';
-import type {SaveTrace} from './save-diagnostics.js';
-import type {CaptureRecord} from './capture-journal.js';
 import * as Y from "yjs";
 import { Awareness } from "y-protocols/awareness";
 import type { WebSocket } from "ws";
@@ -35,10 +32,7 @@ import type { AcceptedIntentContext } from "./intent-authority.js";
 import type { ArtifactBody, ArtifactReference, ArchivedVersion } from "./artifacts.js";
 
 export type ProjectRole = "owner" | "editor" | "viewer";
-export const collaborationBatchSize = 32;
 export type DurableStore = {
-  commitCapture?: (projectId:string,record:CaptureRecord)=>Promise<CaptureRecord>;
-  readCapture?: (projectId:string,actorId:string,requestId:string)=>Promise<CaptureRecord|undefined>;
   publishArtifactBodies?: (
     projectId: string,
     bodies: ArtifactBody[],
@@ -51,7 +45,6 @@ export type DurableStore = {
     projectId: string,
     revision: number,
     payload: Record<string, unknown>,
-    progress?: SaveTrace,
   ) => Promise<unknown>;
   appendDocumentUpdate: (
     projectId: string,
@@ -80,7 +73,6 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
-  deliveryBatch?: Array<{data:string | Buffer;trace?:SaveTrace}>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;
@@ -96,10 +88,6 @@ export type StoredVersion = Version & {
   specification?: ProjectSpec;
 };
 export type EditRecord = AgentChange & {
-  authoredSpans?:AuthoredSpan[];
-  deletedSpans?:AuthoredSpan[];
-  sourceId?:string;
-  sourceHash?:string;
   participantId: string;
   at: string;
   update: string;
@@ -111,12 +99,6 @@ export type SubmissionStatus =
   | "built"
   | "failed";
 export type StoredSubmission = {
-  authoredPassages?:AuthoredPassage[];
-  payloadHash?:string;
-  captureCursor?:number;
-  interrupted?:boolean;
-  outcome?:'no_build_needed';
-  productVersion?:number;
   intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
   id: string;
@@ -190,11 +172,6 @@ export type UsageMeta = {
   model: string;
 };
 export type Room = {
-  captureSources?:Map<string,{actorId:string;hash:string}>;
-  captureCursor?:number;
-  captureQueue?:Promise<unknown>;
-  captureWaiting?:number;
-  captureUnknown?:{actorId:string;requestId:string;payloadHash:string};
   intentCommit?: { done: Promise<void>; projection: Partial<Room> };
   interpretationHistory?: Requirement[];
   intentCorrections?: IntentCorrection[];
@@ -223,15 +200,9 @@ export type Room = {
       participantId: string;
       requestId: string;
       status: SubmissionStatus;
-      payloadHash?:string;
-      interrupted?:boolean;
-      outcome?:'no_build_needed';
-      productVersion?:number;
-      error?:string;
     }
   >;
   recoveryCheckpoint?: {
-    compileRetry?:import('./artifacts.js').RecoveryCheckpoint['compileRetry'];
     fingerprint: string;
     revision: number;
     files: ProjectFile[];
@@ -251,13 +222,7 @@ export type Room = {
   pending: Map<string, EditRecord[]>;
   steeringQueue?: Promise<unknown>;
   persistQueue?: Promise<unknown>;
-  snapshotWrite?: {progress:SaveTrace;pending:boolean;promise:Promise<boolean>};
-  committedDocument?: {revision:number;savedAt:string;vector:Uint8Array;deletions:string;documentSequence:number};
   documentQueue?: Promise<unknown>;
-  documentSequence?: number;
-  persistedDocumentSequence?: number;
-  documentSaveTask?: Promise<void>;
-  documentSaveRequested?: boolean;
   submissions: StoredSubmission[];
   editHistory: EditRecord[];
   agentRevisions: Map<string, number>;

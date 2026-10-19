@@ -1,7 +1,0 @@
-
-> 2guys1canvas@1.0.0 build C:\Users\QUTA4\.codex\worktrees\build-save-timeout\Devoffice
-> tsc --noEmit && vite build --configLoader runner
-
-tests/save-throughput.test.ts(292,178): error TS2339: Property 'readyState' does not exist on type '{}'.
-tests/save-throughput.test.ts(322,117): error TS2339: Property 'readyState' does not exist on type '{}'.
- ELIFECYCLE  Command failed with exit code 2.

@@ -1,10 +1,9 @@
-import { productEnvironment } from '../../shared/product-environment.js';
 import { StringDecoder } from 'node:string_decoder';
 import fs from 'node:fs';
 import path from 'node:path';
 import { spawn } from 'node:child_process';
 import { randomUUID } from 'node:crypto';
-import { IsolationError, isolationPolicy, isolationJobsDirectory, prepareIsolation, type IsolationOptions } from '../isolation.js';
+import { IsolationError, isolationPolicy, prepareIsolation, type IsolationOptions } from '../isolation.js';
 import {LinuxJobGroup, linuxJobLauncher} from './linux-cgroup.js';
 
 export type BrowserProtocol = {
@@ -13,18 +12,18 @@ export type BrowserProtocol = {
 export const linuxBrowserFileDescriptors = 256;
 // Native Mojo transfers include framing; the parent still rejects protocol output above 4 MiB.
 export const linuxBrowserFileBytes = 8 * 1024 * 1024;
-const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry.');
-export const browserExecutable = () => path.resolve(productEnvironment(process.env, 'TWOGUYS1CANVAS_VERIFICATION_BROWSER') ||
+const unavailable = () => new IsolationError('isolation_unavailable', 'Isolated verification browser is unavailable. Prepare the verification runtime, then explicitly retry; the previous artifact is retained.');
+export const browserExecutable = () => path.resolve(process.env.COCREATE_VERIFICATION_BROWSER ||
   (process.platform === 'win32' ? '.runtime/browser/154.0.8037.92/chrome-headless-shell-win64/chrome-headless-shell.exe' : '/usr/lib/chromium/chromium-headless-shell'));
 
 /** Trusted CDP lives in the parent. Generated code has no access to its checks, pipes or Node process. */
 export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) => Promise<T>, options: IsolationOptions = {}): Promise<T> {
   if (options.signal?.aborted) throw new IsolationError('isolation_cancelled', 'Verification cancelled.');
-  if (productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') && productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') !== 'os') throw unavailable();
+  if (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os') throw unavailable();
   const runtime = await prepareIsolation(), executable = browserExecutable();
   if (!fs.existsSync(executable)) throw unavailable();
-  const jobs = isolationJobsDirectory, workspace = path.join(jobs, randomUUID());
-  const profile = 'twoguysonecanvas.isolation.' + path.basename(workspace).replaceAll('-', '');
+  const jobs = path.resolve('.runtime/isolation/jobs'), workspace = path.join(jobs, randomUUID());
+  const profile = 'cocreate.isolation.' + path.basename(workspace).replaceAll('-', '');
   const wallMs = Math.min(isolationPolicy.wallMs, Math.max(10, options.wallMs ?? isolationPolicy.wallMs));
   fs.mkdirSync(path.join(workspace, 'browser-profile'), {recursive: true});
   const flags = ['--headless=new', '--no-sandbox', '--no-zygote', '--disable-gpu', '--in-process-gpu',
@@ -193,7 +192,7 @@ let readiness: Promise<unknown> | undefined;
 let readyExecutable: string | undefined;
 export async function assertVerificationBrowserAvailable(signal?: AbortSignal) {
   if (signal?.aborted) throw new IsolationError('isolation_cancelled', 'Verification cancelled.');
-  if (!fs.existsSync(browserExecutable()) || (productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') && productEnvironment(process.env, 'TWOGUYS1CANVAS_ISOLATION_MODE') !== 'os')) throw unavailable();
+  if (!fs.existsSync(browserExecutable()) || (process.env.COCREATE_ISOLATION_MODE && process.env.COCREATE_ISOLATION_MODE !== 'os')) throw unavailable();
   if (readyExecutable !== browserExecutable()) {readiness = undefined; readyExecutable = browserExecutable();}
   readiness ??= withIsolatedBrowser(browser => browser.call('Browser.getVersion')).catch(error => {readiness = undefined; throw error;});
   await readiness;

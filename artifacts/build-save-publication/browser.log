@@ -1,8 +1,0 @@
-(node:12028) ExperimentalWarning: SQLite is an experimental feature and might change at any time
-(Use `node --trace-warnings ...` to show where the warning was created)
-{"event":"collaboration.connected","connectionId":"ae26563e-6cb5-4155-be94-1239236038d9","correlationId":"e731005e-2a19-4404-8b2a-d520b0461884"}
-Workspace ready
-Delayed save and repeated activation passed
-First-build failure passed
-{"delayedSuccessAndRepeatedActivation":true,"editableDuringWait":true,"firstBuildError":true,"existingProductError":true,"timeoutAndLateReply":true,"uncertainSubmissionKeepsRequestId":true,"physicalCalls":0}
-{"event":"collaboration.disconnected","connectionId":"ae26563e-6cb5-4155-be94-1239236038d9","code":1006}

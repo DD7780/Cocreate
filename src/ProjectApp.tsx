@@ -1,5 +1,3 @@
-import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage, clearProjectSessionCache as clearOwnedCaches } from './browser-storage';
-import { BrandMark } from "./BrandMark";
 import {
   lazy,
   Suspense,
@@ -104,7 +102,7 @@ async function request<T>(
   if (needsSessionRefresh(current.expires_at)) {
     const refreshed = await supabase?.auth.refreshSession();
     if (refreshed?.error || !refreshed?.data.session)
-      throw Object.assign(new Error("Your session expired. Sign in again."),{status:401});
+      throw new Error("Your session expired. Sign in again.");
     current = refreshed.data.session;
   }
   const response = await fetch(path, {
@@ -122,7 +120,7 @@ async function request<T>(
   }
   const body = await response.json().catch(() => ({}));
   if (!response.ok)
-    throw Object.assign(new Error(body.error || `Request failed (${response.status})`),{status:response.status});
+    throw new Error(body.error || `Request failed (${response.status})`);
   return body as T;
 }
 const selectedId = () =>
@@ -141,12 +139,22 @@ const authMessage = (
       ? "Unable to sign in. Check your credentials or use password recovery."
       : "";
 
+function clearProjectSessionCache() {
+  sessionStorage.clear();
+  Object.keys(localStorage)
+    .filter(
+      (key) =>
+        key.startsWith("cocreate-session-") ||
+        key.startsWith("cocreate-product-storage-"),
+    )
+    .forEach((key) => localStorage.removeItem(key));
+}
 
 function ConfigurationError() {
   return (
     <main className="auth-screen">
       <section className="auth-card">
-        <BrandMark />
+        <Sparkles />
         <p className="kicker">2guys1canvas</p>
         <h1>Authentication needs configuration</h1>
         <p>{supabaseConfigurationError}</p>
@@ -163,18 +171,44 @@ function AuthShell({
   children,
 }: {
   title: string;
-  intro?: string;
+  intro: string;
   children: React.ReactNode;
 }) {
   return (
     <main className="auth-screen">
+      <aside className="auth-story">
+        <span className="auth-wordmark">
+          <span className="brand-mark small-mark">
+            <Sparkles />
+          </span>{" "}
+          2GUYS1CANVAS
+        </span>
+        <div className="auth-story-content">
+          <span className="section-eyebrow">A SHARED SPACE FOR IDEAS</span>
+          <h2>
+            From first thought
+            <br />
+            to working thing<span>.</span>
+          </h2>
+          <p>
+            Write together on one canvas. Submit what changed when you are
+            ready. Follow every decision through to the build.
+          </p>
+          <div className="auth-pixel-art" aria-hidden="true">
+            <span>✦</span>
+            <span>◆</span>
+            <span>✳</span>
+          </div>
+        </div>
+        <small>WRITE TOGETHER / BUILD TOGETHER</small>
+      </aside>
       <section className="auth-card">
-        <a className="auth-brand" href="/" aria-label="2guys1canvas home">
-          <BrandMark size={32} />
-          <span>2guys1canvas</span>
-        </a>
+        <div className="brand-mark">
+          <Sparkles />
+        </div>
+        <p className="kicker">WELCOME TO THE WORKSPACE</p>
         <h1>{title}</h1>
-        {intro && <p>{intro}</p>}
+        <p>{intro}</p>
         {children}
       </section>
     </main>
@@ -240,7 +274,7 @@ function Login() {
     [email, setEmail] = useState(""),
     [password, setPassword] = useState(""),
     returnTo = intendedDestination();
-  const remember = () => writeBrowserStorage(sessionStorage, authReturnKey, returnTo);
+  const remember = () => sessionStorage.setItem(authReturnKey, returnTo);
   const signInGoogle = async () => {
     if (!supabase) return;
     setBusy(true);
@@ -276,7 +310,10 @@ function Login() {
     location.replace(returnTo);
   };
   return (
-    <AuthShell title="Sign in">
+    <AuthShell
+      title="Beta tester sign-in"
+      intro="Sign in with your existing account. Application access requires separate beta approval; your private projects keep their membership permissions."
+    >
       <button
         className="oauth-button"
         disabled={busy}
@@ -310,7 +347,7 @@ function Login() {
       </form>
       {new URLSearchParams(location.search).get("error") && (
         <p className="form-error">
-          Sign-in was cancelled or the link expired. Please try again.
+          Sign-in was cancelled or the link expired. Nothing was changed.
         </p>
       )}
       {error && (
@@ -319,6 +356,10 @@ function Login() {
         </p>
       )}
       <AuthLinks kind="login" returnTo={returnTo} />
+      <small>
+        2guys1canvas requests only basic identity information. It does not
+        request Drive or Gmail access.
+      </small>
     </AuthShell>
   );
 }
@@ -336,7 +377,7 @@ function Signup() {
     if (!supabase) return;
     setBusy(true);
     setError("");
-    writeBrowserStorage(sessionStorage, authReturnKey, returnTo);
+    sessionStorage.setItem(authReturnKey, returnTo);
     const result = await supabase.auth.signUp({
       email: email.trim(),
       password,
@@ -380,7 +421,7 @@ function Signup() {
   return (
     <AuthShell
       title="Create your account"
-      intro="Create an account to request beta access."
+      intro="Keep your projects private and available across devices."
     >
       <form className="auth-form" onSubmit={submit}>
         <label className="auth-field">
@@ -448,7 +489,7 @@ function ForgotPassword() {
   return (
     <AuthShell
       title="Reset your password"
-      intro="Enter your email to receive a reset link."
+      intro="We’ll email recovery instructions if the address belongs to an account."
     >
       <form className="auth-form" onSubmit={submit}>
         <label className="auth-field">
@@ -500,7 +541,10 @@ function ResetPassword() {
     location.replace("/projects");
   };
   return (
-    <AuthShell title="Choose a new password">
+    <AuthShell
+      title="Choose a new password"
+      intro="This password will apply only to email/password sign-in."
+    >
       <form className="auth-form" onSubmit={submit}>
         <PasswordField
           value={password}
@@ -548,7 +592,7 @@ function Callback() {
         const search = location.search,
           query = new URLSearchParams(search),
           destination = safeLocalDestination(
-            query.get("next") || readBrowserStorage(sessionStorage, authReturnKey),
+            query.get("next") || sessionStorage.getItem(authReturnKey),
           ),
           existing = (await client.auth.getSession()).data.session;
         history.replaceState({}, "", location.pathname);
@@ -560,7 +604,7 @@ function Callback() {
         );
         if (!active) return;
         if (result.status === "success") {
-          removeBrowserStorage(sessionStorage, authReturnKey);
+          sessionStorage.removeItem(authReturnKey);
           location.replace(result.destination);
           return;
         }
@@ -663,7 +707,7 @@ function AcceptInvite({ session, token }: { session: Session; token: string }) {
       title={busy ? "Joining project…" : "Invitation unavailable"}
       intro={
         busy
-          ? "Opening your project."
+          ? "Verifying the intended recipient and project membership."
           : "This invitation may be expired, revoked, or intended for another verified email."
       }
     >
@@ -1166,10 +1210,7 @@ function Sidebar({
       aria-label="Projects"
     >
       <header>
-        <span className="project-wordmark">
-          <BrandMark size={24} />
-          <strong>2guys1canvas</strong>
-        </span>
+        <strong>2guys1canvas</strong>
         <button
           aria-label="Close projects"
           className="mobile-only"
@@ -1310,8 +1351,7 @@ function ProjectWorkspace({
   onProjectChanged: () => void;
   onRename: () => void;
 }) {
-  const scope=JSON.stringify([project.id,session.user.id]);
-  const [issued, setIssued] = useState({scope:"",token:""}), ticket=issued.scope===scope?issued.token:"",
+  const [ticket, setTicket] = useState(""),
     [error, setError] = useState(""),
     [shareOpen, setShareOpen] = useState(false);
   useEffect(() => {
@@ -1325,7 +1365,7 @@ function ProjectWorkspace({
           { method: "POST" },
         );
         if (!active) return;
-        setIssued({scope,token:result.token});
+        setTicket(result.token);
         setError("");
         const delay = Math.max(
           30_000,
@@ -1333,11 +1373,10 @@ function ProjectWorkspace({
         );
         timer = window.setTimeout(issue, delay);
       } catch (error) {
-        if(active){
-          if([401,403,404].includes(Number((error as {status?:number}).status)))setIssued({scope:"",token:""});
-          setError(error instanceof Error?error.message:"Could not open project.");
-          timer=window.setTimeout(issue,5000);
-        }
+        if (active)
+          setError(
+            error instanceof Error ? error.message : "Could not open project.",
+          );
       }
     };
     void issue();
@@ -1345,8 +1384,8 @@ function ProjectWorkspace({
       active = false;
       clearTimeout(timer);
     };
-  }, [project.id, session, scope]);
-  if (error && !ticket)
+  }, [project.id, session]);
+  if (error)
     return (
       <main className="project-loading">
         <p className="form-error">{error}</p>
@@ -1361,7 +1400,6 @@ function ProjectWorkspace({
         fallback={<main className="project-loading">Loading workspace…</main>}
       >
         <Workspace
-          key={scope}
           id={project.id}
           tokenOverride={ticket}
           projectTitle={project.title}
@@ -1465,7 +1503,7 @@ function Projects({ session }: { session: Session }) {
     }
   };
   const signOut = async () => {
-    clearOwnedCaches(localStorage, sessionStorage);
+    clearProjectSessionCache();
     await supabase?.auth.signOut();
     location.replace("/login");
   };
@@ -1508,7 +1546,7 @@ function Projects({ session }: { session: Session }) {
           />
         ) : (
           <div className="project-empty">
-            <BrandMark size={40} />
+            <Sparkles />
             <h1>Your shared work starts here</h1>
             <p>
               Create a private project. No model is called until a participant
@@ -1644,8 +1682,8 @@ function BetaAccess({ session }: { session: Session }) {
     return () => clearInterval(timer);
   }, [check]);
   const switchAccount = async () => {
-    clearOwnedCaches(localStorage, sessionStorage);
-    writeBrowserStorage(sessionStorage,
+    clearProjectSessionCache();
+    sessionStorage.setItem(
       authReturnKey,
       safeLocalDestination(`${location.pathname}${location.search}`, "/app"),
     );
@@ -1661,11 +1699,15 @@ function BetaAccess({ session }: { session: Session }) {
   if (approved !== true)
     return (
       <AuthShell
-        title={approved === false ? "App access" : "Checking beta access"}
+        title={
+          approved === false
+            ? "Your beta access is pending"
+            : "Checking beta access"
+        }
         intro={
           approved === false
-            ? "Confirm your email, then request access to join the beta."
-            : "Checking your access…"
+            ? "Confirm your email, then request beta access. Either reviewer can give access; private projects keep their membership permissions."
+            : "Verifying your access with the server."
         }
       >
         <p>Signed in as {session.user.email || "your account"}.</p>
@@ -1704,7 +1746,7 @@ function BetaAccess({ session }: { session: Session }) {
                 }}
               >
                 <label className="auth-field" htmlFor="beta-message">
-                  <span>Message (optional)</span>
+                  <span>Message to reviewers (optional)</span>
                   <textarea
                     id="beta-message"
                     rows={4}
@@ -1715,7 +1757,8 @@ function BetaAccess({ session }: { session: Session }) {
                   />
                 </label>
                 <small id="beta-message-help">
-                  Up to {betaMessageLimit} characters.
+                  Up to {betaMessageLimit} characters. Waitlist signup is
+                  separate from this account request.
                 </small>
                 <button
                   className="primary wide"
@@ -1751,9 +1794,9 @@ function BetaAccess({ session }: { session: Session }) {
           {checking ? "Checking…" : "Check access again"}
         </button>
         <button className="oauth-button" onClick={() => void switchAccount()}>
-          Switch account
+          Log out / switch account
         </button>
-        <a href="/">Back to home</a>
+        <a href="/">Return to the public page</a>
       </AuthShell>
     );
   if (location.pathname === "/beta/review")

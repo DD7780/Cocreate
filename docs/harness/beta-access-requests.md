@@ -1,7 +1,5 @@
 # Beta access request change packet — 2026-10-09
 
-2026-10-16 follow-up: the original inbox lists only explicit signed-in requests, so landing registrations were invisible. The [registration visibility fix](beta-registration-visibility.md) adds a separate protected waitlist list without converting interest into account authority. This follow-up is source work; the dated deployment evidence below remains historical.
-
 ## Outcome and bounded scope
 
 A confirmed, signed-in visitor requests beta access from the pending screen. Both verified reviewers receive a notification and explicitly approve or decline on `/beta/review`. The requester receives the committed result. Public waitlist, identity, ordinary beta permission, reviewer permission and project membership remain separate.

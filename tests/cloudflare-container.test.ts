@@ -5,8 +5,7 @@ import path from 'node:path';
 import test from 'node:test';
 import vm from 'node:vm';
 import {webcrypto} from 'node:crypto';
-import {createTwoGuysOneCanvasServer} from '../server/index.js';
-import {productEnvironment} from '../shared/product-environment.js';
+import {createCoCreateServer} from '../server/index.js';
 import {legacyOriginResponse} from '../worker/legacy-origin.js';
 
 const root=process.cwd();
@@ -14,17 +13,17 @@ const root=process.cwd();
 test('the pre-launch deployment binds hosted auth and callbacks to the custom domain',()=>{
   const config=JSON.parse(fs.readFileSync(path.join(root,'wrangler.jsonc'),'utf8'));
   const origin='https://2guys1canvas.com';
-  assert.equal(config.vars.TWOGUYS1CANVAS_PUBLIC_ORIGIN,origin);
-  assert.equal(config.vars.TWOGUYS1CANVAS_APP_ORIGINS,origin);
+  assert.equal(config.vars.COCREATE_PUBLIC_ORIGIN,origin);
+  assert.equal(config.vars.COCREATE_APP_ORIGINS,origin);
   assert.equal(config.workers_dev,true);
-  assert.equal(config.vars.TWOGUYS1CANVAS_LEGACY_ORIGIN,'https://cocreate.susan981314271.workers.dev');
+  assert.equal(config.vars.COCREATE_LEGACY_ORIGIN,'https://cocreate.susan981314271.workers.dev');
   assert.equal(config.preview_urls,false);
   assert.deepEqual(config.routes,[{pattern:new URL(origin).hostname,custom_domain:true},{pattern:'www.2guys1canvas.com',custom_domain:true}]);
-  assert.equal(config.vars.TWOGUYS1CANVAS_WWW_ORIGIN,'https://www.2guys1canvas.com');
+  assert.equal(config.vars.COCREATE_WWW_ORIGIN,'https://www.2guys1canvas.com');
   assert.equal(config.containers.length,1);
   const image=config.containers[0].image_vars;
-  assert.equal(image.VITE_TWOGUYS1CANVAS_APP_ORIGIN,origin);
-  assert.equal(image.VITE_TWOGUYS1CANVAS_AUTH_MODE,'supabase');
+  assert.equal(image.VITE_COCREATE_APP_ORIGIN,origin);
+  assert.equal(image.VITE_COCREATE_AUTH_MODE,'supabase');
   assert.equal(image.VITE_SUPABASE_URL,config.vars.SUPABASE_URL);
   assert.equal(image.VITE_SUPABASE_PUBLISHABLE_KEY,config.vars.SUPABASE_PUBLISHABLE_KEY);
   assert.ok(Object.keys(image).every(name=>!/(SECRET|PASSWORD|SERVICE_ROLE|OWNER|BETA_ACCESS)/.test(name)));
@@ -60,13 +59,13 @@ test('www redirects exact paths and queries to canonical HTTPS without proxying 
 });
 
 test('the application exposes a container readiness endpoint',async()=>{
-  const instance=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});
+  const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});
   const info=await instance.start();
   try{
-    const response=await fetch(`${info.url}/__2guys1canvas/app-health`);
+    const response=await fetch(`${info.url}/__cocreate/app-health`);
     assert.equal(response.status,200);
     const {release_fingerprint, ...health} = await response.json();
-    assert.deepEqual(health,{status:'ok',service:'2guys1canvas-app'});
+    assert.deepEqual(health,{status:'ok',service:'cocreate-app'});
     if (release_fingerprint !== undefined) assert.match(release_fingerprint,/^[a-f0-9]{64}$/);
   }finally{await instance.stop()}
 });
@@ -74,7 +73,7 @@ test('the application exposes a container readiness endpoint',async()=>{
 test('unknown API paths return JSON errors while the existing auth callback reaches the SPA', async () => {
   const prior = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
-  const instance = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});
+  const instance = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});
   try {
     const {url} = await instance.start();
     for (const method of ['GET', 'POST']) {
@@ -101,12 +100,12 @@ test('unknown API paths return JSON errors while the existing auth callback reac
 test('the Cloudflare container uses the native WebSocket-aware proxy',()=>{
   const worker=fs.readFileSync(path.join(root,'worker/container.js'),'utf8');
   const dockerfile=fs.readFileSync(path.join(root,'Dockerfile'),'utf8');
-  const classBody=worker.slice(worker.indexOf('export class TwoGuysOneCanvasContainer'),worker.indexOf('export default'));
+  const classBody=worker.slice(worker.indexOf('export class CoCreateContainer'),worker.indexOf('export default'));
   assert.doesNotMatch(classBody,/\basync\s+fetch\s*\(/);
   assert.doesNotMatch(classBody,/containerFetch\s*\(/);
-  assert.match(worker,/getContainer\(env\.TWOGUYS1CANVAS_CONTAINER \?\? env\.COCREATE_CONTAINER,\s*'primary'\)/);
+  assert.match(worker,/getContainer\(env\.COCREATE_CONTAINER,\s*'primary'\)/);
   assert.match(worker,/return await container\.fetch/);
-  assert.match(worker,/pingEndpoint\s*=\s*"localhost\/__2guys1canvas\/app-health"/);
+  assert.match(worker,/pingEndpoint\s*=\s*"localhost\/__cocreate\/app-health"/);
   assert.match(worker,/SESSION_SECRET:\s*env\.SESSION_SECRET/);
   assert.match(worker,/CREDENTIAL_ENCRYPTION_SECRET:\s*env\.CREDENTIAL_ENCRYPTION_SECRET/);
   assert.match(dockerfile,/CMD \["node", "--import", "tsx", "server\/index\.ts"\]/);
@@ -115,14 +114,14 @@ test('the Cloudflare container uses the native WebSocket-aware proxy',()=>{
 test('Worker gates HTTP and socket ingress until the running image matches the prepared source', async () => {
   const fingerprint = 'a'.repeat(64), requests: Request[] = [];
   let running: string | undefined;
-  const source = fs.readFileSync(path.join(root,'worker/container.js'),'utf8').replace(/^import .*;\r?$/gm,'').replace(/^export \{.*;\r?$/gm,'').replace('export class TwoGuysOneCanvasContainer','class TwoGuysOneCanvasContainer').replace('export default','globalThis.worker =');
-  const context = vm.createContext({Container: class {}, env:{}, productEnvironment, getContainer:()=>({fetch:async(request:Request)=>{
+  const source = fs.readFileSync(path.join(root,'worker/container.js'),'utf8').replace(/^import .*;\r?$/gm,'').replace('export class CoCreateContainer','class CoCreateContainer').replace('export default','globalThis.worker =');
+  const context = vm.createContext({Container: class {}, env:{}, getContainer:()=>({fetch:async(request:Request)=>{
     requests.push(request);
-    return new URL(request.url).pathname==='/__2guys1canvas/app-health' ? Response.json({status:'ok',release_fingerprint:running}) : Response.json({forwarded:true});
+    return new URL(request.url).pathname==='/__cocreate/app-health' ? Response.json({status:'ok',release_fingerprint:running}) : Response.json({forwarded:true});
   }}),legacyOriginResponse,Request,Response,Headers,URL,crypto:webcrypto,console:{error(){},log(){}}});
   vm.runInContext(source, context);
   const worker = context.worker as {fetch(request:Request,env:object):Promise<Response>};
-  const config={TWOGUYS1CANVAS_RELEASE_FINGERPRINT:fingerprint,TWOGUYS1CANVAS_PUBLIC_ORIGIN:'https://2guys1canvas.com'};
+  const config={COCREATE_RELEASE_FINGERPRINT:fingerprint,COCREATE_PUBLIC_ORIGIN:'https://2guys1canvas.com'};
   for (const request of [new Request('https://2guys1canvas.com/api/projects',{method:'POST'}),new Request('https://2guys1canvas.com/ws',{headers:{Upgrade:'websocket'}})]) {
     requests.length=0;
     assert.equal((await worker.fetch(request,config)).status,503);
@@ -132,13 +131,13 @@ test('Worker gates HTTP and socket ingress until the running image matches the p
   assert.deepEqual(await (await worker.fetch(new Request('https://2guys1canvas.com/api/projects'),config)).json(),{forwarded:true});
   assert.equal(requests.length,2);
   requests.length=0;
-  assert.equal((await worker.fetch(new Request('https://2guys1canvas.com/api/projects'),{...config,TWOGUYS1CANVAS_RELEASE_FINGERPRINT:''})).status,503);
+  assert.equal((await worker.fetch(new Request('https://2guys1canvas.com/api/projects'),{...config,COCREATE_RELEASE_FINGERPRINT:''})).status,503);
   assert.equal(requests.length,0);
 });
 
 
 test('direct application startup refuses unavailable isolation before binding a server',()=>{
-  const result=spawnSync(process.execPath,['--import','tsx','server/index.ts'],{cwd:root,env:{...process.env,TWOGUYS1CANVAS_ISOLATION_MODE:'unavailable',PORT:'0'},encoding:'utf8',timeout:15_000,windowsHide:true});
+  const result=spawnSync(process.execPath,['--import','tsx','server/index.ts'],{cwd:root,env:{...process.env,COCREATE_ISOLATION_MODE:'unavailable',PORT:'0'},encoding:'utf8',timeout:15_000,windowsHide:true});
   assert.equal(result.error,undefined);assert.notEqual(result.status,0);
   assert.match(result.stderr,/Generated execution isolation is unavailable/);
   assert.doesNotMatch(result.stdout,/2guys1canvas ready/);

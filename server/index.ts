@@ -1,6 +1,3 @@
-import {collaborationBatchSize} from './room-state.js';
-import {hostedSecretsError} from './credentials.js';
-import { productEnvironment } from '../shared/product-environment.js';
 import { assertIsolationAvailable } from "./isolation.js";
 import {assertVerificationBrowserAvailable} from './isolation/browser.js';
 import fs from 'node:fs';
@@ -65,20 +62,13 @@ const duration = (
     safe = Number.isFinite(parsed) ? parsed : fallback;
   return Math.max(min, Math.min(max, safe));
 };
-export async function createTwoGuysOneCanvasServer(options: Options = {}) {
-    const releaseFile = fs.existsSync('/usr/local/share/2guys1canvas-release.json') ? '/usr/local/share/2guys1canvas-release.json' : '/usr/local/share/cocreate-release.json';
-    const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
-    if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
-    const signing=options.sessionSecret??process.env.SESSION_SECRET,encryption=options.encryptionSecret??process.env.CREDENTIAL_ENCRYPTION_SECRET;
-    const platformState = options.platform ? {mode:'supabase' as const,platform:options.platform,error:null}:supabasePlatformFromEnv({...process.env,SESSION_SECRET:signing,CREDENTIAL_ENCRYPTION_SECRET:encryption});
-    if(platformState.mode==='supabase'){
-        const error=hostedSecretsError(signing,encryption)||platformState.error;
-        if(error)throw new Error(`Hosted startup refused: ${error}`);
-    }
+export async function createCoCreateServer(options: Options = {}) {
     const app = express(), server = http.createServer(app), wss = new WebSocketServer({
         noServer: true
-    }), secret = signing || 'cocreate-local-session-secret', encryptionSecret = encryption || secret, manager = new RoomManager({
-        releaseFingerprint,debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {
+    }), secret = options.sessionSecret || process.env.SESSION_SECRET || 'cocreate-local-session-secret', encryptionSecret = options.encryptionSecret || process.env.CREDENTIAL_ENCRYPTION_SECRET || secret, platformState = options.platform ? {
+        mode: 'supabase' as const, platform: options.platform, error: null
+    } : supabasePlatformFromEnv(), manager = new RoomManager({
+        debounceMs: options.debounceMs ?? duration(process.env.AGENT_DEBOUNCE_MS, 4000, 500, 20000), buildDebounceMs: options.buildDebounceMs ?? duration(process.env.BUILD_DEBOUNCE_MS, 3000, 500, 60000), buildCooldownMs: options.buildCooldownMs ?? duration(process.env.BUILD_COOLDOWN_MS, 30000, 0, 300000), buildMaxWaitMs: options.buildMaxWaitMs ?? duration(process.env.BUILD_MAX_WAIT_MS, 60000, 5000, 600000), encryptionSecret, baseUrl: options.baseUrl || process.env.PROVIDER_BASE_URL_OVERRIDE || process.env.OPENAI_BASE_URL, dataDir: options.dataDir, durableStore: platformState.platform || undefined, authorizeSubmission: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner', 'editor']);
         } : undefined, authorizeBudgetReset: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner']);
@@ -89,10 +79,13 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
     }));
     const closeBeta = registerBetaRoutes(app, {platform:platformState.platform, hosted:platformState.mode==='supabase', dataDir:options.dataDir || path.join(process.cwd(),'.runtime','data'), secret});
     const closeBetaRequests = platformState.platform ? registerBetaRequestRoutes(app,platformState.platform) : null;
-    app.get(['/__2guys1canvas/app-health', '/__cocreate/app-health'], (_req, res) => platformState.error ? res.status(503).json({
-        status: 'configuration-error', service: '2guys1canvas-app', error: platformState.error
+    const releaseFile = '/usr/local/share/cocreate-release.json';
+    const releaseFingerprint = fs.existsSync(releaseFile) ? JSON.parse(fs.readFileSync(releaseFile, 'utf8')).fingerprint : undefined;
+    if (releaseFingerprint !== undefined && !/^[a-f0-9]{64}$/.test(releaseFingerprint)) throw new Error('Invalid image release metadata.');
+    app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
+        status: 'configuration-error', service: 'cocreate-app', error: platformState.error
     }) : res.json({
-        status: 'ok', service: '2guys1canvas-app', release_fingerprint: releaseFingerprint
+        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint
     }));
     app.get('/api/auth/config', (_req, res) => res.status(platformState.error ? 503 : 200).json({
         mode: platformState.mode, configured: !platformState.error, error: platformState.error || undefined
@@ -492,20 +485,6 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             });
         }
     });
-    app.post('/api/rooms/:id/commands/capture', (_req,res) => {
-        res.status(410).json({code:'workflow_reload_required',error:'The build workflow was restored. Reload this page before submitting; your local draft and prior command are retained.'});
-    });
-    app.get('/api/rooms/:id/commands/:requestId',async(req,res)=>{
-        const auth=authorize(req,res);if(!auth)return;
-        try{
-            const receipt=await manager.captureReceipt(auth.room,auth.session.participantId,String(req.params.requestId));
-            if(!receipt)return res.status(404).json({code:'capture_not_found',error:'No recorded command with this identity.'});
-            res.setHeader('Cache-Control','no-store');res.json(receipt);
-        }catch(error){
-            if(coordinatorResponse(res,error))return;
-            res.status(503).json({error:'Prior command lookup is unavailable. Keep the original command and reload before retrying.'});
-        }
-    });
     app.post('/api/rooms/:id/build', (req, res) => {
         const auth = authorize(req, res);
         if (!auth)
@@ -697,7 +676,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
                 await platformState.platform.assertCoordinator(auth.room.id);
             }
             res.setHeader('Content-Type', 'application/zip');
-            res.setHeader('Content-Disposition', `attachment; filename="2guys1canvas-${auth.room.id}-v${v.id}.zip"`);
+            res.setHeader('Content-Disposition', `attachment; filename="cocreate-${auth.room.id}-v${v.id}.zip"`);
             res.send(createZip(downloadableFiles(v.files)));
         }
         catch (error) {
@@ -748,7 +727,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
             const url = new URL(req.url || '', 'http://localhost');
             if (url.pathname !== '/ws')
                 return rejectUpgrade(socket, 404, 'unknown_path', correlationId);
-            const origin = String(req.headers.origin || ''), configuredOrigins = String(productEnvironment(process.env, 'TWOGUYS1CANVAS_APP_ORIGINS') || '').split(',').map(item => item.trim()).filter(Boolean);
+            const origin = String(req.headers.origin || ''), configuredOrigins = String(process.env.COCREATE_APP_ORIGINS || '').split(',').map(item => item.trim()).filter(Boolean);
             if (platformState.mode === 'supabase' && (!origin || (configuredOrigins.length && !configuredOrigins.includes(origin))))
                 return rejectUpgrade(socket, 403, 'invalid_origin', correlationId);
             const roomId = url.searchParams.get('room') || '', session = verifySession(secret, url.searchParams.get('token') || '');
@@ -791,18 +770,9 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
                 manager.connect(room, ws, session.participantId, session.role || 'editor', expiresAt);
                 const expiryTimer = expiresAt ? setTimeout(() => ws.close(4401, 'Project ticket expired'), Math.max(1, expiresAt - Date.now())) : undefined;
                 let messages = Promise.resolve();
-                let pendingBatch: Array<{ packet: Buffer; isBinary: boolean }> | undefined;
                 ws.on('message', (data, isBinary) => {
                     const packet = Buffer.from(data as any);
-                    if (pendingBatch && pendingBatch.length < collaborationBatchSize) {
-                        pendingBatch.push({ packet, isBinary });
-                        return;
-                    }
-                    const batch = [{ packet, isBinary }];
-                    pendingBatch = batch;
                     messages = messages.then(async () => {
-                        if (pendingBatch === batch) pendingBatch = undefined;
-                        if (ws.readyState !== 1) return;
                         if (platformState.platform) {
                             const role = await platformState.platform.requireMembership(roomId, session.accountId!);
                             (ws as WebSocket & {
@@ -810,11 +780,8 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
                             }).role = role;
                             await platformState.platform.assertCoordinator(roomId);
                         }
-                        for (const item of batch) {
-                            if (ws.readyState !== 1) return;
-                            manager.handleMessage(room, ws, item.packet, item.isBinary);
-                        }
-                    }).catch(error => {ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed')});
+                        manager.handleMessage(room, ws, packet, isBinary);
+                    }).catch(error => ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed'));
                 });
                 ws.on('close', code => {
                     if (expiryTimer)
@@ -838,7 +805,7 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
     if (options.serveClient !== false) {
         if (process.env.NODE_ENV === 'production') {
             app.use(express.static(path.join(process.cwd(), 'dist')));
-            app.get('*path', (req, res) => res.sendFile('index.html',{root:path.join(process.cwd(),'dist')}));
+            app.get('*path', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')));
         }
         else {
             const vite = await createViteServer({
@@ -866,7 +833,6 @@ export async function createTwoGuysOneCanvasServer(options: Options = {}) {
         for (const client of wss.clients)
             client.terminate();
         await new Promise<void>(resolve => wss.close(() => resolve()));
-        await manager.drain();
         await drained;
         manager.shutdown();
         closeBeta();
@@ -883,8 +849,8 @@ const main =
     path.resolve(fileURLToPath(import.meta.url));
 if (main) {
   await assertIsolationAvailable();
-  if (process.platform === 'linux' && productEnvironment(process.env, 'TWOGUYS1CANVAS_HOSTED') === 'true') await assertVerificationBrowserAvailable();
-  const instance = await createTwoGuysOneCanvasServer();
+  if (process.platform === 'linux' && process.env.COCREATE_HOSTED === 'true') await assertVerificationBrowserAvailable();
+  const instance = await createCoCreateServer();
   const info = await instance.start();
   console.log(`2guys1canvas ready at ${info.url}`);
 }

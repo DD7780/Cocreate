@@ -1,116 +1,13 @@
 # Harness status and outstanding work
 
-## Workflow restoration candidate — 2026-10-18 (D-0083)
+## October 9 restoration — 2026-10-19
 
-- [x] Identify the October 14 source cutoff, isolate work and preserve current main/user data.
-- [x] Restore classic caller-only controls with current provenance/receipt/persistence compatibility and unchanged branding/authentication.
-- [x] Verify targeted multi-collaborator integration, metadata recovery, provider policy and authentication checks; retain initial full-run failures.
-- [x] Production-image CI 39140187020: full suite 290/290 with zero skips/failures, PostgreSQL 3/3, compiler adversity 11/11 and browser adversity 15/15. Built-browser two-profile acceptance passes desktop/390px, button/Alt+X, renewal and reload with local fixtures only.
-- [x] Publish validated restoration through PR #10 to main (92e89c0); prepared source fingerprint 96afbe10… .
-- [ ] Verify served rollback identity and designated-provider artifact promotion before declaring the application restored.
+- [x] User selected complete `6c44029`, before all October 15 UI changes, and authorized main publication without pulling the broken remote source.
+- [x] Isolated local restoration prepared; original worktree's staged/unstaged Graphify work preserved.
+- [ ] Fresh source equivalence, boundaries, build, fingerprint, full regression and production-image CI.
+- [ ] Non-forced main publication preserving the prior remote tip; deployment observation remains separate.
 
-See [scope and evidence](oct14-build-restore.md). No deployed rollback is claimed.
-
-## Artifact reliability repairs — 2026-10-18 (D-0082)
-
-- [x] Reproduce and repair tentative directives and false foreground/background conflicts; reconstruct final caller-owned passages at the exact cutoff with separate raw evidence, source references and eligibility.
-- [x] Reject synthetic missing/weak/default hosted secrets before listeners; repair the production SPA callback below hidden worktree ancestors.
-- [x] Replace startup-only readiness with real isolated compilation; compiler-only 60-second wall cap, numeric phases, process-owned jobs and bounded private candidate recompilation without another model call.
-- [x] Controlled restaurant/two-contributor/incremental/proposal/reopen/failed-verification scenario passes with an actual isolated browser. Built-client three-profile progress/replay/reload/viewer checks pass with three promoted versions; seven controlled calls, zero paid calls.
-- [x] Final Windows full regression: 294 passes, zero failures, eight Linux-only skips. Native CI 39118352619: PostgreSQL 3/3, compiler 11/11, browser/resource 15/15 and full production-image regression 302/302, zero skips. Publish authorized source f361bec / fingerprint af59b35b… to main with evidence-only follow-up. [Evidence and retained failures](artifact-reliability.md).
-- [ ] User verifies served repaired identity af59b35b… after Cloudflare rollout; last prepublication public health was 34eca68d… .
-- [ ] Real hosted provider acceptance remains manual; exact incident source was not retained, and no paid spend bound is authorized.
-
-## Canvas capture replacement — 2026-10-17 (D-0081)
-
-- [x] Reproduce provider teardown and interpretation-coupled acknowledgement; preserve original failing evidence.
-- [x] Implement immutable per-author cutoffs, canonical capture journal/RPC, receipt-first admission and unknown-reply lookup; integrate the existing serial coordinator.
-- [x] Replace client lifecycle/controller, preserve ticket-renewal identity and remove superseded submission wiring after vertical-slice checks.
-- [x] Prepare additive service-only SQL and verify embedded PostgreSQL semantics; built browser verifies renewal, pending identity, lost reply/reload, two actor scopes and no automatic resubmission.
-- [x] Runtime source b8b973d passes native PostgreSQL 3/3, compiler isolation 10/10, browser/resource 15/15 and full production-image regression 293/293, zero failures/skips (CI 39042550998). Prepared migration, rollback, deletion ledger and source fingerprint are in the [evidence ledger](canvas-capture-command.md); earlier failures remain retained.
-- [x] User-authorized beta capture migration and corrective service-role grants applied; RLS/RPC permissions verified, private recovery export retained. [Live migration evidence](../../artifacts/canvas-capture-command/beta-migration.json).
-- [x] Publish replacement and both applied migrations to main (768cfeb); Supabase migration check and automatic deployment build succeed. Privilege follow-up independently passes native SQL 3/3, compiler 10/10, browser/resource 15/15 and full regression 293/293 (CI 39098246168).
-- [ ] User verifies completed Cloudflare rollout/served fingerprint and designated-provider acceptance. User explicitly took over deployment verification; no agent paid inference or further rollout polling.
-
-Earlier completed checks below apply to their dated source versions.
-
-
-## Save/provider reliability follow-up — 2026-10-17
-
-- [x] Reproduce permanent HTTP 400 making three calls and a covering flush unnecessarily queuing a second remote commit; preserve failed evidence.
-- [x] Honor retry eligibility, record sanitized metadata, preserve full selected-route schema/reasoning, reuse only confirmed covering saves and correlate stages without cancelling writes.
-- [x] Connected regressions and controlled two-participant browser scenarios pass, including late/failed saves, deletion, replay, authority loss and inference-free reconnect.
-- [x] Source 0526cae passes production-image PostgreSQL 2/2, compiler 10/10, browser/resource 15/15 and full 303/303, zero skips, CI 39018603723 attempt 1. Fingerprint ee2e582c…; Windows failures remain retained and distinct.
-- [x] Main 8cdb3eb and its checks pass; beta app-health confirms the expected fingerprint, Worker health is 200 and anonymous project access is 401. The user chose manual signed-in/provider acceptance.
-- [ ] User chose manual hosted acceptance on the incident project; no agent inference/spend is authorized. Identify any remaining rejected argument or stalled save stage, then verify selected-route save/capture/interpret/accept/build/functional verification/promote/reopen. Do not claim end-to-end repair yet. [Evidence and handoff](save-provider-repair.md).
-
-## Canonical product naming — 2026-10-17
-
-- [x] Isolated from current main `ae3653b`, preserving save/replay work and the unrelated desktop checkout. Safe source/schema/tool/default/export/environment identifiers use the canonical convention.
-- [x] Legacy browser/durable/preview/config aliases retain sessions, actor-scoped drafts, immutable artifacts, permissions and deployed resources. Every residual is itemized with owner, reason, removal condition and evidence. [Packet and cutover plan](product-name-cleanup.md#residual-ledger-and-cutover).
-- [x] Naming 9/9 plus transport/save/core regressions 41/41 and corrected Worker/mail/private-storage fixtures 5/5; built-browser storage/adversity, eight UI surfaces, four preview pairs and six save/replay scenarios pass without inference.
-- [x] Boundaries, production build, source fingerprint, diff checks, tracked-text scan and AST graph refresh pass. Worker-only dry-run passes; local full image build lacks Docker.
-- [x] Code `b45cb37` passes production-image CI attempt 2: native PostgreSQL 2/2, compiler 10/10, browser 15/15 and full 287/287, zero failures/skips. [CI](https://github.com/DD7780/Cocreate/actions/runs/39015352946/attempts/2). Retain attempt 1's protocol-output probe startup/classification failure and the Windows result (272 pass, 7 fail, 8 skip); its stale preview assertion is corrected and focused reruns pass. The evidence-only publication keeps the same prepared runtime fingerprint.
-- [ ] Hosted rollout and authenticated live-provider acceptance remain separate from the authorized main source publication.
-- [ ] Separately authorized Worker/DO, private bucket, host-root and original-storage retirement/cutover; originals and SQL history remain intact.
-
-## Save acknowledgement publication — 2026-10-17
-
-- [x] Integrate onto `8515724` while preserving the newer queue/sequence fixes, current UI and submit replay helper.
-- [x] 39/39 focused checks; boundaries/build and six controlled-browser scenario groups pass, with zero physical provider calls in the browser harness.
-- [x] Bound server/client acknowledgement waits at 20/30 seconds; preserve canonical writes and no inference on late replies. First-build errors do not promise an absent product.
-- [x] Code `f28df44` passes production-image CI attempt 2: PostgreSQL 2/2, compiler 10/10, browser 15/15 and full 278/278, zero failures/skips. Retain the first attempt's browser-memory classification failure. Runtime fingerprint remains `6c63bcd1…` for the evidence-only main publication follow-up. [Integration packet](build-save-timeout-publication.md).
-- [ ] Hosted rollout and authenticated real-provider acceptance remain separate from the explicitly authorized GitHub main publication.
-
-## Canonical save throughput — 2026-10-17
-
-- [x] Read-only production diagnostics identify delayed tiny-document snapshots and conflicting journal sequences; no data repair or migration. [Packet](canonical-save-throughput.md).
-- [x] Coalesce routine autosaves, separate full canonical flush from recovery-journal latency, authorize ordered batches with fresh membership/coordinator checks and restore the journal sequence high-water. Command receipts and inference authority remain unchanged.
-- [x] Initial regressions reproduce five failures; final focused queue/deletion/failure/revocation/restore checks pass **9/9**, combined provider/submission/hosted/coordinator/auth checks **49/49**, production build and boundaries pass. Windows artifact checks pass **5/10**, with isolated compiler resource failure/publication-gate timeouts retained; this is not a whole-suite pass.
-- [x] Built local browser saves before submitting, then dispatches exactly one caller's interpretation/build while the separate journal remains blocked. This does not establish promotion or live hosted acceptance. [Report](../../artifacts/canonical-save-throughput/browser/checks.json).
-- [x] Final code `6746806` passes native PostgreSQL **2/2**, Linux compiler/resource **10/10**, browser/memory/authority **15/15** and full production-image regression **273/273**, zero failures/skips. [CI](https://github.com/DD7780/Cocreate/actions/runs/39001133818), [manifest](../../artifacts/canonical-save-throughput/verification.json). AST graph refresh and source attestation pass; final documentation/evidence retain the same runtime fingerprint. Main publication is authorized; no live hosted post-release build or Cloudflare inspection is claimed.
-
-## Beta registration visibility — 2026-10-16
-
-- [x] Trace the live mismatch with read-only aggregate SQL: two landing registrations, zero submitted access requests. Existing release source lists only requests.
-- [x] Reviewer-only registrations with consent/date, exact count and deterministic 50-row pagination; explicit distinction from confirmed-account requests.
-- [x] Loading/refresh controls, missing linked request, stale-load fencing and removal of private lists on failed/revoked refresh.
-- [x] Focused SQL/SDK/HTTP checks and controlled browser pagination, mobile, failure recovery and existing decisions. See [commands, results and limits](beta-registration-visibility.md).
-- [x] Candidate production-image CI: native SQL 2/2, compiler 10/10, browser 15/15 and full 258/258, zero skips. Retain earlier Windows and stale-fingerprint failures in the packet.
-- [ ] Final combined main CI and hosted deployment/acceptance: the newer role-compatible model release is preserved; branch publication alone is not production acceptance.
-
-## Role-compatible models - 2026-10-16
-
-- [x] Distinct role lists enforce known context/output, text and JSON Schema support, valid prices and supported lower/optional reasoning. Exact-role selection remains server enforced.
-- [x] FREE/PAID groups and selected price/allowance/reasoning summaries; inference-free save; phone and editor read-only checks.
-- [x] 35 focused model/provider/authority/budget/submission tests pass. Browser fixture checks pass with no exceptions or overflow.
-- [x] All three production-image CI runs pass 264/264 with zero skips; native PostgreSQL 2/2, compiler 10/10 and browser/authority 15/15. Main `2d71056` deployed; exact fingerprint/client labels and anonymous public desktop/phone browser checks pass. Local native-browser/WebSocket failures remain separately recorded.
-- [ ] Exact failing provider response and live Kimi/Muse generation remain unverified; no paid inference was run.
-
-[Scope and current evidence](role-compatible-models.md).
-
-
-## Build submission recovery — 2026-10-16
-
-- [x] Bounded [change packet](build-submission-recovery.md); client-only error/progress and failed-receipt recovery; caller-only/flush/idempotency and BYOK authority retained.
-- [x] Focused transport, submission, membership, temporary-key, ordering and shortcut regressions: 34/34 pass. Strict TypeScript/production build and boundary/UI-scope audits pass.
-- [x] Two independent signed local browser contexts: visible save errors, 3.3-second saves, owner button/editor Alt+X, retained focus and one caller-only interpretation each. Independent review is clear; graph and 97-path release fingerprint refreshed.
-- [x] Full local suite attempted: 231 passed, 19 failed, 8 skipped out of 258; unchanged server/isolation suites retain runtime/resource/timing failures. This is a failing local full run; Linux CI remains the release gate. [Details](build-submission-recovery.md).
-- [x] PR #8 merged to main `1b004ac`; main Linux production-image CI: PostgreSQL 2/2, compiler/resource 10/10, browser/authority 15/15 and full 258/258, zero skips. The failed local run above remains dated evidence.
-- [x] Cloudflare build successful; live canonical health matches the prepared `d735816b…` fingerprint and served client contains the fix. Anonymous desktop/phone home and sign-in browser checks pass without exceptions, failed resources or horizontal overflow. [Live evidence](../../artifacts/build-submission-recovery/live/canary.json).
-- [ ] Independent private hosted owner/editor submissions with a reconnected AI lease and live provider acceptance; production save-latency diagnosis. No paid inference or private mutation was run for publication.
-
-Founder footer (2026-10-15; icon refinement 2026-10-16): exact names/email/LinkedIn details and expanded-footer placement are retained. Reference-style filled icons, stacked serif contact rows, all four hrefs, mobile/desktop/200% layout and keyboard focus pass local built-browser checks; strict build, boundaries and UI-only scope pass. No unrelated full runtime suite or Cloudflare inspection ran for the icon-only slice. [Evidence packet](founder-contacts.md).
-
-Canvas writing surface (2026-10-15): Canvas sidebar removed and the editor made a full-width, top-left, click-to-focus writing surface. Local controlled browser checks, build, boundary and UI-scope audits are recorded in [the packet](canvas-writing-surface.md). Hosted visual review and reference comparison for the remaining Artifacts Shared context view stay open.
-
-Public entry cleanup (2026-10-15): simplified account shell and pre-launch copy prepared for local preview. The user approved publication to main; CI remains the merge gate. Verification evidence is tracked in the [packet](public-entry-cleanup.md).
-
-Woven C logo (2026-10-15): user-selected concept 04 is integrated in current client branding slots and declared favicon, with one SVG master and shared decorative BrandMark. Existing action icons and narrow workspace-header behavior are retained. [Scope and fresh verification](woven-c-brand.md) distinguish local checks, CI, main publication and hosted rollout.
-
-Approved editorial landing (2026-10-15): three-column introduction, expandable plain-language explanations, multi-output illustrative demo and beta tester sign-in placement are implemented against main ab287413. Actual waitlist handler and private access contracts are preserved. Fresh local, CI and rollout observations are recorded in [the landing release packet](landing-editorial.md); main publication does not by itself prove live rollout.
-
-Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](workflow-overview.md).
+[Current restoration packet](oct9-restoration.md). Historical release claims below are not fresh restoration evidence.
 
 Beta request/approval source `ba96cfd` is deployed at https://2guys1canvas.com and published to main. Native PostgreSQL concurrency, compiler 10/10, browser 15/15 and full regression 244/244 pass with zero skips. Worker `088c7975`, container version 41 and image `fd66e1b1` serve the prepared fingerprint. The additive migration, two confirmed reviewer UUID grants, approved sender and retry cron are configured. Hosted anonymous routes pass; the user will manually verify signed-in requests, both reviewer inboxes, decisions, requester email and private-project denial. No live test account/email or paid inference was run by this session. [Current evidence](beta-access-requests.md).
 
@@ -324,14 +221,14 @@ Integrated `origin/codex/byok-mvp` through `472698a` (five commits since the com
 - [x] Source plus controlled evidence: ordered immutable saves, insertion/deletion receipts, flush failure before submission, reconnect cursor reset and rejection of older same-connection states.
 - [x] Source plus local/RPC-mock evidence: SQLite owner takeover fencing and hosted lost-owner rejection. The additive coordinator migration exists; this line does not mark it applied.
 - [x] Source plus controlled evidence: partial physical ledger deduplication/restore, final-record preference and optional usage field handling; recorded and generation scopes are separate from historical counters.
-- [x] Source plus local browser evidence (Canvas placement superseded by D-0076; the view now sits beside Artifacts): Shared context, durable accepted revision selector, empty explanation, requirement drawer/action, separate partial usage card, stage and usage navigation. This does not establish reference fidelity.
+- [x] Source plus local browser evidence: Canvas Shared context, durable accepted revision selector, empty explanation, requirement drawer/action, separate partial usage card, stage and usage navigation. This does not establish reference fidelity.
 - [x] 2026-09-30 historical SQL checks: non-revoking invitation and physical-ledger migrations were reported applied, preserving invitation/membership/snapshot fingerprints; replay, resend, confirmed-email role preservation and ledger reconciliation checks rolled back their synthetic rows. Preserve this narrower evidence; it does not prove the newer coordinator migration or deployed app.
 - [x] Source plus earlier local coverage: participant-scoped validated IndexedDB recovery, 40 ms batching, bounded reconnect diagnosis, current project permissions, conflict selection and fixed platform shortcut.
 - [x] Foundational source/evidence: versioned ordered SQLite events/content-addressed artifacts, legacy backups, safe workflow task/activity projections, audited apply/build/promote, unverified compilation state and restart interruption without inference.
 
 ## Immediate verification and operational work
 
-- [ ] **Reference available; comparison pending.** Compare [supplied image](references/shared-context-reference.jpg) at its reference viewport, then responsive Artifacts sidebar/card/actions, readable contrast and keyboard access. Canvas no longer carries the sidebar (D-0076). Current Studio Ivory is not a verified match. The earlier missing-image fact remains in the dated report.
+- [ ] **Reference available; comparison pending.** Compare [supplied image](references/shared-context-reference.jpg) at its reference viewport, then responsive sidebar/card/actions, readable contrast and keyboard access. Current Studio Ivory is not a verified match. The earlier missing-image fact remains in the dated report.
 - [ ] Run the Step 02 real Postgres contention runner and independent-instance takeover, stale epoch/atomic commit and membership checks against an authorized disposable target. The 2026-10-08 audit observed both coordinator migrations applied with matching source definitions; do not reapply or repair history blindly. Hosted code fails closed without its RPCs.
 - [ ] Independent hosted account checks: simultaneous submissions, third participant's unsubmitted draft, edit/reconnect/reload, submission during build, duplicate command, state/usage/artifact convergence, viewer denial and revoked access. Local browser sessions do not close these criteria.
 - [ ] Authorized live BYOK checks: full generation, output-exhaustion recovery, provider completion metadata/account limits, bounded spending/calls, failure retention, reconnect/retry, owner/editor authority and actual provider accounting. Earlier real-key interpretation stopped at an obsolete gate and does not prove successful live builds.

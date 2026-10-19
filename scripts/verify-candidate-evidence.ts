@@ -8,8 +8,8 @@ import http from 'node:http';
 import assert from 'node:assert/strict';
 
 process.env.NODE_ENV = 'production';
-process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
-const { createTwoGuysOneCanvasServer } = await import('../server/index.js');
+process.env.COCREATE_AUTH_MODE = 'local';
+const { createCoCreateServer } = await import('../server/index.js');
 const { createSession } = await import('../server/auth.js');
 const output = path.resolve('artifacts/multiuser-step07/browser');
 fs.mkdirSync(output, { recursive: true });
@@ -43,7 +43,7 @@ const fake = http.createServer(async (request, response) => {
 await new Promise<void>(resolve=>fake.listen(0,'127.0.0.1',resolve));
 const address = fake.address(); assert.ok(address && typeof address !== 'string');
 const dataDir = fs.mkdtempSync(path.join(os.tmpdir(),'progress-browser-'));
-const service = await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
+const service = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,dataDir,sessionSecret:'progress-browser',encryptionSecret:'progress-browser',debounceMs:20,buildDebounceMs:500,buildCooldownMs:0,buildMaxWaitMs:2_000,baseUrl:`http://127.0.0.1:${address.port}`});
 const room = service.manager.create(`progress-${crypto.randomUUID()}`);
 for (const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']]) service.manager.join(room,id,name);
 const connection = await service.manager.saveConnection(room,{name:'Controlled provider',provider:'custom',baseUrl:`http://127.0.0.1:${address.port}`,apiFormat:'responses',apiKey:'synthetic'});
@@ -81,10 +81,10 @@ async function open(id:string,index:number): Promise<Browser> {
   };
   const browser={call,evaluate,socket,process:processHandle,profile}; browsers.push(browser);
   await call('Page.enable'); await call('Runtime.enable');
-  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/commands/capture'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
+  await call('Page.addScriptToEvaluateOnNewDocument',{source:"window.__progressRequests=[];const nativeFetch=window.fetch.bind(window);window.fetch=(...args)=>{if(String(args[0]).endsWith('/submit'))window.__progressRequests.push(JSON.parse(args[1].body));return nativeFetch(...args)}"});
   await call('Emulation.setDeviceMetricsOverride',{width:1440,height:900,deviceScaleFactor:1,mobile:false});
   await call('Page.navigate',{url:origin}); await wait(200);
-  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.id}',${JSON.stringify(session(id))})`);
+  await evaluate(`localStorage.setItem('cocreate-session-${room.id}',${JSON.stringify(session(id))})`);
   await call('Page.navigate',{url:`${origin}/r/${room.id}`});
   await until(()=>evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')"),'workspace connection');
   return browser;
@@ -121,11 +121,11 @@ try {
   assert.match(await summary(a),/Failed: Filtering did not narrow/);
   await screenshot(a,'failed-desktop.png');
   const replay=await b.evaluate('window.__progressRequests[0]'), calls=interpreterCalls+candidates.length;
-  const replayResponse=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${session('bob')}`,'content-type':'application/json'},body:JSON.stringify(replay)});
-  assert.equal(replayResponse.status,202);assert.equal(interpreterCalls+candidates.length,calls);
+  const replayResponse=await fetch(`${origin}/api/rooms/${room.id}/submit`,{method:'POST',headers:{authorization:`Bearer ${session('bob')}`,'content-type':'application/json'},body:JSON.stringify(replay)});
+  assert.equal(replayResponse.status,200);assert.equal(interpreterCalls+candidates.length,calls);
   await b.call('Page.reload');await until(()=>b.evaluate("!!document.querySelector('.document-editor')&&!document.querySelector('.connection-banner')"),'failed build reload');
   assert.match(await summary(b),/Update blocked/);assert.equal(interpreterCalls+candidates.length,calls);
-  const viewerDenied=await fetch(`${origin}/api/rooms/${room.id}/commands/capture`,{method:'POST',headers:{authorization:`Bearer ${session('cara')}`,'content-type':'application/json'},body:JSON.stringify({requestId:'viewer-verification-request'})});assert.equal(viewerDenied.status,403);
+  const viewerDenied=await fetch(`${origin}/api/rooms/${room.id}/submit`,{method:'POST',headers:{authorization:`Bearer ${session('cara')}`,'content-type':'application/json'},body:JSON.stringify({requestId:'viewer-verification-request'})});assert.equal(viewerDenied.status,403);
   await b.evaluate("[...document.querySelectorAll('button')].find(button=>button.textContent==='Artifacts').click()");
   await until(()=>b.evaluate("!!document.querySelector('iframe')?.src.includes('/preview/')"),'retained artifact visible');
   assert.match(await b.evaluate("document.querySelector('iframe').getAttribute('src')"),new RegExp(`/preview/${room.id}/1`));

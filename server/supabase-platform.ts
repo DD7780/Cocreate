@@ -1,6 +1,3 @@
-import { productEnvironment } from '../shared/product-environment.js';
-import type {SaveTrace} from './save-diagnostics.js';
-import {replayCaptureJournal,type CaptureRecord} from './capture-journal.js';
 import { artifactPath, bodyFromBytes, versionArtifactBytes, checkpointArtifactBytes, versionMetadata, checkReference, decodeArtifactBody, verifyArtifact, versionStub, restoreVersion, restoreCheckpoint, ArtifactUnavailableError, type RecoveryCheckpoint, type ArtifactBody, type ArtifactReference } from './artifacts.js';
 import { CoordinatorUnavailableError, RemoteCoordinator } from './coordinator.js';
 import { createHash, randomBytes, randomUUID } from 'node:crypto';
@@ -8,7 +5,7 @@ import { verifyAuth } from '@supabase/server/core';
 import { createClient, type SupabaseClient } from '@supabase/supabase-js';
 import * as Y from 'yjs';
 import { decodePersistedYjsUpdate, encodePostgresBytea, persistedRawBytes } from './yjs-persistence.js';
-import { encryptSecret, decryptSecret, hostedSecretsError, type EncryptedSecret } from './credentials.js';
+import { encryptSecret, decryptSecret, type EncryptedSecret } from './credentials.js';
 import type { ProviderRequestRecord } from '../shared/types.js';
 import { betaDenied } from './beta.js';
 
@@ -51,7 +48,7 @@ export class SupabasePlatform {
   }
 
   async verifyUser(accessToken:string):Promise<AuthenticatedUser> {
-    const request=new Request('http://2guys1canvas.internal/auth',{headers:{Authorization:`Bearer ${accessToken}`}}),issuer=`${this.config.url.replace(/\/$/,'')}/auth/v1`;
+    const request=new Request('http://cocreate.internal/auth',{headers:{Authorization:`Bearer ${accessToken}`}}),issuer=`${this.config.url.replace(/\/$/,'')}/auth/v1`;
     const {data,error}=await verifyAuth(request,{auth:'user',audience:'authenticated',issuer,env:{url:this.config.url,publishableKeys:{default:this.config.publishableKey},secretKeys:{default:this.config.secretKey},jwks:new URL(this.config.jwksUrl||`${issuer}/.well-known/jwks.json`)}});
     if(error||!data.userClaims)throw Object.assign(new Error(error?.message||'Authentication failed.'),{status:error?.status||401});
     return{id:data.userClaims.id,email:data.userClaims.email,user_metadata:data.userClaims.userMetadata||{}};
@@ -160,18 +157,11 @@ export class SupabasePlatform {
     const {data,error}=await this.admin.from('projects').select('title').eq('id',projectId).single();fail('Project lookup failed',error);return String(data!.title);
   }
 
-  async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>,progress?:SaveTrace) {
+  async saveSnapshot(projectId:string,revision:number,payload:Record<string,unknown>) {
     const update=typeof payload.update==='string'?payload.update:'';
-    progress?.start('artifact-prepare');
-    let harness:Awaited<ReturnType<SupabasePlatform['publishSnapshotArtifacts']>>;
-    try{harness=await this.publishSnapshotArtifacts(projectId,payload);progress?.end('artifact-prepare')}
-    catch(error){progress?.end('artifact-prepare',error);throw error}
-    delete harness.update;
+    const harness=await this.publishSnapshotArtifacts(projectId,payload);delete harness.update;
     const bytes=Buffer.from(update,'base64'),contentHash=createHash('sha256').update(bytes).update(JSON.stringify(harness)).digest('hex');
-    progress?.start('remote-commit');
-    const result=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});
-    const {data,error}=result;progress?.end('remote-commit',error,result.status);
-    this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
+    const {data,error}=await this.admin.rpc('commit_workflow_snapshot',{target_project_id:projectId,...this.coordinator.fence(projectId),target_revision:revision,target_yjs_state:encodePostgresBytea(bytes),target_harness_state:harness,target_content_hash:contentHash});this.checkFenceError(projectId,error);fail('Durable fenced snapshot failed',error);if(data!==true)throw new Error('Durable snapshot commit was not confirmed.');
     // Project timestamp is committed in the same fenced transaction.
     return {contentHash,artifactManifest:harness.artifactManifest};
   }
@@ -194,44 +184,17 @@ export class SupabasePlatform {
 
   async loadSnapshot(projectId:string) {
     const {data,error}=await this.admin.from('project_snapshots').select('revision,yjs_state,harness_state,committed_at').eq('project_id',projectId).maybeSingle();fail('Snapshot restore failed',error);
-    const captures=await this.loadCaptures(projectId,Number(data?.harness_state?.captureCursor)||0);
-    if(!data)return captures.length?replayCaptureJournal(null,captures):null;
-    const {data:lastUpdate,error:sequenceError}=await this.admin.from('project_document_updates').select('sequence').eq('project_id',projectId).order('sequence',{ascending:false}).limit(1).maybeSingle();
-    fail('Document sequence restore failed',sequenceError);
-    const journalSequence=Number(lastUpdate?.sequence??0),snapshotSequence=Number(data.harness_state?.documentSequence??0);
-    if(!Number.isSafeInteger(journalSequence)||journalSequence<0||!Number.isSafeInteger(snapshotSequence)||snapshotSequence<0)throw new Error('Stored document sequence is invalid.');
-    const documentSequence=Math.max(journalSequence,snapshotSequence);
+    if(!data)return null;
     const raw=data.yjs_state as unknown;
     let decoded:ReturnType<typeof decodePersistedYjsUpdate>;
     try{decoded=decodePersistedYjsUpdate(raw)}catch(error){
       await this.quarantine(projectId,'snapshot',Number(data.revision),raw,error);
       const recovered=await this.recoverDocumentUpdates(projectId);
       if(!recovered)throw new Error('Stored collaboration data is unreadable and no verified update history can recover it. The original bytes were quarantined; contact the project owner before making further edits.');
-      return replayCaptureJournal({...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'},captures);
+      return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:recovered.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:'verified_update_history'};
     }
     if(decoded.legacyBufferJson&&!await this.quarantine(projectId,'snapshot',Number(data.revision),raw,new Error('Legacy Node Buffer JSON serialization backed up before verified in-memory recovery.')))throw new Error('The collaboration snapshot is recoverable, but its required backup could not be recorded. Apply the persistence-quarantine migration before reopening this project.');
-    return replayCaptureJournal({...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),documentSequence,update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined},captures);
-  }
-
-  async commitCapture(projectId:string,record:CaptureRecord):Promise<CaptureRecord>{
-    const {data,error}=await this.admin.rpc('commit_workflow_capture',{target_project_id:projectId,...this.coordinator.fence(projectId),target_actor_id:record.submission.participantId,target_request_id:record.submission.requestId,target_payload_hash:record.payloadHash,target_record:record});
-    this.checkFenceError(projectId,error);if(error)throw Object.assign(new Error('Durable capture was not confirmed. Recover this command before retrying.'),{code:error.code,status:error.code==='22023'?409:error.code==='42501'?403:503});
-    if(!data||!Number.isSafeInteger(Number(data.cursor))||Number(data.cursor)<1)throw new Error('Canonical capture receipt is missing.');
-    return {...data,cursor:Number(data.cursor)} as CaptureRecord;
-  }
-  async readCapture(projectId:string,actorId:string,requestId:string):Promise<CaptureRecord|undefined>{
-    const {data,error}=await this.admin.rpc('read_workflow_capture',{target_project_id:projectId,...this.coordinator.fence(projectId),target_actor_id:actorId,target_request_id:requestId});
-    this.checkFenceError(projectId,error);if(error)throw Object.assign(new Error('Canonical capture lookup failed. Retain the original command.'),{code:error.code,status:503});
-    return data?{...data,cursor:Number(data.cursor)} as CaptureRecord:undefined;
-  }
-  private async loadCaptures(projectId:string,after:number):Promise<CaptureRecord[]>{
-    const records:CaptureRecord[]=[];
-    for(let offset=0;;offset+=100){
-      const {data,error}=await this.admin.from('workflow_capture_commands').select('cursor,command_record').eq('project_id',projectId).gt('cursor',after).order('cursor').range(offset,offset+99);
-      fail('Canonical capture recovery failed',error);
-      records.push(...(data||[]).map(row=>({...row.command_record,cursor:Number(row.cursor)} as CaptureRecord)));
-      if((data||[]).length<100)return records;
-    }
+    return {...await this.restoreSnapshotArtifacts(projectId,data.harness_state as Record<string,unknown>),update:decoded.bytes.toString('base64'),persistRevision:Number(data.revision),savedAt:data.committed_at,persistenceRecovery:decoded.legacyBufferJson?'legacy_buffer_json':undefined};
   }
 
   async appendDocumentUpdate(projectId:string,sequence:number,actorId:string,update:Uint8Array) {
@@ -369,7 +332,7 @@ export class SupabasePlatform {
         if (version.artifactRef)
             return version;
         // Compatibility: explicitly imported legacy inline versions use the same publication gate.
-        const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.2guys1canvas.product+json');
+        const body = bodyFromBytes(versionArtifactBytes(projectId, version), 'application/vnd.cocreate.product+json');
         bodies.push(body);
         return { ...version, artifactRef: body.ref };
     });
@@ -377,7 +340,7 @@ export class SupabasePlatform {
         throw new ArtifactUnavailableError('corrupt'); return [version.id, version]; }));
     let checkpoint = payload.recoveryCheckpoint as RecoveryCheckpoint | undefined;
     if (checkpoint && !checkpoint.artifactRef) {
-        const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.2guys1canvas.checkpoint+json');
+        const body = bodyFromBytes(checkpointArtifactBytes(projectId, checkpoint), 'application/vnd.cocreate.checkpoint+json');
         bodies.push(body);
         checkpoint = { ...checkpoint, artifactRef: body.ref };
     }
@@ -449,7 +412,7 @@ export class SupabasePlatform {
 }
 
 export function supabasePlatformFromEnv(env=process.env) {
-  const hosted=productEnvironment(env, 'TWOGUYS1CANVAS_HOSTED')==='true',mode=productEnvironment(env, 'TWOGUYS1CANVAS_AUTH_MODE')||(hosted?'supabase':'local');
+  const hosted=env.COCREATE_HOSTED==='true',mode=env.COCREATE_AUTH_MODE||(hosted?'supabase':'local');
   if(hosted&&mode==='local')return {mode:'supabase' as const,platform:null,error:'Hosted application access requires Supabase authentication and beta approval.'};
   if(mode==='local')return {mode:'local' as const,platform:null,error:null};
   const url=env.SUPABASE_URL,publishableKey=env.SUPABASE_PUBLISHABLE_KEY,secretKey=env.SUPABASE_SECRET_KEY;
@@ -462,8 +425,6 @@ export function supabasePlatformFromEnv(env=process.env) {
     const expectedJwks=`${projectUrl.origin}/auth/v1/.well-known/jwks.json`;
     if(env.SUPABASE_JWKS_URL&&env.SUPABASE_JWKS_URL!==expectedJwks)throw new Error('SUPABASE_JWKS_URL does not match SUPABASE_URL.');
   }catch(error){return{mode:'supabase' as const,platform:null,error:error instanceof Error?error.message:'Supabase server configuration is invalid.'};}
-  const error=hostedSecretsError(env.SESSION_SECRET,env.CREDENTIAL_ENCRYPTION_SECRET);
-  if(error)return {mode:'supabase' as const,platform:null,error};
   return {mode:'supabase' as const,platform:new SupabasePlatform({url,publishableKey,secretKey,jwksUrl:env.SUPABASE_JWKS_URL,artifactBucket:env.SUPABASE_ARTIFACT_BUCKET}),error:null};
 }
 

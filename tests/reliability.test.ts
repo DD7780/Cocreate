@@ -1,5 +1,3 @@
-import {isolationPolicy} from '../server/isolation.js';
-const compilationWaitMs=2*isolationPolicy.compileWallMs+2*isolationPolicy.wallMs;
 import {usedBudget} from './fixtures/workflow-budget.js';
 import { verifiedList } from './fixtures/verified-list.js';
 import test from 'node:test';
@@ -68,13 +66,13 @@ test('unavailable verification browser fails before builder spending and never r
   });
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'verification-unavailable-')),id=`verify-missing-${crypto.randomUUID()}`;
   const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
-  const previous=process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER;
+  const previous=process.env.COCREATE_VERIFICATION_BROWSER;
   try {
     const room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
     edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
     await waitFor(()=>room.versions.length===1&&!room.buildTask,25_000);
     const prior=structuredClone(room.versions[0]);room.versions[0].aiRun!.verification.evidence=undefined;
-    process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER=path.join(dir,'missing-browser.exe');
+    process.env.COCREATE_VERIFICATION_BROWSER=path.join(dir,'missing-browser.exe');
     edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask,25_000);
     assert.equal(builds,1,'same semantic fingerprint cannot silently bypass newly required checks');
@@ -83,7 +81,7 @@ test('unavailable verification browser fails before builder spending and never r
     const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
     assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
   } finally {
-    previous===undefined?delete process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER:process.env.TWOGUYS1CANVAS_VERIFICATION_BROWSER=previous;
+    previous===undefined?delete process.env.COCREATE_VERIFICATION_BROWSER:process.env.COCREATE_VERIFICATION_BROWSER=previous;
     manager.shutdown();await provider.close();assert.equal(path.dirname(dir),path.resolve(os.tmpdir()));fs.rmSync(dir,{recursive:true,force:true});
     const generated=path.resolve('generated/rooms',id);assert.equal(path.dirname(generated),path.resolve('generated/rooms'));fs.rmSync(generated,{recursive:true,force:true});
   }
@@ -98,7 +96,7 @@ const edit=(manager:RoomManager,room:ReturnType<RoomManager['create']>,text:stri
   const doc=new Y.Doc();Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);
   manager.handleMessage(room,{participantId:'alice',readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);doc.destroy();
 };
-const waitFor=async(check:()=>boolean,timeoutMs=compilationWaitMs)=>{for(let i=0;i<Math.ceil(timeoutMs/20);i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
+const waitFor=async(check:()=>boolean,timeoutMs=5_000)=>{for(let i=0;i<Math.ceil(timeoutMs/20);i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
 const fixture=async(handler:(body:any)=>unknown|Promise<unknown>)=>{
   const server=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const value=await handler(JSON.parse(raw));res.setHeader('content-type','application/json');res.end(JSON.stringify(value));});
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
@@ -238,16 +236,16 @@ test('unavailable isolation retains the promoted artifact and stops before build
   });
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'isolation-build-retention-'));
   const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
-  const prior=process.env.TWOGUYS1CANVAS_ISOLATION_MODE;
+  const prior=process.env.COCREATE_ISOLATION_MODE;
   try{
     const room=manager.create(`isolated-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
     edit(manager,room,'Build catalog');await manager.submitChanges(room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);
     const working=structuredClone(room.versions[0]);assert.equal(builders,1);
-    process.env.TWOGUYS1CANVAS_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await manager.submitChanges(room,'alice','two');
+    process.env.COCREATE_ISOLATION_MODE='unavailable';edit(manager,room,'Add favorites');const command=await manager.submitChanges(room,'alice','two');
     await waitFor(()=>room.status==='Error'&&!room.buildTask);
     assert.deepEqual(room.versions,[working]);assert.equal(manager.view(room).latestVersion,1);
     assert.match(room.lastError||'',/isolation is unavailable/);assert.match(room.lastError||'',/explicitly retry/);
     assert.equal(builders,1,'no builder or repair dispatch after isolation preflight failure');assert.equal(interpreters,2,'only explicit caller submissions interpreted');
     assert.equal((await manager.submitChanges(room,'alice','two')).submissionId,command.submissionId);assert.equal(builders,1);assert.equal(interpreters,2);
-  }finally{prior===undefined?delete process.env.TWOGUYS1CANVAS_ISOLATION_MODE:process.env.TWOGUYS1CANVAS_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
+  }finally{prior===undefined?delete process.env.COCREATE_ISOLATION_MODE:process.env.COCREATE_ISOLATION_MODE=prior;manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true})}
 });

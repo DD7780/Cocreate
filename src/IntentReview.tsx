@@ -1,4 +1,3 @@
-import { readBrowserStorage, writeBrowserStorage, removeBrowserStorage } from './browser-storage';
 import { useEffect, useRef, useState } from 'react';
 import type { IntentCommand, IntentCommandResult, IntentTarget, InterpretationClassification, InterpretationIntentCategory, RoomView, SharedRequirementSource } from '../shared/types';
 import './intent-review.css';
@@ -6,12 +5,12 @@ import './intent-review.css';
 type Edit={target:IntentTarget;specificationRevision:number;action:'correct'|'withdraw';text:string;category:InterpretationIntentCategory;classification:'explicit_request'|'proposal'|'question'};
 const caption=(value:InterpretationClassification)=>value==='explicit_request'?'Explicit request':value.replaceAll('_',' ');
 export function IntentReview({state,participantId,canEdit,shownRevision,onClose,onCommand,onBuild}:{state:RoomView;participantId?:string;canEdit:boolean;shownRevision:number;onClose:()=>void;onCommand:(command:IntentCommand)=>Promise<IntentCommandResult>;onBuild:(requestId:string)=>Promise<unknown>}) {
-  const dialog=useRef<HTMLDialogElement>(null),key=`2guys1canvas-intent-command-${state.roomId}-${participantId}`;
+  const dialog=useRef<HTMLDialogElement>(null),key=`cocreate-intent-command-${state.roomId}-${participantId}`;
   const pending=useRef<IntentCommand|undefined>(undefined),buildRequest=useRef<string|undefined>(undefined);
   const [edit,setEdit]=useState<Edit>(),[busy,setBusy]=useState(false),[error,setError]=useState(''),[message,setMessage]=useState(''),[cacheError,setCacheError]=useState('');
-  const persistPending=(command?:IntentCommand)=>{try{if(command)writeBrowserStorage(localStorage, key,JSON.stringify(command));else removeBrowserStorage(localStorage, key);}catch{setCacheError('Device recovery copy is unavailable. Keep this page open to retry an uncertain request.');}};
+  const persistPending=(command?:IntentCommand)=>{try{if(command)localStorage.setItem(key,JSON.stringify(command));else localStorage.removeItem(key);}catch{setCacheError('Device recovery copy is unavailable. Keep this page open to retry an uncertain request.');}};
   useEffect(()=>{const element=dialog.current!,opener=document.activeElement as HTMLElement|null;element.showModal();return()=>{element.close();if(opener?.isConnected)opener.focus();};},[]);
-  useEffect(()=>{try{const saved=JSON.parse(readBrowserStorage(localStorage, key)||'null') as IntentCommand|null;if(saved){pending.current=saved;setEdit({...saved,text:saved.text||'',category:saved.category||'feature',classification:saved.classification||'explicit_request'});setMessage('A previous intent request has an uncertain response. Retry it with the same request ID.');}}catch{setCacheError('Device recovery copy could not be read.');}},[key]);
+  useEffect(()=>{try{const saved=JSON.parse(localStorage.getItem(key)||'null') as IntentCommand|null;if(saved){pending.current=saved;setEdit({...saved,text:saved.text||'',category:saved.category||'feature',classification:saved.classification||'explicit_request'});setMessage('A previous intent request has an uncertain response. Retry it with the same request ID.');}}catch{setCacheError('Device recovery copy could not be read.');}},[key]);
   const historical=shownRevision!==state.specificationRevision;
   const requirements=historical?(state.requirementRevisions||[]).find(item=>item.revision===shownRevision)?.accepted||[]:state.requirements;
   function begin(target:IntentTarget,text:string,category:InterpretationIntentCategory,classification:InterpretationClassification,action:'correct'|'withdraw'){

@@ -1,4 +1,3 @@
-import {submitAndProcess} from './restored-submit.js';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
@@ -7,7 +6,6 @@ import os from 'node:os';
 import path from 'node:path';
 import * as Y from 'yjs';
 import { RoomManager } from '../../server/rooms.js';
-import type {ProjectFile} from '../../server/project.js';
 
 export const pause = (ms: number) => new Promise<void>(resolve => setTimeout(resolve, ms));
 export async function waitFor(check: () => boolean, label: string, timeout = 15_000) {
@@ -16,10 +14,10 @@ export async function waitFor(check: () => boolean, label: string, timeout = 15_
   throw new Error(`Progress fixture timed out: ${label}`);
 }
 
-export async function createProgressFixture(options: {builderFiles?:(call:number)=>ProjectFile[];hold?: boolean;personalDelayMs?: number;buildMaxWaitMs?:number;buildDebounceMs?:number;authorize?: (actor:string)=>Promise<void>} = {}) {
+export async function createProgressFixture(options: {hold?: boolean;personalDelayMs?: number;buildMaxWaitMs?:number;buildDebounceMs?:number;authorize?: (actor:string)=>Promise<void>} = {}) {
   const dataDir = fs.mkdtempSync(path.join(os.tmpdir(), 'build-progress-'));
   const gates = new Map<number, () => void>();
-  const builders: Array<{revision:number;accepted:number;start:number;requirementTexts:string[]}> = [];
+  const builders: Array<{revision:number;accepted:number;start:number}> = [];
   const personal: Array<{actor:string;start:number}> = [];
   const server = http.createServer(async (request, response) => {
     try {
@@ -30,14 +28,13 @@ export async function createProgressFixture(options: {builderFiles?:(call:number
       if (interpreting) {
         personal.push({actor:input.participantName.toLowerCase(),start:Date.now()});
         await pause(options.personalDelayMs || 0);
-        const texts:string[]=input.authenticatedPassages?.map((passage:{text:string})=>passage.text)||input.authenticatedChanges.map((change:{after:string})=>change.after);
-        value = {goals:texts,features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:texts,
-          intents:texts.map(text=>({text,category:'goal',classification:'explicit_request',rationale:'Controlled direct request',sourcePassage:text,affectedRequirementIds:[]}))};
+        const text = input.authenticatedChanges.map((change:{after:string})=>change.after).join(' ');
+        value = {goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],
+          intents:[{text,category:'goal',classification:'explicit_request',rationale:'Controlled direct request',sourcePassage:text,affectedRequirementIds:[]}]};
       } else {
-        builders.push({revision:room.specificationRevision,accepted:input.acceptedRequirements.length,start:Date.now(),requirementTexts:input.acceptedRequirements.map((item:{description:string})=>item.description)});
+        builders.push({revision:room.specificationRevision,accepted:input.acceptedRequirements.length,start:Date.now()});
         if (options.hold) await new Promise<void>(resolve=>gates.set(builders.length,resolve));
         value = {operations:[{type:'write',path:'src/App.tsx',content:`export default function App(){return <main><h1>Progress sample</h1>{${JSON.stringify(input.acceptedRequirements.map((item:{description:string})=>item.description))}.map((text,index)=><p key={index}>{text}</p>)}</main>}`}],summary:'Controlled progress artifact',decisions:[],conflicts:[],specification:{agreed:[],proposed:[],questions:[]}};
-        if(options.builderFiles)(value as {operations:unknown}).operations=options.builderFiles(builders.length).map(file=>({type:'write',...file}));
       }
       if (!response.destroyed) {
         response.setHeader('content-type','application/json');
@@ -66,12 +63,10 @@ export async function createProgressFixture(options: {builderFiles?:(call:number
   };
   const fixture = {
     get manager(){return manager;},get room(){return room;},dataDir,builders,personal,gates,edit,
-    async submit(actor:string,text:string,key:string){edit(actor,text);return submitAndProcess(manager,room,actor,key);},
+    async submit(actor:string,text:string,key:string){edit(actor,text);return manager.submitChanges(room,actor,key);},
     release(index:number){assert.ok(gates.has(index));gates.get(index)!();gates.delete(index);},
     async reopen(){const id=room.id,active=room.buildTask;manager.shutdown();stopped=true;await active;manager=new RoomManager(config);room=manager.get(id)!;stopped=false;return room;},
     async close(){
-      for(const release of gates.values())release();
-      await manager.drain();
       if(!stopped){const active=room.buildTask;manager.shutdown();stopped=true;await active;}
       for(const release of gates.values())release();
       server.closeAllConnections();await new Promise<void>(resolve=>server.close(()=>resolve()));

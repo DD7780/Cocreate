@@ -19,7 +19,7 @@ const session = await fetch(`${origin}/api/session`, {
 }).then(response => response.json());
 
 const port = 9750 + (process.pid % 150);
-const profile = path.join(os.tmpdir(), `2guys1canvas-capture-${process.pid}-${Date.now()}`);
+const profile = path.join(os.tmpdir(), `cocreate-capture-${process.pid}-${Date.now()}`);
 fs.mkdirSync(profile, { recursive: true });
 const browser = spawn(chrome, [
   '--headless=new', '--no-sandbox', '--disable-gpu', '--disable-gpu-sandbox',
@@ -68,7 +68,7 @@ try {
   await call('Runtime.enable');
   await call('Page.navigate', { url: origin });
   await wait(500);
-  await evaluate(`localStorage.setItem('2guys1canvas-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('2guys1canvas-name','Alex Morgan')`);
+  await evaluate(`localStorage.setItem('cocreate-session-${room.roomId}',${JSON.stringify(session.token)});localStorage.setItem('cocreate-name','Alex Morgan')`);
   await call('Page.navigate', { url: `${origin}/r/${room.roomId}` });
   for (let attempt = 0; attempt < 60 && !await evaluate(`!!document.querySelector('.document-editor')`); attempt += 1) await wait(100);
   await evaluate(`document.querySelector('[aria-label="Close API connections"]')?.click();document.querySelector('.document-editor')?.focus()`);

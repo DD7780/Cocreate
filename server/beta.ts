@@ -1,4 +1,3 @@
-import { productEnvironment } from '../shared/product-environment.js';
 import { createHmac, timingSafeEqual } from "node:crypto";
 import { DatabaseSync } from "node:sqlite";
 import fs from "node:fs";
@@ -46,8 +45,8 @@ export function waitlistClientKey(
 ): string {
   const hmac = (text: string) =>
     createHmac("sha256", secret).update(text).digest("hex");
-  const proof = String((req.headers["x-2guys1canvas-waitlist-proof"] ?? req.headers["x-cocreate-waitlist-proof"]) || "");
-  const key = String((req.headers["x-2guys1canvas-waitlist-key"] ?? req.headers["x-cocreate-waitlist-key"]) || "");
+  const proof = String(req.headers["x-cocreate-waitlist-proof"] || "");
+  const key = String(req.headers["x-cocreate-waitlist-key"] || "");
   const expected = hmac("waitlist-proxy-v1");
   if (
     /^[a-f0-9]{64}$/.test(proof) &&
@@ -123,8 +122,8 @@ export function registerBetaRoutes(
     try {
       const origin = req.headers.origin;
       const allowed = [
-        productEnvironment(process.env, 'TWOGUYS1CANVAS_PUBLIC_ORIGIN'),
-        ...(productEnvironment(process.env, 'TWOGUYS1CANVAS_APP_ORIGINS') || "").split(","),
+        process.env.COCREATE_PUBLIC_ORIGIN,
+        ...(process.env.COCREATE_APP_ORIGINS || "").split(","),
         `${req.protocol}://${req.get("host")}`,
       ];
       if (

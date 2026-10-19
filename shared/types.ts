@@ -140,7 +140,6 @@ export type InterpretationIntent = {
   authority?: "authenticated_submission" | "human_correction";
   validation?: IntentValidation;
   contextReferences?: IntentReference[];
-  sourceReferences?: Array<{passageId:string;start:number;end:number}>;
   withdrawn?: boolean;
   id: string;
   text: string;
@@ -266,7 +265,6 @@ export type ConflictGroup = {
   obsoleteReason?: string;
 };
 export type Participant = {
-  draftSourceIds?:string[];
   id: string;
   name: string;
   color: string;
@@ -304,13 +302,6 @@ export type ProviderRequestPurpose =
   | "compilation_repair"
   | "provider_format_fallback"
   | "model_discovery";
-export type ProviderDiagnostics = {
-    httpStatus: number;
-    code?: string;
-    type?: string;
-    requestId?: string;
-    parameterPaths?: string[];
-};
 export type ProviderRequestRecord = {
     budgetScopeId?: string;
     budgetScopeKind?: 'workflow' | 'setup';
@@ -339,7 +330,6 @@ export type ProviderRequestRecord = {
     providerCostUsd?: number;
     chargeIncomplete?: boolean;
     errorKind?: string;
-    diagnostics?: ProviderDiagnostics;
 };
 export type AIRunCall = {
   phase: "interpretation" | "builder" | "repair";
@@ -466,7 +456,6 @@ export type AIRate = {
   sourceUrl: string;
   verifiedAt: string;
 };
-export type AIReasoningConfig = { effort: "low" | "minimal" } | { enabled: false };
 export type AIResolvedLayer = {
   connectionId: string;
   connectionName: string;
@@ -475,7 +464,6 @@ export type AIResolvedLayer = {
   rate: AIRate;
   maxInputTokens: number;
   maxOutputTokens: number;
-  reasoningConfig?: AIReasoningConfig;
   reasoning?: string[];
 };
 export type AIRecommendation = {
@@ -527,10 +515,7 @@ export type TemporaryModel = {
   inputPerMillion: number;
   outputPerMillion: number;
   contextLength: number;
-  maxOutputTokens: number;
-  isFree: boolean;
-  requestPriceUsd: number;
-  reasoningConfig?: AIReasoningConfig;
+  maxOutputTokens?: number;
 };
 export type AIConnection = {
   status: "disconnected" | "connected";

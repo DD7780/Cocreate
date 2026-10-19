@@ -1,4 +1,3 @@
-import { productEnvironment } from '../../shared/product-environment.js';
 import fs from 'node:fs';
 import path from 'node:path';
 import {randomUUID} from 'node:crypto';
@@ -6,7 +5,7 @@ import type {ChildProcess} from 'node:child_process';
 import {IsolationError, isolationPolicy} from '../isolation.js';
 
 export const linuxBrowserMemoryBytes = 512 * 1024 * 1024;
-export const linuxJobLauncher = '/usr/local/bin/twoguysonecanvas-job-launcher';
+export const linuxJobLauncher = '/usr/local/bin/cocreate-job-launcher';
 const unavailable = () => new IsolationError('isolation_unavailable', 'Delegated physical-memory isolation is unavailable; no host fallback is permitted.');
 const wait = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -15,7 +14,7 @@ export class LinuxJobGroup {
   private constructor(readonly directory: string) {}
 
   static create(): LinuxJobGroup {
-    const configured = productEnvironment(process.env, 'TWOGUYS1CANVAS_LINUX_CGROUP_ROOT') || '/sys/fs/cgroup/cocreate';
+    const configured = process.env.COCREATE_LINUX_CGROUP_ROOT || '/sys/fs/cgroup/cocreate';
     if (!path.isAbsolute(configured) || fs.realpathSync(configured) !== configured || fs.statfsSync(configured).type !== 0x63677270) throw unavailable();
     const jobs = path.join(configured, 'jobs');
     if (fs.realpathSync(jobs) !== jobs || fs.readFileSync(path.join(jobs, 'memory.max'), 'utf8').trim() !== String(linuxBrowserMemoryBytes) || fs.readFileSync(path.join(jobs, 'pids.max'), 'utf8').trim() !== '64') throw unavailable();

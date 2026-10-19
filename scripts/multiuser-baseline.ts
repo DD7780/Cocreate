@@ -3,7 +3,7 @@ import path from 'node:path';
 import { createHash } from 'node:crypto';
 import { runScenario, scenarioNames } from '../tests/fixtures/multiuser-baseline.js';
 
-process.env.TWOGUYS1CANVAS_AUTH_MODE = 'local';
+process.env.COCREATE_AUTH_MODE = 'local';
 const output = path.resolve('artifacts/multiuser-step01');
 fs.mkdirSync(output, { recursive: true });
 const trials = [];

@@ -10,7 +10,7 @@ import { decodePersistedYjsUpdate, encodePostgresBytea } from '../server/yjs-per
 import * as Y from 'yjs';
 
 const deployedPublicEnv={
-  VITE_TWOGUYS1CANVAS_APP_ORIGIN:'https://2guys1canvas.com',
+  VITE_COCREATE_APP_ORIGIN:'https://2guys1canvas.com',
   VITE_SUPABASE_URL:'https://dnsapasubeoxxsgkiotw.supabase.co',
   VITE_SUPABASE_PUBLISHABLE_KEY:'sb_publishable_synthetic',
 };
@@ -24,12 +24,12 @@ test('project tickets are scoped and expire',()=>{
 });
 
 test('hosted Supabase mode fails closed when the server secret is absent',()=>{
-  const result=supabasePlatformFromEnv({TWOGUYS1CANVAS_HOSTED:'true',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'} as NodeJS.ProcessEnv);
+  const result=supabasePlatformFromEnv({COCREATE_HOSTED:'true',SUPABASE_URL:'https://example.supabase.co',SUPABASE_PUBLISHABLE_KEY:'sb_publishable_test'} as NodeJS.ProcessEnv);
   assert.equal(result.mode,'supabase');assert.equal(result.platform,null);assert.match(result.error||'',/SUPABASE_SECRET_KEY/);
 });
 
 test('server Supabase configuration rejects mismatched credentials and JWKS',()=>{
-  const mismatch=`x.${Buffer.from(JSON.stringify({ref:'another-project'})).toString('base64url')}.x`,base={TWOGUYS1CANVAS_HOSTED:'true',SUPABASE_URL:'https://dnsapasubeoxxsgkiotw.supabase.co',SUPABASE_SECRET_KEY:'sb_secret_synthetic'};
+  const mismatch=`x.${Buffer.from(JSON.stringify({ref:'another-project'})).toString('base64url')}.x`,base={COCREATE_HOSTED:'true',SUPABASE_URL:'https://dnsapasubeoxxsgkiotw.supabase.co',SUPABASE_SECRET_KEY:'sb_secret_synthetic'};
   assert.match(supabasePlatformFromEnv({...base,SUPABASE_PUBLISHABLE_KEY:mismatch} as NodeJS.ProcessEnv).error||'',/different projects/);
   assert.match(supabasePlatformFromEnv({...base,SUPABASE_PUBLISHABLE_KEY:'sb_publishable_synthetic',SUPABASE_JWKS_URL:'https://another-project.supabase.co/auth/v1/.well-known/jwks.json'} as NodeJS.ProcessEnv).error||'',/does not match/);
 });
@@ -39,14 +39,14 @@ test('public auth configuration is explicit and derives the Worker callback',()=
   assert.deepEqual(resolved.config,{
     url:deployedPublicEnv.VITE_SUPABASE_URL,
     publishableKey:deployedPublicEnv.VITE_SUPABASE_PUBLISHABLE_KEY,
-    appOrigin:deployedPublicEnv.VITE_TWOGUYS1CANVAS_APP_ORIGIN,
+    appOrigin:deployedPublicEnv.VITE_COCREATE_APP_ORIGIN,
     redirectTo:'https://2guys1canvas.com/api/auth/callback',
   });
   assert.equal(resolved.error,null);
   assert.match(resolveSupabaseAuthConfig({}).error||'',/Missing build variables/);
   const mismatchedKey=`x.${Buffer.from(JSON.stringify({ref:'another-project'})).toString('base64url')}.x`;
   assert.match(resolveSupabaseAuthConfig({...deployedPublicEnv,VITE_SUPABASE_PUBLISHABLE_KEY:mismatchedKey}).error||'',/different projects/);
-  assert.match(resolveSupabaseAuthConfig({...deployedPublicEnv,VITE_TWOGUYS1CANVAS_APP_ORIGIN:'https://example.com/path'}).error||'',/without a path/);
+  assert.match(resolveSupabaseAuthConfig({...deployedPublicEnv,VITE_COCREATE_APP_ORIGIN:'https://example.com/path'}).error||'',/without a path/);
 });
 
 test('Wrangler uses matching server and Vite build-time Supabase configuration',()=>{
@@ -54,8 +54,8 @@ test('Wrangler uses matching server and Vite build-time Supabase configuration',
   const image=wrangler.containers[0].image_vars;
   assert.equal(image.VITE_SUPABASE_URL,wrangler.vars.SUPABASE_URL);
   assert.equal(image.VITE_SUPABASE_PUBLISHABLE_KEY,wrangler.vars.SUPABASE_PUBLISHABLE_KEY);
-  assert.equal(image.VITE_TWOGUYS1CANVAS_APP_ORIGIN,wrangler.vars.TWOGUYS1CANVAS_APP_ORIGINS);
-  assert.equal(image.VITE_TWOGUYS1CANVAS_APP_ORIGIN,'https://2guys1canvas.com');
+  assert.equal(image.VITE_COCREATE_APP_ORIGIN,wrangler.vars.COCREATE_APP_ORIGINS);
+  assert.equal(image.VITE_COCREATE_APP_ORIGIN,'https://2guys1canvas.com');
 });
 
 test('Google callback exchanges once, reports errors, and restores only local destinations',async()=>{
@@ -67,9 +67,9 @@ test('Google callback exchanges once, reports errors, and restores only local de
   assert.equal((await completeOAuthCallback('?code=used','/projects',async()=>({error:{message:'Code already used'}}))).status,'error');
   assert.deepEqual(await completeOAuthCallback('?error=access_denied','/projects',async()=>{throw new Error('must not exchange')},true),{status:'authenticated-error',destination:'/projects',message:'The new Google sign-in was cancelled. Your existing session is still available.'});
   assert.equal((await completeOAuthCallback('?code=used','/projects/123',async()=>({error:{message:'Code already used'}}),true)).status,'authenticated-error');
-  assert.equal(safeLocalDestination('/projects/123?tab=canvas','/projects','https://2guys1canvas.example'),'/projects/123?tab=canvas');
-  assert.equal(safeLocalDestination('https://evil.example/steal','/projects','https://2guys1canvas.example'),'/projects');
-  assert.equal(safeLocalDestination('//evil.example/steal','/projects','https://2guys1canvas.example'),'/projects');
+  assert.equal(safeLocalDestination('/projects/123?tab=canvas','/projects','https://cocreate.example'),'/projects/123?tab=canvas');
+  assert.equal(safeLocalDestination('https://evil.example/steal','/projects','https://cocreate.example'),'/projects');
+  assert.equal(safeLocalDestination('//evil.example/steal','/projects','https://cocreate.example'),'/projects');
 });
 
 test('Supabase bytea persistence preserves Yjs bytes and recovers the legacy Buffer JSON defect',()=>{
@@ -109,7 +109,7 @@ test('transactional invitation email is truthful and idempotent at the provider 
   assert.equal(unconfigured.configured,false);
   assert.equal((await unconfigured.send({invitationId:'i1',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'})).state,'configuration_required');
   let request:{url:string;init:RequestInit}|undefined;
-  const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',TWOGUYS1CANVAS_EMAIL_FROM:'2guys1canvas <invites@verified.test>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{'Content-Type':'application/json'}})});
+  const configured=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@verified.test>'} as NodeJS.ProcessEnv,async(input,init)=>{request={url:String(input),init:init||{}};return new Response(JSON.stringify({id:'email_synthetic'}),{status:200,headers:{'Content-Type':'application/json'}})});
   const sent=await configured.send({invitationId:'i2',recipientEmail:'person@example.com',inviterName:'<Owner>',projectTitle:'Plan & Ship',role:'editor',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'});
   assert.deepEqual(sent,{state:'sent',providerMessageId:'email_synthetic'});
   assert.equal(request?.url,'https://api.resend.com/emails');
@@ -117,13 +117,13 @@ test('transactional invitation email is truthful and idempotent at the provider 
   const payload=JSON.parse(String(request?.init.body)) as {html:string};
   assert.doesNotMatch(payload.html,/<Owner>|Plan & Ship/);
   assert.match(payload.html,/Accept invitation.*Expires:/);
-  const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',TWOGUYS1CANVAS_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));
+  const failed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response(JSON.stringify({message:'synthetic rejection'}),{status:422,headers:{'Content-Type':'application/json'}}));
   assert.deepEqual(await failed.send({invitationId:'i3',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'}),{state:'failed',error:'Email provider rejected the invitation (422). Check the verified sender and recipient.'});
-  const malformed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',TWOGUYS1CANVAS_EMAIL_FROM:'"2guys1canvas <invites@verified.test>"'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
+  const malformed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'"2guys1canvas <invites@verified.test>"'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
   assert.equal(malformed.configured,false);
-  const placeholder=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',TWOGUYS1CANVAS_EMAIL_FROM:'2guys1canvas <invites@example.com>'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
+  const placeholder=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'2guys1canvas <invites@example.com>'} as NodeJS.ProcessEnv,async()=>{throw new Error('must not call provider')});
   assert.equal(placeholder.configured,false);
-  const unconfirmed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',TWOGUYS1CANVAS_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response('{}',{status:200,headers:{'Content-Type':'application/json'}}));
+  const unconfirmed=invitationEmailSenderFromEnv({RESEND_API_KEY:'re_synthetic',COCREATE_EMAIL_FROM:'invites@verified.test'} as NodeJS.ProcessEnv,async()=>new Response('{}',{status:200,headers:{'Content-Type':'application/json'}}));
   assert.equal((await unconfirmed.send({invitationId:'i4',recipientEmail:'person@example.com',inviterName:'Owner',projectTitle:'Plan',role:'viewer',inviteUrl:'https://example.com/invite/token',expiresAt:'2026-10-01T00:00:00Z'})).state,'failed');
 });
 

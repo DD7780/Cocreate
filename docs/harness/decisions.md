@@ -1,20 +1,8 @@
 # Harness decision log
 
-## D-0083 — Restore the October 14 build interaction selectively
+## D-0079 — Restore the complete October 9 release
 
-Explicit user request on October 18, followed by selection of Canvas → Build → Artifacts only and clarification that the whole application worked then. Use cutoff source `6c44029`; preserve newer branding, landing/sign-in and current project data. Restore classic flush → caller-only submit, with current metadata/journal/receipt interoperability and protection against stale-tab writes. Keep conservative intent/source fixes, private artifacts, accounting, OS isolation and serialized promotion. This supersedes D-0081's capture-write UI/protocol in published main source through PR #10, not its historical records or anti-duplication requirements. Preparation, full/native validation and production/provider acceptance are separate. [Packet](oct14-build-restore.md).
-
-## D-0082 — Faithful passages and measured isolated compiler recovery
-
-Accepted 2026-10-18 from the audit repair brief: reconstruct final caller-owned source at the frozen cutoff and retain exact provenance separately from interpretation. Qualifications and withheld decisions outrank imperative syntax; confirm design conflicts only for matching explicit properties/scopes. Refuse hosted startup without valid explicit signing/encryption secrets. Preflight real isolated compilation; evaluate the proposed 60-second compiler wall cap separately from the retained 20-second browser cap and independent CPU/memory/process/network/output controls. Phase diagnostics and one bounded private candidate permit explicit infrastructure-only recompilation without another model call; recovery cannot retry inference. Incidents, representative fixtures, source publication and hosted acceptance remain separate claims. This refines D-0081's source representation and startup-only compiler readiness while preserving durability, accounting, authority and serialized promotion. [Evidence](artifact-reliability.md).
-
-## D-0081 — Immutable capture replaces flush → submit
-
-Accepted by the explicit replacement brief on 2026-10-17. Freeze the caller's bounded source IDs/bytes and insertion/deletion cutoff at the gesture. Commit one authenticated, fenced, permanently payload-bound canonical command before consuming drafts; return HTTP 202 before interpretation. Reuse the existing coordinator, accepted registry, collection, builder, accounting, isolation and private artifacts. Ordinary snapshots are derived checkpoints; replay newer command/provenance records on restore. Unknown delivery retains the identical envelope and requires authorized canonical lookup before an explicit resend. Recovery never creates inference authority. Same-account ticket renewal updates transport credentials while account/project changes dispose private logical state. Remove superseded implementations; legacy requests receive upgrade-only responses. This supersedes D-0079 and earlier flush-specific recovery requirements while retaining their durability, attribution, uncertainty and no-inference guarantees. The additive prepared migration and source publication do not establish hosted rollout or provider acceptance. [Design, deletion and evidence](canvas-capture-command.md).
-
-## D-0079 — Bounded save acknowledgement with honest uncertainty
-
-Accepted repair and main publication requested 2026-10-17. Bound the server's canonical-save wait at 20 seconds and the client's acknowledgement wait at 30 seconds, including ingress/auth/delivery allowance. These are finite supported operating bounds, not a production latency guarantee. Timeout ends the attempt without cancelling or releasing a canonical write; late covering receipts may update save status but cannot start inference. Preserve the newer coalesced autosaves, independent recovery journal, fresh authorized batches, sequence high-water restore and uncertain HTTP submission replay. Mention a retained product only when one is available. This supersedes the older 15-second tolerance, not the throughput or authority contract. [Integration and checks](build-save-timeout-publication.md).
+Accepted 2026-10-19 by the user's explicit selection of `6c4402958bdec460b23c959bc99c8e824e53dd1c`, before all October 15 UI changes. Restore the matching complete source and publish a new main commit without pulling the broken remote source. This supersedes later UI, submission/model and restoration directions for this release. Preserve later Git history and the previous remote tip; do not downgrade database state or delete project data. The new dated documentation and Graphify refresh may differ from the historical snapshot, while runtime/build inputs remain exact. [Scope and fresh verification](oct9-restoration.md).
 
 Updated 2026-10-05. Each stable identifier names one decision. Accepted behavior, local implementation and hosted verification are separate; the [checklist](checklist.md) owns evidence-backed status. Superseded/rejected records below preserve rationale, not current instructions. Current setup/limits live in [product.md](../../product.md#hosted-ai-and-limits).
 
@@ -116,17 +104,15 @@ Status: accepted hosted authority boundary (2026-09-24), partially implemented a
 
 ## D-0022 — Membership precedes collaboration tickets
 
-Status: accepted 2026-09-24; strengthened by D-0042. Verify account/current project membership before issuing a five-minute role-scoped collaboration ticket; room URLs are not permission. Viewers cannot update Yjs or invoke mutations. Current code rechecks HTTP reads/mutations, upgrades and each ordered incoming/outgoing WebSocket batch (at most 32 frames), immediately before synchronous apply/delivery with no authority cache across batches; revocation blocks subsequent delivery. Ticket expiry bounds a completely silent idle socket, and proactive immediate closure without traffic remains unimplemented. The 2026-10-17 [save-throughput fix](canonical-save-throughput.md) adds controlled batching/revocation checks; live hosted revocation and capacity checks remain pending.
+Status: accepted 2026-09-24; strengthened by D-0042. Verify account/current project membership before issuing a five-minute role-scoped collaboration ticket; room URLs are not permission. Viewers cannot update Yjs or invoke mutations. Current code rechecks HTTP reads/mutations, upgrades, inbound messages and outbound packets; revocation blocks subsequent delivery. Ticket expiry bounds a completely silent idle socket, and proactive immediate closure without traffic remains unimplemented. Live hosted revocation and query-cost checks remain pending.
 
 ## D-0023 — Durable acknowledgement follows the remote commit
 
 Status: accepted 2026-09-24; refined by D-0042. Hosted saved follows confirmed canonical remote commit, never local memory/SQLite/frame receipt. The acknowledgement names the immutable committed revision/time plus insertion clocks AND deletion ranges. Failure stays unsynced and retains the promoted artifact. Older mutable acknowledgement descriptions are superseded.
 
-2026-10-17 throughput refinement: routine document autosaves coalesce behind canonical I/O; consequential saves retain their receipts. Explicit flush commits the full document and attributed pending edits without waiting for the independent recovery journal. A late journal failure cannot invalidate a covering committed snapshot. Restore reads the journal sequence high-water before allocating new edits and never overwrites old conflicts. [Scope and evidence](canonical-save-throughput.md).
-
 ## D-0024 — Keep bearer-token SPA auth instead of adding inactive Next.js middleware
 
-Accepted 2026-09-24. 2guys1canvas remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.
+Accepted 2026-09-24. CoCreate remains a Vite SPA with an Express API. Its browser Supabase client persists and automatically refreshes PKCE sessions; the authenticated request boundary refreshes near-expiry sessions and permits one refresh-and-retry on a 401. Express continues to verify bearer JWTs with `@supabase/server`. `@supabase/ssr` may support a future cookie-based SSR host, but Next.js server components, `next/headers`, and middleware/proxy files are not valid runtime entrypoints in this repository and must not be presented as implemented session handling.
 
 ## D-0025 — Prisma is not a second migration authority
 
@@ -134,11 +120,11 @@ Accepted 2026-09-24. Prisma 7.10 is pinned as an optional typed Postgres access 
 
 ## D-0026 — OAuth callbacks follow the verified Worker origin
 
-Historical origin decision, superseded by the canonical domain release and D-0079 below. Accepted 2026-09-24: the then-canonical CoCreate production origin is `https://cocreate.susan981314271.workers.dev`. Google returns to the selected Supabase project at `/auth/v1/callback`; Supabase then returns to CoCreate at the separately allow-listed `/api/auth/callback`. Production callback selection is derived from an explicit build-time app origin rather than a hardcoded third-party Pages deployment or browser location. Hosted sign-in fails closed when the URL, key, JWKS, or project references disagree. Localhost remains a separately configured development callback, and callback codes are exchanged at most once.
+Accepted 2026-09-24. The canonical CoCreate production origin is `https://cocreate.susan981314271.workers.dev`. Google returns to the selected Supabase project at `/auth/v1/callback`; Supabase then returns to CoCreate at the separately allow-listed `/api/auth/callback`. Production callback selection is derived from an explicit build-time app origin rather than a hardcoded third-party Pages deployment or browser location. Hosted sign-in fails closed when the URL, key, JWKS, or project references disagree. Localhost remains a separately configured development callback, and callback codes are exchanged at most once.
 
 ## D-0027 — Email-bound project invitations remain separate from account invitations
 
-Accepted 2026-09-25. Supabase Auth owns Google and email/password account identity, confirmation, and recovery. 2guys1canvas owns project invitations and membership. Each invitation is project-scoped, recipient-email-bound, role-bounded, expiring, revocable, rate-limited, and stored by token hash; acceptance requires a matching confirmed Supabase account and is transactional/idempotent. Owners and members with explicit sharing permission may manage invitations and non-owner roles, while only owners grant sharing permission. Transactional email is server-side and provider acceptance is recorded as sent without claiming confirmed delivery.
+Accepted 2026-09-25. Supabase Auth owns Google and email/password account identity, confirmation, and recovery. CoCreate owns project invitations and membership. Each invitation is project-scoped, recipient-email-bound, role-bounded, expiring, revocable, rate-limited, and stored by token hash; acceptance requires a matching confirmed Supabase account and is transactional/idempotent. Owners and members with explicit sharing permission may manage invitations and non-owner roles, while only owners grant sharing permission. Transactional email is server-side and provider acceptance is recorded as sent without claiming confirmed delivery.
 
 ## D-0028 — Low is a presentation label for the existing light effort value
 
@@ -152,7 +138,7 @@ Accepted 2026-09-26. Editor, transport, snapshot, and update history use Yjs V1.
 
 ## D-0030 — Callback failure does not erase or silently use a valid session
 
-Accepted 2026-09-26. OAuth callback processing first resolves persisted session state, exchanges each PKCE code once, and removes sensitive query parameters. Cancellation, missing codes, and rejected/reused codes are distinct from initialization. When a prior valid session survives, 2guys1canvas identifies that account and requires an explicit continue or switch-account action; dismissing an error never authorizes a workspace. Backend membership remains authoritative.
+Accepted 2026-09-26. OAuth callback processing first resolves persisted session state, exchanges each PKCE code once, and removes sensitive query parameters. Cancellation, missing codes, and rejected/reused codes are distinct from initialization. When a prior valid session survives, CoCreate identifies that account and requires an explicit continue or switch-account action; dismissing an error never authorizes a workspace. Backend membership remains authoritative.
 
 ## D-0031 — Count physical provider requests at the HTTP boundary
 
@@ -200,7 +186,7 @@ Accepted 2026-09-30. Only a current owner/editor who is an affected contributor 
 
 ## D-0040 — Visible rename and fixed shortcut
 
-Accepted 2026-09-30. User-facing identity is 2guys1canvas. The former blanket technical-compatibility exemption is superseded by the per-identifier ledger in D-0079. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
+Accepted 2026-09-30. User-facing identity is 2guys1canvas; CoCreate technical identifiers remain for compatibility. D-0009's optional disable/remap UI is superseded: the fixed editor-focused mapping is Alt+X on Windows/Linux and disabled on macOS. The button and shortcut retain the same authenticated submission path.
 
 ## D-0041 — Usage and Shared Intent display
 
@@ -212,7 +198,7 @@ Status: accepted 2026-10-01 from the actual human reliability request; local imp
 
 Capture only authenticated participant steering, reconcile in capture order and persist pending batches, active submissions and replay receipts. Later accepted work stays queued behind a fixed-revision candidate. Immutable canonical saves acknowledge insertion AND deletion receipts. Local epochs fence owners; hosted service-role atomic fencing is prepared in an unapplied migration. Reconnect/restoration is inference-free. Controlled local evidence does not establish live SQL, hosted accounts or multi-instance routing.
 
-Shared context returns to Canvas with selected durable accepted revisions and separate partial recorded usage, also reachable in Workflow/Artifacts (Canvas placement superseded by D-0076; Workflow placement by D-0072). This supersedes no-Canvas-sidebar and unbounded-recovery guidance. Counters deduplicate physical attempts, define generation separately, preserve unknowns and disclose scope. The supplied reference is now available; comparison pending. The earlier run lacked it and remains dated. Status vocabulary, complete actionable failure presentation, reference viewport/keyboard/contrast and hosted convergence remain explicit checklist checks, not new architecture decisions.
+Shared context returns to Canvas with selected durable accepted revisions and separate partial recorded usage, also reachable in Workflow/Artifacts. This supersedes no-Canvas-sidebar and unbounded-recovery guidance. Counters deduplicate physical attempts, define generation separately, preserve unknowns and disclose scope. The supplied reference is now available; comparison pending. The earlier run lacked it and remains dated. Status vocabulary, complete actionable failure presentation, reference viewport/keyboard/contrast and hosted convergence remain explicit checklist checks, not new architecture decisions.
 
 ## D-0043 — Device recovery complements durable shared authority
 
@@ -329,8 +315,6 @@ D-0057 renderer reuse: main repeated verification proves a process/task limit re
 
 ## D-0058 — Confirmed account beta requests and separate reviewer grants
 
-2026-10-16 visibility refinement under the user's missing-registration fix: the protected reviewer page also lists the private landing waitlist, with bounded pagination and explicit interest/request distinction. Listing is read-only; email matching never creates request identity or approval. Existing confirmed-account submissions and UUID reviewer authority retain their contracts. [Change evidence](beta-registration-visibility.md).
-
 The user's 2026-10-09 feature request extends manual-only beta admission with durable account requests and protected explicit reviewer decisions. Both confirmed founder/cofounder UUIDs receive independent reviewer grants; the cofounder remains an ordinary beta user. Waitlist, Auth, beta approval, reviewer authority and project membership remain separate. Never derive authority from an email, project role or user metadata.
 
 One pending request survives retries. Optional messages are bounded to 1,000 characters; declined accounts may resubmit after seven days. First valid decision wins under database locks. Approval and ordinary access plus the result outbox commit together; repeats cannot reverse decisions or revive revocation. Links are token-free authenticated reads, with POST-only decisions.
@@ -338,46 +322,3 @@ One pending request survives retries. Optional messages are bounded to 1,000 cha
 Reuse Resend and the approved sender `beta@2guys1canvas.com`; the user reports Sending verified and retains the Tokyo region. Receiving is unused. Freeze delivery payloads/keys before dispatch; use two-minute leases, five attempts and a 23-hour dispatch horizon inside provider dedup retention. Durable state distinguishes provider acceptance from inbox delivery and retains exhausted uncertainty for operator reconciliation. Wake the existing container only for due outbox work.
 
 The user explicitly chose manual hosted testing this time, superseding the original request for agent-run live account/email checks. Local synthetic SQL/API/provider checks and native PostgreSQL/Linux CI release gates remain required; deployed authenticated/email outcomes must be reported awaiting their verification. See the [feature packet](beta-access-requests.md).
-
-
-## D-0072 — Workflow Overview with one Contradictions category
-
-Accepted 2026-10-15. Workflow presents recorded token/cost trends and contradictions, preserving Studio Ivory. Different submitted choices stay within Contradictions rather than a separate Disagreements category. Keep partial recent history and missing-cost uncertainty explicit. Existing affected-contributor agreement, revision-safe correction, inference/funding checks and durable server records retain authority. Saving an agreement may resume previously submitted work and must disclose that consequence. Canvas, Artifacts and wider UI edits are outside this packet. The user subsequently authorized pushing this Workflow-only fix to main; this does not authorize merging unrelated foundation/staging changes. [Scope and evidence](workflow-overview.md).
-
-## D-0073 — Editorial pre-launch page for a shared AI workspace
-
-Accepted 2026-10-15 through the user's iterative preview approval and explicit main publication request. Present a personal team introduction with section context and expandable feature explanations in three desktop columns, stacking readably on smaller screens. Keep Studio Ivory and Inter, with the workspace illustration, FAQ and private waitlist below. Explain unfamiliar labels and the actual build button/Windows-Linux editor shortcut. Restore the plain introductory sign-in and use an outlined beta tester entrance at the overview bottom and footer.
-
-The broader multi-user positioning does not enable or verify tools: mark expanded document/browser/Blender examples under verification, and model routing/direct publishing as planned. Preserve real consented waitlist submission, separate approved account access and project membership, local-only demo interaction and all runtime authority. Only the landing slice is approved for main; unrelated capability/staging changes remain separate. [Scope, evidence and rollback](landing-editorial.md).
-
-## D-0074 — Woven Canvas C brand mark
-
-Accepted 2026-10-15: the user selected the C design from five generated concepts and explicitly requested application integration on main. Reconstruct the interwoven cobalt/ink C as a clean transparent SVG; use one master through BrandMark for branding slots and matching geometry for a light/dark-browser favicon. Keep nearby wordmarks as accessible lowercase text and retain action icons, geometry, routes, private authority and unrelated capability work. [Scope, checks and rollback](woven-c-brand.md).
-
-## D-0075 — Focused public entry and plain labels
-
-Accepted 2026-10-15: remove the account-entry marketing panel and redundant public-page qualifiers; use plain Sign in labels and retain helpful expanded product explanations. This changes presentation only, preserving beta approval and project membership. Prepare a local preview for review before publication. See [packet](public-entry-cleanup.md).
-
-## D-0076 — Canvas is a sidebar-free writing surface
-
-Accepted 2026-10-15 from the user's explicit request. Canvas shows only the formatting toolbar, save status and a full-width editor that starts at the top-left with a subtle inline placeholder, focuses from blank-surface clicks and grows with normal vertical scrolling. This supersedes D-0042's Canvas placement of Shared context and the boxed empty state. Recorded usage stays reachable in Workflow (D-0072). AgentPanel, IntentReview and the usage card remain reusable components, mounted beside Artifacts, for a future history design. Requirements, accepted revisions, attribution, history, usage records, collaboration, Build my changes / editor-focused Alt+X and workflow authority are unchanged; no stored history is deleted and focusing never infers. [Scope and evidence](canvas-writing-surface.md).
-
-## D-0077 — Public founder contacts in the expanded footer
-
-Accepted 2026-10-15: place Susan Bhatta and Aaryan Bastakoti beneath the footer brand/Sign in row, with their explicitly supplied public email and LinkedIn links. Remove the generic introduction sign-off. Keep the layout quiet and stack profiles on phones. No contact form, bios, photos or backend integration is needed. Main publication is explicitly authorized. [Scope and checks](founder-contacts.md).
-
-2026-10-16 reference refinement: use stacked Email and LinkedIn rows with small filled grey icons, a boxed LinkedIn mark and muted serif labels. Retain the supplied destinations, keyboard focus and readable contrast. The screenshot's x.com example is styling reference only; no founder X account was supplied or requested. Publish to main; leave Cloudflare inspection to the user.
-
-
-## D-0078 - Role-compatible model choices and explicit free pricing
-
-Accepted 2026-10-16 from the user's request following a Kimi K3 / "open muse" build failure. Show only models whose published capabilities fit the selected role; enforce selection on the server. Make FREE unmistakable and show PAID rates. Keep setup inference-free, disclose/freeze the response allowance and supported reasoning policy, and never substitute models or funding. Implementation thresholds and checks live in the [packet](role-compatible-models.md); catalog compatibility is not live quality proof. The exact error remains unknown (the user recalls either bigger or smaller model), so do not present a specific provider outcome as confirmed.
-
-
-## D-0079 — Canonical product identity and explicit compatibility bridges
-
-Accepted 2026-10-17 from the naming-cleanup request: current identity is exactly **2guys1canvas**. Rename safe internals and all callers together; never brand user-generated products or rewrite user text/history. New identifiers use the documented machine convention. Persistent and deployed identifiers retain only narrowly scoped readers/aliases with an owner, reason, removal condition and evidence. This supersedes D-0040’s blanket technical-name exemption. Retain original storage during validated mixed-version migration; fail closed on competing local ledgers. Hosted resource changes, old-store deletion and policy migrations require separate applicable authorization. [Implementation, residual ledger, checks and rollback](product-name-cleanup.md).
-
-## D-0080 — Confirmed save reuse and evidence-based provider rejection repair
-
-Accepted 2026-10-17: reuse only a canonical-confirmed receipt that covers document insertion clocks, deletion signature and attributed sequence; join pending ordered writes without cancelling or releasing them on timeout. Preserve current membership/coordinator authority, caller-only capture, permanent request identity and promotion boundaries. Correlate bounded safe save stages and provider status/code/request-ID/parameter paths. Honor retry eligibility everywhere; do not turn API rejection into output repair, change providers or guess an incompatible field. A live selected-provider build requires a designated account/project and explicit inference budget; local and CI checks remain separate evidence. [Implementation and acceptance gates](save-provider-repair.md).

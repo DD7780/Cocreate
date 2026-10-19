@@ -1,10 +1,10 @@
 import test from'node:test';import assert from'node:assert/strict';import fs from'node:fs';import os from'node:os';import path from'node:path';
-import{createTwoGuysOneCanvasServer}from'../server/index.js';import{createSession}from'../server/auth.js';
+import{createCoCreateServer}from'../server/index.js';import{createSession}from'../server/auth.js';
 import type{ConflictGroup}from'../shared/types.js';
 
 test('conflict endpoint enforces editor role, contributor identity, stale choices, and retry identity',async()=>{
-  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-conflicts-')),secret='test-conflict-secret';
-  const service=await createTwoGuysOneCanvasServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:secret});
+  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-conflicts-')),secret='test-conflict-secret';
+  const service=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,dataDir,sessionSecret:secret});
   try{
     const room=service.manager.create('conflict-room');service.manager.join(room,'alice','Alice');service.manager.join(room,'bob','Bob');
     const group:ConflictGroup={id:'conflict-test',revision:1,round:1,subject:'header',scope:'global',requirementIds:[],alternatives:[{id:'red',label:'Red header',requirementIds:[],requirementRevisions:[],sources:[]},{id:'green',label:'Green header',requirementIds:[],requirementRevisions:[],sources:[]}],requiredResolverIds:['alice','bob'],selections:[],state:'awaiting_choices',detectionStatus:'confirmed',explanation:'Choose a header color.',affectedBuildScopes:[],history:[],createdAt:'2026-09-01T00:00:00Z',updatedAt:'2026-09-01T00:00:00Z'};

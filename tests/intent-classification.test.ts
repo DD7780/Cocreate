@@ -64,7 +64,7 @@ test('targeted reinterpretation reuses authenticated edits, preserves identity, 
     res.setHeader('content-type','application/json');res.end(JSON.stringify({choices:[{message:{content:JSON.stringify(result)},finish_reason:'stop'}]}));
   });
   await new Promise<void>(resolve=>provider.listen(0,'127.0.0.1',resolve));
-  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'2guys1canvas-reinterpret-')),
+  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-reinterpret-')),
     baseUrl=`http://127.0.0.1:${(provider.address()as any).port}`,
     manager=new RoomManager({debounceMs:10,buildDebounceMs:60_000,buildCooldownMs:0,buildMaxWaitMs:60_000,encryptionSecret:'reinterpret-test',baseUrl,dataDir}),
     room=manager.create('reinterpret-room');
@@ -78,7 +78,7 @@ test('targeted reinterpretation reuses authenticated edits, preserves identity, 
     await manager.reinterpretLatest(room,'alice');
     assert.equal(room.sharedRequirements.length,1);
     assert.equal(room.sharedRequirements[0].status,'accepted');
-    assert.equal(participant.latest?.classifierVersion,'intent-v3');
+    assert.equal(participant.latest?.classifierVersion,'intent-v2');
     assert.equal(manager.eventStore.eventsForWorkspace(room.id).at(-1)?.eventType,'interpretation.reinterpreted');
     const stableId=room.sharedRequirements[0].id;
 

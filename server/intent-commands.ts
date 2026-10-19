@@ -1,6 +1,6 @@
 import { createHash } from 'node:crypto';
 import type { IntentCommand, IntentCorrection, InterpretationIntent, Requirement, SharedRequirement, SharedRequirementSource } from '../shared/types.js';
-import { normalizeInterpretation, reconcileRequirements, INTERPRETATION_CLASSIFIER_VERSION } from './requirements.js';
+import { normalizeInterpretation, reconcileRequirements } from './requirements.js';
 
 function fail(message:string,status=409):never {throw Object.assign(new Error(message),{status});}
 const categories = new Set(['goal','feature','design','constraint','question']);
@@ -58,7 +58,7 @@ export function applyIntentCommand(requirements:SharedRequirement[],latest:Requi
   // Retain other latest intents as inspection records; reconciliation adds only the corrected entry.
   const preserved=(latest?.intents||[]).filter(item=>target.kind==='interpretation'?item.id!==target.intentId:!sources.some(source=>source.intentId===item.id||(!source.intentId&&source.interpretationId===latest?.id&&item.text===text&&source.passages.includes(item.sourcePassage))));
   const interpretation=normalizeInterpretation({id:latest?.id||id,participantId:participant.id,participantName:participant.name,revision:(latest?.revision||0)+1,
-    sourceRevision:intent.sourceRevision,sourceEditSeqs:intent.sourceEditSeqs,sourcePassages:[intent.sourcePassage],createdAt:at,intents:preserved.concat(intent),classifierVersion:INTERPRETATION_CLASSIFIER_VERSION});
+    sourceRevision:intent.sourceRevision,sourceEditSeqs:intent.sourceEditSeqs,sourcePassages:[intent.sourcePassage],createdAt:at,intents:preserved.concat(intent),classifierVersion:'intent-v2'});
   const onlyCorrection={...interpretation,intents:[intent]};
   const registry=reconcileRequirements(next,onlyCorrection).requirements;
   const audit:IntentCorrection={requestId:command.requestId,participantId:participant.id,participantName:participant.name,target:command.target,

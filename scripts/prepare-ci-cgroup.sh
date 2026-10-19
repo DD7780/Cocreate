@@ -2,7 +2,7 @@
 set -eu
 test "$(id -u)" = 0
 root=${1:?Fixed disposable CI root required}
-case "$root" in /sys/fs/cgroup/2guys1canvas-ci-*) ;; *) exit 126 ;; esac
+case "$root" in /sys/fs/cgroup/cocreate-ci-*) ;; *) exit 126 ;; esac
 test "$(/usr/bin/findmnt -n -o FSTYPE -T /sys/fs/cgroup)" = cgroup2
 test ! -e "$root"
 echo '+memory +pids' > /sys/fs/cgroup/cgroup.subtree_control

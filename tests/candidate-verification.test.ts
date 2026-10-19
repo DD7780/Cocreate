@@ -5,12 +5,11 @@ import path from 'node:path';
 import os from 'node:os';
 import http from 'node:http';
 import { withIsolatedBrowser } from '../server/isolation/browser.js';
-import { IsolationError,isolationJobsDirectory } from '../server/isolation.js';
+import { IsolationError } from '../server/isolation.js';
 import { applyOperations, bundleProject } from '../server/project.js';
 import { assertPromotionEvidence, planVerification, verifyCandidate } from '../server/verification.js';
 import { reconcileRequirements, normalizeInterpretation } from '../server/requirements.js';
 import { verifiedList } from './fixtures/verified-list.js';
-const existingJobs=new Set(fs.existsSync('.runtime/isolation/jobs')?fs.readdirSync('.runtime/isolation/jobs'):[]);
 
 export function requirementsFor(texts: string[]) {
   return reconcileRequirements([], normalizeInterpretation({id:'fixture',participantId:'alice',participantName:'Alice',revision:1,
@@ -77,7 +76,7 @@ test('actual verification browser denies a private host file and loopback networ
       assert.doesNotMatch(page.result.value || '',/synthetic private sentinel/);
     },{onStarted:child=>{pid=child;}});
     assert.ok(pid);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
-    assert.deepEqual((fs.existsSync(isolationJobsDirectory)?fs.readdirSync(isolationJobsDirectory):[]),[]);
+    assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')),[]);
     assert.equal(fs.readFileSync(secret,'utf8'),'<body>synthetic private sentinel</body>');
   } finally {
     await new Promise<void>(resolve=>server.close(()=>resolve()));
@@ -97,7 +96,7 @@ for (const [resource, expression] of [['CPU', 'while(true){}'], ['protocol outpu
       return error instanceof IsolationError && error.code === 'isolation_resource_limit';
     });
     assert.ok(pid);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
-    assert.deepEqual((fs.existsSync(isolationJobsDirectory)?fs.readdirSync(isolationJobsDirectory):[]),[]);
+    assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')),[]);
   });
 }
 
@@ -111,6 +110,6 @@ test('cancellation and wall limits terminate browser execution and leave no chil
       await browser.call('Runtime.evaluate',{expression:'while(true){}'},sessionId);
     },{signal:controller.signal,wallMs:cancel?5_000:2_000,onStarted:child=>{pid=child;}}),error=>error instanceof IsolationError&&error.code===(cancel?'isolation_cancelled':'isolation_timeout'));
     assert.ok(pid);assert.throws(()=>process.kill(pid,0),{code:'ESRCH'});
-    assert.deepEqual((fs.existsSync(isolationJobsDirectory)?fs.readdirSync(isolationJobsDirectory):[]),[]);
+    assert.deepEqual(fs.readdirSync(path.resolve('.runtime/isolation/jobs')),[]);
   }
 });
