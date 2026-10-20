@@ -67,7 +67,7 @@ const fake = http.createServer(async (req, res) => {
           type: "write",
           path: "src/App.tsx",
           content:
-            "export default function App(){return <main>Shared catalog</main>}",
+            "import {useState} from 'react';export default function App(){const [favorite,setFavorite]=useState(false);return <main><h1>Shared catalog</h1><button aria-label='Favorite Apple' aria-pressed={favorite} onClick={()=>setFavorite(!favorite)}>Favorite Apple</button><ul><li><h2>Apple</h2></li><li><h2>Banana</h2></li></ul></main>}",
         },
       ],
       summary: "Shared catalog",
@@ -158,7 +158,7 @@ async function open(id: string, index: number) {
       `--user-data-dir=${profile}`,
       "about:blank",
     ],
-    { stdio: "ignore" },
+    { stdio: "ignore", windowsHide: true },
   );
   let target: any;
   await until(async () => {
@@ -427,9 +427,10 @@ try {
   await a.evaluate(
     "[...document.querySelectorAll('button')].find(button=>button.textContent.includes('View requirements')).click()",
   );
+  await until(() => a.evaluate("!!document.querySelector('dialog.intent-review[open]')"), "intent details opened");
   assert.ok(
     await a.evaluate(
-      "document.querySelector('.context-drawer').innerText.includes('Build catalog')",
+      "document.querySelector('dialog.intent-review[open]').innerText.includes('Build catalog')",
     ),
   );
   await a.evaluate(
@@ -691,10 +692,29 @@ try {
     JSON.stringify(report, null, 2),
   );
   console.log(JSON.stringify(report, null, 2));
+} catch (error) {
+  const failure = {message: error instanceof Error ? error.message : String(error),
+    status: room.status, lastError: room.lastError, interpreterCalls, builderCalls,
+    versions: room.versions.map(version => version.id),
+    submissions: room.submissions.map(item => ({participantId:item.participantId,status:item.status})),
+    runs: room.aiRuns.map(run => ({outcome:run.outcome,verification:run.verification}))};
+  fs.writeFileSync(path.join(output, 'failure.json'), JSON.stringify(failure, null, 2));
+  const observedAt = Date.now();
+  await room.buildTask?.catch(() => {});
+  fs.writeFileSync(path.join(output, 'settled-after-failure.json'), JSON.stringify({
+    elapsedAfterFailureMs:Date.now()-observedAt,status:room.status,lastError:room.lastError,
+    versions:room.versions.map(version=>version.id),
+    runs:room.aiRuns.map(run=>({outcome:run.outcome,verification:run.verification}))}, null, 2));
+  if (browsers[0]) await snapshot(browsers[0], 'failure.png').catch(() => {});
+  throw error;
 } finally {
   for (const browser of browsers) {
+    if (browser.process.exitCode === null && browser.process.signalCode === null) {
+      const closed = new Promise<void>(resolve => browser.process.once('close', () => resolve()));
+      await browser.call('Browser.close').catch(() => browser.process.kill());
+      await closed;
+    }
     browser.socket.close();
-    browser.process.kill();
   }
   if (!serviceStopped) await service.stop();
   await artifactFixture?.close();

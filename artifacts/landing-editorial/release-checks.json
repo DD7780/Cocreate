@@ -1,0 +1,39 @@
+{
+  "testedSource": "dbef24630d16c3b179d0727c940a1b2c10111127",
+  "base": "ab28741308b784d5bb4edf30b5bbfd83bab14069",
+  "fingerprint": "f4ddcf64eec0f6fd1bfa3a793a41c945f73ac86769c39f5556eb493dfeb80758",
+  "ci": {
+    "run": 38722412091,
+    "duplicatePushRun": 38722399900,
+    "conclusion": "success",
+    "nativeSQL": {
+      "pass": 2,
+      "fail": 0,
+      "skip": 0
+    },
+    "compiler": {
+      "pass": 10,
+      "fail": 0,
+      "skip": 0
+    },
+    "browser": {
+      "pass": 15,
+      "fail": 0,
+      "skip": 0
+    },
+    "fullRegression": {
+      "pass": 248,
+      "fail": 0,
+      "skip": 0
+    }
+  },
+  "local": {
+    "focusedTests": 14,
+    "strictBuild": "pass",
+    "boundaries": 0,
+    "syntheticSQLiteRegistrationCount": 1
+  },
+  "publication": "Authorized through PR #4; use its merge receipt for actual main commit.",
+  "hostedRollout": "Not established by this CI receipt.",
+  "limit": "No paid inference, live account/mailbox tests, cloud resource or access changes."
+}

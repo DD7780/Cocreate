@@ -8,6 +8,7 @@ import { OpenRouterLeases } from '../server/byok-lease.js';
 import { generateText } from '../server/providers.js';
 import { managedBuilder, managedCatalog, managedSetup } from '../server/managed-catalog.js';
 import { scoreManagedTrials } from '../server/managed-qualification.js';
+import {openBudget} from '../server/workflow-budget.js';
 
 test('managed catalog is bounded, exact, and rejects forged builder IDs', () => {
   assert.equal(managedCatalog.length, 13);
@@ -58,6 +59,8 @@ test('temporary OpenRouter setup validates without generation and saves no secre
     manager.saveTemporaryModels(room,'owner',lease.handle,'deepseek/deepseek-v4.1-flash','google/gemini-3.8-flash');
     assert.equal(manager.view(room).ai.personalModel,'deepseek/deepseek-v4.1-flash');
     assert.equal(manager.view(room).ai.builderModel,'google/gemini-3.8-flash');
+    assert.equal(room.ai.setup?.resolved?.personal.maxInputTokens,64000);
+    assert.equal(room.ai.setup?.resolved?.personal.maxOutputTokens,64000,'reserve full provider context instead of the historical role cap');
     assert.equal((manager as any).aiConfigFrom(room,'personal',room.ai.personal).model,'deepseek/deepseek-v4.1-flash');
     assert.equal((manager as any).aiConfigFrom(room,'builder',room.ai.builder).model,'google/gemini-3.8-flash');
     assert.equal(manager.view(room).ai.status,'connected');
@@ -99,6 +102,10 @@ test('explicit builder reaches the OpenRouter request; unauthorized editor canno
     for(let index=0;index<4;index++)await (manager as any).tracked(room,{purpose:'builder',provider:'openrouter',model:config.model,actorId:'owner',setup,estimatedOutputTokens:32},()=>generateText(config,{model:config.model,instructions:'Reply OK.',input:'Test',maxOutputTokens:32}));
     assert.equal(requests.filter(item=>item.url.endsWith('/chat/completions')).length,5);
     assert.equal(room.budgetWindow,undefined);
+    room.executionBudget=openBudget('workflow',.001);
+    const beforeLimited=requests.length;
+    await assert.rejects((manager as any).tracked(room,{purpose:'builder',provider:'openrouter',model:config.model,actorId:'owner',setup,workflowRunId:'bounded',estimatedOutputTokens:32},()=>generateText(config,{model:config.model,instructions:'Reply OK.',input:'Test'})),/spending limit/);
+    assert.equal(requests.length,beforeLimited,'uncapped generation reserves provider capacity before HTTP dispatch');
   }finally{manager.shutdown();globalThis.fetch=originalFetch;rmSync(dataDir,{recursive:true,force:true})}
 });
 

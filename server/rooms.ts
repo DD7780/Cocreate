@@ -45,6 +45,7 @@ import {
   type ArchivedVersion,
 } from "./artifacts.js";
 import { deletionSignature } from "../shared/document-state.js";
+import {captureSourceSpans,freezeSubmittedSources} from "./submitted-sources.js";
 import { applySteeringUpdate } from "./steering-edits.js";
 import fs from "node:fs";
 import path from "node:path";
@@ -227,18 +228,9 @@ export class RoomManager {
       const model = (
         role === "builder" ? lease.builders : lease.interpreters
       ).find((item) => item.id === modelId)!;
-      const maxOutputTokens = Math.min(
-        role === "builder" ? 8_000 : 2_400,
-        model.maxOutputTokens ?? Number.POSITIVE_INFINITY,
-        Math.floor(model.contextLength / 4),
-      );
-      const maxInputTokens = Math.max(
-        1_024,
-        Math.min(
-          role === "builder" ? 60_000 : 20_000,
-          model.contextLength - maxOutputTokens - 2_000,
-        ),
-      );
+      // Provider metadata bounds reservations; generation does not send a token cap.
+      const maxOutputTokens = model.contextLength;
+      const maxInputTokens = model.contextLength;
       return {
         connectionId: "byok",
         connectionName: "Owner OpenRouter lease",
@@ -794,6 +786,7 @@ export class RoomManager {
       participantId: p.id,
       at: now(),
       update: payload.toString("base64"),
+      sourceSpans: captureSourceSpans(payload,vector),
       kind: kindOf(before, after),
       ...authenticatedDelta(before, after),
       after: insertedText,
@@ -976,8 +969,9 @@ export class RoomManager {
                         scope = room.executionBudget;
                     }
                 }
-                record.reservedChargeUsd = rate ? calculateCharge({
-                    inputTokens: record.estimatedInputTokens, outputTokens: record.estimatedOutputTokens || 0
+                const providerCapacity = meta.provider === 'openrouter' && !setupCall;
+                record.reservedChargeUsd = rate && (!providerCapacity || meta.setup?.mode === 'byok_lease') ? calculateCharge({
+                    inputTokens: record.estimatedInputTokens, outputTokens: providerCapacity ? frozenLayer!.maxOutputTokens : record.estimatedOutputTokens || 0
                 }, rate).estimatedChargeUsd : undefined;
             }
             if (!scope)
@@ -1925,7 +1919,7 @@ export class RoomManager {
             };
             const result = await this.tracked(room, {
                 purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
-            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements)));
+            }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements), submission?.submittedSources));
             this.recordUsage(room, 'personal', result.usage, reservation, usageMeta);
             if (controller.signal.aborted) {
                 if (!submittedBatch)
@@ -2026,6 +2020,7 @@ export class RoomManager {
         intentContext: acceptedContext(room.sharedRequirements), snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
         previousInterpretationId: participant.latest?.id, createdAt: now(), status: 'submitted', assignment: structuredClone(assignment), setup
     };
+    submission.submittedSources = freezeSubmittedSources(submission.id, participantId, batch, room.doc);
     room.pending.delete(participantId);
     room.submissions.push(submission);
     room.submissions = retainSubmissions(room.submissions);
@@ -2040,7 +2035,7 @@ export class RoomManager {
     this.broadcastState(room);
     await this.queueCapturedSubmission(room, submission, saved);
     return {
-        submissionId: submission.id, status: submission.status, message: submission.status === 'queued' ? 'Changes accepted and queued for the shared build.' : 'Changes saved; interpretation waits for the current build to finish.'
+        submissionId: submission.id, status: submission.status, message: submission.status === 'queued' ? (participant.latest?.intents?.some(intent=>!intent.withdrawn&&intent.validation?.status==='needs_clarification') ? 'Your changes were saved, but their interpretation needs review before building.' : 'Your changes were saved and interpreted.') : 'Changes saved; interpretation waits for the current build to finish.'
     };
 }
   private async flushAgents(room: Room) {

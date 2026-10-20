@@ -69,6 +69,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
                   classification: "explicit_request",
                   rationale: "Direct build instruction.",
                   sourcePassage: passage,
+                  sourceRefs: JSON.parse(body.input).submittedSources.map((source:any)=>source.id),
                   affectedRequirementIds: [],
                 },
               ],

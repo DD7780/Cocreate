@@ -1,8 +1,8 @@
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
+import {InterpretationNotice} from './InterpretationNotice';
 import { api } from "./api";
 import { AgentPanel } from "./workspace/AgentPanel";
-import { BuildAccounting } from "./workspace/BuildAccounting";
 import {
   draftKey,
   persistDraft,
@@ -603,6 +603,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     if (!state)
         return <main className="loading"><LoaderCircle className="spin"/><p>{connection.message}</p></main>;
     const initialSetup = false;
+    const needsInterpretationReview = !!me?.latest?.intents?.some(intent=>!intent.withdrawn&&intent.validation?.status==='needs_clarification');
     const invite = async () => {
         if (onInvite)
             await onInvite();
@@ -610,7 +611,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
             await navigator.clipboard.writeText(`${location.origin}/r/${id}?join=1`);
         setCopied(true);
         setTimeout(() => setCopied(false), 1300);
-    }, latestRun = state.aiRuns.at(-1);
+    };
     return <main className="workspace simple">
     <header className="topbar"><div className="brand"><div className="brand-mark small-mark"><Sparkles /></div><div>{onRenameProject ? <button className="project-title-button" aria-label={`Rename project ${projectTitle}`} title="Rename project" onClick={onRenameProject}><strong>{projectTitle}</strong><Pencil aria-hidden="true"/></button> : <strong>{projectTitle || '2guys1canvas'}</strong>}<span>{projectTitle ? 'Private shared project · select the pencil to rename' : 'Shared product document'}</span></div></div><nav className="tabs" aria-label="Workspace views"><button className={tab === 'workflow' ? 'active' : ''} onClick={() => {
         setTab('workflow');
@@ -626,8 +627,9 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setSplit(!split);
         setTab('document');
     }}><PanelLeftClose />Split view</button><span className="build-shortcut-hint">{shortcut === 'disabled' ? 'No macOS shortcut' : shortcutLabel(shortcut)}</span><button className="primary" disabled={submitting} aria-keyshortcuts={ariaShortcut(shortcut)} title={`Build my changes${shortcut === 'disabled' ? '' : ` (${shortcutLabel(shortcut)})`}`} onMouseDown={event => event.preventDefault()} onClick={() => void submitChanges()}>{submitting ? <LoaderCircle className="spin"/> : <WandSparkles />}Build my changes</button></div></div>
-    <BuildProgress progress={state.buildProgress}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
-    {notice && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
+    <BuildProgress progress={state.buildProgress} hasAcceptedRequirements={state.requirements.some(item=>item.status==='accepted')} needsInterpretationReview={needsInterpretationReview}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
+    <InterpretationNotice state={state} me={me} token={token} id={id}/>
+    {notice && (!needsInterpretationReview || notice !== 'Your changes were saved, but their interpretation needs review before building.') && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
         if (tokenOverride)
             location.href = `/login?returnTo=${encodeURIComponent(`/projects/${id}`)}`;
         else {
@@ -636,10 +638,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         }
     }}>{tokenOverride ? 'Sign in again' : 'Rejoin room'}</button>}{connection.state === 'error' && connection.reason === 'missing-room' && <button onClick={() => location.href = projectTitle ? '/projects' : '/'}>{projectTitle ? 'Return to projects' : 'Return home'}</button>}</div>}
     {state.ai.status === 'disconnected' && <div className="ai-banner"><KeyRound /><span><strong>Generation is paused.</strong> {isOwner ? 'Connect AI when you’re ready; writing still works.' : 'The project owner needs to connect AI. You can keep writing.'}</span>{isOwner && <button onClick={() => setSettings(true)}>Connect AI</button>}</div>}{(error || state.lastError) && <div className="error-banner"><span><strong>Error.</strong> {error || state.lastError} The last working product remains available.</span>{state.status === 'Error' && state.ai.status === 'connected' && (isOwner || state.ai.temporary?.authorizedSpenderIds.includes(me?.id || '')) && <button onClick={() => void retryFailedBuild()} disabled={submitting}>Retry build</button>}<button onClick={() => setError('')}>Dismiss</button></div>}
-    <section className={`content ${split ? 'is-split' : ''}`}>{tab === 'workflow' && !split && <div className="workflow-page"><div className="workflow-main"><WorkflowBoard state={state} onCanvas={() => setTab('document')} onArtifacts={() => setTab('product')}/>{latestRun && <BuildAccounting run={latestRun} history={state.aiRuns}/>}</div><AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
-        setTab('workflow');
-        requestAnimationFrame(() => document.getElementById('workflow-usage')?.scrollIntoView());
-    }}/></div>}{(tab === 'document' || split) && <div className="document-layout"><div className="paper-wrap"><Toolbar editor={editor}/><div className="paper"><div className="doc-meta"><span>SHARED CANVAS</span><span title="Browser recovery copy; shared saves are confirmed separately">{localDraft === 'saved' ? 'Saved on this device' : localDraft === 'saving' ? 'Saving on device…' : localDraft === 'unavailable' ? 'Device backup unavailable' : 'Opening device backup…'}</span><span className={saveState !== 'saved' ? 'saving' : ''}>{saveState === 'unsynced' || connection.state !== 'connected' && saveState === 'saving' ? 'Unsynced changes' : saveState === 'saving' ? 'Saving…' : savedAt ? `Synced ${new Date(savedAt).toLocaleTimeString([], {
+    <section className={`content ${split ? 'is-split' : ''}`}>{tab === 'workflow' && !split && <div className="workflow-page workflow-overview-page"><div className="workflow-main"><WorkflowBoard state={state} me={me} token={token} onCanvas={() => setTab('document')}/></div></div>}{(tab === 'document' || split) && <div className="document-layout"><div className="paper-wrap"><Toolbar editor={editor}/><div className="paper"><div className="doc-meta"><span>SHARED CANVAS</span><span title="Browser recovery copy; shared saves are confirmed separately">{localDraft === 'saved' ? 'Saved on this device' : localDraft === 'saving' ? 'Saving on device…' : localDraft === 'unavailable' ? 'Device backup unavailable' : 'Opening device backup…'}</span><span className={saveState !== 'saved' ? 'saving' : ''}>{saveState === 'unsynced' || connection.state !== 'connected' && saveState === 'saving' ? 'Unsynced changes' : saveState === 'saving' ? 'Saving…' : savedAt ? `Synced ${new Date(savedAt).toLocaleTimeString([], {
         hour: '2-digit', minute: '2-digit'
     })}` : 'Not saved yet'}</span></div><EditorContent editor={editor}/></div></div>{!split && <AgentPanel me={me} state={state} token={token} id={id} hosted={true} onViewUsage={() => {
         setTab('workflow');

@@ -1,7 +1,5 @@
 # Repository graph coverage and source-map checkpoints
 
-October 9 restoration AST checkpoint 2026-10-19: `graphify update .` completes with 2,296 nodes, 5,254 edges and 127 communities, zero LLM calls. Runtime/build inputs match the selected `6c44029` snapshot. Semantic documentation relationships remain dated; 14 unsupported files are reported. Current scope and application verification belong in the [restoration packet](../docs/harness/oct9-restoration.md).
-
 Beta request/approval AST checkpoint 2026-10-09: 2,181 nodes, 5,176 edges, 120 communities, zero LLM calls. Fourteen SQL files lack the optional parser; exact new SQL function bodies match the live schema and execute in local/native tests. Source relationships do not prove hosted inbox/account behavior. [Feature packet](../docs/harness/beta-access-requests.md).
 
 Release completion AST checkpoint 2026-10-08: 2,133 nodes, 5,028 edges, 116 communities, zero LLM calls. Thirteen SQL files lack the optional tree_sitter_sql parser; semantic documentation remains dated. Release/hosted evidence is separate in [the packet](../docs/harness/prelaunch-release-repair.md).

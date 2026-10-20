@@ -1,3 +1,5 @@
+> Historical evidence: superseded by the verified restoration published from `732fc572`. See [the publication handoff](main-restoration-publication-20261020.md). This report does not describe the active main version.
+
 # October 9 source restoration — 2026-10-19
 
 ## Change packet

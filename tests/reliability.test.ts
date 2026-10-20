@@ -1,3 +1,4 @@
+import {citeSources} from './fixtures/source-references.js';
 import {usedBudget} from './fixtures/workflow-budget.js';
 import { verifiedList } from './fixtures/verified-list.js';
 import test from 'node:test';
@@ -98,7 +99,7 @@ const edit=(manager:RoomManager,room:ReturnType<RoomManager['create']>,text:stri
 };
 const waitFor=async(check:()=>boolean,timeoutMs=5_000)=>{for(let i=0;i<Math.ceil(timeoutMs/20);i++){if(check())return;await new Promise(resolve=>setTimeout(resolve,20))}throw new Error('Timed out');};
 const fixture=async(handler:(body:any)=>unknown|Promise<unknown>)=>{
-  const server=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const value=await handler(JSON.parse(raw));res.setHeader('content-type','application/json');res.end(JSON.stringify(value));});
+  const server=http.createServer(async(req,res)=>{let raw='';for await(const chunk of req)raw+=chunk;const body=JSON.parse(raw),value:any=await handler(body);if(body.text?.format?.schema?.required?.includes('goals'))for(const output of value.output||[])for(const content of output.content||[])if(content.type==='output_text'){const parsed=JSON.parse(content.text);content.text=JSON.stringify(citeSources(parsed,JSON.parse(body.input)));}res.setHeader('content-type','application/json');res.end(JSON.stringify(value));});
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
   return{baseUrl:`http://127.0.0.1:${(server.address() as {port:number}).port}`,close:()=>new Promise<void>(resolve=>server.close(()=>resolve()))};
 };

@@ -87,7 +87,7 @@ function linuxCommand(runtime:string,workspace:string,osProbe:boolean){
   for(const directory of ['/lib','/lib64','/usr/lib'])if(fs.existsSync(directory))args.push('--ro-bind',directory,directory);
   args.push('--setenv','NODE_ENV','production','--setenv','UV_THREADPOOL_SIZE','1','--chdir','/job','/node');
   if(!osProbe)args.push('--permission','--allow-fs-read=/runtime','--allow-fs-read=/job');
-  args.push('--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
+  args.push('--wasm-lazy-compilation','--no-wasm-tier-up','--no-wasm-dynamic-tiering','--wasm-num-compilation-tasks=4','--max-old-space-size=128','--disable-wasm-trap-handler','/runtime/worker.cjs','/job/input.json','/runtime');
   return {executable:'/usr/bin/prlimit',args};
 }
 /** Internal trusted primitive. No HTTP/model output can choose operations, commands or runtime flags. */
@@ -157,7 +157,7 @@ export async function runIsolated(request:IsolatedRequest,options:IsolationOptio
       if(!removed){const error=unavailable();error.cause={phase:'cleanup',diagnostic:'Sandbox PID remains after launcher exit; verify the init reaper.'};throw error;}
     }
     const root=path.resolve(runtimeDirectory,'jobs');if(path.dirname(path.resolve(workspace))!==root)throw unavailable();
-    fs.rmSync(workspace,{recursive:true,force:true,maxRetries:3,retryDelay:50});
+    await fs.promises.rm(workspace,{recursive:true,force:true,maxRetries:3,retryDelay:50});
   }
 }
 export async function compileIsolated(files:ProjectFile[],signal?:AbortSignal){

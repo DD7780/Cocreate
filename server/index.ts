@@ -805,7 +805,7 @@ export async function createCoCreateServer(options: Options = {}) {
     if (options.serveClient !== false) {
         if (process.env.NODE_ENV === 'production') {
             app.use(express.static(path.join(process.cwd(), 'dist')));
-            app.get('*path', (req, res) => res.sendFile(path.join(process.cwd(), 'dist', 'index.html')));
+            app.get('*path', (req, res) => res.sendFile('index.html', {root: path.join(process.cwd(), 'dist')}));
         }
         else {
             const vite = await createViteServer({

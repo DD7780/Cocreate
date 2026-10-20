@@ -1,8 +1,8 @@
 # Harness decision log
 
-## D-0079 — Restore the complete October 9 release
+## D-0074 — Provider-governed OpenRouter workflow capacity
 
-Accepted 2026-10-19 by the user's explicit selection of `6c4402958bdec460b23c959bc99c8e824e53dd1c`, before all October 15 UI changes. Restore the matching complete source and publish a new main commit without pulling the broken remote source. This supersedes later UI, submission/model and restoration directions for this release. Preserve later Git history and the previous remote tip; do not downgrade database state or delete project data. The new dated documentation and Graphify refresh may differ from the historical snapshot, while runtime/build inputs remain exact. [Scope and fresh verification](oct9-restoration.md).
+Accepted 2026-10-20 for the isolated historical repair. Supersede role/effort token caps for OpenRouter interpretation, repairs, builder and bounded recovery: omit output-token parameters and application token/context rejection, sending complete prepared context within existing product-source safeguards. Effective capacity remains finite and provider/model/account controlled. Explicit setup probes and other adapters retain their policies. Reserve full catalog context for output under configured workflow spending, reject uncertain legacy capacity under a dollar limit, and preserve physical accounting, unknown outcomes, 24 attempts, eight recovery tasks and checkpoints. This does not authorize new paid acceptance or production deployment. [Correction, current official contracts, mocks and compatibility plan](historical-repair-20261020.md).
 
 Updated 2026-10-05. Each stable identifier names one decision. Accepted behavior, local implementation and hosted verification are separate; the [checklist](checklist.md) owns evidence-backed status. Superseded/rejected records below preserve rationale, not current instructions. Current setup/limits live in [product.md](../../product.md#hosted-ai-and-limits).
 
@@ -322,3 +322,19 @@ One pending request survives retries. Optional messages are bounded to 1,000 cha
 Reuse Resend and the approved sender `beta@2guys1canvas.com`; the user reports Sending verified and retains the Tokyo region. Receiving is unused. Freeze delivery payloads/keys before dispatch; use two-minute leases, five attempts and a 23-hour dispatch horizon inside provider dedup retention. Durable state distinguishes provider acceptance from inbox delivery and retains exhausted uncertainty for operator reconciliation. Wake the existing container only for due outbox work.
 
 The user explicitly chose manual hosted testing this time, superseding the original request for agent-run live account/email checks. Local synthetic SQL/API/provider checks and native PostgreSQL/Linux CI release gates remain required; deployed authenticated/email outcomes must be reported awaiting their verification. See the [feature packet](beta-access-requests.md).
+
+
+## D-0072 — Workflow Overview with one Contradictions category
+
+Accepted 2026-10-15. Workflow presents recorded token/cost trends and contradictions, preserving Studio Ivory. Different submitted choices stay within Contradictions rather than a separate Disagreements category. Keep partial recent history and missing-cost uncertainty explicit. Existing affected-contributor agreement, revision-safe correction, inference/funding checks and durable server records retain authority. Saving an agreement may resume previously submitted work and must disclose that consequence. Canvas, Artifacts and wider UI edits are outside this packet. The user subsequently authorized pushing this Workflow-only fix to main; this does not authorize merging unrelated foundation/staging changes. [Scope and evidence](workflow-overview.md).
+
+## D-0073 — Editorial pre-launch page for a shared AI workspace
+
+Accepted 2026-10-15 through the user's iterative preview approval and explicit main publication request. Present a personal team introduction with section context and expandable feature explanations in three desktop columns, stacking readably on smaller screens. Keep Studio Ivory and Inter, with the workspace illustration, FAQ and private waitlist below. Explain unfamiliar labels and the actual build button/Windows-Linux editor shortcut. Restore the plain introductory sign-in and use an outlined beta tester entrance at the overview bottom and footer.
+
+The broader multi-user positioning does not enable or verify tools: mark expanded document/browser/Blender examples under verification, and model routing/direct publishing as planned. Preserve real consented waitlist submission, separate approved account access and project membership, local-only demo interaction and all runtime authority. Only the landing slice is approved for main; unrelated capability/staging changes remain separate. [Scope, evidence and rollback](landing-editorial.md).
+
+
+## D-0074 — Resolve interpreter evidence from frozen participant references
+
+Accepted 2026-10-20 for the isolated historical repair. Clarified requirement wording must not authenticate model-rewritten quotations. Reuse authenticated edit sequences and Yjs identities to freeze readable, caller-only passages before inference; bind every new source reference to its submission and participant. Deleted/foreign characters cannot complete a passage. Keep ambiguity/conflict review and explicit, auditable human correction. Historical evidence is immutable and no existing work is automatically reinterpreted or built. [Repair packet and verification](provenance-repair-20261020.md).
