@@ -1,0 +1,91 @@
+{
+  "date": "2026-10-19",
+  "selectedSource": "6c4402958bdec460b23c959bc99c8e824e53dd1c",
+  "preparedCommit": "747dd33af526dd50810735bc3a078ccc65c1c0e8",
+  "previousMain": "33d54e8f5eff1e7442c74eece2f3914bb09fb8b8",
+  "runtimeContractsTestsMigrationsBuildInputsExactlyMatchSelectedSource": true,
+  "releaseFingerprint": "8e34b57fd99591db7557bf4d3b8308df28b193e0319f3d9efb45b18c30b219fb",
+  "releaseInputCount": 91,
+  "boundaries": {
+    "audited": 151,
+    "violations": 0
+  },
+  "typescriptAndBuild": "passed",
+  "independentReview": {
+    "p1": 0,
+    "p2": 0
+  },
+  "windowsFullSuite": {
+    "total": 244,
+    "passed": 220,
+    "failed": 16,
+    "skipped": 8,
+    "durationMs": 434888.6137,
+    "failures": [
+      "unapproved accounts cannot read APIs, previews, downloads, socket upgrades/messages or later delivery",
+      "real isolated browser verifies accepted filter, favorites and sorting and binds evidence to the candidate",
+      "compiling controls without behavior fail; retained feature regressions are checked on every candidate",
+      "unsupported prose remains unverified and generated assertion tampering cannot replace trusted checks",
+      "actual verification browser denies a private host file and loopback network and removes its child/profile",
+      "browser CPU remains inside the isolated job bounds",
+      "browser protocol output remains inside the isolated job bounds",
+      "cancellation and wall limits terminate browser execution and leave no child jobs",
+      "CPU bound stops a busy child before the longer wall deadline",
+      "hosted reads, mutations and live delivery check current membership rather than a stale ticket role",
+      "Current outcome of Step 01 scenario: simultaneous-slow",
+      "Current outcome of Step 01 scenario: failed-interpreter",
+      "Current outcome of Step 01 scenario: incorrect-product",
+      "required behavior failure retains the verified product, records actionable evidence and needs explicit retry",
+      "unavailable verification browser fails before builder spending and never reuses legacy covered evidence",
+      "independent participants submit in durable capture order, retain later build inputs and saved drafts on reload"
+    ],
+    "result": "failed; retained separately from Linux CI"
+  },
+  "graph": {
+    "nodes": 2296,
+    "edges": 5254,
+    "communities": 127,
+    "llmCalls": 0,
+    "scope": "AST only; semantic documentation remains dated"
+  },
+  "productionImageCI": {
+    "id": 39277475527,
+    "url": "https://github.com/DD7780/Cocreate/actions/runs/39277475527",
+    "status": "all required test/build execution gates passed; API summary still in_progress at observation",
+    "nativePostgres": {
+      "passed": 2,
+      "failed": 0,
+      "skipped": 0
+    },
+    "compiler": {
+      "passed": 10,
+      "failed": 0,
+      "skipped": 0
+    },
+    "browserAuthority": {
+      "passed": 15,
+      "failed": 0,
+      "skipped": 0
+    },
+    "fullSuite": {
+      "passed": 244,
+      "failed": 0,
+      "skipped": 0
+    },
+    "jobLogEndedAt": "2026-10-19T15:29:54Z"
+  },
+  "publication": {
+    "main": "747dd33af526dd50810735bc3a078ccc65c1c0e8",
+    "parent": "33d54e8f5eff1e7442c74eece2f3914bb09fb8b8",
+    "method": "normal non-forced git push; ls-remote verified",
+    "deployment": "Cloudflare automatic build in progress; live restored fingerprint not yet observed",
+    "initialLiveFingerprint": "96afbe10bd067c58afdb411ce5266b5b97ec4fd199398152fc10bb0e9a939a8a",
+    "supabasePreview": "failure; separate check, no database rollback issued"
+  },
+  "authority": "Historical source restoration; reported user failures were not independently reproduced. No database rollback, project data deletion, paid inference or live email test was issued.",
+  "originalWorktree": {
+    "preservedFiles": 5,
+    "backup": ".runtime/oct9-restoration/original-worktree/",
+    "originalMain": "bf295bfffed898bc66cecceaac7715fbcb67fe86"
+  }
+}

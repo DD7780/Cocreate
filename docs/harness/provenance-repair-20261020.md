@@ -67,3 +67,8 @@ Final production/type build passes (`build-complete.log`); boundary audit passes
 The actual affected route returns HTTP 200 and exactly the current built client. Both real project JSON hashes remain identical to the stopped-data backup comparison. The affected record still has two proposed intents and one physical call; recovery is deliberately left for the author's explicit correction/build actions. The preserved deterministic fixture v2 is visible after restart at `http://localhost:5191/r/provenance-fixture`; final browser evidence is `.runtime/provenance-repair/artifact-final.png`.
 
 If the local server later stops, from this isolated checkout run `node --import tsx .runtime/repair-20261020/local-app.ts`. It uses the existing local data/session secret and serves port 5190. Reconnect the memory-only OpenRouter lease manually before an explicit build. No automatic reinterpretation is needed.
+
+
+## Subsequent main publication authorization
+
+The user subsequently requested publishing this verified version to main and replacing its previous non-working application. The earlier no-push statement describes the completed repair phase. The [publication handoff](main-restoration-publication-20261020.md) records the inspected remote head, history-preserving replacement, regenerated source attestation and publication verification. This does not automatically deploy, migrate data or repeat inference.
