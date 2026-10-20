@@ -88,6 +88,7 @@ export type StoredVersion = Version & {
   specification?: ProjectSpec;
 };
 export type EditRecord = AgentChange & {
+  sourceSpans?: import('./submitted-sources.js').SourceSpan[];
   participantId: string;
   at: string;
   update: string;
@@ -99,6 +100,7 @@ export type SubmissionStatus =
   | "built"
   | "failed";
 export type StoredSubmission = {
+  submittedSources?: import('./submitted-sources.js').SubmittedSources;
   intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
   id: string;

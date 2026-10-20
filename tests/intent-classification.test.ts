@@ -60,7 +60,7 @@ test('targeted reinterpretation reuses authenticated edits, preserves identity, 
     let raw='';for await(const chunk of req)raw+=chunk;
     if(!req.url?.endsWith('/chat/completions')){res.writeHead(404);return res.end()}
     providerCalls++;
-    const result={goals:[],features:['Create a website for my restaurant'],design:[],constraints:[],questions:[],additions:['Create a website for my restaurant'],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:['Create a website for my restaurant'],intents:[{text:'Create a website for my restaurant',category:'feature',classification:'explicit_request',rationale:'Direct action request.',sourcePassage:'Create a website for my restaurant',affectedRequirementIds:[]}]};
+    const result={goals:[],features:['Create a website for my restaurant'],design:[],constraints:[],questions:[],additions:['Create a website for my restaurant'],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:['Create a website for my restaurant'],intents:[{text:'Create a website for my restaurant',category:'feature',classification:'explicit_request',rationale:'Direct action request.',sourcePassage:'Create a website for my restaurant',sourceRefs:JSON.parse(JSON.parse(raw).messages[1].content).submittedSources.map((source:any)=>source.id),affectedRequirementIds:[]}]};
     res.setHeader('content-type','application/json');res.end(JSON.stringify({choices:[{message:{content:JSON.stringify(result)},finish_reason:'stop'}]}));
   });
   await new Promise<void>(resolve=>provider.listen(0,'127.0.0.1',resolve));

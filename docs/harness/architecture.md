@@ -1,5 +1,7 @@
 # Current harness architecture
 
+Historical branch evidence correction (2026-10-20): authenticated edit records retain new Yjs string identities. Submission capture freezes only visible caller characters in document order, splitting on foreign identities and excluding deleted characters. Immutable passages retain submission/participant/edit-sequence references; the interpreter cites eligible IDs, and server validation resolves original quotes before acceptance. Later document changes are never validation inputs. Legacy records retain historical evidence and the explicit human correction path. [Details and limits](provenance-repair-20261020.md).
+
 Restoration branch (2026-10-19): complete `4ccc1fb` architecture retained. Built SPA fallback now serves fixed `index.html` relative to `dist`, allowing hidden checkout parents while retaining dotfile filtering and API 404. No submission/storage architecture replacement. [Separate correction and compatibility limits](historical-coherent-restoration.md).
 
 Public landing presentation (2026-10-15): src/main.tsx still lazily loads LandingPage only at /. Its native expandable explanations and React-controlled example tab groups are local UI, with no model execution. All landing style selectors and preview-specific class names are isolated under .landing; the narrow-screen root minimum-width exception is conditional on landing presence. The actual anonymous waitlist POST and sign-in paths remain unchanged. [Packet](landing-editorial.md).

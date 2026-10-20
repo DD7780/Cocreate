@@ -137,6 +137,7 @@ export type IntentCorrection = {
   sources: SharedRequirementSource[];
 };
 export type InterpretationIntent = {
+  sourceRefs?: string[];
   authority?: "authenticated_submission" | "human_correction";
   validation?: IntentValidation;
   contextReferences?: IntentReference[];

@@ -1,5 +1,6 @@
 import type { InterpretationIntent, Requirement, SharedRequirement } from '../shared/types.js';
 import type { AgentChange } from './generator.js';
+import type {SubmittedSources} from './submitted-sources.js';
 
 export type AcceptedIntentContext = Pick<SharedRequirement, 'id' | 'revision' | 'category' | 'description' | 'authority' | 'sources' | 'status'>;
 const normalize = (value: string) => value.replace(/\s+/g, ' ').trim();
@@ -13,27 +14,39 @@ export function validateSubmittedInterpretation(
   changes: AgentChange[],
   acceptedContext: AcceptedIntentContext[],
   previous?: Requirement,
+  captured?: SubmittedSources,
 ): Requirement {
   const authored=changes.map(change=>change.after).filter(Boolean);
   // Authenticated insertion fragments may span keyboard updates. Never use deleted before-text or shared drafts.
-  const passages=[...authored.map(normalize),normalize(authored.join('')),normalize(authored.join(' '))].filter(Boolean);
+  const passages=captured ? captured.sources.filter(source=>source.participantId===interpretation.participantId&&source.submissionId===captured.id).map(source=>normalize(source.text)) : [...authored.map(normalize),normalize(authored.join('')),normalize(authored.join(' '))].filter(Boolean);
   const known = new Map(acceptedContext.filter(item => item.status === 'accepted').map(item => [item.id, item]));
   const intents = (interpretation.intents || []).map((candidate): InterpretationIntent => {
     // Only schema fields survive the provider boundary; it cannot stamp human authority/history.
     const intent: InterpretationIntent = {
       id: candidate.id, text: candidate.text, category: candidate.category, classification: candidate.classification,
       rationale: candidate.rationale, sourcePassage: candidate.sourcePassage,
+      sourceRefs: candidate.sourceRefs,
       affectedRequirementIds: [...candidate.affectedRequirementIds],
       participantId: interpretation.participantId, participantName: interpretation.participantName,
       sourceRevision: interpretation.sourceRevision, sourceEditSeqs: [...interpretation.sourceEditSeqs],
       authority: 'authenticated_submission',
     };
+    const refs=intent.sourceRefs||[];
+    const sources=refs.map(id=>captured?.sources.find(source=>source.id===id));
+    const referenced=!!captured && captured.participantId===interpretation.participantId && refs.length>0 && sources.every(source=>
+      !!source && source.submissionId===captured.id && source.participantId===interpretation.participantId &&
+      source.editSeqs.length>0 && source.editSeqs.every(seq=>changes.some(change=>change.seq===seq &&
+        (!('participantId' in change)||change.participantId===interpretation.participantId))));
+    if(referenced){
+      intent.sourcePassage=sources.map(source=>source!.text).join('\n');
+      intent.sourceEditSeqs=[...new Set(sources.flatMap(source=>source!.editSeqs))];
+    }else if(captured)intent.sourcePassage='';
     const passage = normalize(intent.sourcePassage);
-    const carry = previous?.intents?.find(item => item.validation?.status === 'verified' && !item.withdrawn &&
+    const carry = !captured && previous?.participantId===interpretation.participantId && previous?.intents?.find(item => item.validation?.status === 'verified' && !item.withdrawn &&
       item.text === intent.text && item.sourcePassage === intent.sourcePassage && item.classification === intent.classification);
-    const supported = !!passage && passages.some(source => source.includes(passage));
+    const supported = captured ? referenced : !!passage && passages.some(source => source.includes(passage));
     let reason: string | undefined;
-    if (!supported && !carry) reason = 'The quoted source is absent from your authenticated captured edits. Correct this interpretation explicitly.';
+    if (!supported && !carry) reason = captured ? 'The source reference is missing or does not belong to your authenticated submission. Correct this interpretation explicitly.' : 'The quoted source is absent from your authenticated captured edits. Correct this interpretation explicitly.';
     const unknown = intent.affectedRequirementIds.some(id => !known.has(id));
     if (unknown) reason = 'A referenced requirement is not in the captured accepted revision. Review and clarify the target.';
     const requested = intent.affectedRequirementIds.map(id => known.get(id)).filter((item): item is AcceptedIntentContext => !!item);

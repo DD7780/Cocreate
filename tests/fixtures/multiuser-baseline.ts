@@ -1,3 +1,4 @@
+import {citeSources} from './source-references.js';
 import {usedBudget} from './workflow-budget.js';
 import { verifiedList } from './verified-list.js';
 import assert from 'node:assert/strict';
@@ -71,7 +72,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
       const value = personal ? interpretation(scenario === 'invented-passage' ? 'Build a private billing dashboard' : authored) : plan(scenario === 'incorrect-product', input.requiredBehaviorChecks?.length > 0);
       attempt.endMs = performance.now() - started;
       res.setHeader('content-type', 'application/json');
-      res.end(JSON.stringify({ output: [{ content: [{ type: 'output_text', text: JSON.stringify(value) }] }],
+      res.end(JSON.stringify({ output: [{ content: [{ type: 'output_text', text: JSON.stringify(citeSources(value,input)) }] }],
         status: 'completed', usage: { input_tokens: 10, output_tokens: 20 } }));
     } catch { res.writeHead(500); res.end(); }
   });

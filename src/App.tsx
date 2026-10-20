@@ -1,5 +1,6 @@
 import {VerificationSummary} from "./VerificationSummary";
 import {BuildProgress} from "./BuildProgress";
+import {InterpretationNotice} from './InterpretationNotice';
 import { api } from "./api";
 import { AgentPanel } from "./workspace/AgentPanel";
 import {
@@ -602,6 +603,7 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
     if (!state)
         return <main className="loading"><LoaderCircle className="spin"/><p>{connection.message}</p></main>;
     const initialSetup = false;
+    const needsInterpretationReview = !!me?.latest?.intents?.some(intent=>!intent.withdrawn&&intent.validation?.status==='needs_clarification');
     const invite = async () => {
         if (onInvite)
             await onInvite();
@@ -625,8 +627,9 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         setSplit(!split);
         setTab('document');
     }}><PanelLeftClose />Split view</button><span className="build-shortcut-hint">{shortcut === 'disabled' ? 'No macOS shortcut' : shortcutLabel(shortcut)}</span><button className="primary" disabled={submitting} aria-keyshortcuts={ariaShortcut(shortcut)} title={`Build my changes${shortcut === 'disabled' ? '' : ` (${shortcutLabel(shortcut)})`}`} onMouseDown={event => event.preventDefault()} onClick={() => void submitChanges()}>{submitting ? <LoaderCircle className="spin"/> : <WandSparkles />}Build my changes</button></div></div>
-    <BuildProgress progress={state.buildProgress}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
-    {notice && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
+    <BuildProgress progress={state.buildProgress} hasAcceptedRequirements={state.requirements.some(item=>item.status==='accepted')} needsInterpretationReview={needsInterpretationReview}/><VerificationSummary run={state.aiRuns.at(-1)} revisions={state.requirementRevisions}/>
+    <InterpretationNotice state={state} me={me} token={token} id={id}/>
+    {notice && (!needsInterpretationReview || notice !== 'Your changes were saved, but their interpretation needs review before building.') && <div className="submission-notice" role="status" aria-live="polite">{notice}</div>}{connection.state !== 'connected' && <div className={`connection-banner ${connection.state === 'error' ? 'terminal' : ''}`} role="status"><WifiOff /><span>{connection.message}{connection.state === 'reconnecting' ? ` Retrying (${connection.attempt}/6)…` : ''}</span>{connection.state === 'error' && connection.reason === 'invalid-session' && <button onClick={() => {
         if (tokenOverride)
             location.href = `/login?returnTo=${encodeURIComponent(`/projects/${id}`)}`;
         else {

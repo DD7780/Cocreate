@@ -1,3 +1,4 @@
+import {citeSources} from './source-references.js';
 import assert from 'node:assert/strict';
 import { randomUUID } from 'node:crypto';
 import fs from 'node:fs';
@@ -38,7 +39,7 @@ export async function createProgressFixture(options: {hold?: boolean;personalDel
       }
       if (!response.destroyed) {
         response.setHeader('content-type','application/json');
-        response.end(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(value)}]}],status:'completed',usage:{input_tokens:10,output_tokens:20}}));
+        response.end(JSON.stringify({output:[{content:[{type:'output_text',text:JSON.stringify(citeSources(value,input))}]}],status:'completed',usage:{input_tokens:10,output_tokens:20}}));
       }
     } catch { if (!response.destroyed) response.writeHead(500).end(); }
   });
