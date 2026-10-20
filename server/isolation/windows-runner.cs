@@ -81,7 +81,8 @@ public static class IsolationRunner {
    // Rebuild environment rather than inheriting provider/deployment secrets or Node injection flags.
    env=Marshal.StringToHGlobalUni("APPDATA="+Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData)+"\0LOCALAPPDATA="+Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData)+"\0NODE_ENV=production\0SystemRoot="+Environment.GetFolderPath(Environment.SpecialFolder.Windows)+"\0USERPROFILE="+Environment.GetFolderPath(Environment.SpecialFolder.UserProfile)+"\0UV_THREADPOOL_SIZE=1\0\0");
    string node=Path.Combine(runtime,"node.exe"),worker=Path.Combine(runtime,"worker.cjs"),input=Path.Combine(workspace,"input.json");
-   var command=new StringBuilder(Quote(node)+" --preserve-symlinks --preserve-symlinks-main --wasm-lazy-compilation --max-old-space-size=128 --disable-wasm-trap-handler "+(permission?"--permission "+Quote("--allow-fs-read="+runtime)+" "+Quote("--allow-fs-read="+workspace)+" ":"")+Quote(worker)+" "+Quote(input)+" "+Quote(runtime));
+   // One-shot compilation should not spend the job's CPU budget on background Wasm optimization.
+   var command=new StringBuilder(Quote(node)+" --preserve-symlinks --preserve-symlinks-main --wasm-lazy-compilation --no-wasm-tier-up --no-wasm-dynamic-tiering --wasm-num-compilation-tasks=4 --max-old-space-size=128 --disable-wasm-trap-handler "+(permission?"--permission "+Quote("--allow-fs-read="+runtime)+" "+Quote("--allow-fs-read="+workspace)+" ":"")+Quote(worker)+" "+Quote(input)+" "+Quote(runtime));
    if(browser){
     node=Path.GetFullPath(args[6]);if(!File.Exists(node)||(Path.GetFileName(node)!="chrome.exe"&&Path.GetFileName(node)!="chrome-headless-shell.exe"))throw new ArgumentException("Browser runtime unavailable.");
     string browserCache=Path.Combine(Directory.GetParent(Directory.GetParent(runtime).FullName).FullName,"browser")+Path.DirectorySeparatorChar;

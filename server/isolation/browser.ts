@@ -110,7 +110,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       const message = buffer.slice(0, end); buffer = buffer.slice(end + 1);
       try {
         const reply = JSON.parse(message), task = pending.get(reply.id);
-        if (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed') {
+        // Terminating a completed job can report renderer death before the launcher closes.
+        if (!finishing && (reply.method === 'Inspector.targetCrashed' || reply.method === 'Target.targetCrashed')) {
           const resource = group?.cpuExceeded() ? 'CPU' : group?.memoryExceeded() ? 'memory' : group?.tasksExceeded() ? 'process' : undefined;
           const error = resource
             ? new IsolationError('isolation_resource_limit', `Verification renderer exceeded its ${resource} bound.`) : unavailable();
@@ -183,7 +184,8 @@ export async function withIsolatedBrowser<T>(action: (browser: BrowserProtocol) 
       if (!removed) throw unavailable();
     }
     if (path.dirname(path.resolve(workspace)) !== jobs) throw unavailable();
-    fs.rmSync(workspace, {recursive: true, force: true, maxRetries: 5, retryDelay: 100});
+    // Let pending native handle-close callbacks drain while removal waits on Windows.
+    await fs.promises.rm(workspace, {recursive: true, force: true, maxRetries: 5, retryDelay: 100});
     if (failure) throw failure;
   }
 }
