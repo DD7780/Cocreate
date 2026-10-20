@@ -227,18 +227,9 @@ export class RoomManager {
       const model = (
         role === "builder" ? lease.builders : lease.interpreters
       ).find((item) => item.id === modelId)!;
-      const maxOutputTokens = Math.min(
-        role === "builder" ? 8_000 : 2_400,
-        model.maxOutputTokens ?? Number.POSITIVE_INFINITY,
-        Math.floor(model.contextLength / 4),
-      );
-      const maxInputTokens = Math.max(
-        1_024,
-        Math.min(
-          role === "builder" ? 60_000 : 20_000,
-          model.contextLength - maxOutputTokens - 2_000,
-        ),
-      );
+      // Provider metadata bounds reservations; generation does not send a token cap.
+      const maxOutputTokens = model.contextLength;
+      const maxInputTokens = model.contextLength;
       return {
         connectionId: "byok",
         connectionName: "Owner OpenRouter lease",
@@ -976,8 +967,9 @@ export class RoomManager {
                         scope = room.executionBudget;
                     }
                 }
-                record.reservedChargeUsd = rate ? calculateCharge({
-                    inputTokens: record.estimatedInputTokens, outputTokens: record.estimatedOutputTokens || 0
+                const providerCapacity = meta.provider === 'openrouter' && !setupCall;
+                record.reservedChargeUsd = rate && (!providerCapacity || meta.setup?.mode === 'byok_lease') ? calculateCharge({
+                    inputTokens: record.estimatedInputTokens, outputTokens: providerCapacity ? frozenLayer!.maxOutputTokens : record.estimatedOutputTokens || 0
                 }, rate).estimatedChargeUsd : undefined;
             }
             if (!scope)

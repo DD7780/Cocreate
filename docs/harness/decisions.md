@@ -1,5 +1,9 @@
 # Harness decision log
 
+## D-0074 — Provider-governed OpenRouter workflow capacity
+
+Accepted 2026-10-20 for the isolated historical repair. Supersede role/effort token caps for OpenRouter interpretation, repairs, builder and bounded recovery: omit output-token parameters and application token/context rejection, sending complete prepared context within existing product-source safeguards. Effective capacity remains finite and provider/model/account controlled. Explicit setup probes and other adapters retain their policies. Reserve full catalog context for output under configured workflow spending, reject uncertain legacy capacity under a dollar limit, and preserve physical accounting, unknown outcomes, 24 attempts, eight recovery tasks and checkpoints. This does not authorize new paid acceptance or production deployment. [Correction, current official contracts, mocks and compatibility plan](historical-repair-20261020.md).
+
 Updated 2026-10-05. Each stable identifier names one decision. Accepted behavior, local implementation and hosted verification are separate; the [checklist](checklist.md) owns evidence-backed status. Superseded/rejected records below preserve rationale, not current instructions. Current setup/limits live in [product.md](../../product.md#hosted-ai-and-limits).
 
 Identifier repair: D-0035 retains BYOK; device recovery is D-0043. D-0021 retains hosted Supabase authority; JSON serialization recovery is D-0044. The one erroneous D-0036 gate-removal reference was corrected by meaning to D-0035, refined by D-0042. D-0036 remains historical comic motion. No decision was inferred from an assistant-generated prompt.

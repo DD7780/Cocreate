@@ -1,5 +1,7 @@
 # 2guys1canvas implemented API contracts
 
+Repair (2026-10-20): public routes and submission/ownership contracts are unchanged. OpenRouter workflow requests omit token caps; setup probes remain explicitly bounded, and configured spending uses conservative provider-capacity reservations. [Policy, mocks and compatibility handoff](docs/harness/historical-repair-20261020.md).
+
 Isolated restoration (2026-10-19): historical API contracts below remain; the only runtime correction so far is built SPA fallback resolution under hidden checkout parents. Unknown APIs still return JSON 404. Local development sessions do not establish hosted account acceptance. [Restoration evidence](docs/harness/historical-coherent-restoration.md).
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](docs/harness/workflow-overview.md).

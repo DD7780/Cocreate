@@ -30,6 +30,8 @@ D-0052 retains the serial personal queue. The offline two-worker/shared-batch ru
 
 ## Recovery, accounting and secrets
 
+Historical repair direction (2026-10-20): OpenRouter workflow requests defer token capacity to the provider, including interpretation, repairs and recovery. Do not reintroduce role-based token caps or byte-as-token context rejection. Keep generated-source/isolation bounds, explicit setup-probe limits, conservative full-context output reservations, configured spending, physical-call accounting and bounded recovery. [Evidence and scope](docs/harness/historical-repair-20261020.md).
+
 Use targeted context and bounded retries; never truncate serialized JSON or apply incomplete operations. Do not repeat an oversized exhausted project request unchanged. Preserve the bounded smaller-task recovery and await each source checkpoint; candidate source is not a compiled or functionally verified artifact. Keep the durable workflow budget shared across interpretation and superseded candidates instead of resetting it by opening another run. Separate context capacity, completion metadata, per-call output, configured spending and provider account restrictions as defined in product.md.
 
 Never silently switch models, credentials, providers, funding or simulated output. Keep temporary BYOK keys only in bounded server memory; never serialize them into snapshots or browser caches. Historical named-connection credentials remain encrypted server-side. Founder funding is a distinct inactive domain, not a fallback. Do not log keys, dump environment files or expose secrets through room state, artifacts or browser-prefixed variables.

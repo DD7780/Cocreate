@@ -289,7 +289,7 @@ async function request(url: string, init: RequestInit, timeoutMs: number, signal
         const controller = new AbortController(), timer = setTimeout(() => controller.abort(), timeoutMs), abort = () => controller.abort(), context = accounting.getStore(), callId = randomUUID(), startedAt = new Date().toISOString(), body = typeof init.body === 'string' ? init.body : '', estimatedInputTokens = Buffer.byteLength(body), base = context && {
             callId, workspaceId: context.workspaceId, workflowRunId: context.workflowRunId, submissionId: context.submissionId, parentCallId: context.parentCallId, purpose: context.purpose, retryReason: attempt ? `transport retry ${attempt}` : context.retryReason, provider: context.provider, model: context.model, configurationVersion: context.configurationVersion, startedAt, estimatedInputTokens, estimatedOutputTokens: context.estimatedOutputTokens, usage: {}, usageStatus: 'estimated' as const
         };
-        if (context?.maxInputTokens && estimatedInputTokens > context.maxInputTokens)
+        if (context?.provider !== 'openrouter' && context?.maxInputTokens && estimatedInputTokens > context.maxInputTokens)
             throw new ProviderError('context_limit', 'The complete provider request exceeds this model’s input budget.');
         signal?.addEventListener('abort', abort, {
             once: true
@@ -557,7 +557,7 @@ const openAICompatible = (
         model: req.model,
         instructions: req.instructions,
         input: req.input,
-        max_output_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+        max_output_tokens: id === 'openrouter' ? req.maxOutputTokens : req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
       };
       if (req.schema)
         body.text = {
@@ -600,7 +600,7 @@ const openAICompatible = (
         },
         { role: "user", content: req.input },
       ],
-      max_tokens: req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
+      max_tokens: id === 'openrouter' ? req.maxOutputTokens : req.maxOutputTokens ?? (req.schema ? 12_000 : 256),
     };
     if (req.schema)
       body.response_format = {

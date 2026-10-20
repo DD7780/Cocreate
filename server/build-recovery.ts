@@ -29,7 +29,7 @@ export async function recoverProjectPlan(input: {
   const request = { model: input.model, signal: input.signal, timeoutMs: 150_000, retryTruncated: false };
   let planned:Awaited<ReturnType<typeof generateStructured>>;
   try{planned = await generateStructured(input.provider, {
-    ...request, maxOutputTokens: Math.min(2_000, input.maxOutputTokens), schema: taskSchema,
+    ...request, maxOutputTokens: input.provider.provider === 'openrouter' ? undefined : Math.min(2_000, input.maxOutputTokens), schema: taskSchema,
     instructions: 'The previous whole-project response exceeded its output allowance. Decompose the accepted change into at most eight small, ordered, coherent file tasks. Each task writes one source file. Introduce focused modules before the entrypoint that imports them. Preserve working behavior. Do not include code in this plan. Only src/ paths. Do not regenerate unchanged files. If a file is large, split it into modules. Focus only on changed and removed requirements. Preserve already implemented accepted behavior; do not regenerate the complete product.',
     input: JSON.stringify({ acceptedRequirements,changedRequirements:input.changedRequirements,removedRequirements:input.removedRequirements, files: (input.currentFiles || []).map(file => ({ path: file.path, bytes: Buffer.byteLength(file.content) })) }),
   });}catch(error){
@@ -42,13 +42,13 @@ export async function recoverProjectPlan(input: {
   let working = input.currentFiles, lastPlan: ProjectPlan | undefined;
   const operations: ProjectPlan['operations'] = [];
   for (const [index, task] of tasks.entries()) {
-    const project = budgetProjectFiles(working, 24_000);
+    const project = budgetProjectFiles(working, input.provider.provider === 'openrouter' ? Number.POSITIVE_INFINITY : 24_000);
     // Always include the complete target file, even when omitted from the general context budget.
     const target = working?.find(file => file.path === task.path);
     const files = target ? [...project.files.filter(file => file.path !== target.path), target] : project.files;
     try {
       const result = await generateStructured(input.provider, {
-        ...request, maxOutputTokens: input.maxOutputTokens, schema: input.schema,
+        ...request, maxOutputTokens: input.provider.provider === 'openrouter' ? undefined : input.maxOutputTokens, schema: input.schema,
         instructions: `${input.instructions}\nExecute ONLY this small file task. Return exactly one complete write operation for the specified path. Do not repeat other files. This is a new complete JSON envelope, never a continuation of truncated text.`,
         input: JSON.stringify({ acceptedRequirements, task, taskIndex: index + 1, totalTasks: tasks.length, currentProject: files, omittedUnchangedFiles: project.omitted }),
       });
