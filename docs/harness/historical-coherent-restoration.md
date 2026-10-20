@@ -1,5 +1,7 @@
 # Isolated coherent restoration — 2026-10-19
 
+Follow-up 2026-10-20: [the repair ledger and final validation](historical-repair-20261020.md) record the focused native corrections, provider-capacity policy, final 243-pass/zero-fail/eight-skip Windows suite, successful multi-participant/browser recovery and non-destructive staging compatibility plan. Preserve the red observations below as historical evidence. Current normal local app is on port 5190; fixture demonstration is on 5188. No production deployment is established.
+
 ## Target and preservation
 
 Selected complete tree: `4ccc1fbb186ca11f92a847bff550915649555013`, authored October 15, 2026 at 17:07:32 +05:45 (Asia/Katmandu). Branch: `codex/restore-coherent-4ccc1fb`. This is a historical source candidate, not an assertion that rollback fixes the observed failures.
