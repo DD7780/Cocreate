@@ -1,0 +1,65 @@
+{
+  "date": "2026-10-21",
+  "baseline": {
+    "main": "5eb98c5a2075ca25857f93c345b5f72e9225ddd7",
+    "liveFingerprint": "e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c",
+    "linuxRun": "https://github.com/DD7780/Cocreate/actions/runs/39423278161"
+  },
+  "candidate": {
+    "productionFingerprint": "372b5fa7062ea5f3b6d9a0645b65c158dc275dcfa1383f9306bbfc8041822b59",
+    "stagingFingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
+    "published": false,
+    "deployed": false
+  },
+  "checks": {
+    "focused": {
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "source": "direct-focused-final-2.log"
+    },
+    "typesAndLocalBuild": "pass",
+    "boundaries": {
+      "files": 166,
+      "violations": 0,
+      "inferenceCalls": 0
+    },
+    "graph": {
+      "nodes": 2322,
+      "edges": 5545,
+      "unparsedSqlFiles": 14,
+      "inferenceCalls": 0
+    },
+    "completeSuite": {
+      "attempt": 1,
+      "tests": 264,
+      "passed": 248,
+      "failed": 8,
+      "skippedLinux": 8,
+      "reason": "Shared intent scheduler fixture omitted explicit mode; corrected. Fresh complete run pending."
+    },
+    "compatibility": {
+      "isolatedCopies": true,
+      "originalJsonHashesUnchanged": true,
+      "projects": 2,
+      "inferenceCalls": 0
+    },
+    "browser": {
+      "provider": "controlled fixture; no paid inference",
+      "firstBuild": "button; typo and tentative wording",
+      "incremental": "editor-focused Alt+X; Add favorites",
+      "products": [
+        1,
+        2
+      ],
+      "generationCalls": 4,
+      "typingCalls": 0,
+      "unverifiedProseLabeled": true,
+      "latestFavoriteInteractive": true
+    }
+  },
+  "limitations": [
+    "No paid-provider validation",
+    "Required candidate Linux/image CI and hosted staging/production gates pending"
+  ]
+}

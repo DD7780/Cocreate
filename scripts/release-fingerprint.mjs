@@ -5,6 +5,9 @@ import {spawnSync} from 'node:child_process';
 
 // Attest source/build inputs without a self-referential Git revision or mutable runtime environment.
 const manifest = 'release-source-files.json';
+const configOption = process.argv.indexOf('--config');
+const configFile = configOption < 0 ? process.env.COCREATE_RELEASE_CONFIG || 'wrangler.jsonc' : process.argv[configOption + 1];
+if (!['wrangler.jsonc', 'wrangler.staging.jsonc'].includes(configFile)) throw new Error('Select the explicit production or staging release configuration.');
 const buildFiles = ['Dockerfile', 'package.json', 'pnpm-lock.yaml', 'pnpm-workspace.yaml', 'vite.config.ts', 'tsconfig.json', 'index.html', 'scripts/start-container.sh', 'scripts/release-fingerprint.mjs', manifest];
 if (process.argv.includes('--write-config')) {
   const tracked = spawnSync('git', ['ls-files', '-z', '--', 'server', 'src', 'shared', 'worker', 'public'], {encoding: 'utf8', windowsHide: true});
@@ -14,7 +17,7 @@ if (process.argv.includes('--write-config')) {
 }
 const files = JSON.parse(fs.readFileSync(manifest, 'utf8'));
 if (!Array.isArray(files) || files.some(file => typeof file !== 'string' || path.isAbsolute(file) || file.includes('..') || file.includes('\\') || (!/^(server|src|shared|worker|public)\//.test(file) && !buildFiles.includes(file)))) throw new Error('Invalid release input manifest.');
-const config = JSON.parse(fs.readFileSync('wrangler.jsonc', 'utf8'));
+const config = JSON.parse(fs.readFileSync(configFile, 'utf8'));
 const {COCREATE_RELEASE_FINGERPRINT: _ignored, ...vars} = config.vars;
 const hash = createHash('sha256');
 for (const file of files.sort()) {
@@ -28,7 +31,7 @@ hash.update(JSON.stringify({vars, image_vars: config.containers[0].image_vars}))
 const fingerprint = hash.digest('hex');
 if (process.argv.includes('--write-config')) {
   config.vars.COCREATE_RELEASE_FINGERPRINT = fingerprint;
-  fs.writeFileSync('wrangler.jsonc', JSON.stringify(config, null, 2) + '\n');
+  fs.writeFileSync(configFile, JSON.stringify(config, null, 2) + '\n');
 } else if (config.vars.COCREATE_RELEASE_FINGERPRINT !== fingerprint) {
   throw new Error('Release source fingerprint is stale; prepare it before publishing.');
 }

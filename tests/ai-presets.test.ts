@@ -83,7 +83,7 @@ test('discovery without passed capability checks is unavailable and actionable',
 });
 
 test('applying a preset is opt-in, preserves Advanced overrides, and does not spend or reserve before dispatch', async () => {
-  const manager = new RoomManager({debounceMs: 500, encryptionSecret: 'preset-test-secret'});
+  const manager = new RoomManager({submissionMode:'intent',debounceMs: 500, encryptionSecret: 'preset-test-secret'});
   const room = manager.create(`preset-${crypto.randomUUID()}`);
   try {
     const connectionId = (await manager.saveConnection(room, {name:'Team OpenRouter',provider:'openrouter',baseUrl:'https://openrouter.ai/api/v1',apiKey:'secret'})).id;
@@ -106,7 +106,7 @@ test('applying a preset is opt-in, preserves Advanced overrides, and does not sp
 });
 
 test('legacy coding presets migrate to Developer without rewriting assignments, overrides, effort, or history', async()=>{
-  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-mode-migration-')),roomId=`mode-migration-${crypto.randomUUID()}`,manager=new RoomManager({debounceMs:500,encryptionSecret:'migration-test-secret',dataDir}),room=manager.create(roomId);
+  const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-mode-migration-')),roomId=`mode-migration-${crypto.randomUUID()}`,manager=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'migration-test-secret',dataDir}),room=manager.create(roomId);
   let managerClosed=false,restoredManager:RoomManager|undefined,restoredClosed=false;
   try{
     const connectionId=(await manager.saveConnection(room,{name:'Existing',provider:'openrouter',baseUrl:'https://openrouter.ai/api/v1',apiKey:'secret'})).id;
@@ -114,7 +114,7 @@ test('legacy coding presets migrate to Developer without rewriting assignments, 
     room.ai.personal=personal;room.ai.builder=builder;room.ai.participantOverrides=overrides;room.ai.setup={mode:'recommended',specialty:'motion_designer',effort:'high',maximumSpendUsd:7,resolved:{personal:{connectionId,connectionName:'Existing',provider:'openrouter',model:personal.model,rate:{} as any,maxInputTokens:10,maxOutputTokens:5},builder:{connectionId,connectionName:'Existing',provider:'openrouter',model:builder.model,rate:{} as any,maxInputTokens:20,maxOutputTokens:10},repairAttempts:2}};
     room.aiRuns=[{specialty:'designer',runId:'historical',catalogVersion:'legacy',pricingVersion:'legacy',routingRuleVersion:'legacy',verificationPolicyVersion:'legacy',complexity:'standard',evidenceStatus:'hypothesis',routingReason:'Historical',personalModels:[personal.model],builderModel:builder.model,calls:[],usage:{chargeIncomplete:true},latencyMs:1,outcome:'promoted',verification:{operationsApplied:true,compilationPassed:true,requirementSatisfaction:'not_measured',regressionCheck:'not_run',verified:false}}];
     (manager as any).save(room);manager.shutdown();managerClosed=true;
-    restoredManager=new RoomManager({debounceMs:500,encryptionSecret:'migration-test-secret',dataDir});
+    restoredManager=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'migration-test-secret',dataDir});
     const restored=restoredManager.get(roomId)!;const view=restoredManager.view(restored);
     assert.equal(view.ai.setup?.workflowMode,'developer');assert.equal(view.ai.setup?.effort,'high');assert.equal(view.ai.setup?.maximumSpendUsd,7);
     assert.deepEqual(view.ai.personal,personal);assert.deepEqual(view.ai.builder,builder);assert.deepEqual(view.ai.participantOverrides,overrides);
@@ -125,7 +125,7 @@ test('legacy coding presets migrate to Developer without rewriting assignments, 
 });
 
 test('manual assignments remain Custom after migration and activation', async () => {
-  const manager = new RoomManager({debounceMs: 500, encryptionSecret: 'custom-test-secret'});
+  const manager = new RoomManager({submissionMode:'intent',debounceMs: 500, encryptionSecret: 'custom-test-secret'});
   const room = manager.create(`custom-${crypto.randomUUID()}`);
   try {
     const connectionId = (await manager.saveConnection(room, {name:'Manual',provider:'openrouter',baseUrl:'https://openrouter.ai/api/v1',apiKey:'secret'})).id;

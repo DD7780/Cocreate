@@ -1,5 +1,6 @@
 import {openBudget, updateBudget, recoverWorkflowBudget, remainingAllowanceUsd, type WorkflowBudget} from "./workflow-budget.js";
 import {buildProgressFor} from "./build-progress.js";
+import {prepareDirectPrompt, directInstruction} from './direct-prompt.js';
 import {assertPromotionEvidence, planVerification, sourceHash, candidateHash, CHECK_VERSION} from "./verification.js";
 import {assertVerificationBrowserAvailable} from "./isolation/browser.js";
 import type {CandidateVerification} from "../shared/types.js";
@@ -160,7 +161,7 @@ const retainSubmissions = (items: StoredSubmission[]) =>
       index >= items.length - 200,
   );
 const buildFingerprint = (room: Room) =>
-  acceptedRequirementFingerprint(room.sharedRequirements, room.conflictGroups);
+  room.submissionMode === 'direct' ? JSON.stringify(room.submissions.filter(item=>item.mode==='direct' && item.prompt && (item.status==='built' || item.status==='queued')).slice(-1).map(item=>[item.id,item.prompt])) : acceptedRequirementFingerprint(room.sharedRequirements, room.conflictGroups);
 
 export class RoomManager {
   private lostOwnership = new Set<string>();
@@ -174,6 +175,7 @@ export class RoomManager {
   private dataDir: string;
   private conflictQueue = new Map<string, Promise<unknown>>();
   constructor(private config: {
+    submissionMode?: 'direct' | 'intent';
     debounceMs: number;
     buildDebounceMs?: number;
     buildCooldownMs?: number;
@@ -320,6 +322,13 @@ export class RoomManager {
   }
   private recoverSubmissions(room: Room) {
     for (const submission of room.submissions) {
+      if (submission.mode==='direct' && submission.prompt && submission.status==='queued') {
+        submission.status='failed';
+        submission.error='Build interrupted during restart. Retry the saved prompt explicitly; no inference was replayed.';
+        room.status='Error';
+        room.lastError=submission.error;
+        continue;
+      }
       if (
         submission.status !== "submitted" &&
         submission.status !== "interpreting"
@@ -374,6 +383,8 @@ export class RoomManager {
     );
   }
   private makeRoom(id: string): Room {
+    const submissionMode = this.config.submissionMode || process.env.COCREATE_SUBMISSION_MODE || 'direct';
+    if (submissionMode !== 'direct' && submissionMode !== 'intent') throw new Error('Invalid COCREATE_SUBMISSION_MODE.');
     const coordinatorEpoch = this.eventStore.claimCoordinator(
       id,
       this.coordinatorId,
@@ -381,6 +392,7 @@ export class RoomManager {
     const doc = new Y.Doc(),
       awareness = new Awareness(doc),
       room: Room = {
+        submissionMode,
         id,
         coordinatorEpoch,
         doc,
@@ -447,6 +459,7 @@ export class RoomManager {
   private restoreFailure(room: Room, meta: any) {
     if (
       meta?.status === "Error" ||
+      room.submissionMode==='direct' && room.submissions.filter(item=>item.mode==='direct' && item.prompt).at(-1)?.status==='failed' ||
       (room.aiRuns.at(-1)?.outcome === "failed" &&
         room.submissions.some((submission) => submission.status === "queued"))
     ) {
@@ -466,14 +479,14 @@ export class RoomManager {
     if (meta.update)
         Y.applyUpdate(room.doc, Buffer.from(meta.update, 'base64'), 'load');
     room.participants = new Map((meta.participants || []).map((p: Participant) => [p.id, {
-            ...p, active: false, agentStatus: 'idle', latest: p.latest ? normalizeInterpretation(p.latest) : undefined
+            ...p, active: false, agentStatus: 'idle', latest: p.latest ? (room.submissionMode==='direct' ? p.latest : normalizeInterpretation(p.latest)) : undefined
         }]));
     room.ownerId = meta.ownerId || room.participants.keys().next().value || null;
-    room.requirements = (meta.requirements || []).map(normalizeInterpretation);
+    room.requirements = room.submissionMode==='direct' ? meta.requirements || [] : (meta.requirements || []).map(normalizeInterpretation);
     room.sharedRequirements = meta.sharedRequirements || [];
     room.contradictions = meta.contradictions || [];
     room.conflictGroups = meta.conflictGroups || migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
-    if (!room.sharedRequirements.length && room.requirements.length)
+    if (room.submissionMode==='intent' && !room.sharedRequirements.length && room.requirements.length)
         for (const interpretation of room.requirements) {
             const reconciled = reconcileRequirements(room.sharedRequirements, interpretation, room.conflictGroups.length ? room.conflictGroups : room.contradictions);
             room.sharedRequirements = reconciled.requirements;
@@ -516,7 +529,7 @@ export class RoomManager {
     room.lastBuiltRequirements = meta.lastBuiltRequirements;
     room.persistRevision = meta.persistRevision || 0;
     room.savedAt = meta.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
+    room.status = room.submissionMode==='intent' && hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
     const migrateMode = room.ai.setup?.mode === 'recommended' && !room.ai.setup.workflowMode;
     this.normalize(room);
@@ -539,10 +552,10 @@ export class RoomManager {
     if (meta?.update)
         Y.applyUpdate(room.doc, Buffer.from(meta.update, 'base64'), 'load');
     room.participants = new Map((meta?.participants || []).map((p: Participant) => [p.id, {
-            ...p, active: false, agentStatus: 'idle', latest: p.latest ? normalizeInterpretation(p.latest) : undefined
+            ...p, active: false, agentStatus: 'idle', latest: p.latest ? (room.submissionMode==='direct' ? p.latest : normalizeInterpretation(p.latest)) : undefined
         }]));
     room.ownerId = meta?.ownerId || null;
-    room.requirements = (meta?.requirements || []).map(normalizeInterpretation);
+    room.requirements = room.submissionMode==='direct' ? meta?.requirements || [] : (meta?.requirements || []).map(normalizeInterpretation);
     room.sharedRequirements = meta?.sharedRequirements || [];
     room.contradictions = meta?.contradictions || [];
     room.conflictGroups = meta?.conflictGroups || migrateLegacyContradictions(room.sharedRequirements, room.contradictions);
@@ -581,7 +594,7 @@ export class RoomManager {
     room.lastBuiltRequirements = meta?.lastBuiltRequirements;
     room.persistRevision = meta?.persistRevision || 0;
     room.savedAt = meta?.savedAt;
-    room.status = hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
+    room.status = room.submissionMode==='intent' && hasOpenContradictions(room.conflictGroups) ? 'Decision needed' : room.versions.some((version: StoredVersion) => version.files?.length) ? 'Updated' : 'Waiting for ideas';
     this.restoreFailure(room, meta);
     this.normalize(room);
     this.rooms.set(id, room);
@@ -606,12 +619,17 @@ export class RoomManager {
     if (room.pendingPromotion && eventType !== 'product.promoted')
         return (room.persistQueue || Promise.resolve()).then(() => this.save(room, eventType, actorId, actorType));
     room.commandReceipts ||= {};
+    const statuses=new Map(room.submissions.map(item=>[item.id,item.status]));
+    for (const receipt of Object.values(room.commandReceipts)) {
+        const status=statuses.get(receipt.id);
+        if (status) receipt.status=status;
+    }
     for (const item of room.submissions)
         room.commandReceipts[JSON.stringify([item.participantId, item.requestId])] = {
             id: item.id, participantId: item.participantId, requestId: item.requestId, status: item.status
         };
     room.requirementRevisions ||= [];
-    if (room.requirementRevisions.at(-1)?.revision !== room.specificationRevision)
+    if (room.submissionMode==='intent' && room.requirementRevisions.at(-1)?.revision !== room.specificationRevision)
         room.requirementRevisions.push({
             revision: room.specificationRevision, accepted: structuredClone(room.sharedRequirements.filter(item => item.status === 'accepted'))
         });
@@ -1887,7 +1905,7 @@ export class RoomManager {
     room.pending.set(p.id, [...(room.pending.get(p.id) || []), record]);
     room.agentRevisions.set(p.id, (room.agentRevisions.get(p.id) || 0) + 1);
     p.agentStatus = "idle";
-    if (!room.buildTask && !hasOpenContradictions(room.conflictGroups))
+    if (!room.buildTask && room.status!=='Error' && (room.submissionMode==='direct' || !hasOpenContradictions(room.conflictGroups)))
       room.status = room.versions.length ? "Updated" : "Waiting for ideas";
   }
   private runAgent(room: Room, participantId: string, submittedBatch?: EditRecord[], submission?: StoredSubmission): Promise<void> {
@@ -1917,6 +1935,28 @@ export class RoomManager {
             usageMeta = {
                 phase: 'interpretation', participantId: p.id, provider: agentConfig.provider || 'custom', model: assignment.model
             };
+            if (submission?.mode === 'direct') {
+                if (!submission.submittedSources?.sources.length) throw new Error('No surviving writing from this participant was captured. Write the intended change and submit it explicitly.');
+                const prior = room.submissions.filter(item=>item.mode==='direct' && item.status==='built' && item.prompt).map(item=>({participantId:item.participantId,prompt:item.prompt!}));
+                const result = await this.tracked(room, {purpose:'interpretation',provider:agentConfig.provider || 'custom',model:assignment.model,submissionId:submission.id,actorId:p.id,setup,estimatedOutputTokens:agentConfig.maxOutputTokens},
+                    ()=>prepareDirectPrompt(agentConfig,submission,prior,room.versions.at(-1)?.files || [],controller.signal));
+                this.recordUsage(room,'personal',result.usage,reservation,usageMeta);
+                this.assertOwned(room);
+                if (controller.signal.aborted) throw new ProviderError('cancelled','Prompt preparation was interrupted.');
+                submission.prompt = result.value;
+                submission.instructionRevision = room.specificationRevision + 1;
+                submission.status = 'queued';
+                room.specificationRevision = submission.instructionRevision;
+                p.agentStatus = 'ready';
+                room.lastError = undefined;
+                if (await this.save(room,'submission.prompt_prepared',p.id,'personal_agent') === false) {
+                    this.loseOwnership(room.id);
+                    throw new CoordinatorUnavailableError();
+                }
+                // Close collection immediately: later captures cannot alter this prompt or baseline.
+                this.requestBuild(room,true);
+                return;
+            }
             const result = await this.tracked(room, {
                 purpose: 'interpretation', provider: agentConfig.provider || 'custom', model: assignment.model, submissionId: submission?.id, actorId: p.id, setup, estimatedOutputTokens: agentConfig.maxOutputTokens
             }, () => extractRequirement(agentConfig, p.id, p.name, batch, submission?.snapshot || documentText(room.doc), previous, revision, controller.signal, submission?.intentContext || acceptedContext(room.sharedRequirements), submission?.submittedSources));
@@ -2015,6 +2055,7 @@ export class RoomManager {
     if (!assignment)
         throw new Error('No personal model is assigned.');
     const submission: StoredSubmission = {
+        mode: room.submissionMode, builderAssignment: structuredClone(room.ai.builder),
         capturedChanges: structuredClone(batch), id: randomUUID(), requestId, participantId,
         editSeqs: batch.map(item => item.seq), documentRevision: room.agentRevisions.get(participantId) || 0,
         intentContext: acceptedContext(room.sharedRequirements), snapshot: JSON.stringify(acceptedContext(room.sharedRequirements)),
@@ -2033,9 +2074,10 @@ export class RoomManager {
         submissionId: submission.id, requestId, participantId, sourceRevision: submission.documentRevision
     });
     this.broadcastState(room);
-    await this.queueCapturedSubmission(room, submission, saved);
+    const next=room.submissionMode==='direct' ? room.submissions.find(item=>item.mode==='direct' && item.status==='submitted') || submission : submission;
+    await this.queueCapturedSubmission(room, next, saved);
     return {
-        submissionId: submission.id, status: submission.status, message: submission.status === 'queued' ? (participant.latest?.intents?.some(intent=>!intent.withdrawn&&intent.validation?.status==='needs_clarification') ? 'Your changes were saved, but their interpretation needs review before building.' : 'Your changes were saved and interpreted.') : 'Changes saved; interpretation waits for the current build to finish.'
+        submissionId: submission.id, status: submission.status, message: submission.mode==='direct' ? 'Your changes were saved for building.' : submission.status === 'queued' ? (participant.latest?.intents?.some(intent=>!intent.withdrawn&&intent.validation?.status==='needs_clarification') ? 'Your changes were saved, but their interpretation needs review before building.' : 'Your changes were saved and interpreted.') : 'Changes saved; interpretation waits for the current build to finish.'
     };
 }
   private async flushAgents(room: Room) {
@@ -2102,7 +2144,7 @@ export class RoomManager {
 }
   private requestBuild(room: Room, force = false) {
     this.assertOwned(room);
-    const current = room.versions.at(-1), requiredChecks = planVerification(eligibleRequirements(room.sharedRequirements, room.conflictGroups), room.specificationRevision);
+    const current = room.versions.at(-1), requiredChecks = planVerification(room.submissionMode==='direct' ? [] : eligibleRequirements(room.sharedRequirements, room.conflictGroups), room.specificationRevision);
     const evidence = current?.aiRun?.verification.evidence;
     const coveredEvidenceCurrent = !requiredChecks.kinds.length || !!(current?.files && evidence && evidence.policyVersion === CHECK_VERSION &&
         evidence.sourceHash === sourceHash(current.files) && evidence.candidateHash === candidateHash(current.files, {
@@ -2125,12 +2167,21 @@ export class RoomManager {
         this.broadcastState(room);
         return;
     }
-    room.intentBuildPending = false;
+    if (room.submissionMode==='intent') room.intentBuildPending = false;
     room.buildAdmissionClosed = true;
     room.collectionEndsAt = undefined;
     room.requestedRevision++;
     if (!room.buildTask)
-        room.buildTask = this.buildLoop(room).finally(() => {
+        room.buildTask = this.buildLoop(room).catch(async error=>{
+            if (room.submissionMode!=='direct') throw error;
+            if (this.lostOwnership.has(room.id)) return;
+            const submission=room.submissions.find(item=>item.mode==='direct' && item.status==='queued');
+            const message=error instanceof Error ? error.message : String(error);
+            if (submission) {submission.status='failed';submission.error=message;}
+            room.status='Error';room.lastError=message;
+            await this.save(room,'build.failed','builder','builder');
+            this.broadcastState(room);
+        }).finally(() => {
             room.buildTask = undefined;
             room.buildingRevision = undefined;
             room.buildAdmissionClosed = false;
@@ -2141,7 +2192,7 @@ export class RoomManager {
                 this.scheduleBuild(room);
             }
             this.resumeCapturedSubmissions(room);
-            if (room.status !== 'Error' && !room.intentBuildPending && !room.buildTimer && !room.submissions.some(item => item.status === 'submitted' || item.status === 'interpreting' || item.status === 'queued'))
+            if (room.status !== 'Error' && (room.submissionMode==='direct' || !room.intentBuildPending) && !room.buildTimer && !room.submissions.some(item => (room.submissionMode!=='direct' || item.mode==='direct') && (item.status === 'submitted' || item.status === 'interpreting' || item.status === 'queued')))
                 if (room.executionBudget && !room.executionBudget.legacyAllowanceUnknown)
                     room.executionBudget.closed = true;
             void this.save(room, 'workflow.budget_closed');
@@ -2149,6 +2200,7 @@ export class RoomManager {
         });
 }
   async buildNow(room: Room) {
+    if (room.submissionMode==='direct') throw new Error('Submit your own changes with Build my changes.');
     await this.flushAgents(room);
     clearTimeout(room.buildTimer);
     room.buildTimer = undefined;
@@ -2157,6 +2209,8 @@ export class RoomManager {
     await room.buildTask;
   }
   retryBuild(room: Room, participantId: string, requestId: string) {
+    this.assertOwned(room);
+    if (room.submissionMode==='direct') return this.retryDirectBuild(room,participantId,requestId);
     if (room.ai.setup?.mode !== "byok_lease" || !this.hasAI(room))
       throw new Error(
         "Reconnect and save the OpenRouter key and models before retrying.",
@@ -2220,11 +2274,48 @@ export class RoomManager {
       message: "Retrying the accepted requirements with the selected builder.",
     };
   }
+  private async retryDirectBuild(room:Room,participantId:string,requestId:string) {
+    await this.config.authorizeSubmission?.(room.id,participantId);
+    this.assertOwned(room);
+    if (!room.participants.has(participantId) || !this.hasAI(room)) throw new Error('Reconnect AI before retrying.');
+    if (room.ai.setup?.mode==='byok_lease') this.byok.require(room.id,room.ai.setup.credentialHandle || '',participantId);
+    const key=JSON.stringify([participantId,requestId]);
+    const replay=room.commandReceipts?.[key];
+    if (replay) return {submissionId:replay.id,status:replay.status,message:'This retry was already requested.'};
+    if (room.buildTask || room.agentTasks.size || room.status!=='Error') throw new Error('An idle failed build is required before retrying.');
+    const submission=room.submissions.filter(item=>item.mode==='direct' && item.prompt && item.status==='failed').at(-1);
+    if (!submission) throw new Error('No prepared failed prompt exists. Submit your retained writing explicitly.');
+    if (room.executionBudget?.closed) throw new Error('The saved allowance is closed. The owner must explicitly reset it before retrying.');
+    if (submission.frozenBuild && submission.frozenBuild.baselineVersion!==(room.versions.at(-1)?.id ?? null)) throw new Error('The working artifact changed after this failed build. Submit the intended update explicitly.');
+    if (submission.setup?.mode==='byok_lease') {
+      const handle=room.ai.setup?.credentialHandle;
+      if (!handle) throw new Error('Reconnect OpenRouter before retrying the saved prompt.');
+      this.byok.model(room.id,handle,'builder',submission.builderAssignment!.model);
+      submission.setup.credentialHandle=handle;
+    }
+    submission.status='queued';
+    submission.executionActorId=participantId;
+    submission.error=undefined;
+    room.commandReceipts ||= {};
+    room.commandReceipts[key]={id:submission.id,participantId,requestId,status:'queued'};
+    if (await this.save(room,'submission.direct_retry_requested',participantId,'user')===false) {
+      this.loseOwnership(room.id);
+      throw new CoordinatorUnavailableError();
+    }
+    this.assertOwned(room);
+    this.requestBuild(room,true);
+    return {submissionId:submission.id,status:'queued',message:'Retrying the saved prompt with its frozen builder and existing allowance.'};
+  }
+  private assertIntentMode(room:Room) {
+    if (room.submissionMode==='direct') throw Object.assign(new Error('Intent management is paused. Refresh this tab and use Build my changes.'),{status:409});
+  }
   private async buildLoop(room: Room) {
     while (this.hasAI(room)) {
         await room.intentCommit?.done;
         this.assertOwned(room);
-        const revision = room.requestedRevision, specificationRevision = room.specificationRevision, fingerprint = buildFingerprint(room), requirements = eligibleRequirements(room.sharedRequirements, room.conflictGroups).map(requirement => structuredClone(requirement));
+        const direct = room.submissionMode==='direct';
+        const directSubmission = direct ? room.submissions.find(item=>item.mode==='direct' && item.status==='queued' && item.prompt) : undefined;
+        const revision = room.requestedRevision, specificationRevision = room.specificationRevision, fingerprint = buildFingerprint(room), requirements = direct ? (directSubmission?.frozenBuild?.instructions || (directSubmission ? [directInstruction(directSubmission,room.lastBuiltRequirements)] : [])) : eligibleRequirements(room.sharedRequirements, room.conflictGroups).map(requirement => structuredClone(requirement));
         if (!requirements.length) {
             room.pendingBuildSince = undefined;
             const blocked = hasOpenContradictions(room.conflictGroups);
@@ -2235,12 +2326,17 @@ export class RoomManager {
             this.broadcastState(room);
             return;
         }
-        const queuedSubmissions = room.submissions.filter(item => item.status === 'queued');
+        const queuedSubmissions = direct ? [directSubmission!] : room.submissions.filter(item => item.status === 'queued');
         const frozenSetup = structuredClone(queuedSubmissions[0]?.setup || room.ai.setup), remainingBudget = remainingAllowanceUsd(room.executionBudget, frozenSetup?.maximumSpendUsd), routing = frozenSetup?.mode === 'recommended' ? routeBuilderForRun(frozenSetup, requirements, remainingBudget) : undefined, frozenBuilder = structuredClone(routing?.assignment || (frozenSetup?.mode === 'managed' || frozenSetup?.mode === 'byok_lease' ? {
             connectionId: frozenSetup.mode === 'managed' ? 'managed' : 'byok', model: frozenSetup.resolved!.builder.model
-        } : room.ai.builder));
+        } : queuedSubmissions[0]?.builderAssignment || room.ai.builder));
         if (!frozenBuilder)
             throw new Error('No builder model is assigned.');
+        if (directSubmission && !directSubmission.frozenBuild) {
+            directSubmission.frozenBuild = {baselineVersion:room.versions.at(-1)?.id ?? null,instructions:structuredClone(requirements)};
+            directSubmission.builderAssignment = frozenBuilder;
+            if (await this.save(room,'submission.build_frozen',directSubmission.participantId,'system')===false) throw new Error('Build capture could not be durably saved.');
+        }
         const builderConfig = this.aiConfigFrom(room, 'builder', frozenBuilder, frozenSetup), maxAttempts = frozenSetup?.mode === 'byok_lease' ? 2 : Math.min(3, Math.max(1, frozenSetup?.resolved?.repairAttempts || effortAllowance(frozenSetup?.effort || 'medium', 'builder').repairAttempts)), runId = randomUUID(), controller = new AbortController(), configuration = {
             presetVersion: frozenSetup?.presetVersion, pricingVersion: frozenSetup?.pricingVersion, routingRuleVersion: frozenSetup?.routingRuleVersion, workflowMode: frozenSetup?.workflowMode, effort: frozenSetup?.effort, complexity: routing?.complexity || 'uncertain', evidenceStatus: routing?.evidenceStatus || 'hypothesis', routingReason: routing?.reason || 'Advanced manual assignment.', model: frozenBuilder.model, connectionId: frozenBuilder.connectionId, maxInputTokens: builderConfig.maxInputTokens, maxOutputTokens: builderConfig.maxOutputTokens, maximumSpendUsd: frozenSetup?.maximumSpendUsd
         };
@@ -2309,7 +2405,7 @@ export class RoomManager {
                 try {
                     reservation = this.reserveBudget(room, 'builder', frozenSetup, 2);
                     const result = await this.tracked(room, {
-                        purpose: attempt ? 'compilation_repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model, workflowRunId: runId, actorId: queuedSubmissions[0]?.participantId || room.ownerId || undefined, setup: frozenSetup, estimatedOutputTokens: builderConfig.maxOutputTokens
+                        purpose: attempt ? 'compilation_repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model, workflowRunId: runId, actorId: queuedSubmissions[0]?.executionActorId || queuedSubmissions[0]?.participantId || room.ownerId || undefined, setup: frozenSetup, estimatedOutputTokens: builderConfig.maxOutputTokens
                     }, () => generateProjectPlan(builderConfig, requirements, working, lastFailure || undefined, controller.signal));
                     this.recordUsage(room, 'builder', result.usage, reservation, {
                         phase: attempt ? 'repair' : 'builder', provider: builderConfig.provider || 'custom', model: frozenBuilder.model
@@ -2453,8 +2549,10 @@ export class RoomManager {
             room.pendingBuildSince = undefined;
             room.status = 'Updated';
             room.budgetWindow = undefined;
-            for (const submission of queuedSubmissions)
+            for (const submission of queuedSubmissions) {
                 submission.status = 'built';
+                submission.artifactVersion = version.id;
+            }
             let committed = false, promotionError: unknown;
             try {
                 committed = await this.save(room, 'product.promoted', 'builder', 'builder') !== false;
@@ -2554,6 +2652,7 @@ export class RoomManager {
                 taskId: runId, reason: message
             });
             room.status = 'Error';
+            if (directSubmission) {directSubmission.status='failed';directSubmission.error=message;}
             room.lastError = `${message} Build r${specificationRevision}; ${room.executionBudget?.calls || 0}/24 physical calls used. ${room.versions.at(-1) ? `Working artifact v${room.versions.at(-1)!.id} retained.` : 'No working artifact has been promoted.'} ${room.executionBudget?.legacyAllowanceUnknown || room.executionBudget?.calls === 24 ? 'The owner must explicitly reset the idle workflow allowance before retrying.' : 'Submit a smaller change or reconnect the selected builder and Retry build; retries keep this allowance.'}`;
             await this.save(room, 'build.failed', 'builder', 'builder');
             this.broadcastState(room);
@@ -2573,6 +2672,7 @@ export class RoomManager {
     value: unknown,
     authorizeCurrent?: () => Promise<void>,
   ): Promise<IntentCommandResult> {
+    this.assertIntentMode(room);
     const command = parseIntentCommand(value),
       task = (room.steeringQueue || Promise.resolve())
         .catch(() => {})
@@ -2737,6 +2837,7 @@ export class RoomManager {
     requestId: string,
     authorizeCurrent?: () => Promise<void>,
   ) {
+    this.assertIntentMode(room);
     const task = (room.steeringQueue || Promise.resolve())
       .catch(() => {})
       .then(async () => {
@@ -2813,6 +2914,7 @@ export class RoomManager {
     return task;
   }
   reinterpretLatest(room: Room, participantId: string) {
+    this.assertIntentMode(room);
     const task = (room.steeringQueue || Promise.resolve())
       .catch(() => {})
       .then(() => this.reinterpretCaptured(room, participantId));
@@ -2978,6 +3080,7 @@ export class RoomManager {
       requestId: string;
     },
   ) {
+    this.assertIntentMode(room);
     const prior = room.steeringQueue || Promise.resolve();
     const task = prior
       .catch(() => {})
@@ -3088,7 +3191,7 @@ export class RoomManager {
         requests: total.requests + 1, personalRequests: total.personalRequests, builderRequests: total.builderRequests, inputTokens: total.inputTokens + (call.usage.inputTokens || 0), outputTokens: total.outputTokens + (call.usage.outputTokens || 0), cachedInputTokens: (total.cachedInputTokens || 0) + (call.usage.cachedInputTokens || 0), cacheWriteTokens: (total.cacheWriteTokens || 0) + (call.usage.cacheWriteTokens || 0), reasoningTokens: (total.reasoningTokens || 0) + (call.usage.reasoningTokens || 0), estimatedCostUsd: (total.estimatedCostUsd || 0) + (call.estimatedChargeUsd || 0), uncertainCostUsd: (total.uncertainCostUsd || 0) + (call.chargeIncomplete ? (call.estimatedChargeUsd || 0) : 0)
     }), emptyUsage());
     return {
-        buildProgress: buildProgressFor(room, currentProduct), interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, requirementRevisions: room.requirementRevisions, workflowBudget: room.executionBudget && {
+        submissionMode:room.submissionMode, directSubmissions:room.submissionMode==='direct' ? room.submissions.filter(item=>item.mode==='direct').map(({id,participantId,status,prompt,artifactVersion,error})=>({id,participantId,status,prompt,artifactVersion,error})) : undefined, buildProgress: buildProgressFor(room, currentProduct), interpretationHistory: room.interpretationHistory, intentCorrections: room.intentCorrections, intentBuildPending: room.intentBuildPending, requirementRevisions: room.requirementRevisions, workflowBudget: room.executionBudget && {
             id: room.executionBudget.id, calls: room.executionBudget.calls, maximumCalls: room.executionBudget.maximumCalls, reservedUsd: room.executionBudget.reservedUsd, maximumUsd: room.executionBudget.maximumUsd, uncertainCalls: room.executionBudget.uncertainCalls, closed: room.executionBudget.closed, legacyAllowanceUnknown: room.executionBudget.legacyAllowanceUnknown
         }, roomId: room.id, ownerId: room.ownerId, ai, status: room.status, workflow, participants, requirements: room.sharedRequirements, conflictGroups: room.conflictGroups, contradictions: room.contradictions, specificationRevision: room.specificationRevision, latestVersion: currentProduct?.id ?? null, versions: room.artifactHistory?.length ? room.artifactHistory.filter(version => version.id !== room.pendingPromotion && version.downloadable) : room.versions.filter(version => !!version.files?.length).map(({ source, bundle, ...v }) => v), aiRuns: room.aiRuns, providerCalls: room.providerCalls.slice(-100), setupUsage, physicalUsage, lastError: room.lastError, debounceMs: this.config.debounceMs, buildDebounceMs: this.buildDebounceMs, buildCooldownMs: this.buildCooldownMs, usage: {
             ...room.usage
@@ -3218,6 +3321,7 @@ private queueCapturedSubmission(room: Room, submission: StoredSubmission, saved:
         }
         if (submission.status !== 'submitted' || room.buildAdmissionClosed || room.buildTask)
             return;
+        if ((submission.mode || 'intent')!==room.submissionMode) throw new Error('This historical submission requires its original mode. No inference was dispatched.');
         this.assertOwned(room);
         await this.runAgent(room, submission.participantId, submission.capturedChanges || [], submission);
     };
@@ -3250,13 +3354,14 @@ private resumeCapturedSubmissions(room: Room) {
     if (!this.rooms.has(room.id) || this.lostOwnership.has(room.id))
         return;
     if (room.status === 'Error' || !this.hasAI(room)) {
+        if (room.submissionMode==='direct') return;
         for (const submission of room.submissions.filter(item => item.status === 'submitted')) {
             this.restoreCapturedSubmission(room, submission, 'Build stopped; your captured edits were retained. Submit again explicitly.');
         }
         void this.save(room, 'submission.deferred_restored', 'coordinator', 'system');
         return;
     }
-    const waiting = room.submissions.filter(item => item.status === 'submitted');
+    const waiting = room.submissions.filter(item => item.status === 'submitted' && (item.mode || 'intent')===room.submissionMode);
     if (waiting.length)
         room.pendingBuildSince ??= Date.now();
     for (const submission of waiting)

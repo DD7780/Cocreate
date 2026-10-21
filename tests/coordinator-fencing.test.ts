@@ -73,7 +73,7 @@ test('loss during durable dispatch intent prevents physical provider HTTP and su
     const entered = deferred<void>(), release = deferred<void>();
     let listener!: (id: string) => void;
     const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'coordinator-dispatch-'));
-    const manager = new RoomManager({ debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore: { saveSnapshot: async () => { }, appendDocumentUpdate: async () => { }, assertCoordinator: async () => { }, onCoordinatorLost: callback => { listener = callback; return () => { }; }, recordProviderRequest: async (record) => { if (record.outcome === 'dispatching') {
+    const manager = new RoomManager({submissionMode:'intent', debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore: { saveSnapshot: async () => { }, appendDocumentUpdate: async () => { }, assertCoordinator: async () => { }, onCoordinatorLost: callback => { listener = callback; return () => { }; }, recordProviderRequest: async (record) => { if (record.outcome === 'dispatching') {
                 entered.resolve();
                 await release.promise;
             } } } });

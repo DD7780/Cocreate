@@ -11,7 +11,7 @@ import { createSession } from '../server/auth.js';
 test('hosted reads, mutations and live delivery check current membership rather than a stale ticket role',async()=>{
   let role:'owner'|'editor'|'viewer'|undefined='editor';
   const platform={saveSnapshot:async()=>{},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},coordinator:{close:async()=>{}},requireMembership:async(_project:string,account:string,allowed=['owner','editor','viewer'])=>{if(account!=='alice'||!role||!allowed.includes(role))throw new Error('Membership denied');return role;}};
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hosted-auth-')),secret='synthetic',service=await createCoCreateServer({platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:secret});
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'hosted-auth-')),secret='synthetic',service=await createCoCreateServer({submissionMode:'intent',platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:secret});
   let socket:WebSocket|undefined;
   try{
     const room=service.manager.create('project');service.manager.join(room,'alice','Alice');const {url,port}=await service.start();
@@ -34,7 +34,7 @@ test('non-owner ingress retries without hydrating a second writer or bypassing m
   const make=async(owns:boolean)=>{
     const dir=fs.mkdtempSync(path.join(os.tmpdir(),'owner-routing-'));dirs.push(dir);
     const platform={saveSnapshot:async()=>{},appendDocumentUpdate:async()=>{},coordinator:{close:async()=>{}},verifyUser:async()=>({id:'alice'}),requireMembership:async(_id:string,_user:string,allowed=['owner','editor','viewer'])=>{if(!role||!allowed.includes(role))throw Object.assign(new Error('Membership denied'),{status:403});return role},claimCoordinator:async()=>{ownershipChecks++;if(!owns)throw new CoordinatorUnavailableError()},assertCoordinator:async()=>{ownershipChecks++;if(!owns)throw new Error('private coordinator UUID or credential')},loadSnapshot:async()=>null,loadProviderRecords:async()=>[]};
-    const service=await createCoCreateServer({platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:'synthetic'});return{service,...await service.start()};
+    const service=await createCoCreateServer({submissionMode:'intent',platform:platform as any,serveClient:false,port:0,host:'127.0.0.1',dataDir:dir,sessionSecret:'synthetic'});return{service,...await service.start()};
   };
   const owner=await make(true),other=await make(false);
   try{

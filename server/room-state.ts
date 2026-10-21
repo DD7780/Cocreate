@@ -100,6 +100,13 @@ export type SubmissionStatus =
   | "built"
   | "failed";
 export type StoredSubmission = {
+  mode?: 'direct' | 'intent';
+  prompt?: string;
+  instructionRevision?: number;
+  artifactVersion?: number;
+  builderAssignment?: AgentAssignment;
+  executionActorId?: string;
+  frozenBuild?: {baselineVersion: number | null; instructions: import('../shared/types.js').BuildInstruction[]};
   submittedSources?: import('./submitted-sources.js').SubmittedSources;
   intentContext?: AcceptedIntentContext[];
   capturedChanges?: EditRecord[];
@@ -174,6 +181,7 @@ export type UsageMeta = {
   model: string;
 };
 export type Room = {
+  submissionMode: 'direct' | 'intent';
   intentCommit?: { done: Promise<void>; projection: Partial<Room> };
   interpretationHistory?: Requirement[];
   intentCorrections?: IntentCorrection[];
@@ -239,7 +247,7 @@ export type Room = {
   lastEditAt?: number;
   lastBuildAt?: number;
   lastBuiltFingerprint?: string;
-  lastBuiltRequirements?: SharedRequirement[];
+  lastBuiltRequirements?: import('../shared/types.js').BuildInstruction[];
   usage: AIUsage;
   providerCalls: ProviderRequestRecord[];
   providerLedger?: Map<string, ProviderRequestRecord>;

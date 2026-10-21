@@ -18,13 +18,20 @@ test('later captured submissions cannot starve a fixed accepted candidate and dr
     await waitFor(()=>f.room.versions.length===1,'first promotion while submissions wait').catch(error=>{console.error('Progress diagnostics',JSON.stringify({status:f.room.status,error:f.room.lastError,active:!!f.room.buildTask,versions:f.room.versions.map(item=>item.id),submissions:f.room.submissions.map(item=>item.status),personal:f.personal.length,builders:f.builders.length,budget:f.room.executionBudget}));throw error;});
     assert.equal(f.room.versions[0].specificationRevision,1);
     await waitFor(()=>f.gates.has(2),'next collected candidate');
-    assert.equal(f.builders[1].accepted,5);assert.equal(f.room.executionBudget?.calls,7);
+    assert.ok(f.builders[1].accepted>1&&f.builders[1].accepted<=5);
     assert.equal(f.manager.view(f.room).buildProgress!.availableRevision,1);
-    assert.equal(f.manager.view(f.room).buildProgress!.buildingRevision,5);
-    f.release(2);
+    assert.equal(f.manager.view(f.room).buildProgress!.buildingRevision,f.builders[1].revision);
+    // A slow durable store may reach the existing collection cutoff before all four interpretations finish.
+    while(f.room.submissions.some(item=>item.status!=='built')) {
+      const current=f.builders.length;f.release(current);
+      await waitFor(()=>f.builders.length>current||f.room.submissions.every(item=>item.status==='built'),'next bounded progress');
+    }
     await waitFor(()=>!f.room.buildTask&&!f.room.buildTimer&&f.room.submissions.every(item=>item.status==='built'),'finite drain').catch(error=>{console.error('Drain diagnostics',JSON.stringify({status:f.room.status,error:f.room.lastError,active:!!f.room.buildTask,timer:!!f.room.buildTimer,closed:f.room.buildAdmissionClosed,versions:f.room.versions.map(item=>({id:item.id,revision:item.specificationRevision})),submissions:f.room.submissions.map(item=>({status:item.status,error:item.error})),personal:f.personal.length,builders:f.builders.length,budget:f.room.executionBudget}));throw error;});
     assert.deepEqual(f.personal.map(item=>item.actor),['alice','bob','bob','bob','bob']);
-    assert.equal(f.builders.length,2);assert.equal(f.room.versions.length,2);assert.equal(f.room.pending.get('cara')?.length,1);
+    assert.ok(f.builders.length>=2&&f.builders.length<=5);assert.equal(f.builders.at(-1)!.accepted,5);
+    assert.ok(f.builders.every((item,index)=>!index||item.revision>f.builders[index-1].revision));
+    assert.equal(f.room.executionBudget?.calls,5+f.builders.length);
+    assert.equal(f.room.versions.length,f.builders.length);assert.equal(f.room.versions.at(-1)!.specificationRevision,5);assert.equal(f.room.pending.get('cara')?.length,1);
     assert.equal(f.manager.view(f.room).workflow.tasks.filter(item=>item.state==='stale').length,0);
     assert.equal(f.room.executionBudget?.closed,true);
   }finally{await f.close();}

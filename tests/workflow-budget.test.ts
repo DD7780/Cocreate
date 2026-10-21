@@ -44,12 +44,12 @@ async function fixture(durableStore?:any,authorizeBudgetReset?:(projectId:string
   const server=http.createServer(async(req,res)=>{for await(const _chunk of req){}calls++;res.setHeader('content-type','application/json');res.end(JSON.stringify({output_text:'OK',usage:{input_tokens:10,output_tokens:2}}));});
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'durable-budget-'));
-  let manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore,authorizeBudgetReset});
+  let manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore,authorizeBudgetReset});
   let room=manager.create('room');manager.join(room,'owner','Owner');
   const config={provider:'custom' as const,baseUrl:`http://127.0.0.1:${(server.address() as any).port}`,apiKey:'synthetic',apiFormat:'responses' as const};
   return {get manager(){return manager;},get room(){return room;},get calls(){return calls;},
     call(purpose='interpretation',setup?:any){return (manager as any).tracked(room,{purpose,provider:'custom',model:'fixture',submissionId:purpose==='interpretation'?'submission':undefined,workflowRunId:purpose==='builder'?'run':undefined,setup,estimatedOutputTokens:64},()=>generateText(config,{model:'fixture',instructions:'Test',input:'Test',maxOutputTokens:64}));},
-    reopen(){manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;},
+    reopen(){manager.shutdown();manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;},
     close(){manager.shutdown();server.closeAllConnections();server.close();const target=path.resolve(dir);assert.equal(path.dirname(target),path.resolve(os.tmpdir()));assert.match(path.basename(target),/^durable-budget-/);fs.rmSync(target,{recursive:true,force:true});},
   };
 }

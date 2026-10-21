@@ -203,6 +203,17 @@ export type SharedRequirement = {
   createdAt: string;
   updatedAt: string;
 };
+/** Executor input; direct prompts carry submission authority, never intent acceptance. */
+export type DirectBuildInstruction = {
+  kind: 'direct_submission';
+  id: string;
+  revision: number;
+  category: SharedRequirementCategory;
+  description: string;
+  acceptanceCriteria: string[];
+  participantId: string;
+};
+export type BuildInstruction = SharedRequirement | DirectBuildInstruction;
 export type Contradiction = {
   id: string;
   requirementIds: string[];
@@ -570,6 +581,8 @@ export type RequirementRevision = {
   accepted: SharedRequirement[];
 };
 export type RoomView = {
+    submissionMode?: 'direct' | 'intent';
+    directSubmissions?: Array<{id: string; participantId: string; status: string; prompt?: string; artifactVersion?: number; error?: string}>;
     workflowBudget?: {
         id: string;
         calls: number;

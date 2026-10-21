@@ -23,6 +23,7 @@
   "server/coordinator.ts",
   "server/credentials.ts",
   "server/demo.ts",
+  "server/direct-prompt.ts",
   "server/event-store.ts",
   "server/generator.ts",
   "server/index.ts",

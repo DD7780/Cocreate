@@ -66,7 +66,7 @@ test('targeted reinterpretation reuses authenticated edits, preserves identity, 
   await new Promise<void>(resolve=>provider.listen(0,'127.0.0.1',resolve));
   const dataDir=fs.mkdtempSync(path.join(os.tmpdir(),'cocreate-reinterpret-')),
     baseUrl=`http://127.0.0.1:${(provider.address()as any).port}`,
-    manager=new RoomManager({debounceMs:10,buildDebounceMs:60_000,buildCooldownMs:0,buildMaxWaitMs:60_000,encryptionSecret:'reinterpret-test',baseUrl,dataDir}),
+    manager=new RoomManager({submissionMode:'intent',debounceMs:10,buildDebounceMs:60_000,buildCooldownMs:0,buildMaxWaitMs:60_000,encryptionSecret:'reinterpret-test',baseUrl,dataDir}),
     room=manager.create('reinterpret-room');
   try{
     const participant=manager.join(room,'alice','Alice'),old=legacyInterpretation('Create a website for my restaurant','proposal'),initial=reconcileRequirements([],old);

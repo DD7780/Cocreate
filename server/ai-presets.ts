@@ -1,3 +1,4 @@
+import type { BuildInstruction } from '../shared/types.js';
 import type {
   AIEffort,
   AIProvider,
@@ -6,7 +7,6 @@ import type {
   AIWorkflowMode,
   LegacyAISpecialty,
   ModelChecks,
-  SharedRequirement,
   TaskComplexity,
 } from '../shared/types.js';
 import{maximumAllowanceCharge}from'./ai-accounting.js';
@@ -137,13 +137,13 @@ export function resolveRecommendation(connections: ResolvableConnection[], workf
   return {available:false,workflowMode,modeAvailable:true,effort,presetVersion:PRESET_VERSION,pricingVersion:PRICING_VERSION,routingRuleVersion:ROUTING_RULE_VERSION,status:'hypothesis',routingReason:'No validated same-connection baseline is available.',estimateComplete:false,estimateScope:'Unavailable until exact validated models are selected.',defaultMaximumSpendUsd:.01,repairAttempts:limits.repairAttempts,assumptions:[],missing};
 }
 
-export function classifyTaskComplexity(requirements:SharedRequirement[]):TaskComplexity{
+export function classifyTaskComplexity(requirements:BuildInstruction[]):TaskComplexity{
   if(!requirements.length)return'uncertain';const criteria=requirements.reduce((n,item)=>n+item.acceptanceCriteria.length,0),text=requirements.map(item=>`${item.description} ${item.acceptanceCriteria.join(' ')}`).join(' ').toLowerCase();
   if(requirements.length>=6||criteria>=12||/(authentication|real[- ]time|payment|migration|animation|accessibility|integration|offline|database)/.test(text))return'complex';
   if(requirements.length<=2&&criteria<=3)return'simple';return'standard';
 }
 
-export function routeBuilderForRun(setup:NonNullable<import('../shared/types.js').AISetupPolicy>,requirements:SharedRequirement[],remainingBudgetUsd:number){
+export function routeBuilderForRun(setup:NonNullable<import('../shared/types.js').AISetupPolicy>,requirements:BuildInstruction[],remainingBudgetUsd:number){
   const complexity=classifyTaskComplexity(requirements),baseline=setup.resolved?.builder;
   if(!baseline)throw new Error('The frozen setup has no builder assignment.');
   const required=estimateLayerMaximum(baseline)||0;

@@ -1,0 +1,55 @@
+# Direct submission beta change packet
+
+## Outcome and baseline
+
+Build my changes / editor Alt+X will capture only the caller's saved edits, clarify a prompt, and build it without intent classification, quotation approval, reconciliation or voting. Typing remains inference-free. Historical intent implementation and records remain recoverable.
+
+Baseline: main `5eb98c5a2075ca25857f93c345b5f72e9225ddd7`, clean repaired checkout; beta app-health reports fingerprint `e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c`, matching its release attestation. Port 5190 has no listener at inspection. Original dirty checkout and local project data are outside the change.
+
+## Scope and evidence
+
+Graphify query `submission queue runAgent build promotion requirement verification retry` identified rooms.ts capture/runAgent/scheduling/buildLoop/retry, room-state.ts, generator.ts, verification.ts and tool-registry.ts. Source inspection confirms the current scheduler freezes accepted requirements and retries create a synthetic submission. Direct mode needs its own persisted prompt and retry identity, with the same executor and promotion fences.
+
+Allowed scope: server orchestration and direct prompt generation; shared build input and RoomView contracts; Canvas/progress/workflow interface; fixtures/regressions; configuration, release attestation and steering. No database schema migration, credential/provider/model policy changes, historical-tree restoration or unrelated UI work.
+
+## Required contracts
+
+One server-controlled mode defaults to direct; intent mode remains explicit. Each submission freezes its mode, authenticated changes, model/setup and receipt. Direct prompts persist before dispatch; builds serialize in capture order against the latest working artifact. Later submissions may revise earlier behavior. Historical unresolved conflicts do not gate direct execution. Failed builds keep their prompt and allowance; explicit retries reuse the submission and frozen model. Interrupted work requires explicit recovery, never automatic inference on load. Old intent mutations fail closed in direct mode. Stored intent records remain untouched.
+
+Verification retains operation validation, native isolation, source and candidate hashes, ownership epochs and durable promotion. Narrow trusted functional checks consume submitted instructions; arbitrary prose remains unverified. No generated prompt is stored as a human-approved requirement.
+
+## Verification and rollout
+
+Use controlled providers with native compiler/browser first: caller-only capture, no inference from typing, typo/tentative input, sequential revision, queue during build, duplicate/reload/retry, failed artifact retention, existing historical state, old intent commands. Preserve legacy tests under explicit intent mode. Run full suite, types/build, boundaries and graph update. Linux/container/hosted release checks and staging source identity must pass before production. No new paid inference is authorized. PR/main publication and deployment are authorized only after gates; record exact blockers and rollback here.
+
+Status: implementation in progress; no new release published or deployed.
+
+## Repair and verification ledger — 2026-10-21
+
+- Initial direct/native integration: 3/3 pass. Expanded focused regressions: 20/21; the startup-denial check exposed the checkout junction (C: invocation versus D: canonical module). Compare real paths at the server entrypoint; no isolation check or quota changed.
+- Initial local UI build through the junction failed Vite's emitted index path validation. Run commands from the verified physical checkout `D:/C-drive-space-recovery/Codex-worktrees/historical-coherent-restore/Devoffice`; the same source then builds successfully. No Vite configuration change.
+- Global pnpm attempted dependency-policy conversion and failed; its unsolicited workspace-file change was removed. Direct locked Node tool entrypoints provide interim types/build checks; use the repository's Corepack-selected pnpm for final gates.
+- First complete run: 264 tests, 248 pass, eight fail, eight Linux-only skips, 761.1 seconds. All eight failures are preserved intent scheduler scenarios: their shared variable-config fixture had not opted into intent mode and sent direct prompts to an intent-only provider. Set that fixture's mode explicitly; preserve every assertion. A fresh complete run is required.
+- Existing-project compatibility uses isolated copies of both local project stores. Both open in direct mode without inference; their intent/conflict projections and artifact counts match originals. Original project JSON hashes are unchanged. Affected project retains zero artifacts/two requirements/one physical call; second project retains one artifact/two requirements/four calls. No original database or credential was opened for mutation.
+- Browser writing and navigating Workflow shows zero provider calls. Direct progress, usage and build history replace intent controls; editor-external Alt+X produces no call. Artifact/browser build scenarios remain in progress.
+- Existing main's Linux/image workflow is green: [39423278161](https://github.com/DD7780/Cocreate/actions/runs/39423278161), source `5eb98c5`; this is baseline evidence, not a direct-flow gate.
+
+## Rollout and recovery contract
+
+Deploy only after candidate CI and isolated staging checks pass. Existing active builds must finish or be explicitly stopped before switching mode/image; the deployment can interrupt a job, but restart never replays it. Prepared interrupted direct work becomes failed and requires Retry; unprepared captures return to saved drafts. Temporary OpenRouter credentials are memory-only and require reconnection after replacement. A current compatible credential can fund explicit retry of the same frozen model; no model fallback, automatic allowance reset or reinterpretation occurs. A fresh explicit submission may replace a failed attempt; waiting submissions retain capture order. Failed history never becomes the product baseline. Old tabs receive current state; their old intent mutations fail with a refresh instruction. Refresh before submitting through the new UI.
+
+Functional coverage remains narrow list/filter/favorites/sort checks. Unknown prose is reported unverified, even after compilation. Covered checks carry forward; exact submitted removal commands (Remove/Disable/Delete filtering/search/favorites/sorting, with optional feature/control wording) retire only that covered behavior. Broader revisions may fail an ordinary retained functional check and require a clearer submitted change. Deleted/empty owned writing cannot authorize sending other contributors' snapshots; write the intended update explicitly.
+
+Rollback baseline: main `5eb98c5a2075ca25857f93c345b5f72e9225ddd7`, beta fingerprint `e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c`, observed Worker version `71688cd6-a265-4447-82d2-ff79e429871d`. Before rollback, stop/drain active work and retain canonical snapshots/artifact references. Revert the focused release through a normal reviewed commit, rebuild its matching Worker/image/config pair and verify app-health fingerprint; do not rewrite history or roll back stored data. Worker rollback alone does not establish an image rollback: the forwarding fingerprint fence must continue rejecting mismatched images. To re-enable intent on the new code instead, review an explicit `COCREATE_SUBMISSION_MODE=intent` config change, regenerate the attestation and deploy the matching pair; direct submissions/history remain separate and must not be replayed or converted automatically.
+
+Hosted build access: Wrangler OAuth can deploy Workers/containers, but Workers Builds trigger reads return HTTP403; its available OAuth scopes omit Workers CI. The user chose to enable Builds access and signed into the existing dashboard. Inspect the existing isolated staging build controls before creating credentials or changing production build settings. Local Docker/WSL is unavailable. No new paid provider inference is authorized or performed.
+
+## Candidate prepared for review
+
+Focused corrected run: **21/21 pass**, including preserved intent scheduler assertions, direct native compilation/browser checks, explicit retry and replacement after failure, historical queued intent retention, durable prompt-before-builder assertions, old-tab refusal and separate target attestation. The first corrected focus retained one timing-dependent exact-batch-size failure; the assertion now verifies finite ordered progress, all five final requirements, monotonically advancing builds and exact call accounting across the unchanged bounded cutoff. No product timeout or limit changed.
+
+`corepack pnpm build` (local auth production bundle), a separate hosted-variable production build, strict types and `corepack pnpm check:boundaries` pass. The audit covers166 files with zero boundary violations and zero inference. Graphify AST refresh:2322 nodes/5545 edges; fourteen SQL files retain the known missing-parser limitation and no model labeling ran. Windows full-suite rerun is in progress; production-image CI remains mandatory.
+
+Browser fixture: initial typo/tentative request builds v1 via Build my changes; a typed Add favorites instruction builds v2 via editor-focused Alt+X. Exactly four controlled generation calls; writing, view changes and reload add none. v2 is interactive, persists across reload, and the UI explicitly reports limited functional coverage. [Screenshot](../../artifacts/direct-submission/local-artifact-v2.jpg) and [machine-readable checks](../../artifacts/direct-submission/verification.json). The fixture is simulated provider output with real execution/verification, not paid-model evidence.
+
+Release target support is bounded to the existing `cocreate-beta-staging` Worker and its separate `ctnjxvwyttnjehnbfktq` backend. `wrangler.staging.jsonc` has no custom production routes or mail cron; existing encrypted staging bindings remain external. Docker selects an explicit production/staging attestation through a public build argument. Both config fingerprints validate and differ. Dashboard access avoids minting another credential; its existing staging deploy token and pinned build commands will be reused only for this reviewed candidate. The current main pipeline is confirmed automatic: build45a11661 deployed source5eb98c5 as Worker71688cd6. No candidate deployment has started.
