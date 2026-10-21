@@ -534,9 +534,9 @@
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1792580791.9888277,
-    "seen": 1792581916.1406345,
-    "ast_hash": "10bf3f2b9e22bd02e7ce7f84d847d15d",
+    "mtime": 1792586131.8975656,
+    "seen": 1792586995.0580595,
+    "ast_hash": "fdb1a5736efa4e2f6660b4e148ca60d5",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1792580792.2483988,
-    "seen": 1792581916.1542747,
-    "ast_hash": "ceaf2ad01b9b8c9b3b2561cfb358fe6d",
+    "mtime": 1792586131.8975656,
+    "seen": 1792586995.065592,
+    "ast_hash": "2eb2bd6c10fa7560c3531fe9dc8dd7a7",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -1434,9 +1434,9 @@
     "semantic_hash": ""
   },
   "tests/fixtures/provenance.ts": {
-    "mtime": 1792508265.120021,
-    "seen": 1792581916.1188636,
-    "ast_hash": "02c130a5df7b09bb763c712e7a33e079",
+    "mtime": 1792586881.4230866,
+    "seen": 1792586995.0384812,
+    "ast_hash": "f563bc1561d4284a85685b2ee664e7fb",
     "semantic_hash": ""
   },
   "tests/fixtures/source-references.ts": {

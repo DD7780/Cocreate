@@ -25,7 +25,7 @@ export async function provenanceFixture(dataDir:string,port=0,serveClient=false,
   });
   await new Promise<void>(resolve=>provider.listen(0,'127.0.0.1',resolve));
   const baseUrl=`http://127.0.0.1:${(provider.address() as {port:number}).port}`;
-  const app=await createCoCreateServer({submissionMode,dataDir,port,host:'127.0.0.1',serveClient,sessionSecret:'local-provenance-fixture-only',encryptionSecret:'local-provenance-fixture-only',debounceMs:10,buildDebounceMs:30,buildCooldownMs:0});
+  const app=await createCoCreateServer({submissionMode,baseUrl,dataDir,port,host:'127.0.0.1',serveClient,sessionSecret:'local-provenance-fixture-only',encryptionSecret:'local-provenance-fixture-only',debounceMs:10,buildDebounceMs:30,buildCooldownMs:0});
   const room=app.manager.get('provenance-fixture')||app.manager.create('provenance-fixture');
   const connection=(await app.manager.saveConnection(room,{name:'LOCAL FIXTURE — no paid inference',provider:'custom',baseUrl,apiFormat:'responses',apiKey:'synthetic-never-valid'})).id;
   room.ai.connections!.find(item=>item.id===connection)!.checks.fixture={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};

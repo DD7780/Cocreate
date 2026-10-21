@@ -11,7 +11,9 @@
     "published": true,
     "deployed": false,
     "implementationCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
-    "pullRequest": "https://github.com/DD7780/Cocreate/pull/11"
+    "pullRequest": "https://github.com/DD7780/Cocreate/pull/11",
+    "stagingDeployed": true,
+    "productionDeployed": false
   },
   "checks": {
     "focused": {
@@ -38,10 +40,10 @@
       "passed": 265,
       "failed": 0,
       "skipped": 0,
-      "sourceCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
+      "sourceCommit": "925e21eb134d7786b0011a394922df1e59583e21",
       "runs": [
-        "https://github.com/DD7780/Cocreate/actions/runs/39592986589",
-        "https://github.com/DD7780/Cocreate/actions/runs/39593043992"
+        "https://github.com/DD7780/Cocreate/actions/runs/39600913369",
+        "https://github.com/DD7780/Cocreate/actions/runs/39600919003"
       ],
       "nativePostgres": "2/2",
       "compiler": "10/10",
@@ -83,6 +85,15 @@
         "skippedLinux": 8,
         "durationMs": 3340095,
         "reason": "Integration ownership expired after 2843.3s elapsed; cause of pause unproven."
+      },
+      {
+        "attempt": 3,
+        "tests": 265,
+        "passed": 240,
+        "failed": 17,
+        "skippedLinux": 8,
+        "durationMs": 478537,
+        "reason": "Browser runtime override omitted: default browser path absent in physical checkout. Loopback provider failures also observed; diagnostics pending. No runtime/assertion changes made."
       }
     ],
     "integrationFollowUp": {
@@ -91,10 +102,62 @@
       "durationMs": 29772,
       "source": "direct-integration-final.log",
       "change": "Wait for latest accepted revision and idle build before final collaborator output assertions; no deadline/runtime change."
+    },
+    "stagingBuilds": {
+      "candidate": "925e21eb134d7786b0011a394922df1e59583e21",
+      "status": "deployed_awaiting_signed_in_acceptance",
+      "attempts": [
+        {
+          "build": "7bc78f64-d0ab-4d20-be29-86f3d50db500",
+          "error": "Selected historical build token no longer valid."
+        },
+        {
+          "build": "5e484457-28e3-4c31-bd52-b6b6eb65699a",
+          "error": "Existing staging-scoped token deleted or rolled."
+        }
+      ],
+      "credentialValuesRead": false,
+      "newCredentialCreated": false,
+      "mainUnchanged": true,
+      "stagingBackend": "ACTIVE_HEALTHY",
+      "successfulBuild": "10b43729-a448-4dc1-b784-2a6e5b2b1524",
+      "workerVersion": "3ac649bb-c313-4d06-998f-2d183bc16548",
+      "health": {
+        "httpStatus": 200,
+        "fingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
+        "submissionMode": "direct"
+      },
+      "tokenRefresh": "User created and selected replacement build token in Cloudflare dashboard; no token value was read."
+    },
+    "completeWindowsSuite": {
+      "attempt": 4,
+      "tests": 265,
+      "passed": 257,
+      "failed": 0,
+      "skippedLinux": 8,
+      "durationMs": 374105,
+      "source": "direct-full-suite-4.log",
+      "browserRuntime": "Existing original workspace HeadlessChrome/154.0.8037.92",
+      "providerOverridesCleared": true
+    },
+    "fixtureIsolationCorrection": {
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 40059,
+      "source": "direct-fixture-isolation-final.log",
+      "change": "Pass the synthetic provider baseUrl explicitly to createCoCreateServer, preventing inherited operator overrides."
+    },
+    "stagingAuth": {
+      "google": "disabled: HTTP400 validation_failed Unsupported provider",
+      "emailPassword": "Existing staging account requested; not yet signed in",
+      "policiesChanged": false,
+      "accountsCreated": false
     }
   },
   "limitations": [
-    "No paid-provider validation",
-    "Final-head CI and hosted staging/production gates pending"
+    "Live staging sign-in/build acceptance pending",
+    "New live OpenRouter deepseek/deepseek-chat acceptance authorized with maximum total USD2; zero paid calls so far",
+    "Follow-up fixture/evidence changes not yet published; runtime inputs unchanged",
+    "Main remains baseline 5eb98c5, production fingerprint e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c"
   ]
 }
