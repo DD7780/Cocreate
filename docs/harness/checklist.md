@@ -5,7 +5,8 @@
 - [x] Confirm main `5eb98c5` matches observed beta source fingerprint.
 - [x] Implement default direct prompt/capture/build path and preserve explicit intent mode.
 - [x] Controlled-provider direct integration: caller-only sources, queue during build, tentative/typo input, open historical conflicts, failure retention and same-prompt/same-allowance retry.
-- [ ] Complete all regressions, production build/types/boundaries and graph refresh.
+- [x] Candidate Linux production-image regressions265/265, build/types/boundaries, native PostgreSQL/compiler/browser gates and AST graph refresh; retain Windows failure history and passing focused synchronization correction.
+- [ ] Final-head CI after test/evidence follow-up.
 - [ ] Finish isolated staging browser scenarios and required Linux/image gates.
 - [ ] Review PR, publish main, verify hosted source identity and actual beta UI; retain rollback identity.
 

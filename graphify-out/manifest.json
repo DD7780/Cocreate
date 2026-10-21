@@ -432,9 +432,9 @@
     "semantic_hash": ""
   },
   "tests/integration.test.ts": {
-    "mtime": 1792508054.3817205,
-    "seen": 1792581916.1194742,
-    "ast_hash": "efa03e9f1d256177f38ca9df1c1728b9",
+    "mtime": 1792585821.574677,
+    "seen": 1792586116.3888407,
+    "ast_hash": "c221bf19d2de5edcf4e4b16090051525",
     "semantic_hash": ""
   },
   "tests/intent-classification.test.ts": {
@@ -1482,9 +1482,9 @@
     "semantic_hash": ""
   },
   "docs/harness/direct-submission-flow.md": {
-    "mtime": 1792581492.6757536,
-    "seen": 1792581916.1562862,
-    "ast_hash": "73d56cc0cdcb979ea528f26f04a3310e",
+    "mtime": 1792586080.2864003,
+    "seen": 1792586116.435778,
+    "ast_hash": "d44ed0cba39113f8901be012bf777ce4",
     "semantic_hash": ""
   },
   "docs/harness/main-restoration-publication-20261020.md": {

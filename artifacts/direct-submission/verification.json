@@ -8,8 +8,10 @@
   "candidate": {
     "productionFingerprint": "372b5fa7062ea5f3b6d9a0645b65c158dc275dcfa1383f9306bbfc8041822b59",
     "stagingFingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
-    "published": false,
-    "deployed": false
+    "published": true,
+    "deployed": false,
+    "implementationCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
+    "pullRequest": "https://github.com/DD7780/Cocreate/pull/11"
   },
   "checks": {
     "focused": {
@@ -25,18 +27,25 @@
       "inferenceCalls": 0
     },
     "graph": {
-      "nodes": 2322,
-      "edges": 5545,
+      "nodes": 2324,
+      "edges": 5547,
       "unparsedSqlFiles": 14,
       "inferenceCalls": 0
     },
     "completeSuite": {
-      "attempt": 1,
-      "tests": 264,
-      "passed": 248,
-      "failed": 8,
-      "skippedLinux": 8,
-      "reason": "Shared intent scheduler fixture omitted explicit mode; corrected. Fresh complete run pending."
+      "platform": "Linux production Docker image",
+      "tests": 265,
+      "passed": 265,
+      "failed": 0,
+      "skipped": 0,
+      "sourceCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
+      "runs": [
+        "https://github.com/DD7780/Cocreate/actions/runs/39592986589",
+        "https://github.com/DD7780/Cocreate/actions/runs/39593043992"
+      ],
+      "nativePostgres": "2/2",
+      "compiler": "10/10",
+      "browserAdversity": "15/15"
     },
     "compatibility": {
       "isolatedCopies": true,
@@ -56,10 +65,36 @@
       "typingCalls": 0,
       "unverifiedProseLabeled": true,
       "latestFavoriteInteractive": true
+    },
+    "retainedWindowsAttempts": [
+      {
+        "attempt": 1,
+        "tests": 264,
+        "passed": 248,
+        "failed": 8,
+        "skippedLinux": 8,
+        "reason": "Legacy scheduler fixture omitted explicit intent mode; corrected."
+      },
+      {
+        "attempt": 2,
+        "tests": 265,
+        "passed": 256,
+        "failed": 1,
+        "skippedLinux": 8,
+        "durationMs": 3340095,
+        "reason": "Integration ownership expired after 2843.3s elapsed; cause of pause unproven."
+      }
+    ],
+    "integrationFollowUp": {
+      "passed": 1,
+      "failed": 0,
+      "durationMs": 29772,
+      "source": "direct-integration-final.log",
+      "change": "Wait for latest accepted revision and idle build before final collaborator output assertions; no deadline/runtime change."
     }
   },
   "limitations": [
     "No paid-provider validation",
-    "Required candidate Linux/image CI and hosted staging/production gates pending"
+    "Final-head CI and hosted staging/production gates pending"
   ]
 }
