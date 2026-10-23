@@ -770,10 +770,15 @@ export async function createCoCreateServer(options: Options = {}) {
                     };
                 manager.connect(room, ws, session.participantId, session.role || 'editor', expiresAt);
                 const expiryTimer = expiresAt ? setTimeout(() => ws.close(4401, 'Project ticket expired'), Math.max(1, expiresAt - Date.now())) : undefined;
-                let messages = Promise.resolve();
-                ws.on('message', (data, isBinary) => {
-                    const packet = Buffer.from(data as any);
-                    messages = messages.then(async () => {
+                const messages: Array<{packet: Buffer; isBinary: boolean}> = [];
+                let draining = false;
+                const drainMessages = async () => {
+                    if (draining) return;
+                    draining = true;
+                    try {
+                      while (ws.readyState === 1 && messages.length) {
+                        // Authorize a bounded synchronous drain; never cache access across awaits.
+                        const batch = messages.splice(0, 32);
                         if (platformState.platform) {
                             const role = await platformState.platform.requireMembership(roomId, session.accountId!);
                             (ws as WebSocket & {
@@ -781,10 +786,26 @@ export async function createCoCreateServer(options: Options = {}) {
                             }).role = role;
                             await platformState.platform.assertCoordinator(roomId);
                         }
-                        manager.handleMessage(room, ws, packet, isBinary);
-                    }).catch(error => ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed'));
+                        if (ws.readyState !== 1) break;
+                        for (const {packet, isBinary} of batch) {
+                            if (ws.readyState !== 1) break;
+                            manager.handleMessage(room, ws, packet, isBinary);
+                        }
+                      }
+                    } catch (error) {
+                        messages.length = 0;
+                        ws.close(error instanceof CoordinatorUnavailableError ? 1012 : 4403, error instanceof CoordinatorUnavailableError ? 'Coordinator ownership changed' : 'Project access changed');
+                    } finally {
+                        draining = false;
+                    }
+                };
+                ws.on('message', (data, isBinary) => {
+                    if (ws.readyState !== 1) return;
+                    messages.push({packet: Buffer.from(data as any), isBinary});
+                    void drainMessages();
                 });
                 ws.on('close', code => {
+                    messages.length = 0;
                     if (expiryTimer)
                         clearTimeout(expiryTimer);
                     console.info(JSON.stringify({

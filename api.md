@@ -1,5 +1,7 @@
 # 2guys1canvas implemented API contracts
 
+Hosted latency follow-up (2026-10-23): inbound frames drain in original order in batches of at most32, with fresh membership/coordinator validation immediately before each synchronous batch and per-frame ticket/ownership checks. No access result is reused for a later batch. The client waits up to30 seconds for its matching durable `flushed` reply; save errors/disconnection still reject immediately, expiry never starts inference, and late replies cannot resubmit automatically. Provider/spending/resource limits are unchanged. Content-free server flush timing events support live diagnosis. [Reproduction and measurements](docs/harness/build-submit-ack-repair.md).
+
 2026-10-23 acknowledgement repair: wire formats and flush/submission authority are unchanged. Obsolete unsent `saved`/`room-state` projections coalesce per connection under the existing current-membership delivery check. Incremental packets and command replies remain ordered. Client flush failure is visible and prevents HTTP submission; no timeout or spending limit changes. [Evidence](docs/harness/build-submit-ack-repair.md).
 
 ## Direct submissions — implementation candidate, 2026-10-21

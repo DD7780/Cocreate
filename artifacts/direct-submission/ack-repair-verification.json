@@ -3,16 +3,78 @@
   "baselineMain": "ee129046a091a60f4fa0912d5eb94be5f24a6e03",
   "productionFingerprint": "c4c69126a9f9a4d8d322a7710fb274cddecd49fd4d1936dcfeb62d295631b3c8",
   "stagingFingerprint": "5f54eeb416ea6bb11f08f1d129061dde564bab79e73ffeb2031f638fd368bfcd",
-  "originalFailure": {"queuedSaves": 68, "serialDeliveryAuthorizations": 70, "testResult": "failed as expected before correction"},
-  "focused": {"existingHostedAndReconnectTestsPassed": 12, "newDeliveryTestsPassed": 2, "membershipRevocationStillClosesSocket": true},
+  "originalFailure": {
+    "queuedSaves": 68,
+    "serialDeliveryAuthorizations": 70,
+    "testResult": "failed as expected before correction"
+  },
+  "focused": {
+    "existingHostedAndReconnectTestsPassed": 12,
+    "newDeliveryTestsPassed": 2,
+    "membershipRevocationStillClosesSocket": true
+  },
   "browserFixture": {
-    "failedSave": {"visibleError": true, "draftRetained": true, "submissions": 0, "generationCalls": 0, "artifacts": 0},
-    "nextExplicitClickAfter68QueuedProjections": {"authorizationDelayMs": 80, "submissions": 1, "controlledGenerationCalls": 2, "artifactVersion": 1, "status": "Updated"},
+    "failedSave": {
+      "visibleError": true,
+      "draftRetained": true,
+      "submissions": 0,
+      "generationCalls": 0,
+      "artifacts": 0
+    },
+    "nextExplicitClickAfter68QueuedProjections": {
+      "authorizationDelayMs": 80,
+      "submissions": 1,
+      "controlledGenerationCalls": 2,
+      "artifactVersion": 1,
+      "status": "Updated"
+    },
     "paidCalls": 0,
     "scope": "Controlled provider with real native compilation and artifact promotion; not live-provider acceptance"
   },
-  "checks": {"typesAndBuild": "passed", "boundaries": "167 files, zero violations", "fullWindowsSuite": "in progress", "finalHeadLinuxCI": "pending"},
-  "unchanged": ["flush deadline", "authentication", "current membership checks", "caller ownership", "durable writes", "incremental packets and command replies", "models", "credentials", "spending", "isolation", "promotion fences"],
-  "graph": {"nodes": 2335, "edges": 5569, "knownSqlParserOmissions": 14, "paidCalls": 0},
-  "manualAcceptance": "The user requested main publication and will perform live paid functional testing. No paid production submission was triggered by this repair session."
+  "checks": {
+    "typesAndBuild": "passed",
+    "boundaries": "167 files, zero violations",
+    "fullWindowsSuite": "in progress",
+    "finalHeadLinuxCI": "pending"
+  },
+  "unchanged": [
+    "flush deadline",
+    "authentication",
+    "current membership checks",
+    "caller ownership",
+    "durable writes",
+    "incremental packets and command replies",
+    "models",
+    "credentials",
+    "spending",
+    "isolation",
+    "promotion fences"
+  ],
+  "graph": {
+    "nodes": 2335,
+    "edges": 5569,
+    "knownSqlParserOmissions": 14,
+    "paidCalls": 0
+  },
+  "manualAcceptance": "The user requested main publication and will perform live paid functional testing. No paid production submission was triggered by this repair session.",
+  "liveFollowUp": {
+    "reportedError": "The final document update was not acknowledged. Try again.",
+    "baselineMain": "d309700e46e980d3ab01fe9163597352f6a4718e",
+    "baselineServerAndPublicClientVerified": true,
+    "realProviderCalls": 0,
+    "productionRpcMedianMs": "183-186",
+    "productionRpcP95Ms": "222-231",
+    "snapshotCommitP95Ms": 523.15,
+    "realSocketTestBefore": "failed with exact reported error",
+    "realSocketTestAfterAcknowledgementMs": 4808,
+    "focusedTestsPassed": 16,
+    "revokedLaterEditRefused": true,
+    "defaultSaveWaitMs": 30000,
+    "maximumSynchronousIngressBatch": 32,
+    "productionFingerprint": "519317552527d7c34fe1ee17133028dea0ba213b629d56bc6620b73f57e3b80e",
+    "stagingFingerprint": "5be705ba3fa51520391454cd62db17ada3e7e9d8467a935a792a994f96fc7670",
+    "fullWindowsSuite": "in progress",
+    "finalHeadLinuxCI": "pending",
+    "acceptance": "Manual live-provider acceptance remains with the user; controlled and measured transport evidence is not a live paid build claim."
+  }
 }
