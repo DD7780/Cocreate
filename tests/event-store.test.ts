@@ -81,7 +81,7 @@ test('append-only snapshot artifacts reconstruct a missing derived workspace vie
 
 test('room restart reconstructs the last product and interrupts an in-flight run',()=>{
   const dataDir=temporaryData(),workspaceId='workspace-restart',runId=randomUUID();
-  const first=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  const first=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'test-secret',dataDir});
   try{
     const room=first.create(workspaceId);
     first.join(room,'alice','Alice');
@@ -100,7 +100,7 @@ test('room restart reconstructs the last product and interrupts an in-flight run
     first.eventStore.transitionRun({workspaceId,runId,kind:'builder',state:'executing',inputRevision:1,attempt:1});
   }finally{first.shutdown()}
 
-  const second=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  const second=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'test-secret',dataDir});
   try{
     const recovered=second.get(workspaceId)!;
     assert.match(recovered.doc.getXmlFragment('default').toJSON(),/durable calculator/);
@@ -117,7 +117,7 @@ test('room restart reconstructs the last product and interrupts an in-flight run
 test('legacy workspace migration makes a backup before importing state',()=>{
   const dataDir=temporaryData(),workspaceId='legacy-workspace',legacyFile=path.join(dataDir,`${workspaceId}.json`);
   fs.writeFileSync(legacyFile,JSON.stringify({participants:[],requirements:[],versions:[],ai:{mode:'disconnected'},editHistory:[],requestedRevision:0,persistRevision:2,savedAt:new Date().toISOString()}));
-  const manager=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  const manager=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'test-secret',dataDir});
   try{
     assert.ok(manager.get(workspaceId));
     assert.ok(fs.existsSync(path.join(dataDir,'backups','pre-event-store',`${workspaceId}.json`)));
@@ -158,8 +158,8 @@ test('durable workflow projection records task transitions and supports cursor r
 
 test('restart preserves a pending multi-option conflict group and resolver membership',()=>{
   const dataDir=temporaryData(),workspaceId='workspace-conflict-restart',make=(participantId:string,participantName:string,feature:string):Requirement=>({id:randomUUID(),participantId,participantName,goals:[],features:[feature],design:[],constraints:[],questions:[],additions:[feature],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourceRevision:1,sourceEditSeqs:[1],sourcePassages:[feature],revision:1,createdAt:new Date().toISOString()}),alice=make('alice','Alice','Make the header red'),bob=make('bob','Bob','Make the header green');
-  const first=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  const first=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'test-secret',dataDir});
   try{const room=first.create(workspaceId);first.join(room,'alice','Alice');first.join(room,'bob','Bob');const one=reconcileRequirements([],alice),two=reconcileRequirements(one.requirements,bob,one.conflictGroups);room.requirements=[alice,bob];room.sharedRequirements=two.requirements;room.conflictGroups=two.conflictGroups;room.contradictions=two.contradictions;room.specificationRevision=2;first.save(room,'requirement.registry_reconciled','bob','personal_agent')}finally{first.shutdown()}
-  const second=new RoomManager({debounceMs:500,encryptionSecret:'test-secret',dataDir});
+  const second=new RoomManager({submissionMode:'intent',debounceMs:500,encryptionSecret:'test-secret',dataDir});
   try{const recovered=second.get(workspaceId)!;assert.equal(recovered.conflictGroups.length,1);assert.equal(recovered.conflictGroups[0].state,'awaiting_choices');assert.deepEqual(recovered.conflictGroups[0].requiredResolverIds,['alice','bob']);assert.equal(second.view(recovered).status,'Decision needed')}finally{second.shutdown();fs.rmSync(dataDir,{recursive:true,force:true})}
 });

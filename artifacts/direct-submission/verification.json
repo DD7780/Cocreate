@@ -1,0 +1,198 @@
+{
+  "date": "2026-10-21",
+  "baseline": {
+    "main": "5eb98c5a2075ca25857f93c345b5f72e9225ddd7",
+    "liveFingerprint": "e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c",
+    "linuxRun": "https://github.com/DD7780/Cocreate/actions/runs/39423278161"
+  },
+  "candidate": {
+    "productionFingerprint": "372b5fa7062ea5f3b6d9a0645b65c158dc275dcfa1383f9306bbfc8041822b59",
+    "stagingFingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
+    "published": true,
+    "deployed": false,
+    "implementationCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
+    "pullRequest": "https://github.com/DD7780/Cocreate/pull/11",
+    "stagingDeployed": true,
+    "productionDeployed": false,
+    "latestPublishedCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead"
+  },
+  "checks": {
+    "focused": {
+      "tests": 21,
+      "passed": 21,
+      "failed": 0,
+      "source": "direct-focused-final-2.log"
+    },
+    "typesAndLocalBuild": "pass",
+    "boundaries": {
+      "files": 166,
+      "violations": 0,
+      "inferenceCalls": 0
+    },
+    "graph": {
+      "nodes": 2325,
+      "edges": 5548,
+      "unparsedSqlFiles": 14,
+      "inferenceCalls": 0
+    },
+    "completeSuite": {
+      "platform": "Linux production Docker image",
+      "tests": 265,
+      "passed": 265,
+      "failed": 0,
+      "skipped": 0,
+      "sourceCommit": "925e21eb134d7786b0011a394922df1e59583e21",
+      "runs": [
+        "https://github.com/DD7780/Cocreate/actions/runs/39600913369",
+        "https://github.com/DD7780/Cocreate/actions/runs/39600919003"
+      ],
+      "nativePostgres": "2/2",
+      "compiler": "10/10",
+      "browserAdversity": "15/15"
+    },
+    "compatibility": {
+      "isolatedCopies": true,
+      "originalJsonHashesUnchanged": true,
+      "projects": 2,
+      "inferenceCalls": 0
+    },
+    "browser": {
+      "provider": "controlled fixture; no paid inference",
+      "firstBuild": "button; typo and tentative wording",
+      "incremental": "editor-focused Alt+X; Add favorites",
+      "products": [
+        1,
+        2
+      ],
+      "generationCalls": 4,
+      "typingCalls": 0,
+      "unverifiedProseLabeled": true,
+      "latestFavoriteInteractive": true
+    },
+    "retainedWindowsAttempts": [
+      {
+        "attempt": 1,
+        "tests": 264,
+        "passed": 248,
+        "failed": 8,
+        "skippedLinux": 8,
+        "reason": "Legacy scheduler fixture omitted explicit intent mode; corrected."
+      },
+      {
+        "attempt": 2,
+        "tests": 265,
+        "passed": 256,
+        "failed": 1,
+        "skippedLinux": 8,
+        "durationMs": 3340095,
+        "reason": "Integration ownership expired after 2843.3s elapsed; cause of pause unproven."
+      },
+      {
+        "attempt": 3,
+        "tests": 265,
+        "passed": 240,
+        "failed": 17,
+        "skippedLinux": 8,
+        "durationMs": 478537,
+        "reason": "Browser runtime override omitted: default browser path absent in physical checkout. Loopback provider failures also observed; diagnostics pending. No runtime/assertion changes made."
+      }
+    ],
+    "integrationFollowUp": {
+      "passed": 1,
+      "failed": 0,
+      "durationMs": 29772,
+      "source": "direct-integration-final.log",
+      "change": "Wait for latest accepted revision and idle build before final collaborator output assertions; no deadline/runtime change."
+    },
+    "stagingBuilds": {
+      "candidate": "925e21eb134d7786b0011a394922df1e59583e21",
+      "status": "deployed_awaiting_signed_in_acceptance",
+      "attempts": [
+        {
+          "build": "7bc78f64-d0ab-4d20-be29-86f3d50db500",
+          "error": "Selected historical build token no longer valid."
+        },
+        {
+          "build": "5e484457-28e3-4c31-bd52-b6b6eb65699a",
+          "error": "Existing staging-scoped token deleted or rolled."
+        }
+      ],
+      "credentialValuesRead": false,
+      "newCredentialCreated": false,
+      "mainUnchanged": true,
+      "stagingBackend": "ACTIVE_HEALTHY",
+      "successfulBuild": "10b43729-a448-4dc1-b784-2a6e5b2b1524",
+      "workerVersion": "3ac649bb-c313-4d06-998f-2d183bc16548",
+      "health": {
+        "httpStatus": 200,
+        "fingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
+        "submissionMode": "direct"
+      },
+      "tokenRefresh": "User created and selected replacement build token in Cloudflare dashboard; no token value was read.",
+      "latestSuccessfulBuild": "ca3eab2e-d3f3-4b15-bf4e-cc66a5bcfbbe",
+      "latestSourceCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead",
+      "latestWorkerVersion": "1cadf5ff-0dbc-4cd2-b261-955e9c0b2731"
+    },
+    "completeWindowsSuite": {
+      "attempt": 4,
+      "tests": 265,
+      "passed": 257,
+      "failed": 0,
+      "skippedLinux": 8,
+      "durationMs": 374105,
+      "source": "direct-full-suite-4.log",
+      "browserRuntime": "Existing original workspace HeadlessChrome/154.0.8037.92",
+      "providerOverridesCleared": true
+    },
+    "fixtureIsolationCorrection": {
+      "passed": 4,
+      "failed": 0,
+      "durationMs": 40059,
+      "source": "direct-fixture-isolation-final.log",
+      "change": "Pass the synthetic provider baseUrl explicitly to createCoCreateServer, preventing inherited operator overrides."
+    },
+    "stagingAuth": {
+      "google": "disabled: HTTP400 validation_failed Unsupported provider",
+      "emailPassword": "Existing staging account requested; not yet signed in",
+      "policiesChanged": false,
+      "accountsCreated": false
+    },
+    "followUpCI": {
+      "sourceCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead",
+      "push": {
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/39904320657",
+        "status": "success"
+      },
+      "pullRequest": {
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/39904323681",
+        "tests": 265,
+        "passed": 264,
+        "failed": 1,
+        "skipped": 0,
+        "failure": "Integration expected all remaining activity in one 100-event page. Legitimate multiple build batches exceed the page."
+      },
+      "correction": "Drain bounded activity pages within unchanged timeout; assert monotonic cursors, redaction and complete original durable-event sequence.",
+      "focused": {
+        "passed": 1,
+        "failed": 0,
+        "durationMs": 38557,
+        "source": "direct-integration-pagination.log"
+      },
+      "newHeadCI": "pending"
+    },
+    "stagingAnonymous": {
+      "appHealth": 200,
+      "projects": 401,
+      "roomState": 401,
+      "privatePreview": 401,
+      "inferenceCalls": 0
+    }
+  },
+  "limitations": [
+    "Signed-in staging acceptance pending; existing staging email/password sign-in requested",
+    "USD2 total OpenRouter deepseek/deepseek-chat acceptance authorized; zero paid calls so far",
+    "New-head CI required after integration pagination correction",
+    "Main remains baseline 5eb98c5; no production deployment"
+  ],
+  "lastUpdated": "2026-10-23"
+}

@@ -115,7 +115,7 @@ test("submitted builds ignore typing alone, preserve idempotency, and expose tok
   const testDataDir = fs.mkdtempSync(
     path.join(os.tmpdir(), "typed-submission-"),
   );
-  const manager = new RoomManager({
+  const manager = new RoomManager({submissionMode:'intent',
     dataDir: testDataDir,
     debounceMs: 80,
     buildDebounceMs: 100,

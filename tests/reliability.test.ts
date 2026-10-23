@@ -28,7 +28,7 @@ test('required behavior failure retains the verified product, records actionable
     return response(plan('src/App.tsx', broken ? verifiedList.replace('setQuery(e.target.value)','void e') : verifiedList));
   });
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'verified-retention-')), id=`verified-${crypto.randomUUID()}`;
-  let manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  let manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
   try {
     let room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
     edit(manager,room,'Build a catalog with a working filter');await manager.submitChanges(room,'alice','one');
@@ -44,7 +44,7 @@ test('required behavior failure retains the verified product, records actionable
     assert.equal(run.verification.evidence?.checks.find(check=>check.kind==='sort')?.passed,true);
     const calls=manager.view(room).physicalUsage.recorded.requests;await manager.submitChanges(room,'alice','two');
     assert.equal(manager.view(room).physicalUsage.recorded.requests,calls);
-    await manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get(id)!;
+    await manager.save(room);manager.shutdown();manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get(id)!;
     assert.deepEqual(room.aiRuns.at(-1)?.verification.evidence,run.verification.evidence);
     assert.equal(manager.view(room).latestVersion,1);assert.equal(builds,2);
     assert.equal(manager.eventStore.eventsForWorkspace(id).filter(event=>event.eventType==='candidate.verification_recorded').length,2);
@@ -66,7 +66,7 @@ test('unavailable verification browser fails before builder spending and never r
     builds++;return response(plan('src/App.tsx',verifiedList));
   });
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'verification-unavailable-')),id=`verify-missing-${crypto.randomUUID()}`;
-  const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  const manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
   const previous=process.env.COCREATE_VERIFICATION_BROWSER;
   try {
     const room=manager.create(id);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);
@@ -119,7 +119,7 @@ test('CRDT attribution retains exact repeated-prefix insertions and excludes unt
 test('physical recovery calls and spending reservations cannot exceed their shared frozen bounds',async()=>{
   let dispatched=0;
   const provider=await fixture(()=>{dispatched++;return response({value:'ok'});});
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-budget-')),manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'}),room=manager.create('room');
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-budget-')),manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'}),room=manager.create('room');
   const {generateText}=await import('../server/providers.js');
   const setup={mode:'custom' as const,resolved:{personal:{model:'builder',rate:{currency:'USD' as const,inputPerMillion:1,outputPerMillion:2,reasoningBilling:'not_separately_reported' as const,reasoningNote:'Synthetic',sourceUrl:'https://example.test',verifiedAt:'2026-10-01'},maxInputTokens:5000,maxOutputTokens:500,connectionId:'x',connectionName:'x',provider:'custom' as const},builder:undefined as any,repairAttempts:1}};setup.resolved.builder=setup.resolved.personal;
   const call=()=> (manager as any).tracked(room,{purpose:'builder',provider:'custom',model:'builder',workflowRunId:'run',setup},()=>generateText({provider:'custom',baseUrl:provider.baseUrl,apiKey:'synthetic',apiFormat:'responses'},{model:'builder',instructions:'Test',input:'Test',maxOutputTokens:500}));
@@ -155,14 +155,14 @@ test('remote coordinator renewal cannot silently reacquire ownership for an old 
 
 test('remote saves commit in revision order and acknowledge the actual snapshot',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-saves-')),pending:{revision:number;resolve:(value:unknown)=>void}[]=[];
-  const manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,revision)=>new Promise(resolve=>pending.push({revision,resolve})),appendDocumentUpdate:async()=>{}}});
+  const manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,revision)=>new Promise(resolve=>pending.push({revision,resolve})),appendDocumentUpdate:async()=>{}}});
   const room=manager.create('room'),messages:any[]=[];room.clients.add({readyState:1,send:(raw:unknown)=>{if(typeof raw==='string')messages.push(JSON.parse(raw))}} as any);
   try{const one=manager.save(room),two=manager.save(room);await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,1);pending.shift()!.resolve(true);await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,2);pending.shift()!.resolve(true);await one;await waitFor(()=>pending.length===1);assert.equal(pending[0].revision,3);pending.shift()!.resolve(true);await two;assert.deepEqual(messages.filter(item=>item.type==='saved').map(item=>item.revision),[1,2,3]);assert.ok(messages.every(item=>item.vector));}finally{manager.shutdown();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('failed cloud snapshots reject flushes and interrupted captured edits return to their author',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-flush-'));
-  const manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async()=>{throw new Error('Cloud unavailable')},appendDocumentUpdate:async()=>{}}});
+  const manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async()=>{throw new Error('Cloud unavailable')},appendDocumentUpdate:async()=>{}}});
   try{
     const room=manager.create('room');manager.join(room,'alice','Alice');const messages:any[]=[];
     const client={participantId:'alice',readyState:1,send(raw:unknown){if(typeof raw==='string')messages.push(JSON.parse(raw));}} as any;
@@ -190,25 +190,25 @@ test('interpretation submits every captured source without silently clipping old
 
 test('failed cloud acceptance restores the accepted baseline and the captured participant draft',async()=>{
   const provider=await fixture(()=>response(interpreted('Build catalog'))),dir=fs.mkdtempSync(path.join(os.tmpdir(),'acceptance-rollback-'));
-  const manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{if(payload.specificationRevision===1)throw new Error('Cloud unavailable');},appendDocumentUpdate:async()=>{}}});
+  const manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{if(payload.specificationRevision===1)throw new Error('Cloud unavailable');},appendDocumentUpdate:async()=>{}}});
   try{const room=manager.create('room');manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await assert.rejects(()=>manager.submitChanges(room,'alice','request-one'),/durably saved/);assert.equal(room.specificationRevision,0);assert.equal(room.sharedRequirements.length,0);assert.equal(room.participants.get('alice')?.latest,undefined);assert.equal(room.pending.get('alice')?.[0].after,'Build catalog');assert.equal(room.submissions[0].status,'failed');assert.equal(room.requirementRevisions?.at(-1)?.revision,0);await room.persistQueue;}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('an exhausted recovery leaves the previously promoted and compiled artifact available',async()=>{
   let exhaust=false;
   const provider=await fixture(body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals'))return response(interpreted(input.authenticatedChanges.map((item:any)=>item.after).join(' ')));return exhaust?response({},'incomplete'):response(plan('src/App.tsx','export default function App(){return <main>Working catalog</main>}'));});
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'artifact-retention-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'artifact-retention-')),manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
   try{const room=manager.create(`retained-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);edit(manager,room,'Build catalog');await manager.submitChanges(room,'alice','one');await waitFor(()=>room.versions.length===1&&!room.buildTask);const working=structuredClone(room.versions[0]);exhaust=true;edit(manager,room,'Add favorites');await manager.submitChanges(room,'alice','two');await waitFor(()=>room.status==='Error'&&!room.buildTask);assert.equal(room.versions.length,1);assert.deepEqual(room.versions[0],working);assert.match(room.lastError||'',/Working artifact v1 retained/);assert.match(room.lastError||'',/24 physical calls/);assert.equal(manager.view(room).latestVersion,1);}finally{manager.shutdown();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('independent participants submit in durable capture order, retain later build inputs and saved drafts on reload',async()=>{
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'workflow-submissions-')),seen:string[]=[];let builds=0,releaseFirstBuild:()=>void=()=>{};const firstBuildGate=new Promise<void>(resolve=>{releaseFirstBuild=resolve});
   const provider=await fixture(async body=>{const input=JSON.parse(body.input);if(body.text.format.schema.required.includes('goals')){seen.push(input.participantName);if(input.participantName==='Alice')await new Promise(resolve=>setTimeout(resolve,80));const text=input.authenticatedChanges.map((change:any)=>change.after).join(' ');assert.doesNotMatch(text,/unsubmitted/);assert.equal(input.sharedBrainstormCanvas,undefined);assert.doesNotMatch(JSON.stringify(input.acceptedContext),/unsubmitted/);return response({goals:[text],features:[],design:[],constraints:[],questions:[],additions:[],modifications:[],withdrawals:[],classification:'explicit_request',affectedRequirementIds:[],sourcePassages:[text],intents:[{text,category:'goal',classification:'explicit_request',rationale:'Direct request',sourcePassage:text,affectedRequirementIds:[]}]});}builds++;if(builds===1)await firstBuildGate;return response(plan('src/App.tsx',verifiedList));});
-  let manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'}),room=manager.create('room');
+  let manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'}),room=manager.create('room');
   const docs:Y.Doc[]=[];
   const write=(id:string,text:string)=>{let doc=docs[['alice','bob','cara'].indexOf(id)];if(!doc){doc=new Y.Doc();docs[['alice','bob','cara'].indexOf(id)]=doc;Y.applyUpdate(doc,Y.encodeStateAsUpdate(room.doc));}const vector=Y.encodeStateVector(doc),p=new Y.XmlElement('paragraph'),t=new Y.XmlText();doc.transact(()=>{doc.getXmlFragment('default').push([p]);p.push([t]);t.insert(0,text);});manager.handleMessage(room,{participantId:id,readyState:0,send(){}} as any,Buffer.concat([Buffer.from([0]),Buffer.from(Y.encodeStateAsUpdate(doc,vector))]),true);};
   try{for(const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']])manager.join(room,id,name);const connection=(await manager.saveConnection(room,{name:'Synthetic',provider:'custom',baseUrl:provider.baseUrl,apiFormat:'responses',apiKey:'synthetic'})).id;room.ai.connections![0].checks.builder={reachable:{status:'passed'},text:{status:'passed'},personal:{status:'passed'},builder:{status:'passed'}};await manager.assignAI(room,{connectionId:connection,model:'builder'},{connectionId:connection,model:'builder'});
-    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');assert.equal(room.submissions.find(item=>item.requestId==='request-c')?.status,'submitted');assert.deepEqual(seen,['Alice','Bob']);releaseFirstBuild();await waitFor(()=>room.versions.length>=1,25_000);assert.equal(room.versions[0].specificationRevision,2);await waitFor(()=>room.versions.length===2&&!room.buildTask&&!room.buildTimer,25_000);assert.equal(builds,2,'the fixed active build publishes before captured later steering builds');assert.deepEqual(room.versions.map(item=>item.specificationRevision),[2,3]);assert.deepEqual(seen,['Alice','Bob','Alice']);assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
+    write('alice','Build a catalog');write('bob','Add favorites');write('cara','unsubmitted filters');const a=manager.submitChanges(room,'alice','request-a'),b=manager.submitChanges(room,'bob','request-b');await Promise.all([a,b]);assert.deepEqual(seen,['Alice','Bob']);assert.equal(room.sharedRequirements.filter(item=>item.status==='accepted').length,2);await waitFor(()=>builds===1);write('alice','Add sorting');await manager.submitChanges(room,'alice','request-c');assert.equal(room.submissions.find(item=>item.requestId==='request-c')?.status,'submitted');assert.deepEqual(seen,['Alice','Bob']);releaseFirstBuild();await waitFor(()=>room.versions.length>=1,25_000);assert.equal(room.versions[0].specificationRevision,2);await waitFor(()=>room.versions.length===2&&!room.buildTask&&!room.buildTimer,25_000);assert.equal(builds,2,'the fixed active build publishes before captured later steering builds');assert.deepEqual(room.versions.map(item=>item.specificationRevision),[2,3]);assert.deepEqual(seen,['Alice','Bob','Alice']);assert.equal(room.submissions.filter(item=>item.status==='built').length,3);assert.equal(room.pending.get('cara')?.length,1);assert.equal((await manager.submitChanges(room,'bob','request-b')).submissionId,room.submissions.find(item=>item.requestId==='request-b')!.id);manager.save(room);manager.shutdown();manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'synthetic'});room=manager.get('room')!;assert.equal(room.pending.get('cara')?.length,1);assert.equal(room.commandReceipts?.[JSON.stringify(['bob','request-b'])].status,'built');assert.equal(room.requirementRevisions?.at(-1)?.revision,room.specificationRevision);
   }finally{releaseFirstBuild();manager.shutdown();for(const doc of docs)doc?.destroy();await provider.close();fs.rmSync(dir,{recursive:true,force:true});}
 });
 
@@ -216,7 +216,7 @@ test('ownership loss after compilation blocks promotion; command replay adds no 
   let calls=0,lose!:(id:string)=>void,release!:()=>void,entered!:()=>void,promotions=0,canonicalVersions=0,bundled=false;
   const gate=new Promise<void>(resolve=>{release=resolve}),bundling=new Promise<void>(resolve=>{entered=resolve});
   const provider=await fixture(body=>{calls++;return response(body.text.format.schema.required.includes('goals')?interpreted('Build catalog'):plan('src/App.tsx','export default function App(){return <main>Compiled fixture</main>}'))});
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lost-promotion-')),manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{canonicalVersions=(payload.versions as any[]).length},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},recordProviderRequest:async()=>{},onCoordinatorLost:callback=>{lose=callback;return()=>{}}}});
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'lost-promotion-')),manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic',durableStore:{saveSnapshot:async(_id,_revision,payload)=>{canonicalVersions=(payload.versions as any[]).length},appendDocumentUpdate:async()=>{},assertCoordinator:async()=>{},recordProviderRequest:async()=>{},onCoordinatorLost:callback=>{lose=callback;return()=>{}}}});
   const execute=manager.tools.execute.bind(manager.tools);
   manager.tools.execute=(async(name:any,input:any,context:any)=>{const result=await execute(name,input,context);if(name==='project.bundle'){bundled=true;entered();await gate}if(name==='project.promote')promotions++;return result}) as typeof manager.tools.execute;
   try{
@@ -236,7 +236,7 @@ test('unavailable isolation retains the promoted artifact and stops before build
     builders++;return response(plan('src/App.tsx','export default function App(){return <main>Retained isolated product</main>}'));
   });
   const dir=fs.mkdtempSync(path.join(os.tmpdir(),'isolation-build-retention-'));
-  const manager=new RoomManager({dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
+  const manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,buildDebounceMs:20,buildCooldownMs:0,encryptionSecret:'synthetic'});
   const prior=process.env.COCREATE_ISOLATION_MODE;
   try{
     const room=manager.create(`isolated-${crypto.randomUUID()}`);manager.join(room,'alice','Alice');await connectFixture(manager,room,provider.baseUrl);

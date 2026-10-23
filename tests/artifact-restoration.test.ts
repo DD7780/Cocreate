@@ -14,7 +14,7 @@ import { applyOperations, bundleProject } from '../server/project.js';
 import { createArtifactFixture } from './fixtures/artifact-storage.js';
 const files = applyOperations(undefined, [{ type: 'write', path: 'src/App.tsx', content: 'export default function App(){return <main>Restored artifact</main>}' }]);
 const version = (id: number) => ({ id, createdAt: '2026-10-03T00:00:00Z', summary: `Version ${id}`, files, bundle: `window.fixtureVersion=${id}`, css: 'main{color:blue}', fileCount: files.length });
-const manager = (durableStore?: any) => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-')); return { dir, value: new RoomManager({ debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore }) }; };
+const manager = (durableStore?: any) => { const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'artifact-step03-')); return { dir, value: new RoomManager({submissionMode:'intent', debounceMs: 1000, encryptionSecret: 'synthetic', dataDir: dir, durableStore }) }; };
 function clean(item: ReturnType<typeof manager>) { item.value.shutdown(); const resolved = path.resolve(item.dir); assert.equal(path.dirname(resolved), path.resolve(os.tmpdir())); assert.match(path.basename(resolved), /^artifact-step03-/); fs.rmSync(resolved, { recursive: true, force: true }); }
 test('empty cache restores compiled preview, current checkpoint, old version and receipts without inference', async () => {
     const fixture = await createArtifactFixture(), project = randomUUID(), platform = fixture.platform();
@@ -168,7 +168,7 @@ test('authenticated lazy historical reads reject revoked users, including revoca
         await cold.claimCoordinator(project);
         cold.requireMembership = async () => { if (!role)
             throw Object.assign(new Error('Project access denied.'), { status: 403 }); return role; };
-        service = await createCoCreateServer({ platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic' });
+        service = await createCoCreateServer({submissionMode:'intent', platform: cold, dataDir: coldDir, port: 0, host: '127.0.0.1', serveClient: false, sessionSecret: 'synthetic' });
         const meta = await cold.loadSnapshot(project);
         const hydrated = service.manager.hydrate(project, meta);
         service.manager.join(hydrated, 'alice', 'Alice');

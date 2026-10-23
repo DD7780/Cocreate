@@ -78,7 +78,7 @@ export async function runScenario(scenario: ScenarioName): Promise<Observation> 
   });
   await new Promise<void>(resolve => provider.listen(0, '127.0.0.1', resolve));
   const baseUrl = `http://127.0.0.1:${(provider.address() as { port: number }).port}`;
-  const createManager = () => new RoomManager({ dataDir: temp, debounceMs: 10, buildDebounceMs: 20,
+  const createManager = () => new RoomManager({submissionMode:'intent', dataDir: temp, debounceMs: 10, buildDebounceMs: 20,
     buildCooldownMs: 0, buildMaxWaitMs: 100, encryptionSecret: 'synthetic-baseline' });
   const observations: Observation['observations'] = {};
   try {

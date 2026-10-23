@@ -39,6 +39,7 @@ import { invitationEmailSenderFromEnv } from "./invitation-email.js";
 import { registerBetaRoutes } from "./beta.js";
 import { registerBetaRequestRoutes } from './beta-requests.js';
 type Options = {
+  submissionMode?: 'direct' | 'intent';
   platform?: SupabasePlatform;
   port?: number;
   host?: string;
@@ -72,7 +73,7 @@ export async function createCoCreateServer(options: Options = {}) {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner', 'editor']);
         } : undefined, authorizeBudgetReset: platformState.platform ? async (projectId, participantId) => {
             await platformState.platform!.requireMembership(projectId, participantId, ['owner']);
-        } : undefined, mvpByokOnly: !!platformState.platform
+        } : undefined, mvpByokOnly: !!platformState.platform, submissionMode: options.submissionMode
     });
     app.use(express.json({
         limit: '40kb'
@@ -85,7 +86,7 @@ export async function createCoCreateServer(options: Options = {}) {
     app.get('/__cocreate/app-health', (_req, res) => platformState.error ? res.status(503).json({
         status: 'configuration-error', service: 'cocreate-app', error: platformState.error
     }) : res.json({
-        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint
+        status: 'ok', service: 'cocreate-app', release_fingerprint: releaseFingerprint, submission_mode: options.submissionMode || process.env.COCREATE_SUBMISSION_MODE || 'direct'
     }));
     app.get('/api/auth/config', (_req, res) => res.status(platformState.error ? 503 : 200).json({
         mode: platformState.mode, configured: !platformState.error, error: platformState.error || undefined
@@ -569,7 +570,7 @@ export async function createCoCreateServer(options: Options = {}) {
                 return res.status(400).json({
                     error: 'A valid retry request ID is required.'
                 });
-            res.json(manager.retryBuild(auth.room, auth.session.participantId, requestId));
+            res.json(await manager.retryBuild(auth.room, auth.session.participantId, requestId));
         }
         catch (error) {
             if (coordinatorResponse(res, error))
@@ -845,8 +846,8 @@ export async function createCoCreateServer(options: Options = {}) {
 }
 const main =
   process.argv[1] &&
-  path.resolve(process.argv[1]) ===
-    path.resolve(fileURLToPath(import.meta.url));
+  fs.realpathSync(process.argv[1]) ===
+    fs.realpathSync(fileURLToPath(import.meta.url));
 if (main) {
   await assertIsolationAvailable();
   if (process.platform === 'linux' && process.env.COCREATE_HOSTED === 'true') await assertVerificationBrowserAvailable();

@@ -1,5 +1,6 @@
+import type { BuildInstruction } from '../shared/types.js';
 import { assertPromotionEvidence, verifyCandidate } from './verification.js';
-import type { CandidateVerification, SharedRequirement } from "../shared/types.js";
+import type { CandidateVerification } from "../shared/types.js";
 import { isolationPolicy, IsolationError } from './isolation.js';
 import { createHash, randomUUID } from 'node:crypto';
 import { applyOperations, bundleProject, persistProject, type FileOperation, type ProjectFile } from './project.js';
@@ -10,7 +11,7 @@ type ToolName='project.apply_operations'|'project.bundle'|'project.verify'|'proj
 type ToolInputs={
   'project.apply_operations':{current:ProjectFile[]|undefined;operations:FileOperation[]};
   'project.bundle':{files:ProjectFile[]};
-  'project.verify':{files:ProjectFile[];compiled:{javascript:string;css:string};requirements:SharedRequirement[]};
+  'project.verify':{files:ProjectFile[];compiled:{javascript:string;css:string};requirements:BuildInstruction[]};
   'project.promote':{files:ProjectFile[]};
 };
 type ToolOutputs={
@@ -19,7 +20,7 @@ type ToolOutputs={
   'project.verify':CandidateVerification;
   'project.promote':{fileCount:number};
 };
-export type ToolContext={workspaceId:string;runId:string;actorId:string;actorType:ActorType;role:'builder'|'personal_agent'|'user'|'system';inputRevision:number;signal?:AbortSignal;verification?:{report:CandidateVerification;requirements:SharedRequirement[];compiled:{javascript:string;css:string}}};
+export type ToolContext={workspaceId:string;runId:string;actorId:string;actorType:ActorType;role:'builder'|'personal_agent'|'user'|'system';inputRevision:number;signal?:AbortSignal;verification?:{report:CandidateVerification;requirements:BuildInstruction[];compiled:{javascript:string;css:string}}};
 export type ToolDefinition<K extends ToolName=ToolName>={
   name:K;purpose:string;behavior:ToolBehavior;permission:string;environment:'host-process-restricted-api'|'isolated-process';
   timeoutMs:number;resourceLimits:{maxFiles:number;maxInputBytes:number;memoryBytes?:number;cpuSeconds?:number;maxProcesses?:number};retry:'none'|'idempotent';idempotent:boolean;

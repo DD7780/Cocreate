@@ -45,7 +45,7 @@ export async function createProgressFixture(options: {hold?: boolean;personalDel
   });
   await new Promise<void>(resolve=>server.listen(0,'127.0.0.1',resolve));
   const address=server.address(); assert.ok(address && typeof address !== 'string');
-  const config={dataDir,debounceMs:10,buildDebounceMs:options.buildDebounceMs||30,buildCooldownMs:0,buildMaxWaitMs:options.buildMaxWaitMs||100,encryptionSecret:'controlled-progress',authorizeSubmission:options.authorize?async(_room:string,actor:string)=>options.authorize!(actor):undefined};
+  const config={submissionMode:'intent' as const,dataDir,debounceMs:10,buildDebounceMs:options.buildDebounceMs||30,buildCooldownMs:0,buildMaxWaitMs:options.buildMaxWaitMs||100,encryptionSecret:'controlled-progress',authorizeSubmission:options.authorize?async(_room:string,actor:string)=>options.authorize!(actor):undefined};
   let manager = new RoomManager(config);
   let room = manager.create(randomUUID());
   for (const [id,name] of [['alice','Alice'],['bob','Bob'],['cara','Cara']]) manager.join(room,id,name);

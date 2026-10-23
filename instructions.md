@@ -1,5 +1,7 @@
 # 2guys1canvas contributor instructions
 
+Active beta direction (2026-10-21): default direct submission mode supersedes the intent eligibility, reconciliation and voting rules below **only in direct mode**. Preserve those rules and regressions under explicit intent mode. Capture caller-owned immutable writing, persist the clarified prompt before scheduling, serialize one submission per build against the latest working artifact, and preserve accounting/promotion fences. Explicit retry reuses the saved prompt, frozen model and existing allowance. Never replay paid work on load or rollout. [Bounded change packet](docs/harness/direct-submission-flow.md).
+
 Landing scope accepted 2026-10-15: publish the user-approved local editorial preview through the existing main release path, preserving the real waitlist and same-origin sign-in links. Keep its CSS isolated from Canvas, Workflow, Artifacts and authentication screens. Do not merge separate capability foundations or interpret a marketing illustration as hosted acceptance. [Scope and verification](docs/harness/landing-editorial.md).
 
 Workflow Overview (2026-10-15): recorded tokens and estimated USD AI cost with Today/Last 7 days charts, plus one Contradictions list. Wider UI issues await user approval. The user authorized this Workflow-only integration to main; unrelated artifact/browser/Blender/staging work remains separate. See [scope, checks and rollback](docs/harness/workflow-overview.md).

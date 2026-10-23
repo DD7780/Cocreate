@@ -1,7 +1,8 @@
+import type { BuildInstruction } from '../shared/types.js';
 import { VERIFICATION_POLICY_VERSION } from './ai-accounting.js';
 import fs from 'node:fs';
 import { createHash } from 'node:crypto';
-import type { CandidateVerification, SharedRequirement } from "../shared/types.js";
+import type { CandidateVerification } from "../shared/types.js";
 import type { ProjectFile } from './project.js';
 import { previewDocument as previewHtml } from './preview.js';
 import { withIsolatedBrowser } from './isolation/browser.js';
@@ -20,7 +21,7 @@ function checksFor(criterion: string): Kind[] {
   if (/^(?:add|enable|support) (?:alphabetical )?sorting(?: by name)?$/i.test(text)) return ['sort'];
   return [];
 }
-export function planVerification(requirements: SharedRequirement[], specificationRevision: number) {
+export function planVerification(requirements: BuildInstruction[], specificationRevision: number) {
   const rows = requirements.map(item => ({requirementId: item.id, requirementRevision: item.revision,
     criteriaHash: hash(item.acceptanceCriteria), criteria: item.acceptanceCriteria.map(text => ({criterionHash: hash(text), checks: checksFor(text)}))}));
   return {policyVersion: CHECK_VERSION, specificationRevision, requirements: rows,
@@ -31,7 +32,7 @@ export function planVerification(requirements: SharedRequirement[], specificatio
 const observerScript = fs.readFileSync(new URL('./isolation/list-observer.cjs', import.meta.url), 'utf8');
 type ListObservation = {implemented: boolean; names: string[]; state: string | null; controlType?: string; options: Array<{value: string; label: string}>; query?: string};
 
-export async function verifyCandidate(files: ProjectFile[], compiled: {javascript: string; css: string}, requirements: SharedRequirement[], specificationRevision: number, signal?: AbortSignal): Promise<CandidateVerification> {
+export async function verifyCandidate(files: ProjectFile[], compiled: {javascript: string; css: string}, requirements: BuildInstruction[], specificationRevision: number, signal?: AbortSignal): Promise<CandidateVerification> {
   const plan = planVerification(requirements, specificationRevision);
   const checks: CandidateVerification['checks'] = [];
   let browserVersion: string | undefined;
@@ -98,7 +99,7 @@ export async function verifyCandidate(files: ProjectFile[], compiled: {javascrip
     status: checks.some(check => !check.passed) ? 'failed' : rows.length && rows.every(row => row.status === 'verified') ? 'passed' : 'unverified'};
 }
 
-export function assertPromotionEvidence(report: CandidateVerification | undefined, files: ProjectFile[], compiled: {javascript: string; css: string}, requirements: SharedRequirement[], revision: number) {
+export function assertPromotionEvidence(report: CandidateVerification | undefined, files: ProjectFile[], compiled: {javascript: string; css: string}, requirements: BuildInstruction[], revision: number) {
   const plan = planVerification(requirements, revision);
   if (!report || report.policyVersion !== CHECK_VERSION || report.specificationRevision !== revision || report.sourceHash !== sourceHash(files) ||
       report.candidateHash !== candidateHash(files, compiled) || report.planHash !== plan.planHash || report.requirements.length !== plan.requirements.length) throw new Error('Verification evidence is missing or stale for this candidate and accepted revision.');

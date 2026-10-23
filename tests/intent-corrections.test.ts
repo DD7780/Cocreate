@@ -12,7 +12,7 @@ const interpretation=(id:string,text:string)=>normalizeInterpretation({id:'inter
   revision:1,sourceRevision:1,sourceEditSeqs:[1],sourcePassages:[text],features:[text],classification:'explicit_request',
   intents:[{text,category:'feature',classification:'explicit_request',sourcePassage:text,affectedRequirementIds:[]}],createdAt:'2026-10-04T00:00:00.000Z'});
 function setup(config:Partial<ConstructorParameters<typeof RoomManager>[0]>={}) {
-  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'intent-command-')),manager=new RoomManager({dataDir:dir,debounceMs:10,encryptionSecret:'fixture',...config}),room=manager.create('intent-fixture');
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'intent-command-')),manager=new RoomManager({submissionMode:'intent',dataDir:dir,debounceMs:10,encryptionSecret:'fixture',...config}),room=manager.create('intent-fixture');
   for(const id of ['alice','bob','cara'])manager.join(room,id,id);
   const seed=(id:string,text:string)=>{const value=interpretation(id,text),result=reconcileRequirements(room.sharedRequirements,value,room.conflictGroups);room.sharedRequirements=result.requirements;room.conflictGroups=result.conflictGroups;room.contradictions=result.contradictions;room.specificationRevision++;room.participants.get(id)!.latest=value;room.requirements.push(value);};
   let stopped=false;const stop=()=>{if(!stopped){manager.shutdown();stopped=true;}};
@@ -37,7 +37,7 @@ test('coauthor correction preserves teammate wording and exact sources, audit an
 test('withdrawal removes only caller support and survives restart; same request replays before stale checks',async()=>{
   const f=setup();let restarted:RoomManager|undefined;try{f.seed('alice','Add history');f.seed('bob','Add history');const c=command(f.room,undefined,{action:'withdraw'}),result=await f.manager.mutateIntent(f.room,'alice',c);
     assert.deepEqual(f.room.sharedRequirements[0].sources.map(s=>s.participantId),['bob']);const revision=f.room.specificationRevision;
-    f.stop();restarted=new RoomManager({dataDir:f.dir,debounceMs:10,encryptionSecret:'fixture'});const room=restarted.get(f.room.id)!;
+    f.stop();restarted=new RoomManager({submissionMode:'intent',dataDir:f.dir,debounceMs:10,encryptionSecret:'fixture'});const room=restarted.get(f.room.id)!;
     assert.deepEqual(await restarted.mutateIntent(room,'alice',c),result);assert.equal(room.specificationRevision,revision);assert.equal(room.intentCorrections!.length,1);assert.equal(room.usage.requests,0);
     await assert.rejects(()=>restarted!.mutateIntent(room,'alice',{...c,action:'correct',text:'Add login',category:'feature',classification:'explicit_request'}),/already belongs/);
   }finally{restarted?.shutdown();f.close();}
@@ -93,7 +93,7 @@ test('canonical intent remains invisible until remote acknowledgement; lost repl
     assert.equal(f.manager.view(f.room).specificationRevision,oldRevision);assert.equal(f.manager.view(f.room).requirements[0].description,'Add history');
     release();await assert.rejects(()=>promise,/outcome is uncertain/);assert.equal(f.manager.view(f.room).specificationRevision,oldRevision);
     await assert.rejects(()=>f.manager.mutateIntent(f.room,'alice',c),/temporarily unavailable/);
-    restoredDir=fs.mkdtempSync(path.join(os.tmpdir(),'intent-canonical-'));restored=new RoomManager({dataDir:restoredDir,debounceMs:10,encryptionSecret:'fixture'});const recovered=restored.hydrate(f.room.id,canonical);
+    restoredDir=fs.mkdtempSync(path.join(os.tmpdir(),'intent-canonical-'));restored=new RoomManager({submissionMode:'intent',dataDir:restoredDir,debounceMs:10,encryptionSecret:'fixture'});const recovered=restored.hydrate(f.room.id,canonical);
     const result=await restored.mutateIntent(recovered,'alice',c);assert.equal(result.specificationRevision,oldRevision+1);assert.equal(recovered.intentCorrections!.length,1);assert.equal(recovered.usage.requests,0);
   }finally{release();restored?.shutdown();if(restoredDir){assert.equal(path.dirname(path.resolve(restoredDir)),path.resolve(os.tmpdir()));fs.rmSync(restoredDir,{recursive:true,force:true});}f.close();}
 });

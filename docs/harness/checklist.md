@@ -1,5 +1,20 @@
 # Harness status and outstanding work
 
+## Direct submission beta — 2026-10-21 (in progress)
+
+- [x] Confirm main `5eb98c5` matches observed beta source fingerprint.
+- [x] Implement default direct prompt/capture/build path and preserve explicit intent mode.
+- [x] Controlled-provider direct integration: caller-only sources, queue during build, tentative/typo input, open historical conflicts, failure retention and same-prompt/same-allowance retry.
+- [x] Candidate Linux production-image regressions265/265, build/types/boundaries, native PostgreSQL/compiler/browser gates and AST graph refresh; retain Windows failure history and passing focused synchronization correction.
+- [x] 925e21e Linux final-head CI after collaborator synchronization; corrected complete Windows run257 pass/zero fail/eight Linux-only skips.
+- [x] Publish fixture endpoint/evidence follow-up f0281e8; push CI passes and its exact staging image deploys.
+- [ ] Final-head CI after fixing PR integration's one-page activity assumption (retained264/265 failure; focused correction1/1 passes).
+- [x] Existing isolated staging image deployment and exact app-health fingerprint/direct mode.
+- [ ] Finish signed-in staging browser/build scenarios; Google auth is disabled on the separate staging backend, existing email/password sign-in pending.
+- [ ] Review PR, publish main, verify hosted source identity and actual beta UI; retain rollback identity.
+
+[Change packet and retained failures](direct-submission-flow.md) distinguish local evidence from a release.
+
 Main publication authorized 2026-10-20: replace the previous active application with verified `732fc572`, preserving Git history, historical evidence and all local user data. Release metadata is regenerated; source publication and hosted rollout remain separate. [Publication handoff](main-restoration-publication-20261020.md).
 
 2026-10-20 historical provenance repair: server-frozen source references and actionable Canvas review notice implemented. Final full suite: 252 passed, zero failed, eight Linux-only skips; production/type build, 163-file boundary audit, Graphify and deterministic real compiler/browser recovery pass. Local verification and recovery evidence: [repair report](provenance-repair-20261020.md). This branch does not authorize automatic re-interpretation, paid inference, deployment or production migration.

@@ -30,7 +30,7 @@ test('qualification keeps a single successful fixture provisional', () => {
 
 test('managed assignments remain historical and cannot dispatch', () => {
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-managed-disabled-'));
-  const manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,managedOpenRouterKey:'founder-test-key'});
+  const manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,managedOpenRouterKey:'founder-test-key'});
   try{
     const room=manager.create('historical');manager.join(room,'owner','Owner');
     manager.selectManagedBuilder(room,'google/gemini-3.8-flash');
@@ -46,7 +46,7 @@ test('temporary OpenRouter setup validates without generation and saves no secre
   const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
   globalThis.fetch=async(input)=>{const url=String(input);urls.push(url);if(url.endsWith('/key'))return new Response(JSON.stringify({data:{limit_remaining:10}}),{status:200});if(url.endsWith('/models'))return new Response(JSON.stringify({data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});throw new Error('Generation request was made during setup')};
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-'));
-  const manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  const manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
     const room=manager.create('byok');manager.join(room,'owner','Owner');manager.join(room,'editor','Editor');
     assert.equal(manager.view(room).ai.status,'disconnected');
@@ -86,7 +86,7 @@ test('explicit builder reaches the OpenRouter request; unauthorized editor canno
   const originalFetch=globalThis.fetch,requests:{url:string;model?:string;authorization?:string}[]=[];
   const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
   globalThis.fetch=async(input,init)=>{const url=String(input);requests.push({url,model:init?.body?JSON.parse(String(init.body)).model:undefined,authorization:new Headers(init?.headers).get('Authorization')||undefined});if(url.endsWith('/key'))return new Response(JSON.stringify({data:{limit_remaining:10}}),{status:200});if(url.endsWith('/models'))return new Response(JSON.stringify({data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});return new Response(JSON.stringify({choices:[{message:{content:'OK'},finish_reason:'stop'}],usage:{prompt_tokens:8,completion_tokens:2}}),{status:200,headers:{'content-type':'application/json'}})};
-  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-dispatch-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-dispatch-')),manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
     const room=manager.create('dispatch');manager.join(room,'owner','Owner');manager.join(room,'editor','Editor');
     const lease=await manager.connectTemporaryOpenRouter(room,'owner','sk-or-test-private-key');manager.saveTemporaryModels(room,'owner',lease.handle,'deepseek/deepseek-v4.1-flash','google/gemini-3.8-flash');
@@ -113,25 +113,25 @@ test('failed accepted work can be retried explicitly without reinterpreting the 
   const originalFetch=globalThis.fetch;
   const model=(id:string)=>({id,name:id,architecture:{output_modalities:['text']},supported_parameters:['response_format'],pricing:{prompt:'0.000001',completion:'0.000002'},context_length:64000});
   globalThis.fetch=async(input)=>new Response(JSON.stringify(String(input).endsWith('/key')?{data:{limit_remaining:10}}:{data:[model('google/gemini-3.8-flash'),model('deepseek/deepseek-v4.1-flash')]}),{status:200});
-  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-retry-')),manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-retry-')),manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
     const room=manager.create('retry');manager.join(room,'owner','Owner');
     const lease=await manager.connectTemporaryOpenRouter(room,'owner','sk-or-test-private-key');manager.saveTemporaryModels(room,'owner',lease.handle,'deepseek/deepseek-v4.1-flash','google/gemini-3.8-flash');
     room.sharedRequirements.push({id:'req-1',revision:1,category:'goal',description:'Build the restaurant site',acceptanceCriteria:[],status:'accepted',authority:'automatic',sources:[],createdAt:new Date().toISOString(),updatedAt:new Date().toISOString()});
     room.submissions.push({id:'old',requestId:'old',participantId:'owner',editSeqs:[1],documentRevision:1,snapshot:'',createdAt:new Date().toISOString(),status:'queued',assignment:structuredClone(room.ai.personal),setup:structuredClone(room.ai.setup)});
     room.status='Error';room.lastError='Earlier build failed';let requested=0;(manager as any).requestBuild=()=>{requested++};
-    const retry=manager.retryBuild(room,'owner','retry-1');
+    const retry=await manager.retryBuild(room,'owner','retry-1');
     assert.equal(retry.status,'queued');assert.equal(requested,1);assert.equal(room.submissions.find(item=>item.id==='old')?.status,'failed');
     assert.equal(room.submissions.at(-1)?.setup?.resolved?.builder.model,'google/gemini-3.8-flash');
     assert.equal(room.submissions.at(-1)?.editSeqs.length,0);
-    assert.equal(manager.retryBuild(room,'owner','retry-1').submissionId,retry.submissionId);
+    assert.equal((await manager.retryBuild(room,'owner','retry-1')).submissionId,retry.submissionId);
     assert.throws(()=>manager.retryBuild(room,'nonauthorized','retry-2'),/not authorized/);
   }finally{manager.shutdown();globalThis.fetch=originalFetch;rmSync(dataDir,{recursive:true,force:true})}
 });
 
 test('physical provider usage survives room reload for token visibility',()=>{
   const dataDir=mkdtempSync(join(tmpdir(),'cocreate-byok-usage-'));
-  let manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+  let manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
   try{
     const room=manager.create('usage');manager.join(room,'owner','Owner');
     room.providerCalls.push({callId:'call-1',workspaceId:room.id,purpose:'builder',provider:'openrouter',model:'example/model',configurationVersion:'test',startedAt:new Date().toISOString(),outcome:'succeeded',estimatedInputTokens:100,usage:{inputTokens:47,outputTokens:23},usageStatus:'measured'});
@@ -139,7 +139,7 @@ test('physical provider usage survives room reload for token visibility',()=>{
     manager.eventStore.append({eventType:'provider.request_reconciled',workspaceId:room.id,actorId:'provider-gateway',actorType:'system',payload:room.providerCalls[0]});
     manager.eventStore.append({eventType:'provider.request_reconciled',workspaceId:room.id,actorId:'provider-gateway',actorType:'system',payload:{...room.providerCalls[0],callId:'old-redacted',usage:{inputTokens:'[REDACTED]',outputTokens:'[REDACTED]'}}});
     room.providerCalls=[];manager.save(room);manager.shutdown();
-    manager=new RoomManager({debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
+    manager=new RoomManager({submissionMode:'intent',debounceMs:1000,encryptionSecret:'test',dataDir,mvpByokOnly:true});
     const restored=manager.get('usage');assert.ok(restored);
     assert.equal(manager.view(restored).providerCalls[0]?.usage.inputTokens,47);
     assert.equal(manager.view(restored).providerCalls[0]?.usage.outputTokens,23);

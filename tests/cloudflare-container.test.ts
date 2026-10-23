@@ -59,13 +59,13 @@ test('www redirects exact paths and queries to canonical HTTPS without proxying 
 });
 
 test('the application exposes a container readiness endpoint',async()=>{
-  const instance=await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});
+  const instance=await createCoCreateServer({submissionMode:'intent',port:0,host:'127.0.0.1',serveClient:false,sessionSecret:'health-session',encryptionSecret:'health-encryption'});
   const info=await instance.start();
   try{
     const response=await fetch(`${info.url}/__cocreate/app-health`);
     assert.equal(response.status,200);
     const {release_fingerprint, ...health} = await response.json();
-    assert.deepEqual(health,{status:'ok',service:'cocreate-app'});
+    assert.deepEqual(health,{status:'ok',service:'cocreate-app',submission_mode:'intent'});
     if (release_fingerprint !== undefined) assert.match(release_fingerprint,/^[a-f0-9]{64}$/);
   }finally{await instance.stop()}
 });
@@ -73,7 +73,7 @@ test('the application exposes a container readiness endpoint',async()=>{
 test('unknown API paths return JSON errors while the existing auth callback reaches the SPA', async () => {
   const prior = process.env.NODE_ENV;
   process.env.NODE_ENV = 'production';
-  const instance = await createCoCreateServer({port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});
+  const instance = await createCoCreateServer({submissionMode:'intent',port:0,host:'127.0.0.1',serveClient:true,sessionSecret:'route-session',encryptionSecret:'route-encryption'});
   try {
     const {url} = await instance.start();
     for (const method of ['GET', 'POST']) {

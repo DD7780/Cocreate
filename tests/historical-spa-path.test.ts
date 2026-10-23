@@ -16,7 +16,7 @@ test('built application routes work below hidden checkout directories without ex
   process.env.NODE_ENV = 'production';
   let service: Awaited<ReturnType<typeof createCoCreateServer>> | undefined;
   try {
-    service = await createCoCreateServer({ port: 0, host: '127.0.0.1', dataDir: path.join(temporary, 'data') });
+    service = await createCoCreateServer({submissionMode:'intent', port: 0, host: '127.0.0.1', dataDir: path.join(temporary, 'data') });
     const { port } = await service.start();
     for (const route of ['/app', '/login', '/r/test', '/.env']) {
       const response = await fetch(`http://127.0.0.1:${port}${route}`);

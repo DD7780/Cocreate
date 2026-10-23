@@ -1,5 +1,13 @@
 # 2guys1canvas implemented API contracts
 
+## Direct submissions — implementation candidate, 2026-10-21
+
+`COCREATE_SUBMISSION_MODE=direct` is the default server-controlled mode; explicit `intent` retains the previous contracts below. RoomView exposes `submissionMode` and `directSubmissions` (ID, participant, status, clarified prompt, artifact version or error). No credential is included. The existing authenticated, membership-checked and flush-acknowledged submission endpoint retains caller/request-ID idempotency. Each new capture freezes its mode, caller-owned source passages, personal/builder assignment and setup. Direct mode prepares a structurally validated nonempty prompt, saves it, then serializes its execution; no classification, evidence quotation approval, acceptance, reconciliation or conflict mutation runs.
+
+Direct build input is `DirectBuildInstruction` (`kind=direct_submission`), distinct from SharedRequirement. Its narrow verification criteria come from frozen submitted writing and carry earlier covered checks until explicit supported removal. They are not human-approved requirements. Later instructions revise earlier behavior; ordinary execution/check failures remain visible.
+
+`POST /api/rooms/:id/retry-build` in direct mode reuses an idle failed prepared submission and frozen build baseline/model; it persists a retry receipt alias without creating a submission or resetting the allowance. Current membership/spending permission is rechecked; a reconnected compatible OpenRouter lease may supply credentials for the same frozen model. Restarted prepared work becomes failed with an explicit retry path; unprepared captures return to caller drafts. No startup inference occurs. Intent correction/build/reinterpretation/conflict mutations return a paused/refresh error in direct mode, including requests from old tabs. [Full contract and rollout ledger](docs/harness/direct-submission-flow.md).
+
 Repair (2026-10-20): public routes and submission/ownership contracts are unchanged. OpenRouter workflow requests omit token caps; setup probes remain explicitly bounded, and configured spending uses conservative provider-capacity reservations. [Policy, mocks and compatibility handoff](docs/harness/historical-repair-20261020.md).
 
 Isolated restoration (2026-10-19): historical API contracts below remain; the only runtime correction so far is built SPA fallback resolution under hidden checkout parents. Unknown APIs still return JSON 404. Local development sessions do not establish hosted account acceptance. [Restoration evidence](docs/harness/historical-coherent-restoration.md).

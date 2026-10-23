@@ -27,7 +27,7 @@ const cleanup = (dir: string) => {
 
 test("anonymous registration commits before success, retries dedupe, and restart preserves consent and limits", async () => {
   const dir = temp();
-  let service = await createCoCreateServer({
+  let service = await createCoCreateServer({submissionMode:'intent',
     dataDir: dir,
     serveClient: false,
     port: 0,
@@ -75,7 +75,7 @@ test("anonymous registration commits before success, retries dedupe, and restart
     db.close();
     assert.equal((await fetch(url + "/api/beta/waitlist")).status, 404);
     await service.stop();
-    service = await createCoCreateServer({
+    service = await createCoCreateServer({submissionMode:'intent',
       dataDir: dir,
       serveClient: false,
       port: 0,
@@ -293,7 +293,7 @@ test("unapproved accounts cannot read APIs, previews, downloads, socket upgrades
   const dir = temp(),
     fixture = hostedFixture(),
     secret = "synthetic-beta",
-    service = await createCoCreateServer({
+    service = await createCoCreateServer({submissionMode:'intent',
       platform: fixture.platform,
       dataDir: dir,
       serveClient: false,
