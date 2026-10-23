@@ -73,6 +73,7 @@ export type DurableStore = {
 export type ClientSocket = WebSocket & {
   authorizeRead?: () => Promise<void>;
   deliveryQueue?: Promise<void>;
+  pendingProjections?: Map<'saved' | 'room-state', string>;
   participantId?: string;
   awarenessClientId?: number;
   role?: ProjectRole;

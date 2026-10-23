@@ -228,9 +228,9 @@
     "semantic_hash": ""
   },
   "server/rooms.ts": {
-    "mtime": 1792582191.4720707,
-    "seen": 1792582251.9457304,
-    "ast_hash": "b69c164e58e8dff7a5b8d0c57f186b31",
+    "mtime": 1792741427.651029,
+    "seen": 1792742047.0659986,
+    "ast_hash": "ae35eb0f03c4fc5c6398271286fd4023",
     "semantic_hash": ""
   },
   "server/supabase-platform.ts": {
@@ -264,9 +264,9 @@
     "semantic_hash": ""
   },
   "src/App.tsx": {
-    "mtime": 1792508604.707096,
-    "seen": 1792581916.0794446,
-    "ast_hash": "1a953341b572a8ade85646dd3a6512c2",
+    "mtime": 1792741427.6578307,
+    "seen": 1792742047.0707383,
+    "ast_hash": "f9359447d5d5b00fe4a60109d2adee21",
     "semantic_hash": ""
   },
   "src/ByokSetup.tsx": {
@@ -528,21 +528,21 @@
     "semantic_hash": ""
   },
   "api.md": {
-    "mtime": 1792580792.1500928,
-    "seen": 1792581916.1406345,
-    "ast_hash": "6bea051630c0061c48431d09ec5833f8",
+    "mtime": 1792741977.3305993,
+    "seen": 1792742047.1101272,
+    "ast_hash": "b224dc6f398c8fa83d1309cc789a5129",
     "semantic_hash": ""
   },
   "context.md": {
-    "mtime": 1792593718.5984173,
-    "seen": 1792732878.5599563,
-    "ast_hash": "0cf2ff1adfb1d993dcc7ce5694555751",
+    "mtime": 1792741977.3235905,
+    "seen": 1792742047.1101272,
+    "ast_hash": "cea1b717ade54717dfc7329b1d426c08",
     "semantic_hash": ""
   },
   "docs/harness/architecture.md": {
-    "mtime": 1792580792.1570897,
-    "seen": 1792581916.1406345,
-    "ast_hash": "f85bf503d9f28c8a02c268ef2eda71bc",
+    "mtime": 1792741977.327468,
+    "seen": 1792742047.1101272,
+    "ast_hash": "37836ca75128b03ddf6da8740129b3fd",
     "semantic_hash": ""
   },
   "docs/harness/assessment.md": {
@@ -552,9 +552,9 @@
     "semantic_hash": ""
   },
   "docs/harness/checklist.md": {
-    "mtime": 1792593729.008653,
-    "seen": 1792732878.5646987,
-    "ast_hash": "2e7a5b796827c0f04c2bc68c818f2e6a",
+    "mtime": 1792741977.3260677,
+    "seen": 1792742047.1158795,
+    "ast_hash": "6ed1597dc22affe0a8b498b591d83443",
     "semantic_hash": ""
   },
   "docs/harness/contradiction-resolution-plan.md": {
@@ -720,9 +720,9 @@
     "semantic_hash": ""
   },
   "server/room-state.ts": {
-    "mtime": 1792508603.3873482,
-    "seen": 1792581916.0709472,
-    "ast_hash": "2d5c3fc52fb83949a12ec3197d8b4394",
+    "mtime": 1792741427.651029,
+    "seen": 1792742047.0659986,
+    "ast_hash": "ea3ee478099ff3d410f60aec662fccb0",
     "semantic_hash": ""
   },
   "server/steering-text.ts": {
@@ -1296,8 +1296,8 @@
     "semantic_hash": ""
   },
   "release-source-files.json": {
-    "mtime": 1792582226.2489522,
-    "seen": 1792582251.89305,
+    "mtime": 1792741856.8655305,
+    "seen": 1792742047.0346665,
     "ast_hash": "0bd7593750b79ca106e7d42882b8ada7",
     "semantic_hash": ""
   },
@@ -1482,9 +1482,9 @@
     "semantic_hash": ""
   },
   "docs/harness/direct-submission-flow.md": {
-    "mtime": 1792732825.168907,
-    "seen": 1792732878.5678635,
-    "ast_hash": "be92159f06c7305bfa7f3c6d6828444e",
+    "mtime": 1792732893.2167566,
+    "seen": 1792742047.1179085,
+    "ast_hash": "6789a91f472b233fd6364d7c932e26c5",
     "semantic_hash": ""
   },
   "docs/harness/main-restoration-publication-20261020.md": {
@@ -1497,6 +1497,18 @@
     "mtime": 1792497748.1174407,
     "seen": 1792581916.1729116,
     "ast_hash": "661fdc5fb5e800f658520608ac1957ae",
+    "semantic_hash": ""
+  },
+  "tests/submission-delivery.test.ts": {
+    "mtime": 1792742195.6548624,
+    "seen": 1792742222.1395125,
+    "ast_hash": "91aec4ddb53d901d21505855b2a8622c",
+    "semantic_hash": ""
+  },
+  "docs/harness/build-submit-ack-repair.md": {
+    "mtime": 1792742146.737341,
+    "seen": 1792742222.1505854,
+    "ast_hash": "4019c6e9ff87f6c069f338ae4abdca8c",
     "semantic_hash": ""
   }
 }

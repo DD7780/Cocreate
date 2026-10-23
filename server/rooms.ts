@@ -859,18 +859,31 @@ export class RoomManager {
       });
     }
   }
-  private sendPacket(ws: ClientSocket, data: string | Buffer) {
+  private sendPacket(ws: ClientSocket, data: string | Buffer, projection?: 'saved' | 'room-state') {
     if (ws.readyState !== 1) return;
     if (!ws.authorizeRead) {
       ws.send(data);
       return;
     }
+    // Superseded projections need not delay command acknowledgements behind remote authorization.
+    if (projection) {
+      ws.pendingProjections ||= new Map();
+      const pending = ws.pendingProjections.has(projection);
+      ws.pendingProjections.set(projection, data as string);
+      if (pending) return;
+    }
     ws.deliveryQueue = (ws.deliveryQueue || Promise.resolve())
       .then(async () => {
+        if (ws.readyState !== 1) return;
         await ws.authorizeRead!();
+        if (projection) {
+          data = ws.pendingProjections!.get(projection)!;
+          ws.pendingProjections!.delete(projection);
+        }
         if (ws.readyState === 1) ws.send(data);
       })
       .catch((error) => {
+        ws.pendingProjections?.clear();
         ws.close(
           error instanceof CoordinatorUnavailableError ? 1012 : 4403,
           error instanceof CoordinatorUnavailableError
@@ -909,7 +922,8 @@ export class RoomManager {
       if (c !== except && c.readyState === 1) this.sendPacket(c, data);
   }
   private sendJson(ws: ClientSocket, data: unknown) {
-    this.sendPacket(ws, JSON.stringify(data));
+    const type = (data as {type?: string}).type;
+    this.sendPacket(ws, JSON.stringify(data), type === 'saved' || type === 'room-state' ? type : undefined);
   }
   private broadcastState(room: Room) {
     const state = this.view(room);
