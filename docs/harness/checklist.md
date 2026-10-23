@@ -6,7 +6,9 @@
 - [x] Inspect the affected project without inference: edits persist, no submission/provider call/artifact exists.
 - [x] Reproduce 70 serial authorization checks ahead of one flush; bound replaceable pending saved/state delivery and keep current access checks.
 - [x] Surface pre-submit save failures and progress without changing the flush deadline or spending controls.
-- [ ] Complete browser regression, focused/full gates and publish the matching repaired release. [Evidence](build-submit-ack-repair.md).
+- [x] Publish PR #12 with passing267/267 image tests and public server/client source verification; retain the user's subsequent live timeout as evidence that this repair was incomplete.
+- [x] Reproduce that exact timeout with real WebSocket/CoCreateProvider at measured hosted RPC delays; confirm a durable acknowledgement takes4.8 seconds and later revoked edits are refused.
+- [ ] Complete final-head gates and publish bounded inbound draining plus the30-second save-only wait. [Evidence](build-submit-ack-repair.md).
 
 ## Direct submission beta — 2026-10-21 (in progress)
 

@@ -843,12 +843,15 @@ export class RoomManager {
     if (record.before || record.after) this.queueEdit(room, p, record);
   }
   private async flushDocument(room: Room, ws: ClientSocket, requestId: string) {
+    const started = Date.now();
     try {
       await room.documentQueue?.catch(() => {});
       if ((await this.save(room)) === false)
         throw new Error("The document could not be durably saved.");
       this.sendJson(ws, { type: "flushed", requestId });
+      console.info(JSON.stringify({event: 'collaboration.flush_committed', projectId: room.id, durationMs: Date.now() - started}));
     } catch (error) {
+      console.info(JSON.stringify({event: 'collaboration.flush_failed', projectId: room.id, durationMs: Date.now() - started}));
       this.sendJson(ws, {
         type: "flush-error",
         requestId,

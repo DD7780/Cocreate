@@ -1,5 +1,15 @@
 # Build submission acknowledgement repair — 2026-10-23
 
+## Live follow-up: the first repair was incomplete
+
+PR #12 is live as main `d309700` / Worker `9b82438e-c6ea-47da-a072-092dccfb1ef4`. Health and the public workspace bundle both match fingerprintc4c69126.... The user then reproduced the explicit error "The final document update was not acknowledged. Try again." on their own browser. There are still zero submissions/provider calls. Do not describe the local fixture or the first repair as live functional acceptance.
+
+Read-only production edge-log aggregation for08:20–08:42UTC finds access/coordinator RPC medians183–185ms, p95 approximately225–231ms; snapshot commits have median221.5ms and p95523.15ms, with no error responses in those paths. A flush performs multiple such operations and currently waits behind one full remote authorization cycle per inbound keystroke/presence packet. Its three-second UI deadline is inadequate even after outbound projection coalescing.
+
+Follow-up scope adds `server/index.ts` ingress scheduling, `src/provider.ts` flush wait and a real WebSocket/CoCreateProvider integration regression at these measured delays. Preserve every frame's ordering and content, fresh authorization before each bounded synchronous drain, per-frame owner/ticket checks, durable append/snapshot completion and fresh authorization for each actual outgoing reply. No authorization cache, inference replay, model change, data migration or paid calls. The save-only wait is now bounded at30 seconds; provider/spending/resource limits remain unchanged. Document append RPCs in the same window have median186ms/p95222.4ms (25 requests). A68-frame burst alone can require over13 seconds of serialized durable appends before access/reply/commit overhead; the new bound accounts for that measured path rather than treating three seconds as a persistence deadline.
+
+The new real-socket regression fails before correction with the user's exact error. It then passes with a canonical acknowledgement after4808ms and zero inference, and a later revoked edit is refused. All16 focused transport/reconnect/revocation checks pass. A simulated-clock test accepts a matching reply after four seconds, rejects a missing reply at the finite30-second deadline, and immediately rejects an explicit save failure. Server commit/failure timing logs include only the server-owned project identity and duration, with no writing, credential or raw request payload. Strict types/build, boundaries (168 files, zero violations) and AST graph refresh (2345 nodes/5595 edges, known14 SQL parser omissions) pass. Final Windows and Linux image suites remain required for this follow-up.
+
 ## Outcome and scope
 
 The user reports that Build my changes does nothing on the live direct-flow release. Project inspection finds saved participant edits but zero submissions, provider calls, or artifacts. Its configured models are left unchanged; no paid reproduction is authorized for those models. Trace the pre-submission collaboration barrier before changing generation.

@@ -116,3 +116,46 @@ test('owner unavailability honors bounded retry hints, retains edits, and ends w
     const last=states.at(-1);assert.equal(last?.state,'error');assert.match(last!.message,/workflow owner.*Reopen/);assert.equal(doc.getText('draft').toString(),'retained steering');assert.equal(diagnoses,3);assert.equal(callbacks.length,0);
   }finally{provider.destroy();doc.destroy()}
 });
+
+test('a slow durable acknowledgement can finish after three seconds, while missing or failed acknowledgements still reject', async () => {
+  FakeWebSocket.instances = [];
+  let now = 0, nextTimer = 0;
+  const timers = new Map<number, {at: number; callback: () => void}>();
+  const advance = (ms: number) => {
+    now += ms;
+    for (const [id, timer] of timers) {
+      if (timer.at <= now) { timers.delete(id); timer.callback(); }
+    }
+  };
+  const doc = new Y.Doc();
+  const provider = new CoCreateProvider(doc, 'room', 'token', () => {}, () => {}, () => {}, {
+    WebSocketImpl: FakeWebSocket as any, origin: 'http://example.test',
+    setTimer: (callback, delay) => { timers.set(++nextTimer, {at: now + delay, callback}); return nextTimer; },
+    clearTimer: id => { timers.delete(id); },
+  });
+  try {
+    const socket = FakeWebSocket.instances[0];
+    socket.open();
+    let outcome = 'waiting';
+    const slow = provider.flush().then(() => { outcome = 'saved'; }, () => { outcome = 'failed'; });
+    advance(4_000);
+    await tick();
+    assert.equal(outcome, 'waiting', 'normal hosted work must not expire at the old local deadline');
+    const request = JSON.parse(socket.sent.at(-1) as string);
+    socket.message(JSON.stringify({type: 'flushed', requestId: request.requestId}));
+    await slow;
+    assert.equal(outcome, 'saved');
+
+    const missing = assert.rejects(provider.flush(), /not acknowledged/);
+    advance(30_001);
+    await missing;
+    const failed = assert.rejects(provider.flush(), /durable save failed/);
+    const failureRequest = JSON.parse(socket.sent.at(-1) as string);
+    socket.message(JSON.stringify({type: 'flush-error', requestId: failureRequest.requestId, message: 'durable save failed'}));
+    await failed;
+    assert.equal(timers.size, 0);
+  } finally {
+    provider.destroy();
+    doc.destroy();
+  }
+});
