@@ -13,7 +13,8 @@
     "implementationCommit": "85f8cfb51d9807fb411d8e1e8888a6b1d6a85349",
     "pullRequest": "https://github.com/DD7780/Cocreate/pull/11",
     "stagingDeployed": true,
-    "productionDeployed": false
+    "productionDeployed": false,
+    "latestPublishedCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead"
   },
   "checks": {
     "focused": {
@@ -29,8 +30,8 @@
       "inferenceCalls": 0
     },
     "graph": {
-      "nodes": 2324,
-      "edges": 5547,
+      "nodes": 2325,
+      "edges": 5548,
       "unparsedSqlFiles": 14,
       "inferenceCalls": 0
     },
@@ -127,7 +128,10 @@
         "fingerprint": "2db416df1c15dd469cfa15383c5919844eef32795cd8ad311de62075186ddd0e",
         "submissionMode": "direct"
       },
-      "tokenRefresh": "User created and selected replacement build token in Cloudflare dashboard; no token value was read."
+      "tokenRefresh": "User created and selected replacement build token in Cloudflare dashboard; no token value was read.",
+      "latestSuccessfulBuild": "ca3eab2e-d3f3-4b15-bf4e-cc66a5bcfbbe",
+      "latestSourceCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead",
+      "latestWorkerVersion": "1cadf5ff-0dbc-4cd2-b261-955e9c0b2731"
     },
     "completeWindowsSuite": {
       "attempt": 4,
@@ -152,12 +156,43 @@
       "emailPassword": "Existing staging account requested; not yet signed in",
       "policiesChanged": false,
       "accountsCreated": false
+    },
+    "followUpCI": {
+      "sourceCommit": "f0281e8d11914b54cb7aab22c502eefbb47b7ead",
+      "push": {
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/39904320657",
+        "status": "success"
+      },
+      "pullRequest": {
+        "run": "https://github.com/DD7780/Cocreate/actions/runs/39904323681",
+        "tests": 265,
+        "passed": 264,
+        "failed": 1,
+        "skipped": 0,
+        "failure": "Integration expected all remaining activity in one 100-event page. Legitimate multiple build batches exceed the page."
+      },
+      "correction": "Drain bounded activity pages within unchanged timeout; assert monotonic cursors, redaction and complete original durable-event sequence.",
+      "focused": {
+        "passed": 1,
+        "failed": 0,
+        "durationMs": 38557,
+        "source": "direct-integration-pagination.log"
+      },
+      "newHeadCI": "pending"
+    },
+    "stagingAnonymous": {
+      "appHealth": 200,
+      "projects": 401,
+      "roomState": 401,
+      "privatePreview": 401,
+      "inferenceCalls": 0
     }
   },
   "limitations": [
-    "Live staging sign-in/build acceptance pending",
-    "New live OpenRouter deepseek/deepseek-chat acceptance authorized with maximum total USD2; zero paid calls so far",
-    "Follow-up fixture/evidence changes not yet published; runtime inputs unchanged",
-    "Main remains baseline 5eb98c5, production fingerprint e5d11c325dfadea872cee1e0bcdc37acde0b91140906eb0db8cb0e15d12bf92c"
-  ]
+    "Signed-in staging acceptance pending; existing staging email/password sign-in requested",
+    "USD2 total OpenRouter deepseek/deepseek-chat acceptance authorized; zero paid calls so far",
+    "New-head CI required after integration pagination correction",
+    "Main remains baseline 5eb98c5; no production deployment"
+  ],
+  "lastUpdated": "2026-10-23"
 }
