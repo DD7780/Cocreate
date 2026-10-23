@@ -1,5 +1,7 @@
 # 2guys1canvas implemented API contracts
 
+2026-10-23 acknowledgement repair: wire formats and flush/submission authority are unchanged. Obsolete unsent `saved`/`room-state` projections coalesce per connection under the existing current-membership delivery check. Incremental packets and command replies remain ordered. Client flush failure is visible and prevents HTTP submission; no timeout or spending limit changes. [Evidence](docs/harness/build-submit-ack-repair.md).
+
 ## Direct submissions — implementation candidate, 2026-10-21
 
 `COCREATE_SUBMISSION_MODE=direct` is the default server-controlled mode; explicit `intent` retains the previous contracts below. RoomView exposes `submissionMode` and `directSubmissions` (ID, participant, status, clarified prompt, artifact version or error). No credential is included. The existing authenticated, membership-checked and flush-acknowledged submission endpoint retains caller/request-ID idempotency. Each new capture freezes its mode, caller-owned source passages, personal/builder assignment and setup. Direct mode prepares a structurally validated nonempty prompt, saves it, then serializes its execution; no classification, evidence quotation approval, acceptance, reconciliation or conflict mutation runs.

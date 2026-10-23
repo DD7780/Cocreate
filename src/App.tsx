@@ -489,10 +489,12 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
         }
         submittingRef.current = true;
         setSubmitting(true);
-        setNotice('');
+        setError('');
+        setNotice('Saving your changes before building…');
         const keepFocus = activeEditor.isFocused;
         try {
             await activeProvider.flush();
+            setNotice('Submitting your changes…');
             submissionRequest.current ||= crypto.randomUUID();
             const result = await action(`/api/rooms/${id}/submit`, {
                 requestId: submissionRequest.current
@@ -500,7 +502,9 @@ export function Workspace({ id, tokenOverride, projectTitle, onInvite, onRenameP
             submissionRequest.current = undefined;
             setNotice(result.message || 'Changes submitted.');
         }
-        catch {
+        catch (error) {
+            setNotice('');
+            setError(error instanceof Error ? error.message : 'Your changes could not be submitted. No build was started.');
         }
         finally {
             submittingRef.current = false;

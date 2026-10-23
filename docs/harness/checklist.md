@@ -1,5 +1,13 @@
 # Harness status and outstanding work
 
+## Build acknowledgement repair — 2026-10-23
+
+- [x] Confirm PR #11 is live on main and preserve the user's manual acceptance direction.
+- [x] Inspect the affected project without inference: edits persist, no submission/provider call/artifact exists.
+- [x] Reproduce 70 serial authorization checks ahead of one flush; bound replaceable pending saved/state delivery and keep current access checks.
+- [x] Surface pre-submit save failures and progress without changing the flush deadline or spending controls.
+- [ ] Complete browser regression, focused/full gates and publish the matching repaired release. [Evidence](build-submit-ack-repair.md).
+
 ## Direct submission beta — 2026-10-21 (in progress)
 
 - [x] Confirm main `5eb98c5` matches observed beta source fingerprint.
